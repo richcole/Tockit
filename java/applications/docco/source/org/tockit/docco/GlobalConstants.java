@@ -8,8 +8,7 @@
 package org.tockit.docco;
 import docsearcher.DocSearch;
 
-public class GlobalVars {
-
+public class GlobalConstants {
 	public static final String DEFAULT_INDEX_NAME = "test";
 	public static final String DEFAULT_INDEX_LOCATION = DocSearch.indexDir + "/" + DEFAULT_INDEX_NAME;
 	
@@ -24,6 +23,4 @@ public class GlobalVars {
 	public static final String FIELD_DOC_TYPE = "type";
 	public static final String FIELD_DOC_SIZE = "size";
 	public static final String FIELD_DOC_PATH = "path";
-
-
 }

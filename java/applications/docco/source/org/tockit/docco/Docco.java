@@ -28,9 +28,9 @@ public class Docco {
 	
 	public Docco () {
 		try {
-			QueryDecomposer queryDecomposer = new QueryDecomposer(GlobalVars.FIELD_QUERY_BODY, new StandardAnalyzer());
-			QueryEngine queryEngine = new QueryEngine(GlobalVars.DEFAULT_INDEX_LOCATION, 
-													GlobalVars.FIELD_QUERY_BODY, 
+			QueryDecomposer queryDecomposer = new QueryDecomposer(GlobalConstants.FIELD_QUERY_BODY, new StandardAnalyzer());
+			QueryEngine queryEngine = new QueryEngine(GlobalConstants.DEFAULT_INDEX_LOCATION, 
+													GlobalConstants.FIELD_QUERY_BODY, 
 													new StandardAnalyzer(),
 													queryDecomposer);
 
@@ -41,7 +41,7 @@ public class Docco {
 		}
 		catch (IOException e) {
 			ErrorDialog.showError(null, e, "Error", "\nPlease check if you have created an index using docsearcher.\n" + 
-							" Index name should be '" + GlobalVars.DEFAULT_INDEX_NAME + "'");
+							" Index name should be '" + GlobalConstants.DEFAULT_INDEX_NAME + "'");
 		}
 		catch (Exception e) {
 			ErrorDialog.showError(null, e, "Error");

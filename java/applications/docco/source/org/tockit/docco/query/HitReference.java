@@ -8,7 +8,7 @@
 package org.tockit.docco.query;
 
 import org.apache.lucene.document.Document;
-import org.tockit.docco.GlobalVars;
+import org.tockit.docco.GlobalConstants;
 
 public class HitReference {
 	private Document doc;
@@ -33,15 +33,15 @@ public class HitReference {
 			return false;
 		}
 		HitReference otherHR = (HitReference) other;
-		return this.getDocument().getField(GlobalVars.FIELD_DOC_PATH).toString().equals(
-								otherHR.getDocument().getField(GlobalVars.FIELD_DOC_PATH).toString());
+		return this.getDocument().getField(GlobalConstants.FIELD_DOC_PATH).toString().equals(
+								otherHR.getDocument().getField(GlobalConstants.FIELD_DOC_PATH).toString());
 	}
 	
 	public int hashCode() {
-		return this.getDocument().getField(GlobalVars.FIELD_DOC_PATH).toString().hashCode();
+		return this.getDocument().getField(GlobalConstants.FIELD_DOC_PATH).toString().hashCode();
 	}
 
 	public String toString() {
-		return this.getDocument().getField(GlobalVars.FIELD_DOC_TITLE).stringValue();
+		return this.getDocument().getField(GlobalConstants.FIELD_DOC_TITLE).stringValue();
 	}
 }
