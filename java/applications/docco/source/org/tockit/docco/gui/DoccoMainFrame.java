@@ -9,7 +9,9 @@ package org.tockit.docco.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
-import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
@@ -48,6 +50,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.JTree;
+import javax.swing.border.BevelBorder;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -116,7 +119,7 @@ public class DoccoMainFrame extends JFrame {
 
     private DocumentDisplayPane documentDisplayPane;
     private JTree hitList;
-    private JTextField queryField = new JTextField(20);
+    private JTextField queryField = new JTextField();
 	private JButton searchButton = new JButton("Submit");
 	private JCheckBoxMenuItem showPhantomNodesCheckBox;
 	private JCheckBoxMenuItem showContingentOnlyCheckBox;
@@ -126,7 +129,6 @@ public class DoccoMainFrame extends JFrame {
 	private Concept selectedConcept;
 	
 	private JSplitPane viewsSplitPane;
-	private JSplitPane mainPane;
 	private String indexLocation;
 	
 	private class SelectionEventHandler implements EventBrokerListener {
@@ -293,14 +295,11 @@ public class DoccoMainFrame extends JFrame {
 		
 		JComponent viewsComponent = buildViewsComponent();
 		this.documentDisplayPane = new DocumentDisplayPane();
+		this.documentDisplayPane.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 		
-		mainPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, viewsComponent, documentDisplayPane);
-		mainPane.setOneTouchExpandable(true);
-		mainPane.setResizeWeight(0.9);
-		mainPane.setDividerLocation(ConfigurationManager.fetchInt(
-									CONFIGURATION_SECTION_NAME, 
-									CONFIGURATION_HORIZONTAL_DIVIDER_LOCATION,
-									DEFAULT_HORIZONTAL_DIVIDER_LOCATION));
+		JPanel mainPane = new JPanel(new BorderLayout());
+		mainPane.add(viewsComponent, BorderLayout.CENTER);
+		mainPane.add(this.documentDisplayPane, BorderLayout.SOUTH);
 								
 		this.statusBarMessage = new JLabel("Ready!");
 
@@ -525,7 +524,7 @@ public class DoccoMainFrame extends JFrame {
 	}
 	
 	private JComponent buildQueryViewComponent() {
-		JPanel queryPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JPanel queryPanel = new JPanel(new GridBagLayout());
 
 		/**
 		 * @todo check if this could be done more elegant, e.g. by listening to properties
@@ -554,9 +553,18 @@ public class DoccoMainFrame extends JFrame {
 			}
 		});
 		
-		queryPanel.add(new JLabel("Search:"));
-		queryPanel.add(this.queryField);
-		queryPanel.add(this.searchButton);
+		queryPanel.add(new JLabel("Search:"), 
+							new GridBagConstraints( 0, 0, 1, 1, 0, 0,
+													GridBagConstraints.WEST, GridBagConstraints.NONE,
+													new Insets(5,5,5,5), 0, 0));
+		queryPanel.add(this.queryField, 
+							new GridBagConstraints( 1, 0, 1, 1, 1, 0,
+								GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
+								new Insets(5,5,5,5), 0, 0));
+		queryPanel.add(this.searchButton, 
+							new GridBagConstraints( 2, 0, 1, 1, 0, 0,
+								GridBagConstraints.EAST, GridBagConstraints.NONE,
+								new Insets(5,15,5,15), 0, 0));
 		return queryPanel;
 	}
 	
@@ -612,6 +620,7 @@ public class DoccoMainFrame extends JFrame {
 		this.diagramView.getController().getEventBroker().subscribe(new SelectionEventHandler(),
 									CanvasItemSelectedEvent.class,
 									CanvasBackground.class);
+		this.diagramView.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 
 		// create a JTree with some model containing at least two elements. Otherwise the layout
 		// is broken. True even for the JTree(Object[]) constructor. And the default constructor
@@ -727,8 +736,6 @@ public class DoccoMainFrame extends JFrame {
 								(float) this.diagramView.getMinimumFontSize());
 		ConfigurationManager.storeInt(CONFIGURATION_SECTION_NAME, CONFIGURATION_VERTICAL_DIVIDER_LOCATION,
 								this.viewsSplitPane.getDividerLocation());
-		ConfigurationManager.storeInt(CONFIGURATION_SECTION_NAME, CONFIGURATION_HORIZONTAL_DIVIDER_LOCATION,
-								this.mainPane.getDividerLocation());
 		ConfigurationManager.storeString(CONFIGURATION_SECTION_NAME, CONFIGURATION_INDEX_NAME, 
 								DEFAULT_INDEX_NAME);
 		

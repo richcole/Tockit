@@ -150,19 +150,19 @@ public class DocumentDisplayPane extends JPanel {
 						GridBagConstraints.HORIZONTAL,
 						new Insets(5,5,5,5),
 						0,0 ));
-		row++;
-		mainPanel.add(summaryLabel, new GridBagConstraints(
-						0, row, 1, 1, 0, 0,
-						GridBagConstraints.NORTHWEST,
-						GridBagConstraints.NONE,
-						new Insets(5,5,5,5),
-						0,0 ));
-		mainPanel.add(summaryPane, new GridBagConstraints(
-						1, row, 3, 1, 0, 10,
-						GridBagConstraints.NORTHWEST,
-						GridBagConstraints.BOTH,
-						new Insets(5,5,5,5),
-						0,0 ));
+//		row++;
+//		mainPanel.add(summaryLabel, new GridBagConstraints(
+//						0, row, 1, 1, 0, 0,
+//						GridBagConstraints.NORTHWEST,
+//						GridBagConstraints.NONE,
+//						new Insets(5,5,5,5),
+//						0,0 ));
+//		mainPanel.add(summaryPane, new GridBagConstraints(
+//						1, row, 3, 1, 0, 10,
+//						GridBagConstraints.NORTHWEST,
+//						GridBagConstraints.BOTH,
+//						new Insets(5,5,5,5),
+//						0,0 ));
 		row++;
 		mainPanel.add(this.shellExecuteButton, new GridBagConstraints(
 						1, row, 3, 1, 0, 0,
