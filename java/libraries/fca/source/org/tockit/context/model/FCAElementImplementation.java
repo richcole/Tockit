@@ -7,18 +7,29 @@
  */
 package org.tockit.context.model;
 
-import org.jdom.Element;
-
+/**
+ * A default implementation of a writable FCAElement.
+ * 
+ * It implements the methods and the identity semantics of WritableFCAElement and
+ * adds an implementation of Comparable that determines order based on the context
+ * position.
+ */
 public class FCAElementImplementation implements WritableFCAElement, Comparable {
 	private Object data;
-	private Element description;
+	private Object description;
     private int contextPosition = -1; // -1 means "not set"
 
+    /**
+     * Creates an instance without description.
+     */
 	public FCAElementImplementation(Object data) {
 		this(data,null);
 	}
 
-	public FCAElementImplementation(Object data, Element description) {
+    /**
+     * Creates an instance with a description.
+     */
+	public FCAElementImplementation(Object data, Object description) {
 		this.data = data;
 		this.description = description;
 	}
@@ -27,7 +38,7 @@ public class FCAElementImplementation implements WritableFCAElement, Comparable 
 		return this.data;
 	}
 
-	public Element getDescription() {
+	public Object getDescription() {
 		return this.description;
 	}
 
@@ -39,12 +50,7 @@ public class FCAElementImplementation implements WritableFCAElement, Comparable 
 		this.data = data;
 	}
 
-	/**
-	 * @todo in ConceptualSchema.setDescription(Element) we clone the parameter,
-	 * here we don't --> check why
-	 * @todo notify schema that something has changed
-	 */
-	public void setDescription(Element description) {
+	public void setDescription(Object description) {
 		this.description = description;
 	}
 	
@@ -56,6 +62,12 @@ public class FCAElementImplementation implements WritableFCAElement, Comparable 
         this.contextPosition = contextPosition;
     }
     
+    /**
+     * Implements identity as required by FCAElement.
+     * 
+     * Returns true iff the other object is an FCAElementImplementation whose data 
+     * is equal to the data stored in this object.
+     */
 	public boolean equals(Object other) {
         if(other == null) {
             return false;
@@ -67,6 +79,9 @@ public class FCAElementImplementation implements WritableFCAElement, Comparable 
 		return this.data.equals(otherImp.data);
 	}
 	
+    /**
+     * Implements a hashcode matching equals().
+     */
 	public int hashCode() {
 		return this.data.hashCode();
 	}

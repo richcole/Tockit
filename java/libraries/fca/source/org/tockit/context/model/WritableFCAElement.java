@@ -7,10 +7,33 @@
  */	
 package org.tockit.context.model;
 
-import org.jdom.Element;
-
+/**
+ * This interface is a writable version of FCAElement.
+ */
 public interface WritableFCAElement extends FCAElement {
+    /**
+     * Changes the data stored in this FCAElement.
+     * 
+     * Note that this most likely changes the identity of the object.
+     * 
+     * @param data The new data, must not be null.
+     */
 	void setData(Object data);
-    void setDescription(Element description);
+    
+    /**
+     * Sets a description for the FCAElement.
+     * 
+     * @param description The new description, can be null.
+     */
+    void setDescription(Object description);
+    
+    /**
+     * Sets an index within a context.
+     * 
+     * This method can be used to add an order to the FCAElements in a context.
+     * 
+     * @param contextPosition The position of the object or attribute in the context or
+     *                        -1 if there is no such order.
+     */
     void setContextPosition(int contextPosition);
 }
