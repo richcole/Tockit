@@ -9,6 +9,7 @@ package org.tockit.conscript.parser.sectionparsers;
 
 import java.io.IOException;
 
+import org.tockit.conscript.model.ConceptualFile;
 import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
@@ -33,7 +34,7 @@ public abstract class CSCFileSectionParser {
 
 	abstract public String getStartToken();
 	
-	abstract public Object parse(CSCTokenizer tokenizer) throws IOException, DataFormatException;
+	abstract public void parse(CSCTokenizer tokenizer, ConceptualFile targetFile) throws IOException, DataFormatException;
 	
 	protected void consumeToken(CSCTokenizer tokenizer, String token) throws IOException, DataFormatException{
 		if(!tokenizer.getCurrentToken().equals(token)) {

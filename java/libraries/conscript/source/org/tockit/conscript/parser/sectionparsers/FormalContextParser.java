@@ -12,25 +12,25 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.tockit.conscript.parser.CSCParser;
+import org.tockit.conscript.model.ConceptualFile;
 import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
 class FormalContextParser extends CSCFileSectionParser {
-	public Object parse(CSCTokenizer tokenizer)
+	public void parse(CSCTokenizer tokenizer, ConceptualFile targetFile)
 		throws IOException, DataFormatException {
 		List objects = new ArrayList();
 		List attributes = new ArrayList();
 		String contextTitle = tokenizer.getCurrentToken();
-		CSCParser.sectionIdMap.put(contextTitle, contextTitle);
+//		CSCParser.sectionIdMap.put(contextTitle, contextTitle);
 
 		while (!tokenizer.getCurrentToken().equals("OBJECTS")) {
 			// ignore everything before the objects
 			if (tokenizer.getCurrentToken().equals("TITLE")) {
 				tokenizer.advance();
-				CSCParser.sectionIdMap.put(
-					tokenizer.getCurrentToken(),
-					contextTitle);
+//				CSCParser.sectionIdMap.put(
+//					tokenizer.getCurrentToken(),
+//					contextTitle);
 				contextTitle = tokenizer.getCurrentToken();
 			}
 			tokenizer.advance();
@@ -91,8 +91,6 @@ class FormalContextParser extends CSCFileSectionParser {
 		}
 
 		consumeToken(tokenizer, ";");
-
-		return null;
 	}
 
 	public String getStartToken() {

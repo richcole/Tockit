@@ -10,7 +10,7 @@ package org.tockit.conscript.parser.sectionparsers;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 
-import org.tockit.conscript.parser.CSCParser;
+import org.tockit.conscript.model.ConceptualFile;
 import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
@@ -19,7 +19,7 @@ class LineDiagramParser extends CSCFileSectionParser {
 		return "LINE_DIAGRAM";
 	}
 
-	public Object parse(CSCTokenizer tokenizer)
+	public void parse(CSCTokenizer tokenizer, ConceptualFile targetFile)
 		throws IOException, DataFormatException {
 		//        	SimpleLineDiagram diagram = new SimpleLineDiagram();
 
@@ -37,7 +37,7 @@ class LineDiagramParser extends CSCFileSectionParser {
 			}
 		}
 		//        	diagram.setTitle(identifier);
-		CSCParser.sectionIdMap.put(identifier, identifier);
+//		CSCParser.sectionIdMap.put(identifier, identifier);
 
 		while (!tokenizer.getCurrentToken().equals("POINTS")) {
 			// we ignore remark, special list and unitlength
@@ -144,15 +144,8 @@ class LineDiagramParser extends CSCFileSectionParser {
 			tokenizer.advance();
 		}
 		consumeToken(tokenizer, ";");
-
-		//            for (Iterator iter = diagram.getNodes(); iter.hasNext();) {
-		//                DiagramNode node = (DiagramNode) iter.next();
-		//                ConceptImplementation concept = (ConceptImplementation) node.getConcept();
-		//                concept.buildClosures();
-		//            }
-
-		return null;
 	}
+
 	private String[] extractFormattingStringSegment(String formattingString) {
 		if (formattingString.length() == 0) {
 			return new String[] { null, "" };
@@ -178,6 +171,7 @@ class LineDiagramParser extends CSCFileSectionParser {
 		}
 		return new String[] { segment, rest };
 	}
+
 	private Object parseLabelInfo(String formattingString) {
 		//        	LabelInfo retVal = new LabelInfo();
 		String[] nextSplit = extractFormattingStringSegment(formattingString);

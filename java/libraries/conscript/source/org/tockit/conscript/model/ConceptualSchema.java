@@ -20,8 +20,13 @@ public class ConceptualSchema extends SchemaPart{
 	private String remark;
 	private Hashtable specials;
 	
+	public ConceptualSchema(URL file, String identifier) {
+		this.file = file;
+		this.identifier = identifier;
+	}
+
 	public ConceptualSchema(URL file, String identifier, FormattedString title, 
-							 String remark, Hashtable specials,DatabaseDefinition database, ConcreteScale[] concreteScales) {
+							 String remark, Hashtable specials, DatabaseDefinition database, ConcreteScale[] concreteScales) {
 		this.file = file;
 		this.identifier = identifier;
 		this.title = title;
@@ -86,5 +91,4 @@ public class ConceptualSchema extends SchemaPart{
 	public void setTitle(FormattedString title) {
 		this.title = title;
 	}
-
 }

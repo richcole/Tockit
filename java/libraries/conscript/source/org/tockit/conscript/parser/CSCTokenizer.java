@@ -7,9 +7,9 @@
 package org.tockit.conscript.parser;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
+import java.util.logging.Level;
 
 public class CSCTokenizer {
     private BufferedReader inputReader;
@@ -17,13 +17,20 @@ public class CSCTokenizer {
     private int currentLine = 1;
     private boolean newLineStarted = true;
 
-	public CSCTokenizer(File file) throws IOException, DataFormatException {
-	    this.inputReader = new BufferedReader(new FileReader(file));
+	public CSCTokenizer(Reader in) throws IOException, DataFormatException {
+	    this.inputReader = new BufferedReader(in);
 	    advance();
 	}
 	
 	public String getCurrentToken() {
 		return this.currentToken;
+	}
+	
+	/**
+	 * Returns the current token as a string with all escape codes resolved.
+	 */
+	public String getCurrentString() {
+		return resolveEscapes(this.currentToken);
 	}
 	
 	public void advance() throws IOException, DataFormatException {
@@ -60,6 +67,7 @@ public class CSCTokenizer {
         if(character != '\"') {
             throw new DataFormatException("Open quote from line " + startLine + " not matched.");
         }
+        CSCParser.logger.log(Level.FINEST, "Tokenizer found string '" + this.currentToken + "'");
     }
 
     public void advanceTupel() throws IOException, DataFormatException {
@@ -74,6 +82,7 @@ public class CSCTokenizer {
         } else {
         	this.currentToken += ")";
         }
+		CSCParser.logger.log(Level.FINEST, "Tokenizer found tupel '" + this.currentToken + "'");
     }
 
 
@@ -83,6 +92,7 @@ public class CSCTokenizer {
             this.currentToken += (char) character;
             character = this.inputReader.read();
         }
+		CSCParser.logger.log(Level.FINEST, "Tokenizer found token '" + this.currentToken + "'");
     }
 
 	public boolean done() throws IOException {
@@ -96,4 +106,18 @@ public class CSCTokenizer {
     public boolean newLineHasStarted() {
     	return this.newLineStarted;
     }
+
+	private static String resolveEscapes(String input) {
+		String output = "";
+		for(int i = 0; i < input.length(); i++) {
+			char curChar = input.charAt(i);
+			if(curChar == '\\') {
+				i++;
+				output += input.charAt(i);
+			} else {
+				output += curChar;
+			}
+		}
+		return output;
+	}
 }
