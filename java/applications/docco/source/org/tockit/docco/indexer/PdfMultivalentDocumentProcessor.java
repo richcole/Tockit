@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.DateFormat;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -25,21 +24,37 @@ import multivalent.std.adaptor.pdf.PDFReader;
 
 
 public class PdfMultivalentDocumentProcessor implements DocumentProcessor {
-	private File file;
-	private Map infoMap;
 
-	public void readDocument(File file) throws IOException {
-		this.file = file;
-	}
-
-	public DocumentContent getDocumentContent() throws IOException, DocumentProcessingException {
+	public DocumentSummary parseDocument(File file) throws IOException, DocumentProcessingException {
 		try {
-			PDFReader reader = new PDFReader(this.file);
-			this.infoMap = reader.getInfo();
+			PDFReader reader = new PDFReader(file);
+			Map infoMap = reader.getInfo();
 			try {
 				URI uri = file.getCanonicalFile().toURI();	
+
 				String text = ExtractText.extract(uri, null, null, false);
-				return new DocumentContent(text);
+				
+				// @todo there maybe some other fields.
+				DocumentSummary docSummary = new DocumentSummary();
+				
+				docSummary.authors = getAuthors(infoMap);
+				docSummary.content = new DocumentContent(text);
+
+				if (infoMap.get("Title") != null) {
+					docSummary.title = infoMap.get("Title").toString();
+				}
+
+				if (infoMap.get("ModDate") != null) {
+					String modDateStr = infoMap.get("ModDate").toString();
+					DateFormat df = DateFormat.getDateInstance();
+					try {
+						docSummary.modificationDate = df.parse(modDateStr);
+					}
+					catch (java.text.ParseException e) {
+					}
+				}
+				
+				return docSummary;
 			}
 			catch (URISyntaxException e) {
 				throw new DocumentProcessingException(e);
@@ -53,41 +68,12 @@ public class PdfMultivalentDocumentProcessor implements DocumentProcessor {
 		}
 	}
 
-	public List getAuthors() {
-		if (this.infoMap.get("Author") != null) {
+	private List getAuthors(Map infoMap) {
+		if (infoMap.get("Author") != null) {
 			List authors = new LinkedList();
-			authors.add(this.infoMap.get("Author").toString());
+			authors.add(infoMap.get("Author").toString());
 			return authors;
 		}
 		return null;
 	}
-
-	public String getTitle() {
-		if (this.infoMap.get("Title") != null) {
-			return this.infoMap.get("Title").toString();
-		}
-		return null;
-	}
-
-	public String getSummary() {
-		return null;
-	}
-
-	public Date getModificationDate() {
-		if (this.infoMap.get("ModDate") != null) {
-			String modDateStr = this.infoMap.get("ModDate").toString();
-			DateFormat df = DateFormat.getDateInstance();
-			try {
-				return df.parse(modDateStr);
-			}
-			catch (java.text.ParseException e) {
-			}
-		}
-		return null;
-	}
-
-	public String getKeywords() {
-		return null;
-	}
-
 }

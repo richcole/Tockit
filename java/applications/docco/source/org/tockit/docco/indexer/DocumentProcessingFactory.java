@@ -8,14 +8,18 @@
 package org.tockit.docco.indexer;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.tockit.docco.GlobalConstants;
+import org.tockit.docco.indexer.filefilter.*;
+import org.tockit.docco.indexer.filefilter.FileExtensionExtractor;
 
 /**
  * @todo search for something doing file magic (as in the GNU "file" command). That would be
@@ -31,8 +35,8 @@ public class DocumentProcessingFactory {
 	 */
 	private Hashtable docRegistry = new Hashtable();
 
-	public void registerExtension (String fileExtension, Class docProcessorClass) {
-		this.docRegistry.put(fileExtension, docProcessorClass);
+	public void registerExtension (FileFilter fileFilter, Class docProcessorClass) {
+		this.docRegistry.put(fileFilter, docProcessorClass);
 	}
 
 	public Document processDocument(File file) throws DocumentProcessingException, 
@@ -41,20 +45,26 @@ public class DocumentProcessingFactory {
 													InstantiationException, 
 													IllegalAccessException, 
 													IOException {
-		String fileExtension = getFileExtension(file);
 		
-		Class docProcessorClass = (Class) this.docRegistry.get(fileExtension);
+		Class docProcessorClass = null;
+		Enumeration enum = this.docRegistry.keys();
+		while (enum.hasMoreElements()) {
+			FileFilter curFileFilter = (FileFilter) enum.nextElement();
+			if (curFileFilter.accept(file)) {
+				docProcessorClass = (Class) this.docRegistry.get(curFileFilter);
+			}
+		}
 
 		if (docProcessorClass != null) {
 
 			DocumentProcessor docProcessor = (DocumentProcessor) docProcessorClass.newInstance();
-			docProcessor.readDocument(file);
+			DocumentSummary docSummary = docProcessor.parseDocument(file);
 			
 			/// @todo check what else we can get from the JDK side. Every feature we can get from the File API should be
 			/// worthwhile keeping
 			Document doc = new Document(); 
 			
-			DocumentContent docContent = docProcessor.getDocumentContent();
+			DocumentContent docContent = docSummary.content;
 			if (docContent != null) {
 				if (docContent.getReader() != null) {
 					doc.add(Field.Text(GlobalConstants.FIELD_QUERY_BODY, docContent.getReader()));
@@ -64,31 +74,31 @@ public class DocumentProcessingFactory {
 				}
 			}
 			
-			if (docProcessor.getAuthors() != null) {
-				Iterator it = docProcessor.getAuthors().iterator();
+			if (docSummary.authors != null) {
+				Iterator it = docSummary.authors.iterator();
 				while (it.hasNext()) {
 					String author = (String) it.next();
 					doc.add(Field.Text(GlobalConstants.FIELD_DOC_AUTHOR, author));
 				}
 			}
 			
-			if (docProcessor.getTitle() != null) {
-				doc.add(Field.Text(GlobalConstants.FIELD_DOC_TITLE, docProcessor.getTitle()));					
+			if (docSummary.title != null) {
+				doc.add(Field.Text(GlobalConstants.FIELD_DOC_TITLE, docSummary.title));					
 			}
 			
-			if (docProcessor.getSummary() != null) {
-				doc.add(Field.Text(GlobalConstants.FIELD_DOC_SUMMARY, docProcessor.getSummary()));
+			if (docSummary.summary != null) {
+				doc.add(Field.Text(GlobalConstants.FIELD_DOC_SUMMARY, docSummary.summary));
 			}
 		
-			if (docProcessor.getModificationDate() != null) {
+			if (docSummary.modificationDate != null) {
 				try {
-					doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_MODIFICATION_DATE, docProcessor.getModificationDate()));
+					doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_MODIFICATION_DATE, docSummary.modificationDate));
 				}
 				catch (RuntimeException e) {
 					/// @todo another nasty hack
 					if (e.getMessage().startsWith("time too early")) {
 						System.err.println("Caught exception \"time too early\" for time " + 
-												docProcessor.getModificationDate().toString() + 
+												docSummary.modificationDate.toString() + 
 												", in document " + file.getAbsolutePath());
 					}
 					else {
@@ -97,15 +107,18 @@ public class DocumentProcessingFactory {
 				}
 			}
 			
-			if (docProcessor.getKeywords() != null) {
-				doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_KEYWORDS, docProcessor.getKeywords()));
+			if (docSummary.keywords != null) {
+				doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_KEYWORDS, docSummary.keywords));
 			}
 
 			doc.add(Field.Text(GlobalConstants.FIELD_DOC_PATH, file.getPath()));
 			doc.add(Field.Text(GlobalConstants.FIELD_DOC_PATH_WORDS, file.getParent().replace(File.separatorChar, ' ')));
-			doc.add(Field.Text(GlobalConstants.FIELD_DOC_EXTENSION,fileExtension));
-			String fileNameWithoutExtension = file.getName().substring(0,file.getName().length() - fileExtension.length() - 1);
-			doc.add(Field.Text(GlobalConstants.FIELD_DOC_NAME,fileNameWithoutExtension));
+			String fileExtension = FileExtensionExtractor.getExtension(file);
+			if (fileExtension != null) {
+				doc.add(Field.Text(GlobalConstants.FIELD_DOC_EXTENSION, fileExtension));
+				String fileNameWithoutExtension = file.getName().substring(0,file.getName().length() - fileExtension.length() - 1);
+				doc.add(Field.Text(GlobalConstants.FIELD_DOC_NAME,fileNameWithoutExtension));
+			}
 			if (doc.get(GlobalConstants.FIELD_DOC_MODIFICATION_DATE) == null) {
 				doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_MODIFICATION_DATE,new Date(file.lastModified())));
 			}
@@ -117,19 +130,8 @@ public class DocumentProcessingFactory {
 			/// @todo shall we add all files at least as files?
 			throw new UnknownFileExtensionException(
 								"Don't know how to process document with extension " 
-								+ fileExtension +
+								+ FileExtensionExtractor.getExtension(file) +
 								" ( file: " + file.getPath() + ")");
-		}
-	}
-	
-	private String getFileExtension (File file) throws NotFoundFileExtensionException {
-		String fileName = file.getName();
-		int index = fileName.lastIndexOf(".") + 1;
-		if (index > 0) {
-			return fileName.substring(index, fileName.length()).toLowerCase();
-		}
-		else {
-			throw new NotFoundFileExtensionException("Couldn't extract file extention for file " + file.getPath());
 		}
 	}
 	

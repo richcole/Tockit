@@ -23,13 +23,13 @@ import org.pdfbox.pdmodel.PDDocumentInformation;
 import org.pdfbox.util.PDFTextStripper;
 
 public class PdfDocumentProcessor implements DocumentProcessor {
+	
 	private File file;
-	private PDDocumentInformation info;
-	private PDFParser pdfParser;
 
-	public void readDocument(File file) throws IOException {
+	public DocumentSummary parseDocument(File file) throws IOException, DocumentProcessingException {
 		this.file = file;
-		this.pdfParser = new PDFParser(new FileInputStream (file));
+		
+		PDFParser pdfParser = new PDFParser(new FileInputStream (file));
 		pdfParser.parse();
 		PDDocument pdfDoc = pdfParser.getPDDocument();
 		if (pdfDoc.isEncrypted()) {
@@ -37,13 +37,24 @@ public class PdfDocumentProcessor implements DocumentProcessor {
 			throw new IOException("Couldn't read document " + file.getPath() 
 							+ " because it is encrypted");
 		}
-		this.info = pdfDoc.getDocumentInformation();
+		PDDocumentInformation info = pdfDoc.getDocumentInformation();
+		
+		DocumentSummary docSummary =  new DocumentSummary();
+		
+		docSummary.authors = getAuthors(info);
+		docSummary.content = getDocumentContent(pdfParser);
+		docSummary.creationDate = getDate(info.getCreationDate());
+		docSummary.keywords = info.getKeywords();
+		docSummary.modificationDate = getDate(info.getModificationDate());
+		docSummary.title = info.getTitle();
+		
+		return docSummary;
 	}
 
-	public DocumentContent getDocumentContent() throws IOException {
+	private DocumentContent getDocumentContent(PDFParser pdfParser) throws IOException {
 		PDFTextStripper pdfToText = new PDFTextStripper();
 		StringWriter writer = new StringWriter();
-		COSDocument cosDoc = this.pdfParser.getDocument();
+		COSDocument cosDoc = pdfParser.getDocument();
 		try {
 			pdfToText.writeText(cosDoc, writer);
 			return new DocumentContent(writer.toString());
@@ -54,35 +65,21 @@ public class PdfDocumentProcessor implements DocumentProcessor {
 		return null;
 	}
 
-	public List getAuthors() {
+	private List getAuthors(PDDocumentInformation info) {
 		List res = new LinkedList();
-		if (this.info.getAuthor() != null) {
-			res.add(this.info.getAuthor());
+		if (info.getAuthor() != null) {
+			res.add(info.getAuthor());
 		}
-		if (this.info.getCreator() != null) {
-			res.add(this.info.getCreator());
+		if (info.getCreator() != null) {
+			res.add(info.getCreator());
 		}
 		return res;
 	}
 
-	public String getTitle() {
-		return this.info.getTitle();
-	}
-
-	public String getSummary() {
-		return null;
-	}
-
-	public Date getModificationDate() {
-		Calendar cal = this.info.getModificationDate();
+	public Date getDate(Calendar cal) {
 		if (cal != null) {
 			return cal.getTime();
 		}
 		return null;
 	}
-
-	public String getKeywords() {
-		return this.info.getKeywords();
-	}
-
 }

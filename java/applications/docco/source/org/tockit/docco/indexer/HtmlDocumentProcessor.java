@@ -23,9 +23,6 @@ import javax.swing.text.html.*;
 import javax.swing.text.html.parser.ParserDelegator;
 
 public class HtmlDocumentProcessor implements DocumentProcessor {
-	private File file;
-	private Reader reader;
-	private CallbackHandler handler;
 
 	/**
 	 * java sun example on parsing html can be found here:
@@ -38,7 +35,7 @@ public class HtmlDocumentProcessor implements DocumentProcessor {
 		StringBuffer docTextContent = new StringBuffer();
 		String metaDescription = "";
 		String metaSummary = "";
-		String metaAuthor = "";
+		List metaAuthors = new LinkedList();
 		String metaKeywords = "";
 		Date metaDate;
 		String title = "";
@@ -78,16 +75,7 @@ public class HtmlDocumentProcessor implements DocumentProcessor {
 					return;
 				}
 				if (name.equalsIgnoreCase("author")) {
-					// @todo handle metatags better when we have multiple
-					// entries for the same tag (for instance: author). At the
-					// moment we are just appending them together - could be nasty if
-					// we want to do something meaninfull with them
-					if (metaAuthor.length() > 0) {
-						metaAuthor += ", " + content;
-					}
-					else {
-						metaAuthor = content;
-					}
+					metaAuthors.add(content);
 					return;
 				}
 				if (name.equalsIgnoreCase("keywords")) {
@@ -106,31 +94,27 @@ public class HtmlDocumentProcessor implements DocumentProcessor {
 		}
 		
 	}
+	
+	public DocumentSummary parseDocument(File file) throws IOException, DocumentProcessingException {
+		Reader reader = new FileReader(file);		
 
-	public void readDocument(File file) throws IOException {
-		this.file = file;
-		this.reader = new FileReader(file);		
-
-		BufferedReader br = new BufferedReader(this.reader);
-		this.handler = new CallbackHandler();
+		BufferedReader br = new BufferedReader(reader);
+		CallbackHandler handler = new CallbackHandler();
 		new ParserDelegator().parse(br, handler, true);
-	}
-	
-	public DocumentContent getDocumentContent()  {
-		return new DocumentContent(handler.docTextContent.toString());
+		
+		DocumentSummary docSummary = new DocumentSummary();
+		
+		docSummary.authors = handler.metaAuthors;
+		docSummary.content =  new DocumentContent(handler.docTextContent.toString());
+		docSummary.keywords = handler.metaKeywords;
+		docSummary.modificationDate = handler.metaDate;
+		docSummary.summary = getSummary(handler);
+		docSummary.title = handler.title;
+		
+		return docSummary;
 	}
 
-	public List getAuthors() {
-		List res = new LinkedList();
-		res.add(handler.metaAuthor);
-		return res;
-	}
-
-	public String getTitle() {
-		return handler.title;
-	}
-	
-	public String getSummary() {
+	private String getSummary(CallbackHandler handler) {
 		String summary = "";
 		if (handler.metaDescription.length() > 0 ) {
 			summary = handler.metaDescription;
@@ -140,12 +124,5 @@ public class HtmlDocumentProcessor implements DocumentProcessor {
 		}
 		return summary;
 	}
-	
-	public Date getModificationDate () {
-		return handler.metaDate;
-	}
-	
-	public String getKeywords () {
-		return handler.metaKeywords;
-	}
+
 }

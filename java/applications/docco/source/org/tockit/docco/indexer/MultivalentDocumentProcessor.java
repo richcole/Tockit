@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -61,24 +60,15 @@ import multivalent.node.LeafText;
  * PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
  */
 public class MultivalentDocumentProcessor implements DocumentProcessor {
-	private URI uri;
 	
-	private List authors;
-	private String title;
-	private String summary;
-	private Date modDate;
-	private String keywords;
-
-	public void readDocument(File file) throws IOException {
-		this.uri = file.getCanonicalFile().toURI();	
-	}
-
-	public DocumentContent getDocumentContent() throws IOException, DocumentProcessingException {
+	public DocumentSummary parseDocument(File file) throws IOException, DocumentProcessingException {
+		URI uri = file.getCanonicalFile().toURI();	
+		
+		DocumentSummary result = new DocumentSummary();
+		
 		// @todo make use of mime types...? 
 		String mimeType = null;
 		
-		StringBuffer stringBuffer = new StringBuffer(20 * 1000);
-
 		Document doc = new Document("top", null, null);
 		Cache cache = Multivalent.getInstance().getCache();
 		String genre = cache.getGenre(mimeType, uri.toString(), null);
@@ -97,56 +87,52 @@ public class MultivalentDocumentProcessor implements DocumentProcessor {
 			mediaAdapter.parse(doc);
 
 			if (doc.getAttr("author") != null) {
-				this.authors = new LinkedList();
-				this.authors.add(doc.getAttr("author"));
+				List authors = new LinkedList();
+				authors.add(doc.getAttr("author"));
+				result.authors = authors;
 			}
 			
 			if (doc.getAttr("title") != null) {
-				this.title = doc.getAttr("title");
+				result.title = doc.getAttr("title");
 			}
 
 			if (doc.getAttr("summary") != null) {
-				this.summary = doc.getAttr("summary");
+				result.summary = doc.getAttr("summary");
 			}
-			
-			int page = Math.max(1, Integers.parseInt(doc.getAttr(Document.ATTR_PAGE), -1)), pagecnt = Integers.parseInt(doc.getAttr(Document.ATTR_PAGECOUNT), -1);
-			if (pagecnt<=0) {   // single long scroll
-				extractBody(doc, stringBuffer);
-	
-			} else for (int i=page,imax=page+pagecnt; i<imax; i++) {    // multipage
-				doc.clear();
-				doc.putAttr(Document.ATTR_PAGE, Integer.toString(i));
-				doc.putAttr(Document.ATTR_PAGECOUNT, Integer.toString(pagecnt));    // zapped by doc.clear()
-				mediaAdapter.parse(doc);
-				extractBody(doc, stringBuffer);
+
+			if (doc.getAttr("keywords") != null) {
+				result.summary = doc.getAttr("keywords");
 			}
-	
+
+			result.content = getDocumentContent(doc, mediaAdapter);
+
 			mediaAdapter.closeInputStream();
-			return new DocumentContent(stringBuffer.toString());
+			
+			return result;
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new DocumentProcessingException(e);
 		}
 	}
 
-	public List getAuthors() {
-		return this.authors;
-	}
 
-	public String getTitle() {
-		return this.title;
-	}
 
-	public String getSummary() {
-		return this.summary;
-	}
-
-	public Date getModificationDate() {
-		return this.modDate;
-	}
-
-	public String getKeywords() {
-		return this.keywords;
+	private DocumentContent getDocumentContent(Document doc, MediaAdaptor mediaAdapter)
+										throws Exception, IOException {
+		StringBuffer stringBuffer = new StringBuffer(20 * 1000);
+		
+		int page = Math.max(1, Integers.parseInt(doc.getAttr(Document.ATTR_PAGE), -1)), pagecnt = Integers.parseInt(doc.getAttr(Document.ATTR_PAGECOUNT), -1);
+		if (pagecnt<=0) {   // single long scroll
+			extractBody(doc, stringBuffer);
+		
+		} else for (int i=page,imax=page+pagecnt; i<imax; i++) {    // multipage
+			doc.clear();
+			doc.putAttr(Document.ATTR_PAGE, Integer.toString(i));
+			doc.putAttr(Document.ATTR_PAGECOUNT, Integer.toString(pagecnt));    // zapped by doc.clear()
+			mediaAdapter.parse(doc);
+			extractBody(doc, stringBuffer);
+		}
+		return new DocumentContent(stringBuffer.toString());
 	}
 	
 	private void extractBody(Node n, StringBuffer sb) {
@@ -172,6 +158,7 @@ public class MultivalentDocumentProcessor implements DocumentProcessor {
 
 	  if (n.breakAfter() || n instanceof FixedI) sb.append("\n");
 	}
+
 	
 
 }

@@ -11,8 +11,11 @@ package org.tockit.docco.indexer;
 import org.apache.lucene.index.IndexWriter;
 import org.tockit.docco.ConfigurationManager;
 import org.tockit.docco.GlobalConstants;
+import org.tockit.docco.indexer.filefilter.*;
+import org.tockit.docco.indexer.filefilter.ExtensionFileFilter;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -55,7 +58,8 @@ public class Indexer extends Thread {
 				String extension = mapping.substring(0,colonIndex);
 				String className = mapping.substring(colonIndex + 1);
 				try {
-					this.docProcessingFactory.registerExtension(extension,Class.forName(className));
+					FileFilter fileFilter = new ExtensionFileFilter(extension);
+					this.docProcessingFactory.registerExtension(fileFilter,Class.forName(className));
 				} catch(ClassCastException e) {
 					System.err.println("WARNING: class " + className + " could not be loaded due to this error:");
 					e.printStackTrace();

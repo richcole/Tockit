@@ -11,42 +11,14 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Date;
-import java.util.List;
-
 
 public class PlainTextDocumentProcessor implements DocumentProcessor {
-	
-	private File file;
-	private Reader reader;
-	
-	public void readDocument(File file) throws IOException {
-		this.file = file;
-		this.reader = new FileReader(file);		
-	}
 
-	public DocumentContent getDocumentContent() {
-		return new DocumentContent(reader);
-	}
-
-	public List getAuthors() {
-		return null;
-	}
-
-	public String getTitle() {
-		return null;
-	}
-
-	public String getSummary() {
-		return null;
-	}
-
-	public Date getModificationDate() {
-		return null;
-	}
-
-	public String getKeywords() {
-		return null;
+	public DocumentSummary parseDocument(File file) throws IOException, DocumentProcessingException {
+		Reader reader = new FileReader(file);
+		DocumentSummary docSummary = new DocumentSummary();
+		docSummary.content = new DocumentContent(reader);
+		return docSummary;
 	}
 
 

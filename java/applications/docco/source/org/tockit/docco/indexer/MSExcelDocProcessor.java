@@ -10,9 +10,7 @@ package org.tockit.docco.indexer;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
 
 import org.apache.poi.hssf.record.RecordFormatException;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -22,20 +20,22 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 
 public class MSExcelDocProcessor implements DocumentProcessor {
-	private File file;
-	private HSSFWorkbook workbook;
-	
-	public void readDocument(File file) throws IOException, DocumentProcessingException {
-		this.file = file;
+
+	public DocumentSummary parseDocument(File file) throws IOException, DocumentProcessingException {
 		try {
-			this.workbook = new HSSFWorkbook(new FileInputStream(file));		
+			HSSFWorkbook workbook = new HSSFWorkbook(new FileInputStream(file));	
+			
+			DocumentSummary docSummary = new DocumentSummary();
+			docSummary.content = getDocumentContent(workbook);
+			
+			return docSummary;	
 		}
 		catch (RecordFormatException e) {
 			throw new DocumentProcessingException(e);
-		}
+		}		
 	}
 
-	public DocumentContent getDocumentContent() throws IOException {
+	private DocumentContent getDocumentContent(HSSFWorkbook workbook) throws IOException {
 		StringBuffer content = new StringBuffer();
 		int numOfSheets = workbook.getNumberOfSheets();
 		for (int i = 0; i < numOfSheets; i++) {
@@ -74,26 +74,6 @@ public class MSExcelDocProcessor implements DocumentProcessor {
 			}
 		}
 		return new DocumentContent(content.toString());
-	}
-
-	public List getAuthors() {
-		return null;
-	}
-
-	public String getTitle() {
-		return null;
-	}
-
-	public String getSummary() {
-		return null;
-	}
-
-	public Date getModificationDate() {
-		return null;
-	}
-
-	public String getKeywords() {
-		return null;
 	}
 
 }

@@ -12,7 +12,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -24,33 +23,24 @@ import org.apache.poi.poifs.eventfilesystem.POIFSReaderEvent;
 import org.apache.poi.poifs.eventfilesystem.POIFSReaderListener;
 
 public class MSWordProcessor implements DocumentProcessor {
-	private File file;
-	private SummaryInformation info;
 	
 	private class DocSummaryPOIFSReaderListener implements POIFSReaderListener {
-		
 		private SummaryInformation summary = null;
-		
 		public void processPOIFSReaderEvent(POIFSReaderEvent event) {
 			try {
 				summary = (SummaryInformation) PropertySetFactory.create(event.getStream());
-			}
-			catch (Exception ex) {
+			} catch (Exception ex) {
 				throw new RuntimeException
-					("Property set stream \"" + event.getPath() +
+						("Property set stream \"" + event.getPath() +
 						event.getName() + "\": " + ex);
 			}
-	
 		}
-		
 		public SummaryInformation getSummary() {
 			return summary;
 		}
 	}
 
-	public void readDocument(File file) throws IOException, DocumentProcessingException {
-		this.file = file;
-
+	public DocumentSummary parseDocument(File file) throws IOException, DocumentProcessingException {
 		try {		
 			POIFSReader poiReader = new POIFSReader();
 			DocSummaryPOIFSReaderListener summaryListener = new DocSummaryPOIFSReaderListener();
@@ -58,23 +48,30 @@ public class MSWordProcessor implements DocumentProcessor {
 			poiReader.read(new FileInputStream(file));	
 	
 			/// @todo there is more fields that we may want to use
-			this.info = summaryListener.getSummary();
+			SummaryInformation info = summaryListener.getSummary();
+			
+			DocumentSummary docSummary = new DocumentSummary();
+			docSummary.authors = getAuthors(info);
+			docSummary.content = getDocumentContent(file);
+			docSummary.creationDate = info.getCreateDateTime();
+			docSummary.keywords = info.getKeywords();
+			docSummary.modificationDate = info.getEditTime();
+			docSummary.title = info.getTitle();
+			
+			return docSummary;
 		}
 		catch (IOException e) {
 			if (e.getMessage().startsWith("Unable to read entire header")) {
 				throw new DocumentProcessingException(e);
-			}
-			else {
+			} else {
 				throw e;
 			}
 		}
-		
-		
 	}
-
-	public DocumentContent getDocumentContent() throws IOException, DocumentProcessingException {
+	
+	private DocumentContent getDocumentContent(File file) throws IOException, DocumentProcessingException {
 		try {
-			WordDocument wordDoc = new WordDocument(this.file.getAbsolutePath());
+			WordDocument wordDoc = new WordDocument(file.getAbsolutePath());
 			Writer docTextWriter = new StringWriter();
 			wordDoc.writeAllText(docTextWriter);
 			return new DocumentContent(docTextWriter.toString());
@@ -97,7 +94,7 @@ public class MSWordProcessor implements DocumentProcessor {
 		}
 	}
 
-	public List getAuthors() {
+	private List getAuthors(SummaryInformation info) {
 		if (info.getAuthor() != null) {
 			List res = new LinkedList();
 			res.add(info.getAuthor());
@@ -105,22 +102,5 @@ public class MSWordProcessor implements DocumentProcessor {
 		}
 		return null;
 	}
-
-	public String getTitle() {
-		return this.info.getTitle();
-	}
-
-	public String getSummary() {
-		return null;
-	}
-
-	public Date getModificationDate() {
-		return info.getEditTime();
-	}
-
-	public String getKeywords() {
-		return info.getKeywords();
-	}
-	
 
 }
