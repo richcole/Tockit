@@ -1066,10 +1066,6 @@ public class DoccoMainFrame extends JFrame {
             this.searchButton.setEnabled(false);
             return;
         }
-        if(queryString.equals(this.queryField.getSelectedItem())) {
-            this.searchButton.setEnabled(false);
-            return;
-        }
         this.searchButton.setEnabled(true);
 	}
 	
