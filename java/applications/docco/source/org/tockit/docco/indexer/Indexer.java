@@ -105,7 +105,10 @@ public class Indexer {
 			// but then there is no point in indexing it, so it is not really a problem.
 		}
 		catch (IOException e) {
-			errorExit(e);
+			// sometimes shit happens. E.g. the PDF header might be screwed. Some other things
+			// might be broken. We don't want to stop indexing whenever one document fails to be
+			// read properly, so we just ignore it for now. Of course we should consider
+			// @todo some error handling/reporting
 		}
 	}
 
