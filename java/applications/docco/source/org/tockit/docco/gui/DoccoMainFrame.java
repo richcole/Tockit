@@ -403,6 +403,15 @@ public class DoccoMainFrame extends JFrame {
 		});
 		fileMenu.add(newIndexItem);
 
+		JMenuItem updateIndexItem = new JMenuItem("Update Index");
+		updateIndexItem.setMnemonic('u');
+		updateIndexItem.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				updateIndex();
+			}
+		});
+		fileMenu.add(updateIndexItem);
+
 		JMenuItem exitItem = new JMenuItem("Exit");
 		exitItem.setMnemonic('x');
 		exitItem.addActionListener(new ActionListener(){
@@ -437,9 +446,7 @@ public class DoccoMainFrame extends JFrame {
         }
 
 		JFileChooser fileDialog;
-		String lastIndexedDir = ConfigurationManager.fetchString(CONFIGURATION_SECTION_NAME,
-									CONFIGURATION_LAST_INDEX_DIR,
-									null);
+		String lastIndexedDir = getIndexLocation();
 		if (lastIndexedDir != null) {
 			fileDialog = new JFileChooser(lastIndexedDir);
 		}
@@ -453,23 +460,37 @@ public class DoccoMainFrame extends JFrame {
 			return;
 		}
 		/// @todo add some better feedback here
-		final String dirToIndex = fileDialog.getSelectedFile().getAbsolutePath();
-		final String indexTo = new String(indexLocation); 
-		Runnable indexRunner = new Runnable() {
-            public void run() {
-				new Indexer(dirToIndex, indexTo);
-            }
-        };
-        Thread indexThread = new Thread(indexRunner, "indexer");
-        indexThread.start();
 		ConfigurationManager.storeString(CONFIGURATION_SECTION_NAME, CONFIGURATION_LAST_INDEX_DIR,
-									dirToIndex);
+									fileDialog.getSelectedFile().getAbsolutePath());
+		updateIndex();
 		
 
 		createQueryEngine();
     }
 
-	private void createQueryEngine() {
+    private void updateIndex() {
+		final String dirToIndex = new String(getIndexLocation());
+		if(dirToIndex == null) {
+			createNewIndex();
+			return;
+		}
+        final String indexTo = new String(indexLocation); 
+        Runnable indexRunner = new Runnable() {
+            public void run() {
+        		new Indexer(dirToIndex, indexTo);
+            }
+        };
+        Thread indexThread = new Thread(indexRunner, "indexer");
+        indexThread.start();
+    }
+
+	private String getIndexLocation() {
+		return ConfigurationManager.fetchString(CONFIGURATION_SECTION_NAME,
+											CONFIGURATION_LAST_INDEX_DIR,
+											null);
+	}
+
+    private void createQueryEngine() {
 		try {
 			QueryDecomposer queryDecomposer = new QueryDecomposer(
 													GlobalConstants.FIELD_QUERY_BODY, 
