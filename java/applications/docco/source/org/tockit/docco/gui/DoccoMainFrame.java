@@ -320,7 +320,7 @@ public class DoccoMainFrame extends JFrame {
 		} else {
 			iterator = this.selectedConcept.getExtentIterator();
 		}
-		int i = 0;
+
 		while (iterator.hasNext()) {
 			HitReference reference = (HitReference) iterator.next();
 			String path = reference.getDocument().get(GlobalConstants.FIELD_DOC_PATH);
@@ -346,22 +346,32 @@ public class DoccoMainFrame extends JFrame {
 			}
 		}
 		
-		flattenResults(rootNode);
+		// flatten all children of the root node, make copy to avoid concurrent modification troubles
+		DefaultMutableTreeNode[] children = new DefaultMutableTreeNode[rootNode.getChildCount()];
+		int count = 0;
+		Enumeration childrenEnum = rootNode.children();
+		while (childrenEnum.hasMoreElements()) {
+			children[count++] = (DefaultMutableTreeNode) childrenEnum.nextElement();
+		}
+		for (int i = 0; i < children.length; i++) {
+			DefaultMutableTreeNode child = children[i];
+			flattenResults(child);
+		}
 			
 		this.hitList.setModel(new DefaultTreeModel(rootNode));
 	}
 
 	private void flattenResults(DefaultMutableTreeNode treeNode) {
-		Enumeration children;
+		Enumeration childrenEnum;
 		boolean done; 
 		do {
-			children = treeNode.children();
-			if(!children.hasMoreElements()) { // leaf
+			childrenEnum = treeNode.children();
+			if(!childrenEnum.hasMoreElements()) { // leaf
 				return; 
 			}
-			DefaultMutableTreeNode firstChild = (DefaultMutableTreeNode) children.nextElement();
+			DefaultMutableTreeNode firstChild = (DefaultMutableTreeNode) childrenEnum.nextElement();
 			done = true;
-			if(!children.hasMoreElements()) { // single child
+			if(!childrenEnum.hasMoreElements()) { // single child
 				// we need to copy references to the grandchildren first, since modification
 				// of the children breaks the enumeration
 				MutableTreeNode[] grandchildren = new MutableTreeNode[firstChild.getChildCount()];
@@ -379,9 +389,16 @@ public class DoccoMainFrame extends JFrame {
 				done = false;
 			}
 		} while(!done);
-		children = treeNode.children();
-		while(children.hasMoreElements()) {
-			flattenResults((DefaultMutableTreeNode) children.nextElement());
+		// same story as above: copy first
+		DefaultMutableTreeNode[] children = new DefaultMutableTreeNode[treeNode.getChildCount()];
+		int count = 0;
+		childrenEnum = treeNode.children();
+		while (childrenEnum.hasMoreElements()) {
+			children[count++] = (DefaultMutableTreeNode) childrenEnum.nextElement();
+		}
+		for (int i = 0; i < children.length; i++) {
+			DefaultMutableTreeNode child = children[i];
+			flattenResults(child);
 		}
 	}
 
