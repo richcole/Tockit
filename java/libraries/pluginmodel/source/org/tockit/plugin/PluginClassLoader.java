@@ -368,7 +368,7 @@ public class PluginClassLoader extends ClassLoader {
 	 	File[] files = file.listFiles();
 	 	for (int i = 0; i < files.length; i++) {
 			File curFile = files[i];
-			if (curFile.getName().endsWith("jar")) {
+			if (curFile.getName().endsWith(".jar") || curFile.getName().endsWith(".zip")) {
 				List jarEntriesList = readArchive(curFile);
 				Iterator it = jarEntriesList.iterator();
 				while (it.hasNext()) {
