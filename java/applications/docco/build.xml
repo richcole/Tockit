@@ -34,7 +34,7 @@
     <path id="project.dev.class.path">
         <pathelement path="${classpath}"/>
         <pathelement path="${build.dev.dir}"/>
-        <pathelement path="plugins.libs.path"/>
+        <pathelement path="${plugins.libs.path}"/>
         <fileset dir="${libs.dir}">
             <include name="**/*.jar"/>
         </fileset>
@@ -54,7 +54,7 @@
     <path id="project.release.class.path">
         <pathelement path="${classpath}"/>
         <pathelement path="${build.release.dir}"/>
-        <pathelement path="plugins.libs.path"/>
+        <pathelement path="${plugins.libs.path}"/>
         <fileset dir="${libs.dir}">
             <include name="**/*.jar"/>
         </fileset>
