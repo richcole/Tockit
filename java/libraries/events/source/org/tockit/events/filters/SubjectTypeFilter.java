@@ -19,4 +19,19 @@ public class SubjectTypeFilter implements EventFilter {
 	public boolean isMatch(Event event) {
 		return subjectType.isAssignableFrom(event.getSubject().getClass());
 	}
+
+	public boolean equals(Object other) {
+		if(! (other instanceof SubjectTypeFilter) ) {
+			return false;
+		}
+		SubjectTypeFilter otherFilter = (SubjectTypeFilter) other;
+		if(!otherFilter.subjectType.equals(subjectType)) {
+			return false;
+		}
+		return true;
+	}
+
+	public int hashCode() {
+		return subjectType.hashCode();
+	}
 }

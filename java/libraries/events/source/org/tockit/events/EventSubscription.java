@@ -7,6 +7,8 @@
  */
 package org.tockit.events;
 
+import org.tockit.events.filters.EventFilter;
+
 /**
  * A subscription class for the event broker.
  *
@@ -18,22 +20,15 @@ class EventSubscription {
      * The listener interested in events.
      */
     private EventBrokerListener listener;
-    /**
-     * The type of event that should be passed.
-     */
-    private Class eventType;
-    /**
-     * The filter on subjects.
-     */
-    private Class subjectType;
+    
+    private EventFilter[] eventFilters;
 
     /**
      * Creates a new subscription object with the given parameters.
      */
-    public EventSubscription(EventBrokerListener listener, Class eventType, Class subjectType) {
+    public EventSubscription(EventBrokerListener listener, EventFilter[] eventFilters) {
         this.listener = listener;
-        this.eventType = eventType;
-        this.subjectType = subjectType;
+        this.eventFilters = eventFilters;
     }
 
     /**
@@ -42,18 +37,37 @@ class EventSubscription {
     public EventBrokerListener getListener() {
         return listener;
     }
-
-    /**
-     * Determines which type of events should be passed to the listener.
-     */
-    public Class getEventType() {
-        return eventType;
+    
+    public boolean matchesEvent(Event event) {
+    	for (int i = 0; i < this.eventFilters.length; i++) {
+			EventFilter filter = this.eventFilters[i];
+			if(!filter.isMatch(event)) {
+				return false;
+			}
+		}
+		return true;
     }
-
-    /**
-     * Gives the type of subjects from which the listener wants to get events.
-     */
-    public Class getSubjectType() {
-        return subjectType;
+    
+    public boolean equals(Object other) {
+    	if(! (other instanceof EventSubscription)) {
+    		return false;
+    	}
+    	EventSubscription otherSub = (EventSubscription) other;
+    	if( otherSub.listener != this.listener) {
+    		return false;
+    	}
+    	if( otherSub.eventFilters.length != this.eventFilters.length ) {
+			return false;
+		}
+		for (int i = 0; i < eventFilters.length; i++) {
+			if( ! otherSub.eventFilters[i].equals(eventFilters[i]) ) {
+				return false;
+			}			
+		}
+    	return true;
+    }
+    
+    public int hashCode() {
+    	return (int)(((long)listener.hashCode() + (long)eventFilters.hashCode()) % Integer.MAX_VALUE);
     }
 }

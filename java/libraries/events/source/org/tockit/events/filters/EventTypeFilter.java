@@ -19,4 +19,19 @@ public class EventTypeFilter implements EventFilter {
 	public boolean isMatch(Event event) {
 		return eventType.isAssignableFrom(event.getClass());
 	}
+	
+	public boolean equals(Object other) {
+		if(! (other instanceof EventTypeFilter) ) {
+			return false;
+		}
+		EventTypeFilter otherFilter = (EventTypeFilter) other;
+		if(!otherFilter.eventType.equals(eventType)) {
+			return false;
+		}
+		return true;
+	}
+	
+	public int hashCode() {
+		return eventType.hashCode();
+	}
 }

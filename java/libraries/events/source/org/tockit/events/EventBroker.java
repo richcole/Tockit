@@ -12,6 +12,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.tockit.events.filters.EventFilter;
+import org.tockit.events.filters.EventTypeFilter;
+import org.tockit.events.filters.SubjectTypeFilter;
+
 /**
  * A class distributing events to listeners.
  *
@@ -90,21 +94,23 @@ public class EventBroker implements EventBrokerListener {
      * or interface).
      */
     public void subscribe(EventBrokerListener listener, Class eventType, Class subjectType) {
-        if (listener == this) {
-            throw new RuntimeException("Trying to subscribe EventBroker to itself");
-        }
-        try {
-        	Class eventInterface = Class.forName(PACKAGE_NAME + ".Event");
-        	if (!eventInterface.isAssignableFrom(eventType)) {
-                throw new RuntimeException("Subscription to class not implementing Event impossible");
-            }
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Internal error in EventBroker, class Event not found");
-        }
-        this.eventQueue.add(
-                new SubscriptionEvent(
-                        new EventSubscription(listener, eventType, subjectType)));
-        processEvents();
+    	try {
+    		Class eventInterface = Class.forName(PACKAGE_NAME + ".Event");
+    		if (!eventInterface.isAssignableFrom(eventType)) {
+    			throw new RuntimeException("Subscription to class not implementing Event impossible");
+    		}
+    	} catch (ClassNotFoundException e) {
+    		throw new RuntimeException("Internal error in EventBroker, class Event not found");
+    	}
+    	subscribe(listener, new EventFilter[]{new EventTypeFilter(eventType), new SubjectTypeFilter(subjectType)});
+    }
+    
+    public void subscribe(EventBrokerListener listener, EventFilter[] filters) {
+    	if (listener == this) {
+    		throw new RuntimeException("Trying to subscribe EventBroker to itself");
+    	}
+    	this.eventQueue.add(new SubscriptionEvent(new EventSubscription(listener, filters)));
+    	processEvents();
     }
 
     /**
@@ -130,12 +136,15 @@ public class EventBroker implements EventBrokerListener {
 	 * implemented interfaces, only exact matches will be removed.
 	 */
 	public void removeSubscription(EventBrokerListener listener, Class eventType, Class subjectType) {
+		removeSubscription(listener, new EventSubscription(listener, new EventFilter[]{new EventTypeFilter(eventType),
+																					   new SubjectTypeFilter(subjectType)}));
+	}
+
+	public void removeSubscription(EventBrokerListener listener, EventSubscription subscription) {
 		for (Iterator iterator = subscriptions.iterator(); iterator.hasNext();) {
-			EventSubscription subscription = (EventSubscription) iterator.next();
-			if (subscription.getListener().equals(listener) &&
-					subscription.getEventType().equals(eventType) &&
-					subscription.getSubjectType().equals(subjectType)) {
-				this.eventQueue.add(new SubscriptionRemovalEvent(subscription));
+			EventSubscription cur = (EventSubscription) iterator.next();
+			if (cur.equals(subscription)) {
+				this.eventQueue.add(new SubscriptionRemovalEvent(cur));
 			}
 		}
 		processEvents();
@@ -186,8 +195,7 @@ public class EventBroker implements EventBrokerListener {
     private void processExternalEvent(Event event) {
         for (Iterator iterator = subscriptions.iterator(); iterator.hasNext();) {
             EventSubscription subscription = (EventSubscription) iterator.next();
-        	if (subscription.getEventType().isAssignableFrom(event.getClass()) &&
-        			subscription.getSubjectType().isAssignableFrom(event.getSubject().getClass())) {
+        	if (subscription.matchesEvent(event)) {
                 subscription.getListener().processEvent(event);
             }
         }
