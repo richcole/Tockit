@@ -7,6 +7,7 @@
  */
 package org.tockit.docco.gui;
 
+import java.awt.*;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -16,6 +17,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.SystemColor;
+import java.awt.event.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -33,6 +35,7 @@ import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -41,6 +44,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
 import javax.swing.*;
 import javax.swing.BorderFactory;
@@ -124,6 +128,7 @@ public class DoccoMainFrame extends JFrame {
 	private static final int HIGH_PRIORITY = (Thread.NORM_PRIORITY + Thread.MAX_PRIORITY)/2;
     private static final int HIGHEST_PRIORITY = Thread.MAX_PRIORITY;
 
+    private static final int MAXIMUM_QUERY_HISTORY_LENGTH = 10;
     private static final int VISIBLE_TREE_DEPTH = 2;
     private static final int DEFAULT_VERTICAL_DIVIDER_LOCATION = 600;
     private static final int DEFAULT_FRAME_WIDTH = 900;
@@ -139,6 +144,7 @@ public class DoccoMainFrame extends JFrame {
 	private static final String CONFIGURATION_SHOW_PHANTOM_NODES_NAME = "showPhantomNodes";
 	private static final String CONFIGURATION_SHOW_CONTINGENT_ONLY_NAME = "showContingentOnly";
 	private static final String CONFIGURATION_INDEXING_PRIORITY_NAME = "indexingPriority";
+    private static final String CONFIGURATION_QUERY_HISTORY = "queryHistory";
 	private static final String DEFAULT_INDEX_DIR = System.getProperty("user.dir") + 
 											System.getProperty("file.separator") + 
 											".doccoIndex";
@@ -148,7 +154,7 @@ public class DoccoMainFrame extends JFrame {
 
     private DocumentDisplayPane documentDisplayPane;
     private JTree hitList;
-    private JTextField queryField = new JTextField();
+    private JComboBox queryField = new JComboBox();
 	private JButton searchButton = new JButton("Submit");
 	private JCheckBoxMenuItem showPhantomNodesCheckBox;
 	private JCheckBoxMenuItem showContingentOnlyCheckBox;
@@ -161,7 +167,7 @@ public class DoccoMainFrame extends JFrame {
     private ExportDiagramAction exportDiagramAction;
     private JMenuItem printSetupMenuItem;
     private PageFormat pageFormat = new PageFormat();
-	
+    
 	private class SelectionEventHandler implements EventBrokerListener {
 		public void processEvent(Event event) {
 			Object subject = event.getSubject();
@@ -352,8 +358,9 @@ public class DoccoMainFrame extends JFrame {
 		}
 		
         openIndexes(forceIndexAccess);
+        doQuery();
 
-		this.setVisible(true);
+        this.setVisible(true);
         preferences.restoreWindowPlacement(this,
 					new Rectangle(10, 10, DEFAULT_FRAME_WIDTH, DEFAULT_FRAME_HEIGHT));
 
@@ -856,24 +863,36 @@ public class DoccoMainFrame extends JFrame {
 	private JComponent buildQueryViewComponent() {
 		JPanel queryPanel = new JPanel(new GridBagLayout());
 
-		/**
-		 * @todo check if this could be done more elegant, e.g. by listening to properties
-		 */		
-		this.queryField.addKeyListener(new KeyListener() {
+        List queryHistory = preferences.getStringList(CONFIGURATION_QUERY_HISTORY);
+        this.queryField = new JComboBox(queryHistory.toArray());
+        
+		Component editorComponent = this.queryField.getEditor().getEditorComponent();
+        editorComponent.addKeyListener(new KeyListener() {
 			public void keyTyped(KeyEvent arg0) {
-				setSearchEnabledStatus();
 			}
 			public void keyPressed(KeyEvent arg0) {
 			}
 			public void keyReleased(KeyEvent arg0) {
+                setSearchEnabledStatus();
 			}
 		});
-		
-		this.queryField.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				doQuery();
-			}
-		});
+
+        this.queryField.getEditor().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                doQuery();
+            }
+        });
+
+        this.queryField.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                if(e.getStateChange() == ItemEvent.SELECTED) {
+                    doQuery();
+                    setSearchEnabledStatus();
+                }
+            }
+        });
+        
+        this.queryField.setEditable(true);
 
 		setSearchEnabledStatus();		
 
@@ -1042,20 +1061,33 @@ public class DoccoMainFrame extends JFrame {
 	}
 	
 	private void setSearchEnabledStatus() {
-		if (this.queryField.getText().length() <= 0 ) {
-			this.searchButton.setEnabled(false);
-		}
-		else {
-			this.searchButton.setEnabled(true);
-		}
+		String queryString = getQueryString();
+        if(queryString.length() == 0 ) {
+            this.searchButton.setEnabled(false);
+            return;
+        }
+        if(queryString.equals(this.queryField.getSelectedItem())) {
+            this.searchButton.setEnabled(false);
+            return;
+        }
+        this.searchButton.setEnabled(true);
 	}
 	
-	private void doQuery() {
-		if (this.searchButton.isEnabled()) {
+	private String getQueryString() {
+        String queryString = this.queryField.getEditor().getItem().toString();
+        if(queryString == null) {
+            queryString = "";
+        }
+        return queryString;
+    }
+
+    private void doQuery() {
+        addEntryToQueryHistory();
+		if(getQueryString().length() != 0) {
 			this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 			QueryWithResultSet results;
             try {
-                results = this.queryEngine.executeQueryUsingDecomposer(this.queryField.getText());
+                results = this.queryEngine.executeQueryUsingDecomposer(getQueryString());
 				Diagram2D diagram = DiagramGenerator.createDiagram(results, this.showPhantomNodesCheckBox.isSelected());
 				this.diagramView.showDiagram(diagram);
             } catch (ParseException e) {
@@ -1068,10 +1100,27 @@ public class DoccoMainFrame extends JFrame {
 			this.hitList.setModel(null);
 			this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             setMenuStates();
-		}
+        }
 	}
 	
-	private void setMenuStates() {
+	private void addEntryToQueryHistory() {
+        Vector items = new Vector();
+        String queryString = getQueryString();
+        items.add(queryString);
+        ComboBoxModel comboBoxModel = this.queryField.getModel();
+        for(int i = 0; i < comboBoxModel.getSize(); i++) {
+            Object item = comboBoxModel.getElementAt(i);
+            if(!item.equals(queryString)) {
+                items.add(item);
+            }
+            if(items.size() == MAXIMUM_QUERY_HISTORY_LENGTH) {
+                break;
+            }
+        }
+        this.queryField.setModel(new DefaultComboBoxModel(items));
+    }
+
+    private void setMenuStates() {
         boolean diagramAvailable = this.diagramView.getDiagram() != null;
         this.printMenuItem.setEnabled(diagramAvailable);
         if(this.exportDiagramAction != null) {
@@ -1105,10 +1154,17 @@ public class DoccoMainFrame extends JFrame {
 		preferences.putInt(CONFIGURATION_INDEXING_PRIORITY_NAME,
 								this.indexingPriority);
 		
+        // store other info
 		if(this.lastDirectoryIndexed != null) {
 			preferences.put(CONFIGURATION_LAST_INDEX_DIR,
 											 this.lastDirectoryIndexed.getPath());
 		}
+        Collection queryHistory = new Vector();
+        ComboBoxModel comboBoxModel = this.queryField.getModel();
+        for(int i = 0; i < comboBoxModel.getSize(); i++) {
+            queryHistory.add(comboBoxModel.getElementAt(i));
+        }
+        preferences.putStringList(CONFIGURATION_QUERY_HISTORY, queryHistory);
 
 		System.exit(0);
 	}
