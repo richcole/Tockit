@@ -21,7 +21,6 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
@@ -181,7 +180,6 @@ public class PluginClassLoader extends ClassLoader {
 	public PluginClassLoader(File file) throws FileNotFoundException {
 		super();
 		this.pluginsDirLocation = file;
-		logger.setLevel(Level.FINER);
 		
 		logger.entering("PluginClassLoader", "Constructor", file.getAbsoluteFile());
 		
