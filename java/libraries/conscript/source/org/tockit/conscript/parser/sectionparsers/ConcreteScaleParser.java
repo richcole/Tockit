@@ -66,7 +66,6 @@ class ConcreteScaleParser extends CSCFileSectionParser {
         tokenizer.consumeToken(";");
 
         scale.setInitialized();
-        file.add(scale);
         CSCParser.logger.log(Level.FINER, "Concrete scale added: '" + scale.getName() + "'");
 	}
 }

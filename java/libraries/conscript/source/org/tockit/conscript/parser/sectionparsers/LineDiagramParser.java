@@ -143,7 +143,6 @@ class LineDiagramParser extends CSCFileSectionParser {
         tokenizer.consumeToken(";");
 
         diagram.setInitialized();
-        file.add(diagram);
         CSCParser.logger.log(Level.FINER, "Line diagram added: '" + diagram.getName() + "'");
 	}
 

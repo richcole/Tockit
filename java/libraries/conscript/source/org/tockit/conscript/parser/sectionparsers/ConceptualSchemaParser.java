@@ -51,7 +51,6 @@ class ConceptualSchemaParser extends CSCFileSectionParser {
         tokenizer.consumeToken(";");
 
         schema.setInitialized();
-        file.add(schema);
         CSCParser.logger.log(Level.FINER, "Conceptual schema added: '" + schema.getName() + "'");
 	}
 

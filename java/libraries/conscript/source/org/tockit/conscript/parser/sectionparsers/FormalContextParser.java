@@ -99,7 +99,6 @@ class FormalContextParser extends CSCFileSectionParser {
         tokenizer.consumeToken(";");
 
         context.setInitialized();
-        file.add(context);
         CSCParser.logger.log(Level.FINER, "Formal context added: '" + context.getName() + "'");
 	}
 

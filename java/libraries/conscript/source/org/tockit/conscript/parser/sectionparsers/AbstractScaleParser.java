@@ -53,7 +53,6 @@ class AbstractScaleParser extends CSCFileSectionParser {
         tokenizer.consumeToken(";");
 
         scale.setInitialized();
-        file.add(scale);
         CSCParser.logger.log(Level.FINER, "Abstract scale added: '" + scale.getName() + "'");
 	}
 }

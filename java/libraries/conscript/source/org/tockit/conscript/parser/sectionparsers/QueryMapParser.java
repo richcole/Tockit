@@ -44,7 +44,6 @@ class QueryMapParser extends CSCFileSectionParser {
         tokenizer.consumeToken(";");
 
         queryMap.setInitialized();
-        file.add(queryMap);
         CSCParser.logger.log(Level.FINER, "Query map added: '" + queryMap.getName() + "'");
     }
 }

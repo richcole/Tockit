@@ -39,7 +39,6 @@ class DatabaseParser extends CSCFileSectionParser {
         tokenizer.consumeToken(";");
 
         dbDefinition.setInitialized();
-        file.add(dbDefinition);
         CSCParser.logger.log(Level.FINER, "Database definition added: " + dbDefinition.getName() + "'");
 	}
 }

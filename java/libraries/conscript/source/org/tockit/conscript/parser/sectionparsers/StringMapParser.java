@@ -36,7 +36,6 @@ class StringMapParser extends CSCFileSectionParser {
         tokenizer.consumeToken(";");
 
         map.setInitialized();
-        file.add(map);
         CSCParser.logger.log(Level.FINER, "String map added: '" + map.getName() + "'");
 	}
 }
