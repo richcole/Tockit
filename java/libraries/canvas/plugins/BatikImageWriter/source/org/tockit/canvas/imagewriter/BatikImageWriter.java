@@ -17,8 +17,6 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Properties;
 import java.util.zip.GZIPOutputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import org.apache.batik.dom.GenericDOMImplementation;
 import org.apache.batik.svggen.SVGGraphics2D;
