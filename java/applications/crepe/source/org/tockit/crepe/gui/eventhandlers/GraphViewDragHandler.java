@@ -1,0 +1,125 @@
+/*
+ * Copyright DSTC Pty.Ltd. (http://www.dstc.com), Technische Universitaet Darmstadt
+ * (http://www.tu-darmstadt.de) and the University of Queensland (http://www.uq.edu.au).
+ * Please read licence.txt in the toplevel source directory for licensing information.
+ *
+ * $Id$
+ */
+package org.tockit.crepe.gui.eventhandlers;
+
+import org.tockit.crepe.view.*;
+import org.tockit.crepe.gui.datatransfer.CGFlavors;
+import org.tockit.cgs.model.*;
+
+import java.awt.dnd.*;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.*;
+import java.awt.geom.Point2D;
+import java.io.IOException;
+
+public class GraphViewDragHandler implements DropTargetListener {
+    private final GraphView graphView;
+    private ConceptualGraph graph;
+
+    public GraphViewDragHandler(GraphView graphView, ConceptualGraph graph) {
+        this.graphView = graphView;
+        this.graph = graph;
+    }
+
+    public void setGraph(ConceptualGraph graph) {
+        this.graph = graph;
+    }
+
+    public void dragEnter(DropTargetDragEvent dtde) {
+        if (dtde.isDataFlavorSupported(CGFlavors.TypeFlavor)) {
+            dtde.acceptDrag(DnDConstants.ACTION_COPY);
+        } else {
+            dtde.rejectDrag();
+        }
+    }
+
+    public void dragOver(DropTargetDragEvent dtde) {
+    }
+
+    public void dropActionChanged(DropTargetDragEvent dtde) {
+    }
+
+    public void dragExit(DropTargetEvent dte) {
+    }
+
+    /**
+     * @todo refactor, reuse
+     */
+    public void drop(DropTargetDropEvent dtde) {
+        try {
+            Transferable transferable = dtde.getTransferable();
+            if (transferable.isDataFlavorSupported(CGFlavors.TypeFlavor)) {
+                dtde.acceptDrop(DnDConstants.ACTION_COPY);
+                Type type = (Type) transferable.getTransferData(CGFlavors.TypeFlavor);
+                Node newNode = new Node(this.graph.getKnowledgeBase(), type, null, null);
+                Point screenPos = dtde.getLocation();
+                Point2D canvasPos = this.graphView.getCanvasCoordinates(screenPos);
+                newNode.setPosition(canvasPos.getX(), canvasPos.getY());
+                this.graph.addNode(newNode);
+                NodeView newView = new NodeView(newNode);
+                this.graphView.addCanvasItem(newView);
+                this.graphView.repaint();
+                dtde.getDropTargetContext().dropComplete(true);
+            } else if (transferable.isDataFlavorSupported(CGFlavors.RelationFlavor)) {
+                dtde.acceptDrop(DnDConstants.ACTION_COPY);
+                Point screenPos = dtde.getLocation();
+                Point2D canvasPos = this.graphView.getCanvasCoordinates(screenPos);
+                double xPos = canvasPos.getX();
+                double yPos = canvasPos.getY();
+                Relation relation = (Relation) transferable.getTransferData(CGFlavors.RelationFlavor);
+                Type[] signature = relation.getSignature();
+                Node[] references = new Node[relation.getArity()];
+                for (int j = 0; j < relation.getArity(); j++) {
+                    Node node = new Node(this.graph.getKnowledgeBase(), signature[j], null, null);
+                    references[j] = node;
+                }
+                Link link = new Link(this.graph.getKnowledgeBase(), relation, references);
+                LinkView linkView = new LinkView(link);
+                linkView.setPosition(new Point2D.Double(xPos, yPos));
+                for (int i = 0; i < references.length; i++) {
+                    Node node = references[i];
+                    NodeView nodeView = new NodeView(node);
+                    this.graphView.addCanvasItem(new LineView(linkView, nodeView, i + 1));
+                    if (!node.hasPosition()) {
+                        double angle = 2*Math.PI * i / references.length;
+                        double nodeX = xPos + GraphView.LINK_LAYOUT_RADIUS * Math.sin(angle);
+                        // y gets correction for shapes of vertices (wider than high). Does only work in very special cases, which we have :-)
+                        double nodeY = yPos + GraphView.LINK_LAYOUT_RADIUS * Math.cos(angle) -
+                                       Math.abs(GraphView.LINK_LAYOUT_RADIUS * Math.sin(angle) / 3);
+                        nodeView.setPosition(new Point2D.Double(nodeX, nodeY));
+                    }
+                    this.graphView.addCanvasItem(nodeView);
+                }
+                this.graphView.addCanvasItem(linkView);
+                this.graphView.repaint();
+                dtde.getDropTargetContext().dropComplete(true);
+            } else if (transferable.isDataFlavorSupported(CGFlavors.InstanceFlavor)) {
+                dtde.acceptDrop(DnDConstants.ACTION_COPY);
+                Instance instance = (Instance) transferable.getTransferData(CGFlavors.InstanceFlavor);
+                Node newNode = new Node(this.graph.getKnowledgeBase(), instance.getType(), instance, null);
+                Point screenPos = dtde.getLocation();
+                Point2D canvasPos = this.graphView.getCanvasCoordinates(screenPos);
+                newNode.setPosition(canvasPos.getX(), canvasPos.getY());
+                this.graph.addNode(newNode);
+                NodeView newView = new NodeView(newNode);
+                this.graphView.addCanvasItem(newView);
+                this.graphView.repaint();
+                dtde.getDropTargetContext().dropComplete(true);
+            } else {
+                dtde.rejectDrop();
+            }
+        } catch (IOException exception) {
+            exception.printStackTrace();
+            dtde.rejectDrop();
+        } catch (UnsupportedFlavorException ufException) {
+            ufException.printStackTrace();
+            dtde.rejectDrop();
+        }
+    }
+}

@@ -11,23 +11,21 @@ import org.tockit.canvas.Canvas;
 import org.tockit.events.EventBroker;
 import org.tockit.cgs.model.*;
 import org.tockit.crepe.view.manipulators.*;
-import org.tockit.crepe.gui.datatransfer.CGFlavors;
+import org.tockit.crepe.gui.eventhandlers.GraphViewDragHandler;
 
 import java.awt.*;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.Point2D;
 import java.util.*;
 import java.util.List;
-import java.io.IOException;
 
-public class GraphView extends Canvas implements DropTargetListener {
+public class GraphView extends Canvas {
     private ConceptualGraph graphShown;
     private Hashtable nodemap = new Hashtable();
     private Hashtable linkmap = new Hashtable();
-    private static final int LINK_LAYOUT_RADIUS = 100;
+    public static final int LINK_LAYOUT_RADIUS = 100;
+    private GraphViewDragHandler dragHandler;
 
     public GraphView(EventBroker eventBroker) {
         super(eventBroker);
@@ -39,7 +37,8 @@ public class GraphView extends Canvas implements DropTargetListener {
 //        new LoggingEventListener(eventBroker, CanvasItemDraggedEvent.class, Object.class, System.out);
 
         // initialize drop support
-        new DropTarget(this, this);
+        dragHandler = new GraphViewDragHandler(this, this.graphShown);
+        new DropTarget(this, dragHandler);
     }
 
     public void paintComponent(Graphics g) {
@@ -59,6 +58,7 @@ public class GraphView extends Canvas implements DropTargetListener {
         this.nodemap.clear();
         this.linkmap.clear();
         this.graphShown = graph;
+        this.dragHandler.setGraph(graph);
         if(graph == null) {
             return;
         }
@@ -127,101 +127,5 @@ public class GraphView extends Canvas implements DropTargetListener {
     public void updateContents() {
         fillCanvas();
         repaint();
-    }
-
-    public void dragEnter(DropTargetDragEvent dtde) {
-        if (dtde.isDataFlavorSupported(CGFlavors.TypeFlavor)) {
-            dtde.acceptDrag(DnDConstants.ACTION_COPY);
-        } else {
-            dtde.rejectDrag();
-        }
-    }
-
-    public void dragOver(DropTargetDragEvent dtde) {
-    }
-
-    public void dropActionChanged(DropTargetDragEvent dtde) {
-    }
-
-    public void dragExit(DropTargetEvent dte) {
-    }
-
-    /**
-     * @todo refactor, reuse
-     */
-    public void drop(DropTargetDropEvent dtde) {
-        try {
-            Transferable transferable = dtde.getTransferable();
-            if (transferable.isDataFlavorSupported(CGFlavors.TypeFlavor)) {
-                dtde.acceptDrop(DnDConstants.ACTION_COPY);
-                Type type = (Type) transferable.getTransferData(CGFlavors.TypeFlavor);
-                Node newNode = new Node(this.graphShown.getKnowledgeBase(), type, null, null);
-                Point screenPos = dtde.getLocation();
-                Point2D canvasPos = this.getCanvasCoordinates(screenPos);
-                newNode.setPosition(canvasPos.getX(), canvasPos.getY());
-                this.graphShown.addNode(newNode);
-                NodeView newView = new NodeView(newNode);
-                nodemap.put(newNode, newView);
-                this.addCanvasItem(newView);
-                repaint();
-                dtde.getDropTargetContext().dropComplete(true);
-            } else if (transferable.isDataFlavorSupported(CGFlavors.RelationFlavor)) {
-                dtde.acceptDrop(DnDConstants.ACTION_COPY);
-                Point screenPos = dtde.getLocation();
-                Point2D canvasPos = this.getCanvasCoordinates(screenPos);
-                double xPos = canvasPos.getX();
-                double yPos = canvasPos.getY();
-                Relation relation = (Relation) transferable.getTransferData(CGFlavors.RelationFlavor);
-                Type[] signature = relation.getSignature();
-                Node[] references = new Node[relation.getArity()];
-                for (int j = 0; j < relation.getArity(); j++) {
-                    Node node = new Node(this.graphShown.getKnowledgeBase(), signature[j], null, null);
-                    references[j] = node;
-                }
-                Link link = new Link(this.graphShown.getKnowledgeBase(), relation, references);
-                LinkView linkView = new LinkView(link);
-                linkView.setPosition(new Point2D.Double(xPos, yPos));
-                linkmap.put(link,linkView);
-                for (int i = 0; i < references.length; i++) {
-                    Node node = references[i];
-                    NodeView nodeView = new NodeView(node);
-                    this.addCanvasItem(new LineView(linkView, nodeView, i + 1));
-                    nodemap.put(node, nodeView);
-                    if (!node.hasPosition()) {
-                        double angle = 2*Math.PI * i / references.length;
-                        double nodeX = xPos + LINK_LAYOUT_RADIUS * Math.sin(angle);
-                        // y gets correction for shapes of vertices (wider than high). Does only work in very special cases, which we have :-)
-                        double nodeY = yPos + LINK_LAYOUT_RADIUS * Math.cos(angle) -
-                                       Math.abs(LINK_LAYOUT_RADIUS * Math.sin(angle) / 3);
-                        nodeView.setPosition(new Point2D.Double(nodeX, nodeY));
-                    }
-                    this.addCanvasItem(nodeView);
-                }
-                this.addCanvasItem(linkView);
-                repaint();
-                dtde.getDropTargetContext().dropComplete(true);
-            } else if (transferable.isDataFlavorSupported(CGFlavors.InstanceFlavor)) {
-                dtde.acceptDrop(DnDConstants.ACTION_COPY);
-                Instance instance = (Instance) transferable.getTransferData(CGFlavors.InstanceFlavor);
-                Node newNode = new Node(this.graphShown.getKnowledgeBase(), instance.getType(), instance, null);
-                Point screenPos = dtde.getLocation();
-                Point2D canvasPos = this.getCanvasCoordinates(screenPos);
-                newNode.setPosition(canvasPos.getX(), canvasPos.getY());
-                this.graphShown.addNode(newNode);
-                NodeView newView = new NodeView(newNode);
-                nodemap.put(newNode, newView);
-                this.addCanvasItem(newView);
-                repaint();
-                dtde.getDropTargetContext().dropComplete(true);
-            } else {
-                dtde.rejectDrop();
-            }
-        } catch (IOException exception) {
-            exception.printStackTrace();
-            dtde.rejectDrop();
-        } catch (UnsupportedFlavorException ufException) {
-            ufException.printStackTrace();
-            dtde.rejectDrop();
-        }
     }
 }
