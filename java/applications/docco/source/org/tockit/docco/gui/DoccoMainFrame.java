@@ -525,7 +525,7 @@ public class DoccoMainFrame extends JFrame {
 		} else {
 			fileDialog = new JFileChooser(this.index.getBaseDirectory());
 		}
-		fileDialog.setDialogTitle("Select directories and files to index");
+		fileDialog.setDialogTitle("Select directory to index");
 		fileDialog.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		fileDialog.setMultiSelectionEnabled(false);
 		int rv = fileDialog.showDialog(this, "Index");
