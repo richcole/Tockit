@@ -78,18 +78,22 @@ public class GraphView extends Canvas {
                 LinkView linkView = new LinkView(link);
                 double xPos = this.getWidth()/2.0;
                 double yPos = this.getHeight()/2.0;
-                linkView.setPosition(new Point2D.Double(xPos, yPos));
+                if(!link.hasPosition()) {
+                    linkView.setPosition(new Point2D.Double(xPos, yPos));
+                }
                 linkmap.put(link,linkView);
                 Node[] references = link.getReferences();
                 for (int j = 0; j < references.length; j++) {
                     Node node = references[j];
                     NodeView nodeView = (NodeView) nodemap.get(node);
-                    double angle = 2*Math.PI * j / references.length;
-                    double nodeX = xPos + LINK_LAYOUT_RADIUS * Math.sin(angle);
-                    // y gets correction for shapes of vertices (wider than high). Does only work in very special cases, which we have :-)
-                    double nodeY = yPos + LINK_LAYOUT_RADIUS * Math.cos(angle) -
-                                   Math.abs(LINK_LAYOUT_RADIUS * Math.sin(angle) / 3);
-                    nodeView.setPosition(new Point2D.Double(nodeX, nodeY));
+                    if (!node.hasPosition()) {
+                        double angle = 2*Math.PI * j / references.length;
+                        double nodeX = xPos + LINK_LAYOUT_RADIUS * Math.sin(angle);
+                        // y gets correction for shapes of vertices (wider than high). Does only work in very special cases, which we have :-)
+                        double nodeY = yPos + LINK_LAYOUT_RADIUS * Math.cos(angle) -
+                                       Math.abs(LINK_LAYOUT_RADIUS * Math.sin(angle) / 3);
+                        nodeView.setPosition(new Point2D.Double(nodeX, nodeY));
+                    }
                     newNodeViewsPlaced.add(nodeView);
                     this.addCanvasItem(new LineView(linkView, nodeView, j + 1));
                 }

@@ -74,4 +74,30 @@ public class Link {
     public void destroy() {
         this.knowledgeBase.remove(this);
     }
+
+
+    public double getX() {
+        String xAtt = this.element.getAttributeValue("x");
+        if(xAtt == null) {
+            return 0;
+        }
+        return Double.parseDouble(xAtt);
+    }
+
+    public double getY() {
+        String yAtt = this.element.getAttributeValue("y");
+        if(yAtt == null) {
+            return 0;
+        }
+        return Double.parseDouble(yAtt);
+    }
+
+    public void setPosition(double x, double y) {
+        this.element.setAttribute("x", String.valueOf(x));
+        this.element.setAttribute("y", String.valueOf(y));
+    }
+
+    public boolean hasPosition() {
+        return this.element.getAttributeValue("x") != null;
+    }
 }

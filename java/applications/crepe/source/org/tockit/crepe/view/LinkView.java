@@ -8,7 +8,6 @@
 package org.tockit.crepe.view;
 
 import org.tockit.cgs.model.Link;
-import org.tockit.canvas.CanvasItem;
 import org.tockit.canvas.MovableCanvasItem;
 
 import java.awt.*;
@@ -29,8 +28,12 @@ public class LinkView extends MovableCanvasItem {
     public void draw(Graphics2D g) {
         FontMetrics fontMetrics = g.getFontMetrics();
 
+        double height = ellipse.getHeight();
+        double width = ellipse.getWidth();
+        this.ellipse.setFrame(link.getX() - width/2, link.getY() - height/2, width, height);
+
         g.setPaint(Color.darkGray);
-        g.fill(new Ellipse2D.Double(ellipse.getX() + 2, ellipse.getY() + 2, ellipse.getWidth(), ellipse.getHeight()));
+        g.fill(new Ellipse2D.Double(ellipse.getX() + 2, ellipse.getY() + 2, width, height));
         g.setPaint(Color.white);
         g.fill(ellipse);
         g.setPaint(Color.black);
@@ -51,14 +54,11 @@ public class LinkView extends MovableCanvasItem {
     }
 
     public void setPosition(Point2D newPosition) {
-        this.ellipse.setFrame(newPosition.getX() - ellipse.getWidth()/2,
-                              newPosition.getY() - ellipse.getHeight()/2,
-                              ellipse.getWidth(),
-                              ellipse.getHeight());
+        this.link.setPosition(newPosition.getX(), newPosition.getY());
     }
 
     public Point2D getPosition() {
-        return new Point2D.Double(ellipse.getX() + ellipse.getWidth()/2, ellipse.getY() + ellipse.getHeight()/2);
+        return new Point2D.Double(link.getX(), link.getY());
     }
 
     public String toString() {
