@@ -29,6 +29,7 @@ import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -128,7 +129,6 @@ public class DoccoMainFrame extends JFrame {
 			for (int i = 0; i < concepts.length; i++) {
 				double x = 0;
 				double y = 0;
-				// additive layout on the attributes
 				for (int j = 0; j < baseVectors.length; j++) {
 					int currentBit = 1<<j;
 					if ((i & currentBit) == currentBit) {
@@ -142,7 +142,6 @@ public class DoccoMainFrame extends JFrame {
 				diagram.addNode(nodes[i]);
 			}
 			
-			// we have an edge iff there is a difference of exactly one attribute
 			for (int i = 0; i < concepts.length - 1; i++) {
 				for (int j = 0; j < baseVectors.length; j++) {
 					int currentBit = 1<<j;
@@ -164,7 +163,7 @@ public class DoccoMainFrame extends JFrame {
 			QueryWithResult[] queryResults = queryResultSet.toArray();
 			
 			int n = queryResultSet.size();
-			int numConcepts = 1<<n; // 2 to the power of n concepts in a Boolean lattice
+			int numConcepts = 1<<n; // 2 to the power of n
 			
 			ConceptImplementation[] concepts = new ConceptImplementation[numConcepts];
 			for (int i = 0; i < concepts.length; i++) {
@@ -177,13 +176,9 @@ public class DoccoMainFrame extends JFrame {
 							new HitReferencesSetImplementation(new HashSet(allObjects.toSet()));
 				for (int j = 0; j < n; j++) {
 					int currentBit = 1<<j;
-					// attribute contingent only on the lower neighbours of the top (which have one attribute/bit set)
 					if (i == currentBit) {
 						concept.addAttribute(new Attribute(queryResults[j].getQuery()));
 					}
-					// the contingent is the meet of all the object sets for the attributes in the intent, minus
-					// everything that is in any other object set (the latter objects are in the extent, but not
-					// in the contingent)
 					HitReferencesSet currentHitReferences = queryResults[j].getResultSet();
 					if ((i & currentBit) == currentBit) {
 						objectContingent.retainAll(currentHitReferences);
@@ -195,8 +190,6 @@ public class DoccoMainFrame extends JFrame {
 					HitReference reference = (HitReference) iter.next();
 					concept.addObject(reference);
 				}
-				
-				// to find the upset/downset we do the comparison of the intents as bitvectors
 				for( int j =0; j < numConcepts; j ++) {
 					if((i & j) == i) {
 						concepts[i].addSubConcept(concepts[j]);
@@ -214,27 +207,24 @@ public class DoccoMainFrame extends JFrame {
 			DiagramNode node = nodeView.getDiagramNode();
 			Concept concept = node.getConcept();
 			resListModel.removeAllElements();
+			System.out.println("\nextent size: " + concept.getExtentSize() + ", obj contingent: " + concept.getObjectContingentSize());
 			Iterator extentIterator = concept.getExtentIterator();
 			while (extentIterator.hasNext()) {
 				HitReference cur = (HitReference) extentIterator.next();
 				resListModel.addElement(cur);
 			}
+			System.out.println("resListModel size: " + resListModel.size());
+			
+			/// @todo add object contingent display
 			
 		}
 		
 	}
-	
-	private class ResultsListRenderer extends JPanel implements ListCellRenderer {
-		JLabel locLabel;
-		JLabel scoreLabel;
+
+	///@todo remove one renderer
+	private class ResultsListRenderer extends JEditorPane implements ListCellRenderer {
 		public ResultsListRenderer () {
-			super();
-			setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-			locLabel = new JLabel();
-			scoreLabel = new JLabel();
-			
-			add(locLabel);
-			add(scoreLabel);
+			super("text/html", "");
 		}
 		
 		public Component getListCellRendererComponent(JList list, Object value, 
@@ -252,12 +242,15 @@ public class DoccoMainFrame extends JFrame {
 			
 			Document doc = hitRef.getDocument();
 			String text = doc.getField(GlobalVars.FIELD_DOC_TITLE).stringValue();
-			//text += "\n";
-			//text += "\tscore: " + hitRef.getScore(); 		
-			//setText(text);
 			
-			locLabel.setText(text);
-			scoreLabel.setText("score: " + hitRef.getScore());
+			String entryText = "<html>" + "<p>" +
+				"<a href=\"" + doc.getField(GlobalVars.FIELD_DOC_PATH).stringValue() + 
+				"\">" + text + "</a>" +
+				"<br>" + doc.getField(GlobalVars.FIELD_DOC_SUMMARY).stringValue() +
+				"<br>Score: " + hitRef.getScore() +
+				"</p>" + "</html>";
+			this.setText(entryText);	
+			System.out.println(entryText + "\n");	
 			
 			setFont(list.getFont());
 			return this;
@@ -265,6 +258,48 @@ public class DoccoMainFrame extends JFrame {
 		
 	}
 	
+	///@todo remove one renderer
+	private class ResultsListRenderer2 extends JPanel implements ListCellRenderer {
+		JLabel titleLabel = new JLabel();
+		JLabel scoreLabel = new JLabel();
+		JButton testButton = new JButton("Open this document");
+		public ResultsListRenderer2 () {
+			super();
+			setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+			testButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent event) {
+					System.out.println("button pressed" + titleLabel.getText());
+				}
+			});
+			add(titleLabel);
+			add(scoreLabel);
+			add(testButton);
+		}
+		
+		public Component getListCellRendererComponent(JList list, Object value, 
+											int index, boolean isSelected, 
+											boolean cellHasFocus) {
+			HitReference hitRef = (HitReference) value;
+
+			if (isSelected) {
+				setBackground(list.getSelectionBackground());
+				setForeground(list.getSelectionForeground());
+			} else {
+				setBackground(list.getBackground());
+				setForeground(list.getForeground());
+			}
+			
+			Document doc = hitRef.getDocument();
+			String text = doc.getField(GlobalVars.FIELD_DOC_TITLE).stringValue();
+			titleLabel.setText(text);
+			scoreLabel.setText("score: " + hitRef.getScore());
+			
+			setFont(list.getFont());
+			return this;
+		}
+		
+	}
+
 	public DoccoMainFrame (EventBroker eventBroker) {
 		super("Docco");
 		this.eventBroker = eventBroker;
