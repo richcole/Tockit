@@ -92,7 +92,6 @@ import org.tockit.events.EventBrokerListener;
 
 import org.tockit.docco.ConfigurationManager;
 import org.tockit.docco.GlobalConstants;
-import org.tockit.docco.PluginLoader;
 import org.tockit.docco.documenthandler.DocumentHandlersRegistry;
 import org.tockit.docco.fca.DiagramGenerator;
 import org.tockit.docco.index.Index;
