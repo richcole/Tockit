@@ -27,5 +27,11 @@ public class DocumentHandlerMapping {
 	public FileFilter getFileFilter() {
 		return this.fileFilter;
 	}
+	
+	public String toString() {
+		String str = "DocumentHandlerMapping: from " + this.fileFilter.toString() + 
+						" to " + this.docHandler.getDisplayName();
+		return str;
+	}
 
 }

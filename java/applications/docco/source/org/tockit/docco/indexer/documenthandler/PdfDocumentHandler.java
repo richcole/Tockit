@@ -36,7 +36,7 @@ public class PdfDocumentHandler implements DocumentHandler {
 		PDDocument pdfDoc = pdfParser.getPDDocument();
 		if (pdfDoc.isEncrypted()) {
 			/// @todo handle exception better here?
-			throw new IOException("Couldn't read document " + file.getPath() 
+			throw new DocumentHandlerException("Couldn't read document " + file.getPath() 
 							+ " because it is encrypted");
 		}
 		PDDocumentInformation info = pdfDoc.getDocumentInformation();

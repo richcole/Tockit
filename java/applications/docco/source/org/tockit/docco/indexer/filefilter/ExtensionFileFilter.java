@@ -31,6 +31,11 @@ public class ExtensionFileFilter implements FileFilter {
 		return false;
 	}
 	
+	public String toString() {
+		String str = "Extension FileFilter for extension " + this.extensionString;
+		return str;
+	}
+	
 	
 
 }

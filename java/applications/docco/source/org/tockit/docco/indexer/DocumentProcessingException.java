@@ -7,13 +7,19 @@
  */
 package org.tockit.docco.indexer;
 
-import org.tockit.docco.indexer.DocumentProcessingException;
 
+public class DocumentProcessingException extends Exception {
 
-public class UnknownFileTypeException extends DocumentProcessingException {
-
-	public UnknownFileTypeException(String message) {
+	public DocumentProcessingException(String message) {
 		super(message);
-
 	}
+	
+	public DocumentProcessingException(String message, Throwable e) {
+		super(message, e);
+	}
+
+	public DocumentProcessingException(Throwable e) {
+		super(e);
+	}
+	
 }

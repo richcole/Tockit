@@ -11,9 +11,10 @@ package org.tockit.docco.indexer;
 import org.apache.lucene.index.IndexWriter;
 import org.tockit.docco.ConfigurationManager;
 import org.tockit.docco.GlobalConstants;
-import org.tockit.docco.indexer.documenthandler.*;
-import org.tockit.docco.indexer.filefilter.*;
+import org.tockit.docco.indexer.documenthandler.DocumentHandler;
+import org.tockit.docco.indexer.documenthandler.DocumentHandlerException;
 import org.tockit.docco.indexer.filefilter.ExtensionFileFilter;
+import org.tockit.docco.indexer.filefilter.NotFoundFileExtensionException;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -47,8 +48,8 @@ public class Indexer extends Thread {
 				mappings = new ArrayList(20);
 				mappings.add("html:org.tockit.docco.indexer.documenthandler.HtmlDocumentHandler");
 				mappings.add("htm:org.tockit.docco.indexer.documenthandler.HtmlDocumentHandler");
-				//mappings.add("pdf:org.tockit.docco.indexer.documenthandler.PdfDocumentHandler");
-				mappings.add("pdf:org.tockit.docco.indexer.documenthandler.PdfMultivalentDocumentHandler");
+				//mappings.add("pdf:org.tockit.docco.indexer.documenthandler.PdfMultivalentDocumentHandler");
+				mappings.add("pdf:org.tockit.docco.indexer.documenthandler.PdfDocumentHandler");
 				mappings.add("doc:org.tockit.docco.indexer.documenthandler.MSWordHandler");
 				mappings.add("txt:org.tockit.docco.indexer.documenthandler.PlainTextDocumentHandler");
 				mappings.add("xls:org.tockit.docco.indexer.documenthandler.MSExcelDocHandler");
@@ -152,6 +153,10 @@ public class Indexer extends Thread {
 		catch (NotFoundFileExtensionException e) {
 		}
 		catch (DocumentHandlerException e) {
+			System.err.println("Error processing document " + file.getAbsolutePath() + ": " + e.getMessage());
+		}
+		catch (DocumentProcessingException e) {
+			System.err.println("Error processing document " + file.getAbsolutePath() + ": " + e.getMessage());
 		}
 		catch (Exception e) {
 			// sometimes shit happens. E.g. the PDF header might be screwed. Some other things

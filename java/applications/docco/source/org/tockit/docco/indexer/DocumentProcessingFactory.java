@@ -15,9 +15,8 @@ import java.util.Iterator;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.tockit.docco.GlobalConstants;
-import org.tockit.docco.indexer.documenthandler.*;
-import org.tockit.docco.indexer.filefilter.*;
 import org.tockit.docco.indexer.filefilter.FileExtensionExtractor;
+import org.tockit.docco.indexer.filefilter.NotFoundFileExtensionException;
 
 /**
  * @todo search for something doing file magic (as in the GNU "file" command). That would be
@@ -31,87 +30,106 @@ public class DocumentProcessingFactory {
 		this.docHandlersRegistery = docHandlersRegistery;
 	}
 
-	public Document processDocument(File file) throws DocumentHandlerException, 
-													NotFoundFileExtensionException,
-													UnknownFileTypeException,
-													InstantiationException, 
-													IllegalAccessException, 
+	public Document processDocument(File file) throws DocumentProcessingException,
 													IOException {
-		try {
-			DocumentHandler docHandler = this.docHandlersRegistery.getHandler(file);
-
-			DocumentSummary docSummary = docHandler.parseDocument(file);
-			
-			/// @todo check what else we can get from the JDK side. Every feature we can get from the File API should be
-			/// worthwhile keeping
-			Document doc = new Document(); 
-			
-			DocumentContent docContent = docSummary.content;
-			if (docContent != null) {
-				if (docContent.getReader() != null) {
-					doc.add(Field.Text(GlobalConstants.FIELD_QUERY_BODY, docContent.getReader()));
-				}
-				else {
-					doc.add(Field.UnStored(GlobalConstants.FIELD_QUERY_BODY, docContent.getString()));
-				}
-			}
-			
-			if (docSummary.authors != null) {
-				Iterator it = docSummary.authors.iterator();
-				while (it.hasNext()) {
-					String author = (String) it.next();
-					doc.add(Field.Text(GlobalConstants.FIELD_DOC_AUTHOR, author));
-				}
-			}
-			
-			if (docSummary.title != null) {
-				doc.add(Field.Text(GlobalConstants.FIELD_DOC_TITLE, docSummary.title));					
-			}
-			
-			if (docSummary.summary != null) {
-				doc.add(Field.Text(GlobalConstants.FIELD_DOC_SUMMARY, docSummary.summary));
-			}
-		
-			if (docSummary.modificationDate != null) {
+		Iterator it = this.docHandlersRegistery.getDocumentMappingIterator();
+		DocumentSummary docSummary = null;
+		DocumentProcessingException caughtException = null;
+		while (it.hasNext()) {
+			DocumentHandlerMapping cur = (DocumentHandlerMapping) it.next();
+			if (cur.getFileFilter().accept(file)) {
 				try {
-					doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_MODIFICATION_DATE, docSummary.modificationDate));
+					docSummary = cur.getHandler().parseDocument(file);
 				}
-				catch (RuntimeException e) {
-					/// @todo another nasty hack
-					if (e.getMessage().startsWith("time too early")) {
-						System.err.println("Caught exception \"time too early\" for time " + 
-												docSummary.modificationDate.toString() + 
-												", in document " + file.getAbsolutePath());
-					}
-					else {
-						throw e;
-					}
+				catch (DocumentProcessingException e) {
+					caughtException = e;
 				}
+				
 			}
-			
-			if (docSummary.keywords != null) {
-				doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_KEYWORDS, docSummary.keywords));
-			}
-
-			doc.add(Field.Text(GlobalConstants.FIELD_DOC_PATH, file.getPath()));
-			doc.add(Field.Text(GlobalConstants.FIELD_DOC_PATH_WORDS, file.getParent().replace(File.separatorChar, ' ')));
-			String fileExtension = FileExtensionExtractor.getExtension(file);
-			if (fileExtension != null) {
-				doc.add(Field.Text(GlobalConstants.FIELD_DOC_EXTENSION, fileExtension));
-				String fileNameWithoutExtension = file.getName().substring(0,file.getName().length() - fileExtension.length() - 1);
-				doc.add(Field.Text(GlobalConstants.FIELD_DOC_NAME,fileNameWithoutExtension));
-			}
-			if (doc.get(GlobalConstants.FIELD_DOC_MODIFICATION_DATE) == null) {
-				doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_MODIFICATION_DATE,new Date(file.lastModified())));
-			}
-			doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_SIZE, new Long(file.length()).toString()));
+		}
+		
+		if (docSummary != null) {
+			Document doc = fillDocumentFields(file, docSummary);
 			//printDebug(doc);
 			return doc;								
 		}
-		catch (UnknownFileTypeException e) {
-			/// @todo shall we add all files at least as files?
-			throw e;
+		else {
+			if (caughtException != null) {
+				throw caughtException;
+			}
+			else {
+				throw new UnknownFileTypeException("Don't know how to process this type of document " 
+										+ file.getPath());
+			}
 		}
+	}
+
+	private Document fillDocumentFields(File file, DocumentSummary docSummary)
+											throws NotFoundFileExtensionException {
+		/// @todo check what else we can get from the JDK side. Every feature we can get from the File API should be
+		/// worthwhile keeping
+		Document doc = new Document(); 
+		
+		DocumentContent docContent = docSummary.content;
+		if (docContent != null) {
+			if (docContent.getReader() != null) {
+				doc.add(Field.Text(GlobalConstants.FIELD_QUERY_BODY, docContent.getReader()));
+			}
+			else {
+				doc.add(Field.UnStored(GlobalConstants.FIELD_QUERY_BODY, docContent.getString()));
+			}
+		}
+		
+		if (docSummary.authors != null) {
+			Iterator it = docSummary.authors.iterator();
+			while (it.hasNext()) {
+				String author = (String) it.next();
+				doc.add(Field.Text(GlobalConstants.FIELD_DOC_AUTHOR, author));
+			}
+		}
+		
+		if (docSummary.title != null) {
+			doc.add(Field.Text(GlobalConstants.FIELD_DOC_TITLE, docSummary.title));					
+		}
+		
+		if (docSummary.summary != null) {
+			doc.add(Field.Text(GlobalConstants.FIELD_DOC_SUMMARY, docSummary.summary));
+		}
+		
+		if (docSummary.modificationDate != null) {
+			try {
+				doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_MODIFICATION_DATE, docSummary.modificationDate));
+			}
+			catch (RuntimeException e) {
+				/// @todo another nasty hack
+				if (e.getMessage().startsWith("time too early")) {
+					System.err.println("Caught exception \"time too early\" for time " + 
+											docSummary.modificationDate.toString() + 
+											", in document " + file.getAbsolutePath());
+				}
+				else {
+					throw e;
+				}
+			}
+		}
+		
+		if (docSummary.keywords != null) {
+			doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_KEYWORDS, docSummary.keywords));
+		}
+		
+		doc.add(Field.Text(GlobalConstants.FIELD_DOC_PATH, file.getPath()));
+		doc.add(Field.Text(GlobalConstants.FIELD_DOC_PATH_WORDS, file.getParent().replace(File.separatorChar, ' ')));
+		String fileExtension = FileExtensionExtractor.getExtension(file);
+		if (fileExtension != null) {
+			doc.add(Field.Text(GlobalConstants.FIELD_DOC_EXTENSION, fileExtension));
+			String fileNameWithoutExtension = file.getName().substring(0,file.getName().length() - fileExtension.length() - 1);
+			doc.add(Field.Text(GlobalConstants.FIELD_DOC_NAME,fileNameWithoutExtension));
+		}
+		if (doc.get(GlobalConstants.FIELD_DOC_MODIFICATION_DATE) == null) {
+			doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_MODIFICATION_DATE,new Date(file.lastModified())));
+		}
+		doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_SIZE, new Long(file.length()).toString()));
+		return doc;
 	}
 	
 	private void printDebug (Document doc) {

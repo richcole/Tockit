@@ -7,8 +7,10 @@
  */
 package org.tockit.docco.indexer.documenthandler;
 
+import org.tockit.docco.indexer.DocumentProcessingException;
 
-public class DocumentHandlerException extends Exception {
+
+public class DocumentHandlerException extends DocumentProcessingException {
 
 	public DocumentHandlerException(String message) {
 		super(message);
