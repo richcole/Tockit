@@ -58,6 +58,7 @@ import net.sourceforge.toscanaj.view.diagram.DiagramView;
 import net.sourceforge.toscanaj.view.diagram.LabelView;
 import net.sourceforge.toscanaj.view.diagram.NodeView;
 
+import org.tockit.canvas.CanvasBackground;
 import org.tockit.canvas.CanvasItem;
 import org.tockit.canvas.events.CanvasItemSelectedEvent;
 import org.tockit.events.Event;
@@ -289,7 +290,9 @@ public class DoccoMainFrame extends JFrame {
 				LabelView labelView = (LabelView) subject;
 				nodeView = labelView.getNodeView();
 			} else {
-				throw new RuntimeException("Subscribed to unknown subject type");
+				diagramView.setSelectedConcepts(null);
+				hitList.setListData(new Object[0]);
+				return;
 			}
 			DiagramNode node = nodeView.getDiagramNode();
 			Concept concept = node.getConcept();
@@ -424,6 +427,9 @@ public class DoccoMainFrame extends JFrame {
 		this.diagramView.getController().getEventBroker().subscribe(new SelectionEventHandler(),
 									CanvasItemSelectedEvent.class,
 									LabelView.class);
+		this.diagramView.getController().getEventBroker().subscribe(new SelectionEventHandler(),
+									CanvasItemSelectedEvent.class,
+									CanvasBackground.class);
 
 		this.hitList = new JList();
 		this.hitList.addListSelectionListener(new ListSelectionListener(){
