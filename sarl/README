@@ -26,9 +26,9 @@ Currently the only distribution method for Sarl is from CVS.
 
 3.1 Building from CVS
 
-The construct a ./configure file 
+To construct a ./configure file 
 
-  aclocal -I.
+  aclocal -I .
   automake 
   autoconf
 
