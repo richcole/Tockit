@@ -11,7 +11,7 @@ lucene.jar:
   Lucence, 1.3rc1 (http://jakarta.apache.org/lucene, license in LICENSE-lucene.txt)
   
 jakarta-poi*.jar:
-  Jakarta POI, 1.5.1 (http://jakarta.apache.org/poi, license in LICENSE-jakarta-poi)
+  Jakarta POI, 2.0pre1 (http://jakarta.apache.org/poi, license in LICENSE-jakarta-poi)
   
 PDFBox.jar:
   PDF Box, 0.6.1 (http://www.pdfbox.org, license in LICENSE-PDFBox)
