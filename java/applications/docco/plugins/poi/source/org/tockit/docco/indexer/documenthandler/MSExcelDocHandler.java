@@ -5,9 +5,11 @@
  *
  * $Id$
  */
-package org.tockit.docco.indexer.documenthandler.plugins.poi;
+package org.tockit.docco.indexer.documenthandler;
 
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 import java.net.URL;
 import java.util.Iterator;
 
@@ -16,7 +18,6 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.tockit.docco.indexer.DocumentContent;
 import org.tockit.docco.indexer.DocumentSummary;
 import org.tockit.docco.documenthandler.DocumentHandler;
 import org.tockit.docco.documenthandler.DocumentHandlerException;
@@ -29,7 +30,7 @@ public class MSExcelDocHandler implements DocumentHandler {
 			HSSFWorkbook workbook = new HSSFWorkbook(url.openStream());	
 			
 			DocumentSummary docSummary = new DocumentSummary();
-			docSummary.content = getDocumentContent(workbook);
+			docSummary.contentReader = getDocumentContent(workbook);
 			
 			return docSummary;	
 		}
@@ -38,7 +39,7 @@ public class MSExcelDocHandler implements DocumentHandler {
 		}		
 	}
 
-	private DocumentContent getDocumentContent(HSSFWorkbook workbook) throws IOException {
+	private Reader getDocumentContent(HSSFWorkbook workbook) throws IOException {
 		StringBuffer content = new StringBuffer();
 		int numOfSheets = workbook.getNumberOfSheets();
 		for (int i = 0; i < numOfSheets; i++) {
@@ -76,7 +77,7 @@ public class MSExcelDocHandler implements DocumentHandler {
 				content.append("\n");
 			}
 		}
-		return new DocumentContent(content.toString());
+		return new StringReader(content.toString());
 	}
 
 	public String getDisplayName() {

@@ -5,10 +5,12 @@
  *
  * $Id$
  */
-package org.tockit.docco.indexer.documenthandler.plugins.poi;
+package org.tockit.docco.indexer.documenthandler;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URL;
@@ -21,7 +23,6 @@ import org.apache.poi.hpsf.SummaryInformation;
 import org.apache.poi.poifs.eventfilesystem.POIFSReader;
 import org.apache.poi.poifs.eventfilesystem.POIFSReaderEvent;
 import org.apache.poi.poifs.eventfilesystem.POIFSReaderListener;
-import org.tockit.docco.indexer.DocumentContent;
 import org.tockit.docco.indexer.DocumentSummary;
 import org.tockit.docco.documenthandler.DocumentHandler;
 import org.tockit.docco.documenthandler.DocumentHandlerException;
@@ -58,7 +59,7 @@ public class MSWordHandler implements DocumentHandler {
 			
 			DocumentSummary docSummary = new DocumentSummary();
 			docSummary.authors = getAuthors(info);
-			docSummary.content = getDocumentContent(inputStream);
+			docSummary.contentReader = getDocumentContent(inputStream);
 			docSummary.creationDate = info.getCreateDateTime();
 			docSummary.keywords = info.getKeywords();
 			docSummary.modificationDate = info.getEditTime();
@@ -75,11 +76,11 @@ public class MSWordHandler implements DocumentHandler {
 		}
 	}
 	
-	private DocumentContent getDocumentContent(InputStream inputStream) throws IOException, DocumentHandlerException {
+	private Reader getDocumentContent(InputStream inputStream) throws IOException, DocumentHandlerException {
 		WordDocument wordDoc = new WordDocument(inputStream);
 		Writer docTextWriter = new StringWriter();
 		wordDoc.writeAllText(docTextWriter);
-		return new DocumentContent(docTextWriter.toString());
+		return new StringReader(docTextWriter.toString());
 	}
 
 	private List getAuthors(SummaryInformation info) {

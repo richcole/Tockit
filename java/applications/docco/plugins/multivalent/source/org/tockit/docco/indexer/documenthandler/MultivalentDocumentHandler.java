@@ -10,13 +10,14 @@ package org.tockit.docco.indexer.documenthandler;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.tockit.docco.indexer.DocumentContent;
 import org.tockit.docco.indexer.DocumentSummary;
 import org.tockit.docco.documenthandler.DocumentHandler;
 import org.tockit.docco.documenthandler.DocumentHandlerException;
@@ -121,7 +122,7 @@ public class MultivalentDocumentHandler implements DocumentHandler, Plugin {
 				result.summary = doc.getAttr("keywords");
 			}
 
-			result.content = getDocumentContent(doc, mediaAdapter);
+			result.contentReader = getDocumentContent(doc, mediaAdapter);
 
 			mediaAdapter.closeInputStream();
 			
@@ -134,7 +135,7 @@ public class MultivalentDocumentHandler implements DocumentHandler, Plugin {
 
 
 
-	private DocumentContent getDocumentContent(Document doc, MediaAdaptor mediaAdapter)
+	private Reader getDocumentContent(Document doc, MediaAdaptor mediaAdapter)
 										throws Exception, IOException {
 		StringBuffer stringBuffer = new StringBuffer(20 * 1000);
 		
@@ -149,7 +150,7 @@ public class MultivalentDocumentHandler implements DocumentHandler, Plugin {
 			mediaAdapter.parse(doc);
 			extractBody(doc, stringBuffer);
 		}
-		return new DocumentContent(stringBuffer.toString());
+		return new StringReader(stringBuffer.toString());
 	}
 	
 	private void extractBody(Node n, StringBuffer sb) {

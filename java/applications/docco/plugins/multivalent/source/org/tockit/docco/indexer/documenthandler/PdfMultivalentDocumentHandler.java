@@ -9,6 +9,7 @@ package org.tockit.docco.indexer.documenthandler;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.URI;
 import java.net.URL;
 import java.text.DateFormat;
@@ -16,7 +17,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.tockit.docco.indexer.DocumentContent;
 import org.tockit.docco.indexer.DocumentSummary;
 import org.tockit.docco.documenthandler.DocumentHandler;
 import org.tockit.docco.documenthandler.DocumentHandlerException;
@@ -43,7 +43,7 @@ public class PdfMultivalentDocumentHandler implements DocumentHandler, Plugin {
 			DocumentSummary docSummary = new DocumentSummary();
 			
 			docSummary.authors = getAuthors(infoMap);
-			docSummary.content = new DocumentContent(text);
+			docSummary.contentReader = new StringReader(text);
 
 			if (infoMap.get("Title") != null) {
 				docSummary.title = infoMap.get("Title").toString();

@@ -5,9 +5,11 @@
  *
  * $Id$
  */
-package org.tockit.docco.indexer.documenthandler.plugins.pdfbox;
+package org.tockit.docco.indexer.documenthandler;
 
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
 import java.util.Calendar;
@@ -20,7 +22,6 @@ import org.pdfbox.pdfparser.PDFParser;
 import org.pdfbox.pdmodel.PDDocument;
 import org.pdfbox.pdmodel.PDDocumentInformation;
 import org.pdfbox.util.PDFTextStripper;
-import org.tockit.docco.indexer.DocumentContent;
 import org.tockit.docco.indexer.DocumentSummary;
 import org.tockit.docco.documenthandler.DocumentHandler;
 import org.tockit.docco.documenthandler.DocumentHandlerException;
@@ -43,7 +44,7 @@ public class PdfDocumentHandler implements DocumentHandler {
 		DocumentSummary docSummary =  new DocumentSummary();
 		
 		docSummary.authors = getAuthors(info);
-		docSummary.content = getDocumentContent(pdfParser, url);
+		docSummary.contentReader = getDocumentContent(pdfParser, url);
 		docSummary.creationDate = getDate(info.getCreationDate());
 		docSummary.keywords = info.getKeywords();
 		docSummary.modificationDate = getDate(info.getModificationDate());
@@ -52,14 +53,14 @@ public class PdfDocumentHandler implements DocumentHandler {
 		return docSummary;
 	}
 
-	private DocumentContent getDocumentContent(PDFParser pdfParser, URL url) 
+	private Reader getDocumentContent(PDFParser pdfParser, URL url) 
 										throws IOException, DocumentHandlerException {
 		PDFTextStripper pdfToText = new PDFTextStripper();
 		StringWriter writer = new StringWriter();
 		COSDocument cosDoc = pdfParser.getDocument();
 		try {
 			pdfToText.writeText(cosDoc, writer);
-			return new DocumentContent(writer.toString());
+			return new StringReader(writer.toString());
 		} catch (NullPointerException e) {
 			/// @todo something seems to be dodgy with the PDFBox tool -- I get NPEs on some files (OOo?)
 			throw new DocumentHandlerException("Caught null pointer exception in PDF reader for document " + url, e);
