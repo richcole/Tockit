@@ -7,13 +7,22 @@
  */
 package org.tockit.docco;
 
-import javax.swing.JOptionPane;
+import java.io.PrintStream;
+import java.util.Iterator;
+
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.ColorUIResource;
 
+import net.sourceforge.toscanaj.ToscanaJ;
 import net.sourceforge.toscanaj.gui.dialog.ErrorDialog;
 
+import org.apache.commons.cli.BasicParser;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.tockit.docco.gui.DoccoMainFrame;
 
 import com.jgoodies.plaf.plastic.PlasticLookAndFeel;
@@ -21,23 +30,35 @@ import com.jgoodies.plaf.plastic.theme.SkyBlue;
 
 public class Docco {
 	public static void main (String[] args) {
-		testJavaVersion();
+		ToscanaJ.testJavaVersion();
 		boolean forceIndexAccess = false;
 		boolean usePlatformLF = false;
-		for (int i = 0; i < args.length; i++) {
-            String arg = args[i];
-            if(arg.equalsIgnoreCase("-forceIndexAccess")) {
-            	forceIndexAccess = true;
-            } else if(arg.equalsIgnoreCase("-usePlatformLF")) {
-            	usePlatformLF = true;
-            } else {
-            	System.err.println("Unknown command line parameter");
-            	System.err.println("Options:");
-            	System.err.println("  -forceIndexAccess  -  forces access to locked indexes");
-            	System.err.println("  -usePlatformLF     -  use the look and feel of the OS");
-            	System.exit(1);
-            }
-	    }
+        Options options = new Options();
+        options.addOption("forceIndexAccess", false, "Forces the index to be opened, even if locks are present");
+        options.addOption("usePlatformLF", false, "Uses the platform specific look and feel instead of the default");
+        options.addOption("help", false, "Show this command line summary and exit");
+        CommandLineParser parser = new BasicParser();
+        CommandLine cl = null;
+        try {
+            cl = parser.parse(options,args);
+        } catch (ParseException e) {
+            showUsage(options, System.err);
+            System.exit(1);
+        }
+        if(cl.getArgs().length > 0) {
+            showUsage(options, System.err);
+            System.exit(1);
+        }
+        if(cl.hasOption("help")) {
+            showUsage(options, System.out);
+            System.exit(0);
+        }
+        if(cl.hasOption("forceIndexAccess")) {
+            forceIndexAccess = true;
+        }
+        if(cl.hasOption("usePlatformLF")) {
+            usePlatformLF = true;
+        }
 
 		if(usePlatformLF) {
 			try {
@@ -86,19 +107,14 @@ public class Docco {
 		}
 	}
 
-
-    /**
-     * Tests if we are running at least JRE 1.4.0
-     */
-    public static void testJavaVersion() {
-        String versionString = System.getProperty("java.class.version","44.0");
-        if("48.0".compareTo(versionString) > 0) {
-            JOptionPane.showMessageDialog(null,"This program requires a Java Runtime Environment\n" +
-                "with version number 1.4.0 or above.\n\n" +
-                "Up to date versions of Java can be found at\n" +
-                "http://java.sun.com.",
-                "Java installation too old", JOptionPane.ERROR_MESSAGE);
-            System.exit(1);
+    private static void showUsage(Options options, PrintStream stream) {
+        stream.println("Usage:");
+        stream.println("  Docco [Options]");
+        stream.println();
+        stream.println("where [Options] can be:");
+        for (Iterator iter = options.getOptions().iterator(); iter.hasNext(); ) {
+            Option option = (Option) iter.next();
+            stream.println("  " + option.getOpt() + ": " + option.getDescription());
         }
     }
 }
