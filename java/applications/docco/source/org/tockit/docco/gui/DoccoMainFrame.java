@@ -608,7 +608,7 @@ public class DoccoMainFrame extends JFrame {
 		exitItem.setMnemonic('x');
 		exitItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
+                closeMainPanel();
 			}
 		});
 		fileMenu.add(exitItem);
