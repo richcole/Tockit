@@ -28,6 +28,17 @@ public class InstanceChooser extends JDialog {
         Collection instanceIds = knowledgeBase.getInstancesForType(type);
         listView.setListData(instanceIds.toArray());
 
+        MouseListener mouseListener = new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    int index = listView.locationToIndex(e.getPoint());
+                    selectedInstance = (Instance) listView.getModel().getElementAt(index);
+                    closeDialog();
+                }
+            }
+        };
+        listView.addMouseListener(mouseListener);
+
         final JScrollPane scrollPane = new JScrollPane(listView);
 
         //buttons

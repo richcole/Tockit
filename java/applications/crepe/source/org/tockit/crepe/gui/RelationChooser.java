@@ -7,8 +7,7 @@
  */
 package org.tockit.crepe.gui;
 
-import org.tockit.cgs.model.Relation;
-import org.tockit.cgs.model.KnowledgeBase;
+import org.tockit.cgs.model.*;
 import org.tockit.crepe.controller.ConfigurationManager;
 
 import javax.swing.*;
@@ -29,6 +28,18 @@ public class RelationChooser extends JDialog {
         Collection relationNames = knowledgeBase.getRelationNames();
         listView.setListData(relationNames.toArray());
 
+
+        MouseListener mouseListener = new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    int index = listView.locationToIndex(e.getPoint());
+                    String relationName = (String) listView.getModel().getElementAt(index);
+                    selectedRelation = knowledgeBase.getRelation(relationName);
+                    closeDialog();
+                }
+            }
+        };
+        listView.addMouseListener(mouseListener);
         final JScrollPane scrollPane = new JScrollPane(listView);
 
         //buttons
