@@ -30,9 +30,16 @@ public class RelationTest extends TestCase {
     
     public void testSetup() {
         assertEquals("stringRelation has wrong arity", 3, stringRelation.getArity());
+        assertEquals("stringRelation has wrong size", 7, stringRelation.getSize());
+
         assertEquals("objectRelation has wrong arity", 5, objectRelation.getArity());
+        assertEquals("objectRelation has wrong size", 5, objectRelation.getSize());
+
         assertEquals("mixedRelation has wrong arity", 2, mixedRelation.getArity());
+        assertEquals("mixedRelation has wrong size", 7, mixedRelation.getSize());
+
         assertEquals("unnamedRelation has wrong arity", 7, unnamedRelation.getArity());
+        assertEquals("unnamedRelation has wrong size", 1, unnamedRelation.getSize());
     }
 
     public void setUp() {

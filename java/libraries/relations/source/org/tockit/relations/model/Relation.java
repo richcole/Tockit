@@ -64,9 +64,22 @@ public class Relation {
     
     /**
      * Returns the relation's arity.
+     * 
+     * @see getSize()
      */
     public int getArity() {
     	return this.dimensionNames.length;
+    }
+    
+    /**
+     * Returns the number of tuples in this relation.
+     * 
+     * Equivalent to getTuples().size().
+     * 
+     * @see getArity()
+     */
+    public int getSize() {
+        return this.tuples.size();
     }
     
     /**
