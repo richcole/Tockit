@@ -29,13 +29,22 @@ import javax.swing.JScrollPane;
 
 public class FileMappingsEditingDialog extends JDialog {
 	
+	private DefaultListModel model = new DefaultListModel();
+	private JButton upButton = new JButton("Move Up");
+	private JButton downButton = new JButton("Move Down");
+	private JButton addButton = new JButton("Add");
+	private JButton removeButton = new JButton("Remove");
+	private JLabel fileFilterDisplayLabel = new JLabel();
+	private JLabel docHandlerDisplayLabel = new JLabel();
+
+	private JButton okButton = new JButton("Save");
+	private JButton cancelButton = new JButton("Cancel");
+	
+	
 	public FileMappingsEditingDialog(Frame parent) throws HeadlessException {
 		super(parent, "Edit File Mappins Configuration", true);
 		
-		JPanel mainPanel = createMainPanel();
-		mainPanel.setBorder(BorderFactory.createEtchedBorder());
-		
-		getContentPane().add(mainPanel, BorderLayout.CENTER);
+		getContentPane().add(createMainPanel(), BorderLayout.CENTER);
 		getContentPane().add(createButtonsPanel(), BorderLayout.SOUTH);
 		
 		pack();
@@ -45,44 +54,40 @@ public class FileMappingsEditingDialog extends JDialog {
 
 	private JPanel createMainPanel() {
 		
-		JPanel mainPanel = new JPanel(new GridBagLayout());
+		JPanel mainPanel = new JPanel(new BorderLayout());
 		
-		JLabel heading = new JLabel("Not fully layed out yet (ugly layout), and there is no functionality attached");
-		
-		int row = 0;
-		mainPanel.add(heading,new GridBagConstraints(0, row, 	// gridx, gridy
-								GridBagConstraints.REMAINDER, 1, // gridwidth, gridheight
-								0.5, 0.5,  						// weightx, weighty
-								GridBagConstraints.WEST,	// anchor
-								GridBagConstraints.NONE,	// fill
-								new Insets(10, 5, 10, 5),	// insets
-								0, 0						// ipadx, ipady
-								)); 
-		
-		DefaultListModel listModel = new DefaultListModel();
-		JList jlist = new JList(listModel);
+		JList jlist = new JList(model);
 		JScrollPane scrollPane = new JScrollPane(jlist);
 		Dimension d = new Dimension(200, 200);
 		scrollPane.setPreferredSize(d);
 		scrollPane.setMinimumSize(d);
 
-		JButton upButton = new JButton("Move Up");
-		JButton downButton = new JButton("Move Down");
+		JPanel editingPanel = new JPanel(new GridBagLayout());
+		
+		int row = 0;
+		JLabel headingLabel = new JLabel( "Specify document handlers for different file types ");
 
-		JButton addButton = new JButton("Add");
-		JButton removeButton = new JButton("Remove");
+		editingPanel.add(headingLabel ,new GridBagConstraints(0, row, 	// gridx, gridy
+								1, 1, 							// gridwidth, gridheight
+								0.3, 0.3,  						// weightx, weighty
+								GridBagConstraints.CENTER,	// anchor
+								GridBagConstraints.BOTH,	// fill
+								new Insets(5, 5, 5, 5),		// insets
+								0, 0						// ipadx, ipady
+								)); 
 
 		row++;
-		mainPanel.add(scrollPane,new GridBagConstraints(0, row, 
-									1, 4, 
-									0.4, 0.2,
-									GridBagConstraints.CENTER,
-									GridBagConstraints.BOTH,
-									new Insets(5, 5, 5, 5),
-									0, 0
-									)); 
-			
-		mainPanel.add(upButton,new GridBagConstraints(1, row, 
+		editingPanel.add(scrollPane ,new GridBagConstraints(0, row, 	// gridx, gridy
+								1, 4, 							// gridwidth, gridheight
+								0.4, 0.2,  						// weightx, weighty
+								GridBagConstraints.CENTER,	// anchor
+								GridBagConstraints.BOTH,	// fill
+								new Insets(5, 5, 5, 5),		// insets
+								0, 0						// ipadx, ipady
+								)); 
+		
+		
+		editingPanel.add(upButton,new GridBagConstraints(1, row, 
 									1, 1, 
 									0.3, 0.1,
 									GridBagConstraints.NORTHWEST,
@@ -91,7 +96,7 @@ public class FileMappingsEditingDialog extends JDialog {
 									0, 0
 									)); 
 		row++;											
-		mainPanel.add(downButton,new GridBagConstraints(1, row, 
+		editingPanel.add(downButton,new GridBagConstraints(1, row, 
 									1, 1, 
 									0.3, 0.1,
 									GridBagConstraints.NORTHWEST,
@@ -100,7 +105,7 @@ public class FileMappingsEditingDialog extends JDialog {
 									0, 0
 									)); 
 		row++;
-		mainPanel.add(addButton,new GridBagConstraints(1, row, 
+		editingPanel.add(addButton,new GridBagConstraints(1, row, 
 									1, 1, 
 									0.3, 0.1,
 									GridBagConstraints.SOUTHWEST,
@@ -109,7 +114,7 @@ public class FileMappingsEditingDialog extends JDialog {
 									0, 0
 									)); 
 		row++;											
-		mainPanel.add(removeButton,new GridBagConstraints(1, row, 
+		editingPanel.add(removeButton,new GridBagConstraints(1, row, 
 									1, 1, 
 									0.3, 0.1,
 									GridBagConstraints.SOUTHWEST,
@@ -117,22 +122,28 @@ public class FileMappingsEditingDialog extends JDialog {
 									new Insets(0, 5, 5, 5),
 									0, 0
 									)); 
+
+		editingPanel.setBorder(BorderFactory.createTitledBorder(
+								BorderFactory.createEtchedBorder(),
+								" Edit File Filter Settings "));
+		
+		
+		JPanel displayDetailsPanel = new JPanel (new GridBagLayout());
 		
 		JLabel fileFilterLabel = new JLabel("File Filter:");
-		JLabel fileFilterValue = new JLabel();
+		JLabel docHandlerLabel = new JLabel("Document Handler:");
 
-		row++;
-		mainPanel.add(fileFilterLabel,new GridBagConstraints(0, row, 
+		row = 0;
+		displayDetailsPanel.add(fileFilterLabel,new GridBagConstraints(0, row, 
 										1, 1, 
 										0, 0,
-										GridBagConstraints.WEST,
+										GridBagConstraints.NORTHWEST,
 										GridBagConstraints.NONE,
 										new Insets(10, 5, 1, 5),
 										0, 0
 										)); 
-		row++;											
-		mainPanel.add(fileFilterValue,new GridBagConstraints(0, row, 
-										1, 1, 
+		displayDetailsPanel.add(fileFilterDisplayLabel,new GridBagConstraints(1, row, 
+										GridBagConstraints.REMAINDER, 1, 
 										0, 0,
 										GridBagConstraints.CENTER,
 										GridBagConstraints.NONE,
@@ -140,34 +151,36 @@ public class FileMappingsEditingDialog extends JDialog {
 										0, 0
 										)); 
 		
-		JLabel docHandlerLabel = new JLabel("Document Handler:");
-		JLabel docHandlerValue = new JLabel();
-		
 		row++;
-		mainPanel.add(docHandlerLabel,new GridBagConstraints(0, row, 
+		displayDetailsPanel.add(docHandlerLabel,new GridBagConstraints(0, row, 
 											1, 1, 
 											0, 0,
-											GridBagConstraints.WEST,
+											GridBagConstraints.NORTHWEST,
 											GridBagConstraints.NONE,
 											new Insets(1, 5, 10, 5),
 											0, 0
 											)); 
-		row++;											
-		mainPanel.add(docHandlerValue,new GridBagConstraints(0, row, 
-											1, 1, 
+		displayDetailsPanel.add(docHandlerDisplayLabel,new GridBagConstraints(1, row, 
+											GridBagConstraints.REMAINDER, 1, 
 											0, 0,
 											GridBagConstraints.CENTER,
 											GridBagConstraints.NONE,
 											new Insets(1, 5, 10, 5),
 											0, 0
 											)); 
+
+		displayDetailsPanel.setBorder(BorderFactory.createTitledBorder(
+								BorderFactory.createEtchedBorder(),
+								" File Type Details: "));
+
+		mainPanel.add(editingPanel, BorderLayout.CENTER);
+		mainPanel.add(displayDetailsPanel, BorderLayout.SOUTH);
+		
 		return mainPanel;
 	}
 	
 	private JPanel createButtonsPanel () {
 		JPanel panel = new JPanel();
-		JButton okButton = new JButton("Save");
-		JButton cancelButton = new JButton("Cancel");
 		
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 		panel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
