@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = dist-bzip2 subdir-objects #dejagnu
 
-SUBDIRS = sarl testsuite #java
+SUBDIRS = sarl testsuite
 
 bin_SCRIPTS = sarl-config sarl++-config
 

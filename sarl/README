@@ -46,3 +46,10 @@ Currently there is no documentation for sarl. A wiki for the Tockit
 project will hopefully be constructed within a week and most design
 discussion will take place there as well as the production of
 tutorials and interface documentation.
+
+5.0 Use of aclocal, automake and autoconf
+
+To generate the ./configure run the following:
+
+  aclocal -I .; automake; autoconf
+

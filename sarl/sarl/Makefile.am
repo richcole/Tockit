@@ -6,7 +6,8 @@
 # SARLUIDIR = SarlUI appsui
 # endif
 
-SUBDIRS = cpp
+SUBDIRS = python cpp
+
 EXTRA_DIST = 		
 
 #
@@ -39,6 +40,41 @@ sarlinclude_HEADERS = \
 	set_iterator.h \
 	relation.h \
 	relation_iterator.h
+	aggregate_set_iterator.h \
+        assert.h \
+        concept_iterator.h \
+        concept_lattice_iterator.h \
+        config.h \
+        context_complement_relation_iterator.h \
+        context.h \
+        context_intent_map.h \
+        context_iterator.h \
+        context_reduce.h \
+        dictionary.h \
+        dictionary_indexes_set_iterator.h \
+        filter_lattice_iterator.h \
+        global.h \
+        input_stream.h \
+        join_relation_iterator.h \
+        lattice.h \
+        lattice_iterator.h \
+        lectic.h \
+        map.h \
+        map_iterator.h \
+        output_stream.h \
+        ownership.h \
+        perm.h \
+        plain_dictionary.h \
+        plain_relation_iterator.h \
+        read_cxt_context.h \
+        ref_count.h \
+        string.h \
+        string_iterator.h \
+        test.h \
+        transitive_relation.h \
+        triadic_relation.h \
+        triple.h \
+        write_cxt_context.h
 
 #
 # Sources and headers not to be installed
@@ -86,62 +122,27 @@ libsarl_la_SOURCES =           \
 	transitive_relation.cpp \
 	union_set_iterator.cpp \
 	write_cxt_context.cpp \
-	aggregate_set_iterator.h \
-	assert.h \
-	concept_iterator.h \
-	concept_iterator_impl.h \
-	concept_lattice_iterator.h \
-	config.h \
-	context_complement_relation_iterator.h \
-	context.h \
-	context_impl.h \
-	context_intent_map.h \
-	context_iterator.h \
-	context_iterator_impl.h \
-	context_reduce.h \
-	dictionary.h \
-	dictionary_impl.h \
-	dictionary_indexes_set_iterator.h \
-	domain_set_iterator_impl.h \
-	filter_lattice_iterator.h \
-	global.h \
-	input_stream.h \
-	intersection_set_iterator_impl.h \
-	iterator_impl.h \
-	join_relation_iterator.h \
-	lattice.h \
-	lattice_impl.h \
-	lattice_iterator.h \
-	lattice_iterator_impl.h \
-	lectic.h \
-	map.h \
-	map_impl.h \
-	map_iterator.h \
-	map_iterator_impl.h \
-	output_stream.h \
-	output_stream_impl.h \
-	ownership.h \
-	perm.h \
-	plain_dictionary.h \
-	plain_dictionary_impl.h \
-	plain_relation_iterator.h \
-	read_cxt_context.h \
-	ref_count.h \
-	relation_impl.h \
-	relation_iterator_impl.h \
-	set_impl.h \
-	set_iterator_impl.h \
-	set_minus_set_iterator_impl.h \
-	string.h \
-	string_impl.h \
-	string_iterator.h \
-	test.h \
-	transitive_relation.h \
-	transitive_relation_impl.h \
-	triadic_relation.h \
-	triple.h \
-	union_set_iterator_impl.h \
-	write_cxt_context.h
+        concept_iterator_impl.h \
+        context_impl.h \
+        context_iterator_impl.h \
+        dictionary_impl.h \
+        domain_set_iterator_impl.h \
+        intersection_set_iterator_impl.h \
+        iterator_impl.h \
+        lattice_impl.h \
+        lattice_iterator_impl.h \
+        map_impl.h \
+        map_iterator_impl.h \
+        output_stream_impl.h \
+        plain_dictionary_impl.h \
+        relation_impl.h \
+        relation_iterator_impl.h \
+        set_impl.h \
+        set_iterator_impl.h \
+        set_minus_set_iterator_impl.h \
+        string_impl.h \
+        transitive_relation_impl.h \
+        union_set_iterator_impl.h 
 
 libsarl_la_LDFLAGS = @VERSION_INFO@
 
