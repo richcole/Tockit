@@ -42,10 +42,8 @@ public class GlobalConstants {
 	public static final String[] FILE_FILTER_IMPLEMENTAIONS = {
 										"org.tockit.docco.filefilter.ExtensionFileFilter",
 										"org.tockit.docco.filefilter.RegularExpresionExtensionFileFilter"}; 
-	/**
-	 * @todo see todo above, the same applies to document handler implementations
-	 */
-	public static final String[] DOC_HANDLER_IMPLEMENTATIONS = {
+
+	public static final String[] DEFAULT_DOC_HANDLER_IMPLEMENTATIONS = {
 										"org.tockit.docco.documenthandler.HtmlDocumentHandler",
 										"org.tockit.docco.documenthandler.XmlDocumentHandler",
 										"org.tockit.docco.documenthandler.PlainTextDocumentHandler"

@@ -93,6 +93,7 @@ import org.tockit.events.EventBrokerListener;
 import org.tockit.docco.ConfigurationManager;
 import org.tockit.docco.GlobalConstants;
 import org.tockit.docco.PluginLoader;
+import org.tockit.docco.documenthandler.DocumentHandlersRegistry;
 import org.tockit.docco.fca.DiagramGenerator;
 import org.tockit.docco.index.Index;
 import org.tockit.docco.indexer.DocumentHandlerRegistry;
@@ -320,10 +321,9 @@ public class DoccoMainFrame extends JFrame {
 		
 		setContentPane(contentPane);
 
+		loadDefaultSettings();
 		/// @todo where should we call PluginLoader from?
-		this.statusBarMessage.setText("Loading plugins...");
-		new PluginLoader();
-		this.statusBarMessage.setText("Ready!");
+		loadPlugins();
 		
 		this.indexingPriority = ConfigurationManager.fetchInt(CONFIGURATION_SECTION_NAME, 
 															  CONFIGURATION_INDEXING_PRIORITY_NAME, MEDIUM_PRIORITY);	
@@ -343,6 +343,20 @@ public class DoccoMainFrame extends JFrame {
 				closeMainPanel();
 			}
 		});
+	}
+
+	private void loadPlugins() {
+		this.statusBarMessage.setText("Loading plugins...");
+		new PluginLoader();
+		this.statusBarMessage.setText("Ready!");
+	}
+	
+	private void loadDefaultSettings () {
+		try {
+			DocumentHandlersRegistry.registerDefaults();
+		} catch (Exception e) {
+			ErrorDialog.showError(this, e, "Error loading default Document Handlers");
+		}
 	}
 
     private void openIndexes(boolean forceIndexAccess) {

@@ -43,6 +43,7 @@ import org.tockit.docco.GlobalConstants;
 import org.tockit.docco.indexer.DocumentHandlerMapping;
 import org.tockit.docco.indexer.DocumentHandlerRegistry;
 import org.tockit.docco.documenthandler.DocumentHandler;
+import org.tockit.docco.documenthandler.DocumentHandlersRegistry;
 import org.tockit.docco.filefilter.DoccoFileFilter;
 
 
@@ -140,21 +141,11 @@ public class CreateNewFileMappingDialog extends JDialog {
 		
 		this.docHandlerImplementationsModel = new DefaultComboBoxModel();
 		this.docHandlerImplementationsModel.addElement("<Choose Document Handler>");
-		String[] docHandlers = GlobalConstants.DOC_HANDLER_IMPLEMENTATIONS;
-		for (int i = 0; i < docHandlers.length; i++) {
-			String curString = docHandlers[i];
-			try {
-				DocumentHandler curInstance = (DocumentHandler) Class.forName(curString).newInstance();
-				this.docHandlerImplementationsModel.addElement(curInstance);
-			}
-			catch (Exception e) {
-				e.printStackTrace();
-				ErrorDialog.showError(this, e, 
-									"Error finding or instantiating Document Handler",
-									"Couldn't load Document Handler " + curString);
-			}
+		Iterator docHandlersIterator = DocumentHandlersRegistry.getIterator();
+		while (docHandlersIterator.hasNext()) {
+			DocumentHandler curDocHandler = (DocumentHandler) docHandlersIterator.next();
+			this.docHandlerImplementationsModel.addElement(curDocHandler);			
 		}
-		
 		
 		this.fileFilterImplementationsModel = new DefaultComboBoxModel();
 		this.fileFilterImplementationsModel.addElement("<Choose File Filter Implementation>");
