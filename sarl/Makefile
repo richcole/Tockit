@@ -24,7 +24,10 @@ OBJECTS = \
   lattice_iterator \
   plain_lattice_iterator \
   filter_lattice_iterator \
-  string
+  string \
+  transitive_relation \
+  lattice \
+#  cached_lattice_iterator
 
 TESTS = \
   test_set \

@@ -47,7 +47,7 @@ int main(int num_args, char **args)
 
   r_it = sarl_relation_iterator_create(r);
   K    = sarl_context_iterator_create_from_relation(r_it);
-  it   = sarl_lattice_iterator_create(K);
+  it   = sarl_lattice_iterator_create_from_context(K);
 
   SARL_LATTICE_ITERATOR_FOR(it) {
     A = sarl_lattice_iterator_extent(it);

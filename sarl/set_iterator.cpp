@@ -192,3 +192,35 @@ Sarl_Index sarl_set_iterator_last(struct Sarl_SetIterator *A)
   return result;
 };
 
+bool sarl_set_iterator_is_member(
+  struct Sarl_SetIterator *it, Sarl_Index v)
+{
+  bool result;
+  
+  it = sarl_set_iterator_obtain_ownership(it);
+  sarl_set_iterator_reset(it);
+  sarl_set_iterator_next_gte(it, v);
+  result = 
+    ( ! sarl_set_iterator_at_end(it) ) && sarl_set_iterator_value(it) == v;
+  sarl_set_iterator_release_ownership(it);
+  return result;
+};
+
+struct Sarl_SetIterator *
+  sarl_set_iterator_cache_and_decr_ref(
+    Sarl_SetIterator *it
+  )
+{
+  Sarl_Set* S;
+  Sarl_SetIterator* result;
+
+  sarl_set_iterator_release_ownership(it);
+  S = sarl_set_copy(it);
+  result = sarl_set_iterator_create(S);
+  sarl_set_decr_ref(S);
+  sarl_set_iterator_decr_ref(it);
+  return result;
+};
+
+
+  

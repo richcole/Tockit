@@ -16,7 +16,7 @@ struct Sarl_ConceptIterator;
   )
 
 extern struct Sarl_LatticeIterator *
-  sarl_lattice_iterator_create(
+  sarl_lattice_iterator_create_from_context(
     struct Sarl_ContextIterator *
   );
 

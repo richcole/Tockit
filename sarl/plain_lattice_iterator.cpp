@@ -73,7 +73,7 @@ struct Sarl_LatticeIteratorFunctionTable s_plainLatticeIteratorTable =
 
 
 struct Sarl_LatticeIterator *
-  sarl_lattice_iterator_create(
+  sarl_lattice_iterator_create_from_context(
     struct Sarl_ContextIterator *context)
 {
   struct Sarl_PlainLatticeIterator *result = new Sarl_PlainLatticeIterator;

@@ -51,11 +51,13 @@ extern struct Sarl_RelationIterator*
     struct Sarl_RelationIterator *
   );
 
-extern struct Sarl_RelationIterator* sarl_relation_iterator_inverse(
-  struct Sarl_RelationIterator *);
+extern struct Sarl_RelationIterator* 
+  sarl_relation_iterator_inverse(
+    struct Sarl_RelationIterator *);
 
-extern struct Sarl_RelationIterator* sarl_relation_iterator_context_complement(
-  struct Sarl_ContextIterator *);
+extern struct Sarl_RelationIterator* 
+  sarl_relation_iterator_context_complement(
+    struct Sarl_ContextIterator *);
 
 /* iterator constructive operations */
 
@@ -101,6 +103,10 @@ extern struct Sarl_RelationIterator *sarl_relation_iterator_inverse(
   struct Sarl_RelationIterator *
 );
 
+/* membership operations */
+extern bool
+  sarl_relation_iterator_is_member(
+    Sarl_RelationIterator *it, Sarl_Pair p);
 
 
 

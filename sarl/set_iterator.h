@@ -106,4 +106,16 @@ extern void sarl_set_iterator_incr_ref(struct Sarl_SetIterator *);
 
 extern Sarl_Index sarl_set_iterator_last(struct Sarl_SetIterator *);
 
+/* membership */
+extern bool 
+  sarl_set_iterator_is_member(
+    struct Sarl_SetIterator *it, Sarl_Index v
+  );
+
+extern struct Sarl_SetIterator *
+  sarl_set_iterator_cache_and_decr_ref(
+    Sarl_SetIterator *it
+  );
+
+
 #endif
