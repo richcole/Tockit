@@ -536,7 +536,6 @@ public class Canvas extends JPanel implements Printable {
     public void setGrid(double cellWidth, double cellHeight) {
         this.gridCellWidth = cellWidth;
         this.gridCellHeight = cellHeight;
-        setGridEnabled(true);
         repaint();
     }
 
