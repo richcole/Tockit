@@ -39,11 +39,14 @@ public class NodeView extends MovableCanvasItem {
         Instance referent = node.getReferent();
         Type type = node.getType();
         String text;
-        if( type != null) {
-            text = type.getName();
+        if( type == Type.UNIVERSAL ) {
+            text = "[universal]";
+        }
+        else if( type == Type.ABSURD ) {
+            text = "[absurd]";
         }
         else {
-            text = "[universal]";
+            text = type.getName();
         }
         if (referent != null) {
             text += ": " + referent.getIdentifier();

@@ -16,11 +16,30 @@ import java.util.*;
  * type of the hierarchy. Types themself are supposed to be below this top type unless they have supertypes defined.
  */
 public class Type {
+    private static class ImplicitType extends Type {
+        public ImplicitType() {
+        }
+
+        public String getName() {
+            return "";
+        }
+
+        public Type[] getDirectSupertypes() {
+            return new Type[0];
+        }
+
+        public Element getElement() {
+            return null;
+        }
+    }
+
+    public static final Type UNIVERSAL = new ImplicitType();
+    public static final Type ABSURD = new ImplicitType();
+
     private Element element = null;
     private KnowledgeBase knowledgeBase = null;
 
-    protected Type(KnowledgeBase knowledgeBase) {
-        this.knowledgeBase = knowledgeBase;
+    private Type() {
     }
 
     public Type(KnowledgeBase knowledgeBase, String name) {
@@ -69,6 +88,9 @@ public class Type {
 
     public boolean hasSupertype(Type otherType) {
         if(this == otherType) {
+            return true;
+        }
+        if(otherType == Type.UNIVERSAL) {
             return true;
         }
         Type[] supertypes = getDirectSupertypes();

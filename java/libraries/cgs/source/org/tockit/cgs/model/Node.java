@@ -17,7 +17,7 @@ public class Node {
         this.knowledgeBase = knowledgeBase;
         element = new Element("node");
         element.setAttribute("id", knowledgeBase.createNewNodeId());
-        if (type != null) {
+        if (type != Type.UNIVERSAL) {
             element.setAttribute("type", type.getName());
         }
         if(referent != null) {
@@ -47,7 +47,7 @@ public class Node {
     public Type getType() {
         String typeId = element.getAttributeValue("type");
         if(typeId == null) {
-            return this.knowledgeBase.UNIVERSAL;
+            return Type.UNIVERSAL;
         }
         return knowledgeBase.getType(typeId);
     }

@@ -265,7 +265,7 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
 
     private void addNode() {
         ConceptualGraph graph = this.graphView.getGraphShown();
-        Node newNode = new Node(knowledgeBase, knowledgeBase.UNIVERSAL, null, null);
+        Node newNode = new Node(knowledgeBase, Type.UNIVERSAL, null, null);
         graph.addNode(newNode);
         this.graphView.updateContents();
     }

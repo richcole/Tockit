@@ -14,23 +14,6 @@ import org.tockit.cgs.util.IdPool;
 import java.util.*;
 
 public class KnowledgeBase {
-    private class ImplicitType extends Type {
-        public ImplicitType(KnowledgeBase knowledgeBase) {
-            super(knowledgeBase);
-        }
-
-        public String getName() {
-            return "";
-        }
-
-        public Type[] getDirectSupertypes() {
-            return new Type[0];
-        }
-
-        public Element getElement() {
-            return null;
-        }
-    }
     private Element element = null; // root element
     private Hashtable cgs = new Hashtable();
     private Hashtable nodes = new Hashtable();
@@ -38,13 +21,9 @@ public class KnowledgeBase {
     private Hashtable instances = new Hashtable();
     private Hashtable links = new Hashtable();
     private Hashtable relations = new Hashtable();
-    private Hashtable subtypeSets = new Hashtable();
     private IdPool nodeIdPool = new IdPool();
     private IdPool linkIdPool = new IdPool();
     private IdPool graphIdPool = new IdPool();
-
-    public final Type UNIVERSAL = new ImplicitType(this);
-    public final Type ABSURD = new ImplicitType(this);
 
     public KnowledgeBase() {
         this.element = new Element("knowledgeBase");
