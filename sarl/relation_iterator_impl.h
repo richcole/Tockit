@@ -11,6 +11,7 @@ struct Sarl_RelationIteratorFunctionTable {
   void  (*reset)(struct Sarl_RelationIterator *);
   void  (*decr_ref)(struct Sarl_RelationIterator *);
   struct Sarl_RelationIterator*  (*copy)(struct Sarl_RelationIterator *);
+  struct Sarl_RelationIterator*  (*inverse)(struct Sarl_RelationIterator *);
 };
 
 struct Sarl_RelationIterator

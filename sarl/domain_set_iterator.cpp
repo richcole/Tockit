@@ -33,6 +33,9 @@ static void sarl_set_iterator_domain_decr_ref(
 static struct Sarl_SetIterator* sarl_set_iterator_domain_copy(
   struct Sarl_SetIterator *it);
 
+static struct Sarl_SetIterator* sarl_set_iterator_domain_inverse(
+  struct Sarl_SetIterator *it);
+
 /* function prototypes used in function table declaired below */
 
 struct Sarl_SetIteratorFunctionTable s_domain_iterator_table = 

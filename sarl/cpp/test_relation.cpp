@@ -22,9 +22,16 @@ void main()
 
   if ( it.count_remaining() != LEN ) {
     cerr << "Error, expected count_remaining=" << LEN/6 << ", but got ";
-    cerr << it.count_remaining();
+    cerr << it.count_remaining() << endl;
   }
+
+  int val = RelationIterator(s).range().count_remaining();
   
+  if ( val != LEN ) {
+    cerr << "Error, expected count_remaining=" << LEN << ", but got ";
+    cerr << val << endl;
+  };
+    
 };
 
 

@@ -6,6 +6,7 @@ OBJECTS = \
   set_iterator \
   relation \
   relation_iterator \
+  inverse_relation_iterator \
   domain_set_iterator \
   intersection_set_iterator \
   union_set_iterator \

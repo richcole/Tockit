@@ -8,10 +8,10 @@ target: sarl++.so
 test: test_intersection.exe test_relation.exe
 
 %.o: %.cpp
-	$(CCC) $(CPP_FLAGS) $(DEBUG) -c -I../.. -o $@ $< 
+	$(CCC) -ggdb $(CPP_FLAGS) $(DEBUG) -c -I../.. -o $@ $< 
 
 %.exe: %.o sarl++.so ../sarl.so 
-	$(CCC) -o $@ $^
+	$(CCC) -ggdb -o $@ $^
 
 sarl++.so: $(OBJECTS:%=%.o)
 	$(CC) $(DEBUG) -shared -o $@ $^

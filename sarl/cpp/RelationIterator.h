@@ -72,6 +72,10 @@ class RelationIterator {
     return SetIterator(sarl_relation_iterator_domain(mp_itRef));
   }
 
+  SetIterator range() {
+    return SetIterator(sarl_relation_iterator_range(mp_itRef));
+  }
+
  private:
   Sarl_RelationIterator* mp_itRef;
 
