@@ -27,6 +27,13 @@ public class GraphicFormatRegistry {
      * The list of graphic types known.
      */
     static private List formats = new LinkedList();
+    
+    /**
+     * Initialize the default writer.
+     */
+    static {
+        ImageIOImageWriter.initialize();
+    }
 
     /**
      * No instances.

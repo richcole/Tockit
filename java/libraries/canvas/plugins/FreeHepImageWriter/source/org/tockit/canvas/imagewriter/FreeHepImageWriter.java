@@ -35,7 +35,7 @@ public class FreeHepImageWriter implements ImageWriter {
 		}
 
 		public String getName() {
-			return "Portable Document Format (Version 4.x)";
+			return "Portable Document Format (version 1.3)";
 		}
 
 		public String[] getExtensions() {
@@ -49,7 +49,7 @@ public class FreeHepImageWriter implements ImageWriter {
 		}
 
 		public String getName() {
-			return "Portable Document Format";
+			return "Portable Document Format (version 1.4)";
 		}
 
 		public String[] getExtensions() {

@@ -119,7 +119,9 @@ public class DiagramExportSettings {
         this.saveCommentsToFile= false;
         this.saveCommentsToClipboard= false;
         String lastImage = preferences.get(CONFIGURATION_LAST_EXPORT_FILE_ENTRY, null);
-        this.lastImageExportFile = new File(lastImage);  
+        if(lastImage != null) {
+            this.lastImageExportFile = new File(lastImage);
+        }  
     }
 
     /**

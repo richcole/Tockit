@@ -9,6 +9,8 @@ package org.tockit.plugin;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -112,11 +114,14 @@ public class PluginLoader extends LoaderBase {
 				loadPluginClasses(foundPlugins);
 				logger.fine("Finished loading plugins in " + curPluginDir);
 			} catch (Exception e) {
+                StringWriter writer = new StringWriter();
+                e.printStackTrace(new PrintWriter(writer));
+                logger.warning("Error loading classes -- " + writer.toString());
 				errors.add( new PluginLoader.Error(curPluginDir, e));
 			}
 		}
 		
-		logger.fine("FINISHED loading plugins with " + errors.size() + " error(s)");
+		logger.warning("FINISHED loading plugins with " + errors.size() + " error(s)");
 		PluginLoader.Error[] res = (PluginLoader.Error[]) errors.toArray(new PluginLoader.Error[errors.size()]);
 		return res;
 	}

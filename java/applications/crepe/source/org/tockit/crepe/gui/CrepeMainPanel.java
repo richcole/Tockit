@@ -173,9 +173,6 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
         eventBroker = new EventBroker();
         knowledgeBase = new KnowledgeBase(eventBroker);
 
-        // register all image writers we want to support
-        org.tockit.canvas.imagewriter.BatikImageWriter.initialize();
-        org.tockit.canvas.imagewriter.FreeHepImageWriter.initialize();
         // set the default diagram export options: the very first format, auto mode, we can't get the size here
         Iterator it = GraphicFormatRegistry.getIterator();
 
