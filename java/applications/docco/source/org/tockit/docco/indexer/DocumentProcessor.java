@@ -106,7 +106,9 @@ public class DocumentProcessor {
 		if (docSummary.keywords != null) {
 			for (Iterator iter = docSummary.keywords.iterator(); iter.hasNext();) {
                 String keyword = (String) iter.next();
-				doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_KEYWORD, keyword));
+                if (keyword != null) {
+					doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_KEYWORD, keyword));
+                }
             }
 		}
 		

@@ -138,7 +138,9 @@ public class Indexer implements Runnable {
 			// might be broken. We don't want to stop indexing whenever one document fails to be
 			// read properly, so we just ignore it for now. Of course we should consider
 			// @todo some error handling/reporting
-			System.err.println("Error processing document " + file.getAbsolutePath() + ": " + e.getMessage());
+			System.err.println("Error processing document " + file.getAbsolutePath() 
+										+ ": " + e.getMessage() 
+										+ " (Cause: " + e.getCause() + ")");
 			//e.printStackTrace();
 		} finally {
 			writer.close();
