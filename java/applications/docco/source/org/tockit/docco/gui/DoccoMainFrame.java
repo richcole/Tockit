@@ -27,15 +27,12 @@ import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Date;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.StringTokenizer;
 
 import javax.swing.BorderFactory;
@@ -79,8 +76,6 @@ import net.sourceforge.toscanaj.view.diagram.DiagramView;
 import net.sourceforge.toscanaj.view.diagram.LabelView;
 import net.sourceforge.toscanaj.view.diagram.NodeView;
 
-import org.apache.lucene.document.DateField;
-import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.queryParser.ParseException;
@@ -96,7 +91,7 @@ import org.tockit.events.EventBrokerListener;
 import org.tockit.docco.ConfigurationManager;
 import org.tockit.docco.GlobalConstants;
 import org.tockit.docco.fca.DiagramGenerator;
-import org.tockit.docco.indexer.DocumentHandlersRegistery;
+import org.tockit.docco.index.Index;
 import org.tockit.docco.indexer.Indexer;
 import org.tockit.docco.query.HitReference;
 import org.tockit.docco.query.QueryDecomposer;
@@ -106,8 +101,6 @@ import org.tockit.docco.query.util.QueryWithResultSet;
 
 
 public class DoccoMainFrame extends JFrame {
-	
-    private Indexer indexThread;
 	private JLabel statusBarMessage;
     private static final int VISIBLE_TREE_DEPTH = 2;
     private static final int DEFAULT_VERTICAL_DIVIDER_LOCATION = 600;
@@ -124,8 +117,8 @@ public class DoccoMainFrame extends JFrame {
 	private static final String CONFIGURATION_INDEX_NAME = "indexName";
 	private static final String CONFIGURATION_LAST_INDEX_DIR = "lastIndexDir";
 	
-    
 	private QueryEngine queryEngine;
+	private Index index;
 
     private DocumentDisplayPane documentDisplayPane;
     private JTree hitList;
@@ -135,14 +128,8 @@ public class DoccoMainFrame extends JFrame {
 	private JCheckBoxMenuItem showContingentOnlyCheckBox;
 
 	private DiagramView diagramView;
-
 	private Concept selectedConcept;
-	
 	private JSplitPane viewsSplitPane;
-	
-	private String indexLocation;
-	
-	private DocumentHandlersRegistery docHandlersRegistery;
 	
 	private class SelectionEventHandler implements EventBrokerListener {
 		public void processEvent(Event event) {
@@ -322,20 +309,17 @@ public class DoccoMainFrame extends JFrame {
 		
 		setContentPane(contentPane);	
 		
-		indexLocation = GlobalConstants.INDEX_DIR + 
+		String indexLocation = GlobalConstants.INDEX_DIR + 
 								ConfigurationManager.fetchString(CONFIGURATION_SECTION_NAME,
 											CONFIGURATION_INDEX_NAME,
 											DEFAULT_INDEX_NAME);
 
-		this.docHandlersRegistery = new DocumentHandlersRegistery(true);
-		
-		this.indexThread = new Indexer(this.docHandlersRegistery, new Indexer.CallbackRecipient(){
+		Indexer.CallbackRecipient callbackRecipient = new Indexer.CallbackRecipient(){
 			public void showFeedbackMessage(String message) {
 				statusBarMessage.setText(message);
 			}
-		});
-		this.indexThread.start();
-		
+		};
+
 		if(IndexReader.indexExists(indexLocation)) {
 			try {
 				if(IndexReader.isLocked(indexLocation)) {
@@ -352,10 +336,12 @@ public class DoccoMainFrame extends JFrame {
 						// they are not there
 					}
 				}
+				this.index = new Index(indexLocation, callbackRecipient);
 				createQueryEngine();
-				this.indexThread.startIndexing(indexLocation);
+				this.index.start();
 			} catch (IOException e) {
-				ErrorDialog.showError(this, e, "Couldn't start indexer");
+				ErrorDialog.showError(this, e, "Couldn't access index -- program will exit");
+				System.exit(1);
 			}
 		} else {
 			createNewIndex();
@@ -497,25 +483,23 @@ public class DoccoMainFrame extends JFrame {
     
     private void createNewIndex(){
 		try {
-			if(IndexReader.indexExists(this.indexLocation)) {
+			if(IndexReader.indexExists(this.index.getIndexLocation())) {
 				int result = JOptionPane.showConfirmDialog(this, "This will delete the existing index. Continue?", "Delete Index?",
 				                                           JOptionPane.OK_CANCEL_OPTION);
 				if(result != JOptionPane.OK_OPTION) {
 					return;
 				}
-				
-				this.indexThread.stopIndexing();
 			}
 			
-			this.indexThread.stopIndexing();
-			createDirPath(new File(this.indexLocation));
+			this.index.stop();
+			createDirPath(new File(this.index.getIndexLocation()));
             IndexWriter writer = new IndexWriter(
-            						this.indexLocation,
+            						this.index.getIndexLocation(),
             						GlobalConstants.DEFAULT_ANALYZER,
             						true);
             writer.close();
             
-			this.indexThread.startIndexing(this.indexLocation);
+			this.index.start();
         } catch (IOException e) {
 			ErrorDialog.showError(this, e, "There has been an error creating a new index");
         }
@@ -539,56 +523,27 @@ public class DoccoMainFrame extends JFrame {
 		ConfigurationManager.storeString(CONFIGURATION_SECTION_NAME, CONFIGURATION_LAST_INDEX_DIR,
 									fileDialog.getSelectedFile().getAbsolutePath());
 
-		File[] files = fileDialog.getSelectedFiles();
-		for (int i = 0; i < files.length; i++) {
-			this.indexThread.enqueue(files[i]);
-        }
+		this.index.addFilesToIndex(fileDialog.getSelectedFiles());
     }
     
     private void updateIndex() {
-    	if(this.indexThread.isIndexing()) {
+    	if(this.index.isWorking()) {
     		int result = JOptionPane.showConfirmDialog(this, "Do you want to stop the current indexing process?", 
 						                			   "Indexer running", JOptionPane.YES_NO_OPTION);
 			if(result != JOptionPane.YES_OPTION) {
 				return;
 			}
     	}
-    	// first check all documents in the index if they disappeared or changed
-		Set knownDocuments;
     	try {
-			this.indexThread.stopIndexing();
-			IndexReader reader = IndexReader.open(this.indexLocation);
-			knownDocuments = new HashSet(reader.numDocs());
-            for(int i = 0; i < reader.maxDoc(); i++) {
-            	if(!reader.isDeleted(i)) {
-	            	Document doc = reader.document(i);
-            		String path = doc.get(GlobalConstants.FIELD_DOC_PATH);
-            		knownDocuments.add(path);
-            		File file = new File(path);
-            		if(!file.exists()) {
-            			reader.delete(i);
-            		} else {
-            			String dateIndex = doc.get(GlobalConstants.FIELD_DOC_MODIFICATION_DATE);
-            			String dateFS = DateField.dateToString(new Date(file.lastModified()));
-            			if(!dateFS.equals(dateIndex)) {
-            				reader.delete(i);
-							this.indexThread.enqueue(file);	
-            			}
-            		}
-            	}
-            }
-            reader.close();
-            this.indexThread.startIndexing(this.indexLocation);
+            this.index.updateIndex();
         } catch (IOException e) {
-        	ErrorDialog.showError(this, e, "Can't access index");
-        	return;
+        	ErrorDialog.showError(this, e, "Error updating the index");
         }
-        // then add new ones -- @todo we need to store the base directory for this
     }
 
 	private void editFileMappings() {
 		FileMappingsEditingDialog fileMappingsEditingDialog = 
-						new FileMappingsEditingDialog(this, this.docHandlersRegistery);
+						new FileMappingsEditingDialog(this, this.index.getDocHandlersRegistry());
 
 		// @todo store changed info in config manager?
 	}
@@ -606,7 +561,7 @@ public class DoccoMainFrame extends JFrame {
 													GlobalConstants.FIELD_QUERY_BODY, 
 													GlobalConstants.DEFAULT_ANALYZER);
 			this.queryEngine =	new QueryEngine(
-												this.indexLocation,
+												this.index.getIndexLocation(),
 												GlobalConstants.FIELD_QUERY_BODY,
 												GlobalConstants.DEFAULT_ANALYZER,
 												queryDecomposer);
@@ -824,7 +779,7 @@ public class DoccoMainFrame extends JFrame {
 	private void closeMainPanel() {
 		// shut down indexer
 		try {
-            this.indexThread.stopIndexing();
+            this.index.close();
         } catch (Exception e) {
         	ErrorDialog.showError(this, e, "Could not shut down indexer");
         }
