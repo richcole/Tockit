@@ -347,7 +347,7 @@ public class DoccoMainFrame extends JFrame {
 
 	private void loadPlugins() {
 		this.statusBarMessage.setText("Loading plugins...");
-		new PluginLoader();
+//		new PluginLoader();
 		this.statusBarMessage.setText("Ready!");
 	}
 	
