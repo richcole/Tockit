@@ -2,9 +2,7 @@
     <property name="src.dir"   value="${basedir}/source"/>
     <property name="libTesting.dir"   value="${basedir}/../../thirdParty/unitTesting"/>
     <property name="libBatik.dir"   value="${basedir}/thirdParty/batik"/>
-    <property name="libJimi.dir"   value="${basedir}/thirdParty/jimi"/>
-    <property name="libIText.dir"   value="${basedir}/thirdParty/itext"/>
-    <property name="libPSWriter.dir"   value="${basedir}/thirdParty/postscript"/>
+    <property name="libFreeHEP.dir"   value="${basedir}/thirdParty/freehep"/>
     <property name="build.dir"   value="${basedir}/build"/>
     <property name="jars.dir"   value="${basedir}/../jars"/>
 
@@ -18,14 +16,13 @@
         <fileset dir="${libBatik.dir}">
             <include name="**/*.jar"/>
         </fileset>
-        <fileset dir="${libJimi.dir}">
+        <!-- first the ZIP with the patch -->
+        <fileset dir="${libFreeHEP.dir}">
             <include name="**/*.zip"/>
         </fileset>
-        <fileset dir="${libIText.dir}">
+        <!-- then the JARs -->
+        <fileset dir="${libFreeHEP.dir}">
             <include name="**/*.jar"/>
-        </fileset>
-        <fileset dir="${libPSWriter.dir}">
-            <include name="**/*.zip"/>
         </fileset>
         <fileset dir="${jars.dir}">
             <include name="**/*.jar"/>

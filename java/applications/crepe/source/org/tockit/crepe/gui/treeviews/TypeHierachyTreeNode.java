@@ -8,12 +8,11 @@
 package org.tockit.crepe.gui.treeviews;
 
 import java.util.Enumeration;
+import java.util.Vector;
 
 import javax.swing.tree.TreeNode;
 
 import org.tockit.cgs.model.Type;
-
-import com.sun.jimi.util.ArrayEnumeration;
 
 public class TypeHierachyTreeNode implements TreeNode {
     private Type type;
@@ -63,7 +62,9 @@ public class TypeHierachyTreeNode implements TreeNode {
     }
 
     public Enumeration children() {
-        return new ArrayEnumeration(this.subtypeNodes);
+		Vector temp = new Vector();
+		temp.copyInto(this.subtypeNodes);
+		return temp.elements();
     }
 
     public String toString() {

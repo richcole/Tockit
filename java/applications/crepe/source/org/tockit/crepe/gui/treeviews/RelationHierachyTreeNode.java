@@ -8,13 +8,12 @@
 package org.tockit.crepe.gui.treeviews;
 
 import java.util.Enumeration;
+import java.util.Vector;
 
 import javax.swing.tree.TreeNode;
 
 import org.tockit.cgs.model.Relation;
 import org.tockit.cgs.model.Type;
-
-import com.sun.jimi.util.ArrayEnumeration;
 
 public class RelationHierachyTreeNode implements TreeNode {
     private Relation relation;
@@ -64,7 +63,9 @@ public class RelationHierachyTreeNode implements TreeNode {
     }
 
     public Enumeration children() {
-        return new ArrayEnumeration(this.subtypeNodes);
+    	Vector temp = new Vector();
+    	temp.copyInto(this.subtypeNodes);
+        return temp.elements();
     }
 
     /// @todo signature might be better as flyout (tooltip)
