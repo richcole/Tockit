@@ -34,6 +34,16 @@ public class DiagramExportSettings {
      */
     private boolean autoMode;
 
+	/**
+	 * Stores if the history comments should be saved to a text file.
+	 */
+	private boolean saveCommentsToFile;
+
+	/**
+	 * Stores if the history comments should be copied to a clipboard.
+	 */
+	private boolean saveCommentToClipboard;
+		
     /**
      * Initialisation constructor.
      *
@@ -45,6 +55,8 @@ public class DiagramExportSettings {
         this.width = width;
         this.height = height;
         this.autoMode = autoMode;
+		this.saveCommentsToFile= false;
+		this.saveCommentToClipboard= false;
     }
 
     /**
@@ -71,7 +83,7 @@ public class DiagramExportSettings {
     public void setAutoMode(boolean mode) {
         this.autoMode = mode;
     }
-
+    
     /**
      * Get the current image format
      */
@@ -99,7 +111,7 @@ public class DiagramExportSettings {
     public boolean usesAutoMode() {
         return this.autoMode;
     }
-
+	
     /**
      * Debugging output.
      */
@@ -111,5 +123,37 @@ public class DiagramExportSettings {
         retVal += "]\n";
         return retVal;
     }
+	/**
+	 * Returns true if the history comments are to be saved to a file.
+	 * @return boolean
+	 */
+	public boolean getSaveCommentsToFile() {
+		return saveCommentsToFile;
+	}
+
+	/**
+	 * Returns true if the history comments are to be saved to the clipboard.
+	 * @return boolean
+	 */
+	public boolean getSaveCommentToClipboard() {
+		return saveCommentToClipboard;
+	}
+
+	/**
+	 * Sets whether to save the history comments to a file.
+	 * @param saveCommentsToFile The saveCommentsToFile to set
+	 */
+	public void setSaveCommentsToFile(boolean saveCommentsToFile) {
+		this.saveCommentsToFile = saveCommentsToFile;
+	}
+
+	/**
+	 * Sets whether to save the history comments to the system clipboard.
+	 * @param saveCommentToClipboard The saveCommentToClipboard to set
+	 */
+	public void setSaveCommentToClipboard(boolean saveCommentToClipboard) {
+		this.saveCommentToClipboard = saveCommentToClipboard;
+	}
+
 }
 
