@@ -17,6 +17,7 @@ class RelationIterator {
 public:
   friend class ContextIterator;
   friend class SetIterator;
+  friend class Lattice;
 
   RelationIterator(Relation const& relation) {
     mp_itRef = sarl_relation_iterator_create(relation.mp_relationRef);

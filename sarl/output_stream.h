@@ -28,5 +28,7 @@ extern Sarl_OutputStream*
 extern void
   sarl_output_stream_decr_ref(Sarl_OutputStream*);
 
+extern void
+  sarl_output_stream_incr_ref(Sarl_OutputStream*);
 
 #endif

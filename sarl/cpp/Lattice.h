@@ -7,12 +7,12 @@ extern "C" {
 }
 
 #include <sarl/cpp/Index.h>
+#include <sarl/cpp/SetIterator.h>
+#include <sarl/cpp/RelationIterator.h>
 
-class Set;
-class Relation;
-class RelationIterator;
 class ContextIterator;
 class Context;
+
 class LatticeIterator;
 class LatticeIterator;
 
@@ -32,6 +32,67 @@ public:
 
   Lattice copy() {
     return Lattice(*this);
+  };
+
+  inline SetIterator concepts() const {
+    SetIterator result(
+      sarl_lattice_concepts(mp_latticeRef)
+    );
+    return result.retn();
+  }
+
+  inline RelationIterator covering() const {
+    RelationIterator result(
+      sarl_lattice_covering(mp_latticeRef)
+    );
+    return result.retn();
+  }
+
+  inline RelationIterator ordering() const {
+    RelationIterator result(
+      sarl_lattice_ordering(mp_latticeRef)
+    );
+    return result.retn();
+  }
+
+  inline RelationIterator object_contingent() const {
+    RelationIterator result(
+      sarl_lattice_object_contingent(mp_latticeRef)
+    );
+    return result.retn();
+  }
+
+  inline RelationIterator attribute_contingent() const {
+    RelationIterator result(
+      sarl_lattice_object_contingent(mp_latticeRef)
+    );
+    return result.retn();
+  }
+
+  inline RelationIterator intent() const {
+    RelationIterator result(
+      sarl_lattice_object_contingent(mp_latticeRef)
+    );
+    return result.retn();
+  }
+
+  inline RelationIterator extent() const {
+    RelationIterator result(
+      sarl_lattice_object_contingent(mp_latticeRef)
+    );
+    return result.retn();
+  }
+
+  inline SetIterator concept_intent(Index c) 
+  {
+    SetIterator result(intent().intent(c));
+    return result.retn();
+  };
+
+  inline SetIterator concept_extent(Index c) 
+  {
+    SetIterator result(intent().intent(c));
+    return result.retn();
   };
 
 private:

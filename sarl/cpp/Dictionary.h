@@ -28,7 +28,7 @@ public:
     return sarl_dictionary_get_index(mp_dictionaryRef, s.mp_stringRef);
   };
 
-  String get_string(Index index) {
+  String get_string(Index index) const {
     return String(
       sarl_dictionary_get_string(mp_dictionaryRef, index)
     );
@@ -57,14 +57,14 @@ inline Dictionary::Dictionary(Dictionary const& s) {
   mp_dictionaryRef = sarl_dictionary_copy(s.mp_dictionaryRef);
 };
 
-inline Dictionary& Dictionary::operator=(Dictionary const& K) {
-    if ( it.mp_dictionaryRef == mp_dictionaryRef ) {
+inline Dictionary& Dictionary::operator=(Dictionary const& d) {
+    if ( d.mp_dictionaryRef == mp_dictionaryRef ) {
       return *this;
     }
     if ( mp_dictionaryRef != 0 ) {
       sarl_dictionary_decr_ref(mp_dictionaryRef);
     }
-    mp_dictionaryRef = it.mp_dictionaryRef;
+    mp_dictionaryRef = d.mp_dictionaryRef;
     if ( mp_dictionaryRef != 0 ) {
       sarl_dictionary_incr_ref(mp_dictionaryRef);
     }

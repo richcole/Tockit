@@ -28,6 +28,7 @@ public:
   friend class ConceptIterator;
   friend class LatticeIterator;
   friend class Dictionary;
+  friend class Lattice;
 
   friend SetIterator meet(SetIterator& a_it, SetIterator& b_it);
   friend SetIterator join(SetIterator& a_it, SetIterator& b_it);

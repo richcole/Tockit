@@ -199,6 +199,13 @@ int sarl_output_stream_write_index(
 
 };
 
+void sarl_output_stream_incr_ref(Sarl_OutputStream* output) 
+{
+  sarl_ref_count_incr(&output->ref_count);
+};
+
+  
+
 
 
 

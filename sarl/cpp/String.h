@@ -19,6 +19,7 @@ class Dictionary;
 class String {
 
   friend class Dictionary;
+  friend class OutputStream;
 
 protected:
   inline Sarl_Index string_length(Sarl_Char const* s) 
