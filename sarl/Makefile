@@ -79,7 +79,7 @@ test: libs base_test python_test java_test cpp_test
 base_test: libs $(TESTS) 
 
 $(TESTS) : $(TESTS:%=%.exe)
-	./$@.exe
+	echo LD_LIBRARY_PATH=$$LD_LIBRARY_PATH; echo ./$@.exe; ./$@.exe
 
 # Libs.
 
