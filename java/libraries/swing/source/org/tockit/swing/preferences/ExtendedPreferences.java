@@ -5,7 +5,7 @@
  * 
  * $ID$
  */
-package org.tockit.swing;
+package org.tockit.swing.preferences;
 
 import java.awt.Color;
 import java.awt.Frame;
@@ -44,39 +44,43 @@ public class ExtendedPreferences extends Preferences {
     }
     
     /**
-     * Gets the user preferences for the package of the class.
+     * Returns a user node for a certain class.
      * 
-     * For reason unknown to the author Java does not allow using the same signature,
-     * so we have to add the "Ex" bit at the end. Apart from the fact that covariant
-     * return types seem perfectly ok, this is a static method where no overriding can
-     * occur anyway. At least not that I can see. The alternative would have been a
-     * lot of casting.
+     * The node is determined by a subnode of the package node which uses the
+     * unqualified class name.
      * 
-     * @see systemNodeForPackageEx(Class)
-     */
-    public static ExtendedPreferences userNodeForPackageEx(Class cl) {
-        return new ExtendedPreferences(Preferences.userNodeForPackage(cl));
+     * @param cl the class determining the node
+     * 
+     * @return a node representing the class in the preferences
+     */    
+    public static ExtendedPreferences userNodeForClass(Class cl) {
+        String name = getUnqualifiedClassName(cl);
+        return new ExtendedPreferences(Preferences.userNodeForPackage(cl).node(name));
     }
     
     /**
-     * Gets the system preferences for the package of the class.
+     * Returns a system node for a certain class.
      * 
-     * For reason unknown to the author Java does not allow using the same signature,
-     * so we have to add the "Ex" bit at the end. Apart from the fact that covariant
-     * return types seem perfectly ok, this is a static method where no overriding can
-     * occur anyway. At least not that I can see. The alternative would have been a
-     * lot of casting.
+     * The node is determined by a subnode of the package node which uses the
+     * unqualified class name.
      * 
-     * @see userNodeForPackageEx(Class)
-     */
-    public static ExtendedPreferences systemNodeForPackageEx(Class cl) {
-        return new ExtendedPreferences(Preferences.systemNodeForPackage(cl));
+     * @param cl the class determining the node
+     * 
+     * @return a node representing the class in the preferences
+     */    
+    public static ExtendedPreferences systemNodeForClass(Class cl) {
+        String name = getUnqualifiedClassName(cl);
+        return new ExtendedPreferences(Preferences.systemNodeForPackage(cl).node(name));
     }
     
     /**
      * Stores the placement of a window in the preferences.
      * 
      * This includes position, size and flags such as maximimzed.
+     * 
+     * The naming scheme differs for the storeWindowPlacement/restoreWindowPlacement
+     * methods to indicate that they do more than the put/get methods -- they affect
+     * the window given.
      *
      * @param window       the window whose placement is to be saved.
      * 
@@ -100,6 +104,10 @@ public class ExtendedPreferences extends Preferences {
      * 
      * This includes position, size and flags such as maximimzed. If the settings
      * can not be found in the preferences, the given rectangle is used instead.
+     * 
+     * The naming scheme differs for the storeWindowPlacement/restoreWindowPlacement
+     * methods to indicate that they do more than the put/get methods -- they affect
+     * the window given.
      * 
      * @param window       the window whose placement is to be restored.
      * @param rectangle    the default placement. Must not be null.
@@ -218,6 +226,20 @@ public class ExtendedPreferences extends Preferences {
                 return defaultValue;
             }
         }
+    }
+
+    /**
+     * A helper method to find the unqualified name of a class.
+     * 
+     * @param cl the class to find the name for, must not be null
+     * 
+     * @return the unqualified name of the class
+     */
+    private static String getUnqualifiedClassName(Class cl) {
+        // if there is no dot in the string the lastIndexOf will be
+        // -1, thus the full string will be returned
+        String fullName = cl.getName();
+        return fullName.substring(fullName.lastIndexOf('.') + 1);
     }
 
     // from here on it is the implementation of the preferences API by delegation
