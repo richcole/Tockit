@@ -22,8 +22,8 @@ $(TEST):
 %.o: %.cpp
 	$(CCC) -ggdb $(CPP_FLAGS) $(DEBUG) -c -I../.. -o $@ $< 
 
-%.exe: %.o 
-	$(CCC) -ggdb -o $@ $^ -L$(SARL_LIB_DIR_D) -lsarl++ -lsarl
+%.exe: %.o $(SARL_LIB_DIR_D)/libsarl++.so
+	$(CCC) -ggdb -o $@ $< -L$(SARL_LIB_DIR_D) -lsarl++ -lsarl
 
 $(SARL_LIB_DIR_D)/libsarl++.so: $(OBJECTS:%=%.o)
 	$(CC) $(DEBUG) -shared -o $@ $^

@@ -8,7 +8,7 @@ extern "C" {
 }
 
 #include <sarl/test.h>
-#include "args.cc"
+#include "args.cpp"
 
 int main(int num_args, char **args)
 {

@@ -12,8 +12,8 @@ int main()
 
   int      i, j, LEN=10;
   
-  for(i=0;i<LEN;++i) {
-    for(j=0;j<LEN;++j) {
+  for(i=1;i<LEN;++i) {
+    for(j=1;j<LEN;++j) {
       if ( i % j == 0 ) {
         s.insert(i,j);
       }

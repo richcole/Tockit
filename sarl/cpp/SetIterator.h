@@ -163,19 +163,19 @@ public:
   inline static 
   SetIterator meet(SetIterator& a_it, SetIterator& b_it) 
   {
-    ::minus(a_it, b_it);
+    return ::meet(a_it, b_it);
   }
 
   inline static 
   SetIterator join(SetIterator& a_it, SetIterator& b_it) 
   {
-    ::minus(a_it, b_it);
+    return ::join(a_it, b_it);
   }
 
   inline static 
   SetIterator minus(SetIterator& a_it, SetIterator& b_it) 
   {
-    ::minus(a_it, b_it);
+    return ::minus(a_it, b_it);
   }
 };
 

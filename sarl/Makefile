@@ -49,19 +49,20 @@ JAVA_SARL_LIB   =  java/libsarl_java.so
 
 export LD_LIBRARY_PATH += $(SARL_ROOT)/lib_d
 
-test_base: libs $(TESTS:%=%.exe) 
+base_test: libs $(TESTS:%=%.exe) 
 	LD_LIBRARY_PATH=`pwd`/lib_d:$$LD_LIBRARY_PATH; \
 	for x in $(TESTS:%=%.exe) ; do echo $$x:; ./$$x || exit -1 ; done
 # Main.
 
 main: $(PYTHON_SARL_LIB) $(JAVA_SARL_LIB)
 
+.PHONY: test base_test java_test cpp_test python_test
+.PHONY: clean base_clean python_clean java_clean cpp_clean 
 # Tests.
 
-test: libs test_base test_python test_java test_cpp
+test: libs base_test python_test java_test cpp_test
 
-test_base: $(TESTS) 
-.PHONY: test test_base test_java test_cpp
+base_test: $(TESTS) 
 .PHONY: $(TESTS)
 $(TESTS) : $(TESTS:%=%.exe)
 	./$@.exe
@@ -111,7 +112,7 @@ python/sarl_wrap.o: python/sarl_wrap.c
 python/sarl_wrap.c: $(PUBLIC_HEADERS) sarl.input
 	cd python; $(SWIG) -I.. -o sarl_wrap.c -c++ -shadow -python sarl.input 
 
-test_python: $(PYTHON_SARL_LIB)
+python_test: $(PYTHON_SARL_LIB)
 	cd python; $(PYTHON) test_sarl.py
 
 java/sarl_wrap.o: java/sarl_wrap.c
@@ -123,10 +124,10 @@ java/sarl_wrap.c: $(PUBLIC_HEADERS) sarl.input
 java/TestSarl.class: java/TestSarl.java $(JAVA_SARL_LIB) java/sarl_wrap.c
 	cd java; javac TestSarl.java
 
-test_java: java/TestSarl.class $(JAVA_SARL_LIB)
+java_test: java/TestSarl.class $(JAVA_SARL_LIB)
 	cd java; java -Djava.library.path=. TestSarl
 
-test_cpp: 
+cpp_test: libs
 	$(MAKE) -C cpp test
 
 clean: java_clean python_clean cpp_clean lib_clean

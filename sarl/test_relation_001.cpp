@@ -7,7 +7,7 @@ extern "C" {
 }
 
 #include <sarl/test.h>
-#include "args.cc"
+#include "args.cpp"
 
 int main(int num_args, char **args)
 {
@@ -39,7 +39,7 @@ int main(int num_args, char **args)
 
   SARL_SET_ITERATOR_FOR(intent) {
     if (TRACE_OUTPUT) {
-      fprintf(stdout, "intent.value= %d\n", sarl_set_iterator_val(intent));
+      fprintf(stdout, "intent.value= %d\n", sarl_set_iterator_value(intent));
     }
   };
   
@@ -48,7 +48,7 @@ int main(int num_args, char **args)
   SARL_SET_ITERATOR_FOR(intent_copy) {
     if (TRACE_OUTPUT) {
       fprintf(stdout, "intent_copy.value= %d\n", 
-        sarl_set_iterator_val(intent_copy));
+        sarl_set_iterator_value(intent_copy));
     }
   };
   
