@@ -14,9 +14,9 @@ import java.util.Map;
 public abstract class ConscriptStructure {
     private CSCFile file;
     private String name;
-    private FormattedString title = null;;
-    private String remark = null;;
-    private Map specials = new Hashtable();;
+    private FormattedString title = null;
+    private String remark = null;
+    private Map specials = new Hashtable();
 
     public ConscriptStructure(CSCFile file, String name) {
         this.file = file;
