@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Properties;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -957,7 +958,7 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
             }
             try {
                 this.diagramExportSettings.getGraphicFormat().getWriter().exportGraphic(
-                        this.graphView, this.diagramExportSettings, saveDialog.getSelectedFile());
+                        this.graphView, this.diagramExportSettings, saveDialog.getSelectedFile(), new Properties());
             } catch (ImageGenerationException e) {
                 ErrorDialog.showError(this, e, "Exporting image error");
             } catch (OutOfMemoryError e) {
