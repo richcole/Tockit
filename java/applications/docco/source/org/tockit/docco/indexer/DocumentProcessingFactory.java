@@ -17,12 +17,16 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.tockit.docco.GlobalConstants;
 
+/**
+ * @todo search for something doing file magic (as in the GNU "file" command). That would be
+ *   way better than the extension-based stuff.
+ */
 public class DocumentProcessingFactory {
 
 	/**
-	 * keys - file extention
+	 * keys - file extension
 	 * values - corresponding DocumentProcessor
-	 * @todo plan was to have this registery searchable for regular expressions
+	 * @todo plan was to have this registry searchable for regular expressions
 	 * and ordered. HashTable is not suited for this purposes. will need to reimplement.
 	 */
 	private Hashtable docRegistry = new Hashtable();
@@ -39,6 +43,8 @@ public class DocumentProcessingFactory {
 
 		if (docProcessor != null) {
 			try {
+				/// @todo check what else we can get from the JDK side. Every feature we can get from the File API should be
+				/// worthwhile keeping
 				Document doc = docProcessor.getDocument(file);
 				doc.add(Field.Text(GlobalConstants.FIELD_DOC_PATH, file.getPath()));
 				if (doc.get(GlobalConstants.FIELD_DOC_DATE) == null) {
