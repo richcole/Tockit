@@ -10,6 +10,7 @@ package org.tockit.docco.gui;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -24,6 +25,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.Point2D;
+import java.awt.print.PageFormat;
+import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileNotFoundException;
@@ -38,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import javax.swing.*;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -73,6 +77,7 @@ import net.sourceforge.toscanaj.controller.fca.ConceptInterpretationContext;
 import net.sourceforge.toscanaj.controller.fca.DiagramHistory;
 import net.sourceforge.toscanaj.controller.fca.DirectConceptInterpreter;
 import net.sourceforge.toscanaj.dbviewer.BrowserLauncher;
+import net.sourceforge.toscanaj.gui.action.ExportDiagramAction;
 import net.sourceforge.toscanaj.gui.dialog.ErrorDialog;
 import net.sourceforge.toscanaj.model.context.FCAElement;
 import net.sourceforge.toscanaj.model.database.AggregateQuery;
@@ -88,6 +93,7 @@ import org.tockit.canvas.CanvasBackground;
 import org.tockit.canvas.CanvasItem;
 import org.tockit.canvas.events.CanvasItemDraggedEvent;
 import org.tockit.canvas.events.CanvasItemSelectedEvent;
+import org.tockit.canvas.imagewriter.DiagramExportSettings;
 import org.tockit.events.Event;
 import org.tockit.events.EventBroker;
 import org.tockit.events.EventBrokerListener;
@@ -146,6 +152,11 @@ public class DoccoMainFrame extends JFrame {
 	private DiagramView diagramView;
 	private Concept selectedConcept;
 	private JSplitPane viewsSplitPane;
+    private DiagramExportSettings diagramExportSettings;
+    private JMenuItem printMenuItem;
+    private ExportDiagramAction exportDiagramAction;
+    private JMenuItem printSetupMenuItem;
+    private PageFormat pageFormat = new PageFormat();
 	
 	private class SelectionEventHandler implements EventBrokerListener {
 		public void processEvent(Event event) {
@@ -302,13 +313,6 @@ public class DoccoMainFrame extends JFrame {
 	public DoccoMainFrame(boolean forceIndexAccess) {
 		super(WINDOW_TITLE);
 		
-		JMenuBar menuBar = new JMenuBar();
-		menuBar.add(createFileMenu());
-		menuBar.add(createViewMenu());
-		menuBar.add(Box.createHorizontalGlue());
-		menuBar.add(createHelpMenu());
-		this.setJMenuBar(menuBar);
-		
 		JComponent viewsComponent = buildViewsComponent();
 		this.documentDisplayPane = new DocumentDisplayPane();
 		
@@ -316,6 +320,15 @@ public class DoccoMainFrame extends JFrame {
 		mainPane.add(viewsComponent, BorderLayout.CENTER);
 		mainPane.add(this.documentDisplayPane, BorderLayout.SOUTH);
 								
+        this.diagramExportSettings = new DiagramExportSettings();
+
+        JMenuBar menuBar = new JMenuBar();
+		menuBar.add(createFileMenu());
+		menuBar.add(createViewMenu());
+		menuBar.add(Box.createHorizontalGlue());
+		menuBar.add(createHelpMenu());
+		this.setJMenuBar(menuBar);
+		
 		this.statusBarMessage = new JLabel("Ready!");
 
 		JPanel contentPane = new JPanel(new BorderLayout());
@@ -460,8 +473,8 @@ public class DoccoMainFrame extends JFrame {
     }
 
     private JMenu createViewMenu() {
-        JMenu viewMenu = new JMenu("View");
-        viewMenu.setMnemonic('v');
+        JMenu diagramMenu = new JMenu("Diagram");
+        diagramMenu.setMnemonic('d');
         
         this.showPhantomNodesCheckBox = new JCheckBoxMenuItem("Show all possible combinations");
         this.showPhantomNodesCheckBox.setMnemonic('p');
@@ -473,7 +486,7 @@ public class DoccoMainFrame extends JFrame {
         		doQuery();
         	}
         });
-        viewMenu.add(this.showPhantomNodesCheckBox);
+        diagramMenu.add(this.showPhantomNodesCheckBox);
         
         this.showContingentOnlyCheckBox = new JCheckBoxMenuItem("Show matches only once");
         this.showContingentOnlyCheckBox.setMnemonic('o');
@@ -488,8 +501,53 @@ public class DoccoMainFrame extends JFrame {
         		fillTreeList();
         	}
         });
-        viewMenu.add(this.showContingentOnlyCheckBox);
-        return viewMenu;
+        diagramMenu.add(this.showContingentOnlyCheckBox);
+        
+        diagramMenu.addSeparator();
+
+        // we add the export options only if we can export at all
+        /// @todo reduce duplicate code with ToscanaJMainPanel
+        if (this.diagramExportSettings != null) {
+            Frame frame = JOptionPane.getFrameForComponent(this);
+            this.exportDiagramAction =
+                new ExportDiagramAction(
+                    frame,
+                    this.diagramExportSettings,
+                    this.diagramView,
+                    KeyEvent.VK_E,
+                    KeyStroke.getKeyStroke(
+                        KeyEvent.VK_E,
+                        ActionEvent.CTRL_MASK));
+            diagramMenu.add(this.exportDiagramAction);
+            this.exportDiagramAction.setEnabled(false);
+            diagramMenu.addSeparator();
+        }
+
+        // menu item PRINT
+        this.printMenuItem = new JMenuItem("Print...");
+        this.printMenuItem.setMnemonic(KeyEvent.VK_P);
+        this.printMenuItem.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_P, ActionEvent.CTRL_MASK));
+        this.printMenuItem.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e) {
+                printDiagram();
+            }
+        });
+        this.printMenuItem.setEnabled(false);
+        diagramMenu.add(this.printMenuItem);
+
+        // menu item PRINT SETUP
+        this.printSetupMenuItem = new JMenuItem("Print Setup...");
+        this.printSetupMenuItem.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e) {
+                pageFormat = PrinterJob.getPrinterJob().pageDialog(pageFormat);
+                printDiagram();
+            }
+        });
+        this.printSetupMenuItem.setEnabled(true);
+        diagramMenu.add(this.printSetupMenuItem);
+
+        return diagramMenu;
     }
 
     private JMenu createFileMenu() {
@@ -777,6 +835,7 @@ public class DoccoMainFrame extends JFrame {
 												queryDecomposer);
 			this.diagramView.showDiagram(null);
 			this.hitList.setModel(null);
+            setMenuStates();
 		} catch (IOException e1) {
 			ErrorDialog.showError(this, e1, "Index not found");
 			String[] options = new String[]{"Recreate Index", "Exit Program"};
@@ -991,10 +1050,19 @@ public class DoccoMainFrame extends JFrame {
             }
 			this.hitList.setModel(null);
 			this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            setMenuStates();
 		}
 	}
 	
-	private void closeMainPanel() {
+	private void setMenuStates() {
+        boolean diagramAvailable = this.diagramView.getDiagram() != null;
+        this.printMenuItem.setEnabled(diagramAvailable);
+        if(this.exportDiagramAction != null) {
+            this.exportDiagramAction.setEnabled(diagramAvailable);
+        }
+    }
+
+    private void closeMainPanel() {
 		// shut down indexers
 		try {
 			for (Iterator iter = this.indexes.iterator(); iter.hasNext();) {
@@ -1027,4 +1095,23 @@ public class DoccoMainFrame extends JFrame {
 
 		System.exit(0);
 	}
+
+    /**
+     * Prints the diagram using the current settings.
+     *
+     * If we don't have a diagram at the moment we just return.
+     */
+    protected void printDiagram() {
+        if (this.diagramView.getDiagram() != null) {
+            PrinterJob printJob = PrinterJob.getPrinterJob();
+            if (printJob.printDialog()) {
+                try {
+                    printJob.setPrintable(this.diagramView, pageFormat);
+                    printJob.print();
+                } catch (Exception e) {
+                    ErrorDialog.showError(this, e, "Printing failed");
+                }
+            }
+        }
+    }
 }
