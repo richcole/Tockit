@@ -192,7 +192,7 @@ public class CernatoXMLParser {
                 Element criterionElem = (Element) iterator2.next();
                 Property property = (Property) properties.get(criterionElem.getChild("property_ref").
                         getAttributeValue("property"));
-                ScaleColumn valgroup = property.getType().getScales()[0].getColumn(criterionElem.getChild("value_group_ref").
+                ValueGroup valgroup = property.getType().getValueGroup(criterionElem.getChild("value_group_ref").
                         getAttributeValue("value_group"));
                 view.addCriterion(new Criterion(property, valgroup));
             }

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class TextualValueGroup implements ScaleColumn {
+public class TextualValueGroup implements ValueGroup {
     private TextualType type;
     private String name;
     private List values = new ArrayList();
@@ -43,7 +43,7 @@ public class TextualValueGroup implements ScaleColumn {
         return false;
     }
 
-    public boolean isSuperSetOf(ScaleColumn otherGroup) {
+    public boolean isSuperSetOf(ValueGroup otherGroup) {
         if (!(otherGroup instanceof TextualValueGroup)) {
             return false;
         }
@@ -60,7 +60,7 @@ public class TextualValueGroup implements ScaleColumn {
         return true;
     }
 
-    public boolean isLesserThan(ScaleColumn other) {
+    public boolean isLesserThan(ValueGroup other) {
         if (!(other instanceof TextualValueGroup)) {
             return false;
         }
@@ -77,7 +77,7 @@ public class TextualValueGroup implements ScaleColumn {
         return values.size() != otherVG.values.size();
     }
 
-    public boolean isEqual(ScaleColumn other) {
+    public boolean isEqual(ValueGroup other) {
         if (!(other instanceof TextualValueGroup)) {
             return false;
         }

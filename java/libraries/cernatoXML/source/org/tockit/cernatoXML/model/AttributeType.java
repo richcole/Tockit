@@ -9,6 +9,8 @@ package org.tockit.cernatoXML.model;
 
 public interface AttributeType {
     String getName();
-    Scale[] getScales();
     AttributeValue[] getValueRange();
+    void addValueGroup(ValueGroup column, String id);
+    ValueGroup getValueGroup(String id);
+    ValueGroup[] getValueGroups();
 }

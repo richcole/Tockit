@@ -7,9 +7,10 @@
  */
 package org.tockit.cernatoXML.model;
 
-public interface Scale {
+public interface ValueGroup {
     String getName();
-    void addColumn(ScaleColumn column, String id);
-    ScaleColumn getColumn(String id);
-    ScaleColumn[] getColumns();
+    boolean containsValue(AttributeValue value);
+    boolean isSuperSetOf(ValueGroup otherColumn);
+    boolean isLesserThan(ValueGroup other);
+    boolean isEqual(ValueGroup other);
 }

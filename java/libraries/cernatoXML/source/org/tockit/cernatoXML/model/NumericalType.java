@@ -12,9 +12,9 @@ public class NumericalType extends TypeImplementation {
         super(name);
     }
 
-    public void addValueGroup(ScaleColumn column, String id) {
-        if (column instanceof NumericalValueGroup) {
-            scale.addColumn(column, id);
+    public void addValueGroup(ValueGroup valueGroup, String id) {
+        if (valueGroup instanceof NumericalValueGroup) {
+            super.addValueGroup(valueGroup, id);
             return;
         }
         throw new RuntimeException("Wrong value group type");

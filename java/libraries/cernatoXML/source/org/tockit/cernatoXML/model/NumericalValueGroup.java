@@ -7,7 +7,7 @@
  */
 package org.tockit.cernatoXML.model;
 
-public class NumericalValueGroup implements ScaleColumn {
+public class NumericalValueGroup implements ValueGroup {
     private NumericalType type;
     private String name;
     private double min;
@@ -51,7 +51,7 @@ public class NumericalValueGroup implements ScaleColumn {
         return true;
     }
 
-    public boolean isSuperSetOf(ScaleColumn otherColumn) {
+    public boolean isSuperSetOf(ValueGroup otherColumn) {
         if (!(otherColumn instanceof NumericalValueGroup)) {
             return false;
         }
@@ -74,7 +74,7 @@ public class NumericalValueGroup implements ScaleColumn {
         return true;
     }
 
-    public boolean isLesserThan(ScaleColumn other) {
+    public boolean isLesserThan(ValueGroup other) {
         if (!(other instanceof NumericalValueGroup)) {
             return false;
         }
@@ -97,7 +97,7 @@ public class NumericalValueGroup implements ScaleColumn {
         return true;
     }
 
-    public boolean isEqual(ScaleColumn other) {
+    public boolean isEqual(ValueGroup other) {
         if (!(other instanceof NumericalValueGroup)) {
             return false;
         }

@@ -9,9 +9,9 @@ package org.tockit.cernatoXML.model;
 
 public class Criterion {
     private Property property;
-    private ScaleColumn valueGroup;
+    private ValueGroup valueGroup;
 
-    public Criterion(Property property, ScaleColumn valueGroup) {
+    public Criterion(Property property, ValueGroup valueGroup) {
         this.valueGroup = valueGroup;
         this.property = property;
     }
@@ -20,7 +20,7 @@ public class Criterion {
         return property;
     }
 
-    public ScaleColumn getValueGroup() {
+    public ValueGroup getValueGroup() {
         return valueGroup;
     }
 

@@ -12,9 +12,9 @@ public class TextualType extends TypeImplementation {
         super(name);
     }
 
-    public void addValueGroup(ScaleColumn column, String id) {
-        if (column instanceof TextualValueGroup) {
-            scale.addColumn(column, id);
+    public void addValueGroup(ValueGroup valueGroup, String id) {
+        if (valueGroup instanceof TextualValueGroup) {
+            super.addValueGroup(valueGroup, id);
             return;
         }
         throw new RuntimeException("Wrong value group type");

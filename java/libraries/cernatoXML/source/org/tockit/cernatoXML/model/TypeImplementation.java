@@ -7,24 +7,33 @@
  */
 package org.tockit.cernatoXML.model;
 
+import java.util.Hashtable;
+
 public abstract class TypeImplementation implements AttributeType {
     protected String name;
-    protected Scale scale;
+    protected Hashtable valueGroups = new Hashtable();
 
     public TypeImplementation(String name) {
         this.name = name;
-        this.scale = new ScaleImplementation(name);
     }
 
     public String getName() {
         return name;
     }
 
-    public Scale[] getScales() {
-        return new Scale[]{this.scale};
-    }
-    
     public AttributeValue[] getValueRange() {
         return null;
+    }
+
+    public void addValueGroup(ValueGroup column, String id) {
+        this.valueGroups.put(id, column);
+    }
+
+    public ValueGroup getValueGroup(String id) {
+        return (ValueGroup) valueGroups.get(id);
+    }
+
+    public ValueGroup[] getValueGroups() {
+        return (ValueGroup[]) this.valueGroups.values().toArray();
     }
 }
