@@ -94,7 +94,10 @@
 	</target>
 
 	<target name="compile" depends="_prepare">
-		<javac srcdir="${plugin.src.dir}" destdir="${plugin.build.dir}" debug="on" optimize="off" deprecation="on">
+		<javac srcdir="${plugin.src.dir}" 
+				destdir="${plugin.build.dir}" debug="on" 
+				optimize="off" deprecation="on"
+				source="1.4">
 			<classpath refid="plugin.class.path"/>
 		</javac>
 	</target>
