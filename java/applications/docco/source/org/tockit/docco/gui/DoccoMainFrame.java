@@ -48,6 +48,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
@@ -100,6 +101,11 @@ import org.tockit.docco.query.QueryEngine;
 import org.tockit.docco.query.util.QueryWithResultSet;
 
 public class DoccoMainFrame extends JFrame {
+	private static final int LOWEST_PRIORITY = Thread.MIN_PRIORITY;
+	private static final int LOW_PRIORITY = (Thread.MIN_PRIORITY + Thread.NORM_PRIORITY)/2;
+    private static final int MEDIUM_PRIORITY = Thread.NORM_PRIORITY;
+	private static final int HIGH_PRIORITY = (Thread.NORM_PRIORITY + Thread.MAX_PRIORITY)/2;
+    private static final int HIGHEST_PRIORITY = Thread.MAX_PRIORITY;
     private JLabel statusBarMessage;
     private static final int VISIBLE_TREE_DEPTH = 2;
     private static final int DEFAULT_VERTICAL_DIVIDER_LOCATION = 600;
@@ -431,8 +437,8 @@ public class DoccoMainFrame extends JFrame {
     }
 
     private JMenu createFileMenu() {
-        JMenu fileMenu = new JMenu("File");
-        fileMenu.setMnemonic('f');
+        JMenu fileMenu = new JMenu("Indexing");
+        fileMenu.setMnemonic('i');
         
 		JMenuItem newIndexItem = new JMenuItem("Create New Index...");
 		newIndexItem.setMnemonic('n');
@@ -461,6 +467,62 @@ public class DoccoMainFrame extends JFrame {
 			}
 		});
 		fileMenu.add(editFileMappings);
+
+		JMenu indexingPriorityMenu = new JMenu("Indexing priority");
+		final JRadioButtonMenuItem highestPriorityMenuItem = 
+					new JRadioButtonMenuItem("Highest (fast indexing, computer might get less responsive)");
+		highestPriorityMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Index.indexingPriority = HIGHEST_PRIORITY;
+			}
+		});
+		indexingPriorityMenu.add(highestPriorityMenuItem);
+		final JRadioButtonMenuItem highPriorityMenuItem = 
+					new JRadioButtonMenuItem("High");
+		highPriorityMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Index.indexingPriority = HIGH_PRIORITY;
+			}
+		});
+		indexingPriorityMenu.add(highPriorityMenuItem);
+		final JRadioButtonMenuItem mediumPriorityMenuItem = 
+					new JRadioButtonMenuItem("Medium");
+		mediumPriorityMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Index.indexingPriority = MEDIUM_PRIORITY;
+			}
+		});
+		indexingPriorityMenu.add(mediumPriorityMenuItem);
+		final JRadioButtonMenuItem lowPriorityMenuItem = 
+					new JRadioButtonMenuItem("Low");
+		lowPriorityMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Index.indexingPriority = LOW_PRIORITY;
+			}
+		});
+		indexingPriorityMenu.add(lowPriorityMenuItem);
+		final JRadioButtonMenuItem lowestPriorityMenuItem = 
+					new JRadioButtonMenuItem("Lowest (slow indexing, but computer stays responsive)");
+		highestPriorityMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Index.indexingPriority = LOWEST_PRIORITY;
+			}
+		});
+		indexingPriorityMenu.add(lowestPriorityMenuItem);
+		indexingPriorityMenu.addMenuListener(new MenuListener(){
+            public void menuSelected(MenuEvent e) {
+				highestPriorityMenuItem.setSelected(Index.indexingPriority == HIGHEST_PRIORITY);
+				highPriorityMenuItem.setSelected(Index.indexingPriority == HIGH_PRIORITY);
+				mediumPriorityMenuItem.setSelected(Index.indexingPriority == MEDIUM_PRIORITY);
+				lowPriorityMenuItem.setSelected(Index.indexingPriority == LOW_PRIORITY);
+				lowestPriorityMenuItem.setSelected(Index.indexingPriority == LOWEST_PRIORITY);
+            }
+            public void menuDeselected(MenuEvent e) {
+            }
+            public void menuCanceled(MenuEvent e) {
+            }
+		});
+		fileMenu.add(indexingPriorityMenu);
 
 		fileMenu.addSeparator();
 		JMenuItem exitItem = new JMenuItem("Exit");

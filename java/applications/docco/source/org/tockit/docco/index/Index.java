@@ -28,8 +28,9 @@ public class Index {
 	private Indexer indexer;
 	private Thread indexThread;
 	private DocumentHandlerRegistry docHandlersRegistry;
+	public static int indexingPriority = Thread.MIN_PRIORITY;
 	
-	public static Index openIndex(File indexLocation, Indexer.CallbackRecipient callbackRecipient) throws IOException {
+    public static Index openIndex(File indexLocation, Indexer.CallbackRecipient callbackRecipient) throws IOException {
 		String[] paths = getLinesOfFile(getContentsFile(indexLocation));
 		try {
 			File baseDirectory = new File(paths[0]); 
@@ -58,7 +59,7 @@ public class Index {
 			throw new IllegalStateException("Index is already been updated.");
 		}
 		this.indexThread = new Thread(this.indexer);
-		this.indexThread.setPriority(Thread.MIN_PRIORITY);
+        this.indexThread.setPriority(indexingPriority);
 		this.indexThread.start();
     }
 
@@ -105,22 +106,30 @@ public class Index {
 		return this.indexLocation;
 	}
 	
-	public void shutdown() throws IOException {
+	public void shutdown() {
 		if(this.indexThread != null) {
 			this.indexer.stopIndexing();
 			while(this.indexThread.isAlive()) {
-				Thread.yield();
+				try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                	e.printStackTrace(); // just ignore otherwise, nothing we could do about it
+                }
 			}
 		}
-		PrintStream out = new PrintStream(new FileOutputStream(getContentsFile(this.indexLocation)));
-		out.println(this.baseDirectory.getPath());
-		out.close();
-		out = new PrintStream(new FileOutputStream(getMappingsFile(this.indexLocation)));
-		String[] mappings = this.docHandlersRegistry.getMappingStringsList();
-        for (int i = 0; i < mappings.length; i++) {
-			out.println(mappings[i]);
+		try {
+			PrintStream out = new PrintStream(new FileOutputStream(getContentsFile(this.indexLocation)));
+			out.println(this.baseDirectory.getPath());
+			out.close();
+			out = new PrintStream(new FileOutputStream(getMappingsFile(this.indexLocation)));
+			String[] mappings = this.docHandlersRegistry.getMappingStringsList();
+			for (int i = 0; i < mappings.length; i++) {
+				out.println(mappings[i]);
+			}
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace(); // nothing we could do, but throwing on shutdown is not nice either.
 		}
-		out.close();
 	}
 	
     public DocumentHandlerRegistry getDocHandlersRegistry() {
