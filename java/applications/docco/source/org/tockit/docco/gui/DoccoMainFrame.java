@@ -460,6 +460,7 @@ public class DoccoMainFrame extends JFrame {
 			}
 			
 			this.indexThread.stopIndexing();
+			createDirPath(new File(this.indexLocation));
             IndexWriter writer = new IndexWriter(
             						this.indexLocation,
             						GlobalConstants.DEFAULT_ANALYZER,
@@ -736,4 +737,15 @@ public class DoccoMainFrame extends JFrame {
 		System.exit(0);
 	}
 	
+	private void createDirPath(File file) {
+		if (!file.exists()) {
+			File parent = file.getParentFile();
+			if (!parent.exists()) {
+				createDirPath(parent);
+			}
+			else {
+				file.mkdir();
+			}
+		}
+	}
 }

@@ -27,6 +27,7 @@ public class Indexer extends Thread {
     private List fileQueue = new LinkedList();
 	private CallbackRecipient callbackRecipient;
     private DocumentProcessingFactory docProcessingFactory = new DocumentProcessingFactory();
+    private int filesSeen;
 	
 	public Indexer(CallbackRecipient output) {
 		this.callbackRecipient = output;
@@ -53,6 +54,7 @@ public class Indexer extends Thread {
 		this.writer = new IndexWriter(indexLocation,
 									  GlobalConstants.DEFAULT_ANALYZER,
 								      false);
+		this.filesSeen = 0;
 	}
 
 	synchronized public void stopIndexing() throws IOException {
@@ -88,7 +90,7 @@ public class Indexer extends Thread {
 	}
 	
 	private void indexDocs(File file) {
-		showProgress(writer.docCount(), file.getAbsolutePath());
+		showProgress(writer.docCount(), this.filesSeen, file.getAbsolutePath());
 		try {
 			synchronized(this) {
 				if (this.writer == null) {
@@ -105,6 +107,7 @@ public class Indexer extends Thread {
 					}
 				}
 				else {
+					this.filesSeen++;
 					writer.addDocument(this.docProcessingFactory.processDocument(file));
 				}
 			}
@@ -118,8 +121,8 @@ public class Indexer extends Thread {
 	}
 
 
-	private void showProgress(int docCount, String dir) {
-		showFeedbackMessage("Indexing: " + docCount + " documents so far" + " (" + dir + ")");
+	private void showProgress(int indexed, int total, String dir) {
+		showFeedbackMessage("Indexing: " + indexed + " documents so far" + " (" + dir + ")");
 	}
 
 	private void showFeedbackMessage(String string) {
@@ -127,16 +130,4 @@ public class Indexer extends Thread {
 			this.callbackRecipient.showFeedbackMessage(string);
 		}
     }
-
-    private void createDirPath(File file) {
-		if (!file.exists()) {
-			File parent = file.getParentFile();
-			if (!parent.exists()) {
-				createDirPath(parent);
-			}
-			else {
-				file.mkdir();
-			}
-		}
-	}
 }
