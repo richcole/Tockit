@@ -312,6 +312,7 @@ public class DoccoMainFrame extends JFrame {
 		while (extentIterator.hasNext()) {
 			HitReference reference = (HitReference) extentIterator.next();
 			String path = reference.getDocument().get(GlobalConstants.FIELD_DOC_PATH);
+			System.out.println(path);
 			StringTokenizer tokenizer = new StringTokenizer(path, separator);
 			StringBuffer curPath = new StringBuffer();
 			DefaultMutableTreeNode lastNode = rootNode;
@@ -350,13 +351,20 @@ public class DoccoMainFrame extends JFrame {
 			DefaultMutableTreeNode firstChild = (DefaultMutableTreeNode) children.nextElement();
 			done = true;
 			if(!children.hasMoreElements()) { // single child
-				treeNode.setUserObject(firstChild.getUserObject());
-				treeNode.remove(firstChild);
-				Enumeration grandchildren = firstChild.children();
-				while (grandchildren.hasMoreElements()) {
-					MutableTreeNode grandchild = (MutableTreeNode) grandchildren.nextElement();
+				// we need to copy references to the grandchildren first, since modification
+				// of the children breaks the enumeration
+				MutableTreeNode[] grandchildren = new MutableTreeNode[firstChild.getChildCount()];
+				int count = 0;
+				Enumeration grandchildrenEnum = firstChild.children();
+				while (grandchildrenEnum.hasMoreElements()) {
+					grandchildren[count++] = (MutableTreeNode) grandchildrenEnum.nextElement();
+				}
+				for (int i = 0; i < grandchildren.length; i++) {
+					MutableTreeNode grandchild = grandchildren[i];
 					treeNode.add(grandchild);
 				}
+				treeNode.setUserObject(firstChild.getUserObject());
+				treeNode.remove(firstChild);
 				done = false;
 			}
 		} while(!done);
