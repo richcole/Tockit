@@ -8,6 +8,7 @@
 package org.tockit.docco.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -57,7 +58,7 @@ public class DocumentDisplayPane extends JPanel {
 		this.pathField = new JTextField();
 		this.pathField.setEditable(false);
 
-		JLabel dateLabel = new JLabel("Date:");
+		JLabel dateLabel = new JLabel("Last Change:");
 		this.dateField = new JTextField();
 		this.dateField.setEditable(false);
 		
@@ -69,6 +70,7 @@ public class DocumentDisplayPane extends JPanel {
 		this.summaryArea = new JTextArea();
 		this.summaryArea.setEditable(false);
 		JScrollPane summaryPane = new JScrollPane(this.summaryArea);
+		summaryPane.setPreferredSize(new Dimension(10,100));
 		
 		final JPanel panel = this;
 		this.shellExecuteButton = new JButton("Open with default application...");
@@ -87,7 +89,7 @@ public class DocumentDisplayPane extends JPanel {
 		mainPanel.add(titleLabel, new GridBagConstraints(
 						0, 0, 1, 1, 0, 0,
 						GridBagConstraints.WEST,
-						GridBagConstraints.HORIZONTAL,
+						GridBagConstraints.NONE,
 						new Insets(5,5,5,5),
 						0,0 ));
 		mainPanel.add(this.titleField, new GridBagConstraints(
@@ -99,7 +101,7 @@ public class DocumentDisplayPane extends JPanel {
 		mainPanel.add(authorLabel, new GridBagConstraints(
 						0, 1, 1, 1, 0, 0,
 						GridBagConstraints.WEST,
-						GridBagConstraints.HORIZONTAL,
+						GridBagConstraints.NONE,
 						new Insets(5,5,5,5),
 						0,0 ));
 		mainPanel.add(this.authorField, new GridBagConstraints(
@@ -111,7 +113,7 @@ public class DocumentDisplayPane extends JPanel {
 		mainPanel.add(pathLabel, new GridBagConstraints(
 						0, 2, 1, 1, 0, 0,
 						GridBagConstraints.WEST,
-						GridBagConstraints.HORIZONTAL,
+						GridBagConstraints.NONE,
 						new Insets(5,5,5,5),
 						0,0 ));
 		mainPanel.add(this.pathField, new GridBagConstraints(
@@ -123,7 +125,7 @@ public class DocumentDisplayPane extends JPanel {
 		mainPanel.add(dateLabel, new GridBagConstraints(
 						0, 3, 1, 1, 0, 0,
 						GridBagConstraints.WEST,
-						GridBagConstraints.HORIZONTAL,
+						GridBagConstraints.NONE,
 						new Insets(5,5,5,5),
 						0,0 ));
 		mainPanel.add(this.dateField, new GridBagConstraints(
@@ -135,7 +137,7 @@ public class DocumentDisplayPane extends JPanel {
 		mainPanel.add(sizeLabel, new GridBagConstraints(
 						2, 3, 1, 1, 0, 0,
 						GridBagConstraints.WEST,
-						GridBagConstraints.HORIZONTAL,
+						GridBagConstraints.NONE,
 						new Insets(5,5,5,5),
 						0,0 ));
 		mainPanel.add(this.sizeField, new GridBagConstraints(
@@ -147,13 +149,13 @@ public class DocumentDisplayPane extends JPanel {
 		mainPanel.add(summaryLabel, new GridBagConstraints(
 						0, 4, 4, 1, 0, 0,
 						GridBagConstraints.WEST,
-						GridBagConstraints.HORIZONTAL,
+						GridBagConstraints.NONE,
 						new Insets(5,5,5,5),
 						0,0 ));
 		mainPanel.add(summaryPane, new GridBagConstraints(
-						0, 5, 4, 1, 1, 0,
+						0, 5, 4, 1, 0, 10,
 						GridBagConstraints.WEST,
-						GridBagConstraints.HORIZONTAL,
+						GridBagConstraints.BOTH,
 						new Insets(5,5,5,5),
 						0,0 ));
 		mainPanel.add(this.shellExecuteButton, new GridBagConstraints(
