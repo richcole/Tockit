@@ -78,6 +78,18 @@ class RelationIterator {
     return SetIterator(sarl_relation_iterator_range(mp_itRef));
   }
 
+	SetIterator extent(Sarl_Index m) {
+		return SetIterator(
+			sarl_relation_iterator_extent(mp_itRef, m)
+		);
+	}
+
+	SetIterator intent(Sarl_Index g) {
+		return SetIterator(
+			sarl_relation_iterator_intent(mp_itRef, g)
+		);
+	}
+
   RelationIterator join(RelationIterator& it) {
     return RelationIterator(
       sarl_relation_iterator_join(

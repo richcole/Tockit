@@ -12,7 +12,8 @@ struct RefCounter {
   RefCounter() { this->count = 0; };
   ~RefCounter() { 
     if ( this->count != 0 ) {
-      fprintf(stderr, "Error, Reference Count=%d\n", this->count);
+			fprintf(stderr, __FILE__ "(%d):\n", __LINE__);
+      fprintf(stderr, "  Error, Reference Count=%d\n", this->count);
       exit(-1);
     }
   }

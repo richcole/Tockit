@@ -117,6 +117,7 @@ class SetIterator {
   }
 
   friend class RelationIterator;
+	friend class Set;
 };
 
 #endif

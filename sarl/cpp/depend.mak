@@ -1,5 +1,6 @@
 # DO NOT DELETE
 
+RefCount.o: ../../sarl/cpp/RefCount.h
 Relation.o: ../../sarl/cpp/Relation.h ../../sarl/relation.h
 Relation.o: ../../sarl/index.h ../../sarl/pair.h
 Relation.o: ../../sarl/relation_iterator.h ../../sarl/cpp/Pair.h
