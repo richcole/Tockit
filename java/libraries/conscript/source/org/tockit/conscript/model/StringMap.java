@@ -24,6 +24,10 @@ public class StringMap extends ConscriptStructure{
 		return Collections.unmodifiableMap(map);
 	}
     
+    public FormattedString getLabel(String entry) {
+        return (FormattedString) this.map.get(entry);
+    }
+    
     public void addEntry(String attributeId, FormattedString label) {
         this.map.put(attributeId, label);
     }

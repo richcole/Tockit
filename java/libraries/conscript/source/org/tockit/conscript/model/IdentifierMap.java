@@ -23,6 +23,10 @@ public class IdentifierMap extends ConscriptStructure{
 	public Map getMap() {
 		return Collections.unmodifiableMap(map);
 	}
+    
+    public String getTargetIdentifier(String fromId) {
+        return (String) this.map.get(fromId);
+    }
 
     public void addEntry(String fromId, String toId) {
         this.map.put(fromId, toId);
