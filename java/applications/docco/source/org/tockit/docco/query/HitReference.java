@@ -10,7 +10,7 @@ package org.tockit.docco.query;
 import org.apache.lucene.document.Document;
 import org.tockit.docco.GlobalConstants;
 
-public class HitReference {
+public class HitReference implements Comparable {
 	private Document doc;
 	private float score;
 	
@@ -44,4 +44,8 @@ public class HitReference {
 	public String toString() {
 		return this.getDocument().get(GlobalConstants.FIELD_DOC_PATH);
 	}
+
+    public int compareTo(Object o) {
+        return this.hashCode()/2 - o.hashCode()/2;
+    }
 }
