@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.poi.hssf.record.RecordFormatException;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -26,7 +27,12 @@ public class MSExcelDocProcessor implements DocumentProcessor {
 	
 	public void readDocument(File file) throws IOException, DocumentProcessingException {
 		this.file = file;
-		this.workbook = new HSSFWorkbook(new FileInputStream(file));		
+		try {
+			this.workbook = new HSSFWorkbook(new FileInputStream(file));		
+		}
+		catch (RecordFormatException e) {
+			throw new DocumentProcessingException(e);
+		}
 	}
 
 	public DocumentContent getDocumentContent() throws IOException {
