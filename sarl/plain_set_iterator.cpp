@@ -62,14 +62,14 @@ struct Sarl_SetIterator *sarl_set_iterator_create(struct Sarl_Set *S)
 
 /* set_iterator moving operations */
 static void  sarl_set_iterator_plain_next_gte(
-  struct Sarl_SetIterator *it, 
+  struct Sarl_SetIterator *a_it, 
   Sarl_Index value)
 {
-  while( ! sarl_set_iterator_at_end(it) && 
-    sarl_set_iterator_value(it) < value ) 
-  {
-    sarl_set_iterator_next(it);
-  }
+  Sarl_PlainSetIterator *it = static_cast<Sarl_PlainSetIterator*>(a_it);
+	
+	if ( value > *(it->it) ) {
+		it->it = it->set->set.lower_bound(value);
+	}
 }
 
 static void  sarl_set_iterator_plain_next(struct Sarl_SetIterator *a_it)

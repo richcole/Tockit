@@ -30,10 +30,11 @@ int main(int num_args, char **args)
   Sarl_Set              *empty;
   Sarl_SetIterator      *curr, *next;
 
-  int            i, j;
-  int            LEN = 50;
+	Sarl_SetIterator      *M;
 
-  empty = sarl_set_create();
+  int            i, j;
+  int            LEN = 100;
+
   r     = sarl_relation_create();
 
   for(i=1;i<=LEN;i++) {
@@ -46,21 +47,22 @@ int main(int num_args, char **args)
 
   r_it = sarl_relation_iterator_create(r);
   K    = sarl_context_iterator_create_from_relation(r_it);
-  curr = sarl_set_iterator_create(empty);
+	M    = sarl_context_iterator_attributes(K);
+	sarl_set_iterator_release_ownership(M);
+  curr = sarl_context_iterator_extent_set(K, M);
 
-  do {
+	do {
+    print_extent(curr);
+
     sarl_set_iterator_release_ownership(curr);
     next = sarl_context_iterator_next_extent(K, curr);
     sarl_set_iterator_decr_ref(curr);
     curr = next;
     
-    print_extent(curr);
-  } while ( sarl_set_iterator_count(curr) != LEN );
+  } while ( curr != 0 );
 
   sarl_relation_decr_ref(r);
   sarl_relation_iterator_decr_ref(r_it);
   sarl_context_iterator_decr_ref(K);
-  sarl_set_decr_ref(empty);
-  
-  sarl_set_iterator_decr_ref(curr);
+	sarl_set_iterator_decr_ref(M);
 };

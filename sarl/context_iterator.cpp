@@ -258,15 +258,12 @@ struct Sarl_SetIterator*
   struct Sarl_SetIterator *G;
   struct Sarl_SetIterator *i;
 
-  struct Sarl_SetIterator *curr;
   struct Sarl_SetIterator *next;
   struct Sarl_SetIterator *m;
 
-  struct Sarl_SetIterator *next_ii = 0;
+  struct Sarl_SetIterator *next_ii;
 
   bool   finished = false;
-
-  curr = sarl_set_iterator_obtain_ownership(A);
 
   G = sarl_context_iterator_objects(K);
   sarl_set_iterator_release_ownership(G);
@@ -277,33 +274,33 @@ struct Sarl_SetIterator*
       sarl_set_iterator_next(i)
   ) 
   {
+		Sarl_Index i_value = sarl_set_iterator_value(i);
+
     // curr = curr (+) i
-    sarl_set_iterator_release_ownership(curr);
-    next = sarl_set_iterator_lectic_next_gte(
-      curr, 
-      sarl_set_iterator_value(i),
-      G);
+    next = sarl_set_iterator_lectic_next_gte(A, i_value, G);
 
     // until last(curr'') == last(curr)
+		sarl_set_iterator_release_ownership(next);
     next_ii = sarl_context_iterator_intent_extent_set(K, next);
-    m = sarl_set_iterator_minus(next_ii, curr);
-    if ( sarl_set_iterator_last(m) == sarl_set_iterator_value(i) ) {
+    m = sarl_set_iterator_minus(next_ii, A);
+
+		sarl_set_iterator_next_gte(m, i_value);
+		sarl_set_iterator_next(m);
+    if ( sarl_set_iterator_at_end(m) ) {
       finished = true;
     }
     else {
       sarl_set_iterator_decr_ref(next_ii);
     }
 
+		sarl_set_iterator_decr_ref(next);
     sarl_set_iterator_decr_ref(m);
-    sarl_set_iterator_decr_ref(curr);
-    curr = next;
   };
 
-  sarl_set_iterator_decr_ref(curr);
-  sarl_set_iterator_decr_ref(G);
   sarl_set_iterator_decr_ref(i);
-  
-  return next_ii;
+  sarl_set_iterator_decr_ref(G);
+
+  return finished ? next_ii : 0;
 };
 
 struct Sarl_SetIterator* 

@@ -7,6 +7,7 @@ extern "C" {
 
 #include <string.h>
 #include "string_impl.h"
+#include "iterator_impl.h"
 
 static Sarl_Short null_short_buf[1] = { 0 };
 static Sarl_Char  null_char_buf[1] = { 0 };

@@ -18,7 +18,7 @@ feature
 			S: SARL_SET;
 			it: SARL_SET_ITERATOR;
 
-			i: INTEGER_32;
+			i: SARL_SET;
 			length: SARL_INDEX;
 		do
 			create {SARL_PLAIN_SET} S.make;

@@ -94,7 +94,9 @@ static struct Sarl_String*
 
 
 static struct Sarl_SetIterator*      
-  sarl_plain_dictionary_get_indexes(struct Sarl_Dictionary *);
+  sarl_plain_dictionary_get_indexes(struct Sarl_Dictionary *)
+{
+	
 
 static struct Sarl_Dictionary*  
   sarl_plain_dictionary_copy(struct Sarl_Dictionary *);

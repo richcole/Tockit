@@ -1,10 +1,20 @@
 #ifndef SARL_STRING_IMPL_H
 #define SARL_STRING_IMPL_H
 
+extern "C++" {
+
+#include <sarl/ref_count.h>
+#include <sarl/ownership.h>
+
+}
+
+#include "iterator_impl.h"
+
+
 typedef char  Sarl_Char;
 typedef short Sarl_Short;
 
-struct Sarl_String
+struct Sarl_String : Sarl_Iterator 
 {
   Sarl_RefCount   ref_count;
   Sarl_Ownership  ownership;
