@@ -104,8 +104,15 @@ public class ImageIOImageWriter implements ImageWriter {
             // update information
             settings.setImageSize(canvas.getWidth(), canvas.getHeight());
         }
-		BufferedImage image = new BufferedImage(settings.getImageWidth(), settings.getImageHeight(),
-						BufferedImage.TYPE_INT_ARGB);
+		GraphicFormat graphicFormat = settings.getGraphicFormat();
+		BufferedImage image;
+		if(graphicFormat instanceof GraphicFormatJPG) {
+			image = new BufferedImage(settings.getImageWidth(), settings.getImageHeight(),
+							BufferedImage.TYPE_INT_RGB);
+		} else {
+			image = new BufferedImage(settings.getImageWidth(), settings.getImageHeight(),
+							BufferedImage.TYPE_INT_ARGB);
+		}
 		Graphics2D graphics2D = (Graphics2D) image.createGraphics();
 		graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -121,7 +128,7 @@ public class ImageIOImageWriter implements ImageWriter {
         canvas.paintCanvas(graphics2D);
 		try {
 			// Save the image 
-			ImageIO.write(image, settings.getGraphicFormat().getExtensions()[0] , outputFile);
+			ImageIO.write(image, graphicFormat.getExtensions()[0] , outputFile);
 		} catch (FileNotFoundException e) {
             throw new ImageGenerationException("Error while generating '" +
                     outputFile.getPath() + "' - not found ", e);
