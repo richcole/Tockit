@@ -34,6 +34,11 @@ depending on many factors, most noticably the number of files involved. You migh
 want to try with a smaller structure first before you run it on your companies
 main network drive.
 
+At the moment we index the following document types:
+- plain text (*.txt and some programming language extensions)
+- HTML documents (*.html, *.htm)
+- PDF documents (*.pdf)
+
 (3) Querying
 
 Just enter some keywords you are looking for into the text field and hit the Enter

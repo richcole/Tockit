@@ -33,8 +33,19 @@ public class Indexer {
 		try {
 			Date start = new Date();
 			
-			this.docProcessingFactory.registerExtension("html", new HtmlDocumentProcessor());
-			this.docProcessingFactory.registerExtension("txt", new PlainTextDocumentProcessor());
+			HtmlDocumentProcessor htmlDocProcessor = new HtmlDocumentProcessor();
+			this.docProcessingFactory.registerExtension("html", htmlDocProcessor);
+			this.docProcessingFactory.registerExtension("htm", htmlDocProcessor);
+
+			PlainTextDocumentProcessor plainTextDocProcessor = new PlainTextDocumentProcessor();
+			this.docProcessingFactory.registerExtension("txt", plainTextDocProcessor);
+			this.docProcessingFactory.registerExtension("java", plainTextDocProcessor);
+			this.docProcessingFactory.registerExtension("c", plainTextDocProcessor);
+			this.docProcessingFactory.registerExtension("cc", plainTextDocProcessor);
+			this.docProcessingFactory.registerExtension("cpp", plainTextDocProcessor);
+			this.docProcessingFactory.registerExtension("h", plainTextDocProcessor);
+			this.docProcessingFactory.registerExtension("hh", plainTextDocProcessor);
+
 			this.docProcessingFactory.registerExtension("pdf", new PdfDocumentProcessor());
 
 
