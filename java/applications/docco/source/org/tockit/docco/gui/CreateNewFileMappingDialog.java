@@ -131,7 +131,7 @@ public class CreateNewFileMappingDialog extends JDialog {
 		
 		this.instantiatedFileFiltersModel = new DefaultComboBoxModel();
 		this.instantiatedFileFiltersModel.addElement("<Choose File Filter>");
-		Iterator it = docHandlersRegistery.getDocumentMappingCollection().iterator();
+		Iterator it = docHandlersRegistery.getDocumentMappingList().iterator();
 		while (it.hasNext()) {
 			DocumentHandlerMapping curMapping = (DocumentHandlerMapping) it.next();
 			this.instantiatedFileFiltersModel.addElement(curMapping.getFileFilter());

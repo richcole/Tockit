@@ -32,7 +32,7 @@ public class DocumentProcessingFactory {
 
 	public Document processDocument(File file) throws DocumentProcessingException,
 													IOException {
-		Iterator it = this.docHandlersRegistery.getDocumentMappingCollection().iterator();
+		Iterator it = this.docHandlersRegistery.getDocumentMappingList().iterator();
 		DocumentSummary docSummary = null;
 		DocumentProcessingException caughtException = null;
 		while (it.hasNext()) {

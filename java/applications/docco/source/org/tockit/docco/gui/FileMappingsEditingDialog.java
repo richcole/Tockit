@@ -17,6 +17,7 @@ import java.awt.HeadlessException;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Iterator;
 
 import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
@@ -32,6 +33,7 @@ import javax.swing.JScrollPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import org.tockit.docco.ConfigurationManager;
 import org.tockit.docco.indexer.DocumentHandlerMapping;
 import org.tockit.docco.indexer.DocumentHandlersRegistery;
 import org.tockit.docco.indexer.documenthandler.DocumentHandler;
@@ -75,41 +77,47 @@ public class FileMappingsEditingDialog extends JDialog {
 	}
 	
 	private class DocHandlersRegisteryListModel extends AbstractListModel {
-		private DocumentHandlersRegistery registery;
+		private DocumentHandlersRegistery copyRegistery;
 		
 		public DocHandlersRegisteryListModel (DocumentHandlersRegistery registery) {
-			this.registery = registery;
+			
+			copyRegistery = new DocumentHandlersRegistery();
+			Iterator it = registery.getDocumentMappingList().iterator();
+			while (it.hasNext()) {
+				DocumentHandlerMapping cur = (DocumentHandlerMapping) it.next();
+				copyRegistery.register(cur);
+			}
 		}
 
 		public int getSize() {
-			return registery.getDocumentMappingCollection().size();
+			return copyRegistery.getDocumentMappingList().size();
 		}
 
 		public Object getElementAt(int index) {
-			return registery.getMappingAt(index);
+			return copyRegistery.getMappingAt(index);
 		}
 		
 		public void moveMapping (int fromIndex, int toIndex) {
-			registery.moveMapping(fromIndex, toIndex);
+			copyRegistery.moveMapping(fromIndex, toIndex);
 			if (fromIndex < toIndex) {
-				fireContentsChanged(registery.getMappingAt(toIndex), fromIndex, toIndex);	
+				fireContentsChanged(copyRegistery.getMappingAt(toIndex), fromIndex, toIndex);	
 			}
 			else {
-				fireContentsChanged(registery.getMappingAt(toIndex), toIndex, fromIndex);	
+				fireContentsChanged(copyRegistery.getMappingAt(toIndex), toIndex, fromIndex);	
 			}
 		}
 		
 		public void removeMappingAt (int index) {
 			if (index < model.getSize()) {
 				DocumentHandlerMapping mapping = (DocumentHandlerMapping) model.getElementAt(jlist.getSelectedIndex());
-				registery.removeMapping(mapping);
+				copyRegistery.removeMapping(mapping);
 				fireIntervalRemoved(mapping, 0, getSize());
 			}			
 		}
 		
 		public void addMapping (DoccoFileFilter fileFilter, DocumentHandler docHandler) {
-			registery.register(fileFilter, docHandler);
-			fireIntervalAdded(registery.getMappingAt(getSize() - 1), 0, getSize());
+			copyRegistery.register(fileFilter, docHandler);
+			fireIntervalAdded(copyRegistery.getMappingAt(getSize() - 1), 0, getSize());
 		}
 	}
 
@@ -308,10 +316,23 @@ public class FileMappingsEditingDialog extends JDialog {
 	
 	private JPanel createButtonsPanel () {
 		JPanel panel = new JPanel();
-			
-		JButton closeButton = new JButton("Close");
-		closeButton.setToolTipText("All settings are automatically saved");
-		closeButton.addActionListener(new ActionListener() {
+
+		JButton okButton = new JButton("OK");
+		okButton.setToolTipText("Save changes and exit this dialog");
+		okButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				saveMappings();
+				setVisible(false);
+			}
+		});
+		
+		JButton applyButton = new JButton("Apply");
+		applyButton.setToolTipText("Apply changes");
+		
+		JButton restoreDefault = new JButton("Restore Original Settings");
+					
+		JButton cancelButton = new JButton("Cancel");
+		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				setVisible(false);
 			}
@@ -320,13 +341,17 @@ public class FileMappingsEditingDialog extends JDialog {
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 		panel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
 		panel.add(Box.createHorizontalGlue());
-		panel.add(closeButton);
+		panel.add(okButton);
+		panel.add(Box.createRigidArea(new Dimension(10, 0)));
+		panel.add(cancelButton);
+		
 		
 		return panel;
 	}
 	
 	private void saveMappings () {
 		// @todo store changed info in config manager?
+		//ConfigurationManager.storeStringList();
 
 	}	
 	
@@ -357,7 +382,7 @@ public class FileMappingsEditingDialog extends JDialog {
 	}
 	
 	private void createMapping() {
-		CreateNewFileMappingDialog dialog = new CreateNewFileMappingDialog(this, model.registery);
+		CreateNewFileMappingDialog dialog = new CreateNewFileMappingDialog(this, model.copyRegistery);
 		DocumentHandlerMapping mapping = dialog.getCreatedMapping();
 		if (mapping != null) {
 			model.addMapping(mapping.getFileFilter(), mapping.getHandler());

@@ -10,7 +10,6 @@ package org.tockit.docco.indexer;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,6 +36,11 @@ public class DocumentHandlersRegistery {
 		}
 	}
 
+	public boolean register (DocumentHandlerMapping mapping) {
+		return docHandlersList.add(mapping);
+	}
+
+
 	public boolean register (DoccoFileFilter fileFilter, DocumentHandler docHandler) {
 		DocumentHandlerMapping docHandlerMapping = new DocumentHandlerMapping(fileFilter, docHandler);
 		return docHandlersList.add(docHandlerMapping);
@@ -55,7 +59,7 @@ public class DocumentHandlersRegistery {
 		return (DocumentHandlerMapping) this.docHandlersList.get(index);
 	}
 	
-	public Collection getDocumentMappingCollection () {
+	public List getDocumentMappingList () {
 		return docHandlersList; 	
 	}
 	
