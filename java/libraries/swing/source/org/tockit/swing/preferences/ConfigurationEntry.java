@@ -8,6 +8,9 @@
 package org.tockit.swing.preferences;
 
 
+/**
+ * @todo entries should be able to store their default value
+ */
 public class ConfigurationEntry {
     private ExtendedPreferences node;
     private String key;
