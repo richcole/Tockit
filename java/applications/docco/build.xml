@@ -97,9 +97,6 @@
 	</target>
 	<target name="fullDist" depends="_makeReleaseJar,_copyFiles,pluginsReleaseDist,_zipFile">
 	</target>
-	<target name="distPluginArchitecture" depends="_prepareDist,_compileRelease">
-		<jar jarfile="${dist.base.dir}/pluginArchitecture.jar" basedir="${build.release.dir}" includes="**/plugin/**"/>
-	</target>
 	<target name="_zipFile">
 		<zip destfile="${dist.dir}.zip">
 			<fileset dir="${dist.base.dir}">
