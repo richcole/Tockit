@@ -1,0 +1,5 @@
+Changes since Docco 0.3:
+
+POI-Plugin:
+- support for PowerPoint files
+- fixed a bug leaking open input streams
