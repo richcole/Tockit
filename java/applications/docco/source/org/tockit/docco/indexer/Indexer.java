@@ -19,7 +19,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * based on lucene demo indexer 
+ * based on lucene demo indexer
+ * 
+ * @todo this could all be static 
  */
 public class Indexer {
 

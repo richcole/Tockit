@@ -6,26 +6,36 @@
  * $Id$
  */
 package org.tockit.docco;
+import java.io.File;
 import java.io.IOException;
+
+import javax.swing.JFileChooser;
 
 import net.sourceforge.toscanaj.gui.dialog.ErrorDialog;
 
 import org.tockit.docco.events.QueryEvent;
 import org.tockit.docco.gui.DoccoMainFrame;
 import org.tockit.docco.handlers.QueryEventHandler;
+import org.tockit.docco.indexer.Indexer;
 import org.tockit.docco.query.QueryDecomposer;
 import org.tockit.docco.query.QueryEngine;
 import org.tockit.events.EventBroker;
 
-
-
-
 public class Docco {
-	
-	
 	private EventBroker eventBroker = new EventBroker();
 	
 	public Docco () {
+		File indexFile = new File(GlobalConstants.DEFAULT_INDEX_LOCATION);
+		if(!indexFile.canRead()) {
+			JFileChooser fileDialog = new JFileChooser();
+			fileDialog.setDialogTitle("Select directory to index");
+			fileDialog.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			int rv = fileDialog.showDialog(null, "Index Directory");
+			if(rv != JFileChooser.APPROVE_OPTION) {
+				return;
+			}
+			new Indexer(fileDialog.getSelectedFile().getAbsolutePath());
+		}
 		try {
 			QueryDecomposer queryDecomposer = new QueryDecomposer(
 													GlobalConstants.FIELD_QUERY_BODY, 
