@@ -1,37 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XML Spy v3.5 NT (http://www.xmlspy.com) by nataliya (nat) -->
-<knowledgeBase xmlns:xsi="http://www.w3.org/2000/10/XMLSchema-instance" xsi:noNamespaceSchemaLocation="H:\experiments\CG-XML\cgxml.xsd">
-	<cg>
-		<concept type="Person" name="Tom" label="x1"/>
-		<concept type="Believe" label="x2"/>
-		<relation name="Expr">
-			<ref label="x2"/>
-			<ref label="x1"/>
-		</relation>
-		<relation name="Thme">
-			<ref label="x2"/>
-			<context type="Proposition">
-				<concept type="Person" name="Mary" label="x3"/>
-				<concept type="Want" label="x4"/>
-				<relation name="Expr">
-					<ref label="x4"/>
-					<ref label="x3"/>
-				</relation>
-				<relation name="Thme">
-					<ref label="x4"/>
-					<context type="Situation">
-						<concept type="Marry" label="x5"/>
-						<relation name="Agnt">
-							<ref label="x5"/>
-							<ref label="x3"/>
-						</relation>
-						<relation name="Thme">
-							<ref label="x5"/>
-							<concept type="Sailor"/>
-						</relation>
-					</context>
-				</relation>
-			</context>
-		</relation>
-	</cg>
-</knowledgeBase>
+<!--
+[Person: *x1 'Tom'] [Believe *x2] (Expr ?x2 ?x1)
+   (Thme ?x2 [Proposition:
+      [Person: *x3 'Mary'] [Want *x4] (Expr ?x4 ?x3)
+         (Thme ?x4 [Situation:
+            [Marry *x5] (Agnt ?x5 ?x3) (Thme ?x5 [Sailor]) ]) ])
+-->
+<graph xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://tockit.sf.net/cgxml/schema/cgxml20010821.xsd">
+    <relation type="Expr">
+        <concept type="Believe" id="believe">
+            <quantifier>
+                <existential/>
+            </quantifier>
+            <designator/>
+            <descriptor/>
+        </concept>
+        <concept type="Person">
+            <quantifier>
+                <existential/>
+            </quantifier>
+            <designator>
+                <literal>Tom</literal>
+            </designator>
+            <descriptor/>
+        </concept>
+    </relation>
+    <relation type="Thme">
+        <conceptRef>believe</conceptRef>
+        <concept type="Proposition">
+            <quantifier>
+                <existential/>
+            </quantifier>
+            <designator/>
+            <descriptor>
+                <relation type="Expr">
+                    <concept type="Want" id="want">
+                        <quantifier>
+                            <existential/>
+                        </quantifier>
+                        <designator/>
+                        <descriptor/>
+                    </concept>
+                    <concept type="Person" id="Mary">
+                        <quantifier>
+                            <existential/>
+                        </quantifier>
+                        <designator>
+                            <literal>Mary</literal>
+                        </designator>
+                        <descriptor/>
+                    </concept>
+                </relation>
+                <relation type="Thme">
+                    <conceptRef>want</conceptRef>
+                    <concept type="Situation">
+                        <quantifier>
+                            <existential/>
+                        </quantifier>
+                        <designator/>
+                        <descriptor>
+                            <relation type="Agnt">
+                                <concept type="Marry" id="marry">
+                                    <quantifier>
+                                        <existential/>
+                                    </quantifier>
+                                    <designator/>
+                                    <descriptor/>
+                                </concept>
+                                <conceptRef>Mary</conceptRef>
+                            </relation>
+                            <relation type="Thme">
+                                <conceptRef>marry</conceptRef>
+                                <concept type="Sailor">
+                                    <quantifier>
+                                        <existential/>
+                                    </quantifier>
+                                    <designator/>
+                                    <descriptor/>
+                                </concept>
+                            </relation>
+                        </descriptor>
+                    </concept>
+                </relation>
+            </descriptor>
+        </concept>
+    </relation>
+</graph>

@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://tockit.sf.net/cgxml/schema/cgxml20010821.xsd">
+    <typeHierarchy type="TypeHierarchy">
+        <!-- TODO -->
+        <quantifier>
+            <existential/>
+        </quantifier>
+        <designator/>
+        <descriptor/>
+    </typeHierarchy>
+    <relationHierarchy type="RelationHierarchy">
+        <!-- TODO -->
+        <quantifier>
+            <existential/>
+        </quantifier>
+        <designator/>
+        <descriptor/>
+    </relationHierarchy>
+    <catalogOfIndividiuals type="CatalogOfIndividuals">
+        <!-- TODO -->
+        <quantifier>
+            <existential/>
+        </quantifier>
+        <designator/>
+        <descriptor/>
+    </catalogOfIndividiuals>
+    <outermostContext type="Assertion">
+        <quantifier>
+            <existential/>
+        </quantifier>
+        <designator/>
+        <descriptor>
+            <!-- A cat is on a mat -->
+            <concept type="Assertion">
+                <quantifier>
+                    <existential/>
+                </quantifier>
+                <designator/>
+                <descriptor>
+                    <relation type="on">
+                        <concept type="Cat">
+                            <quantifier>
+                                <existential/>
+                            </quantifier>
+                            <designator/>
+                            <descriptor/>
+                        </concept>
+                        <concept type="Mat">
+                            <quantifier>
+                                <existential/>
+                            </quantifier>
+                            <designator/>
+                            <descriptor/>
+                        </concept>
+                    </relation>
+                </descriptor>
+            </concept>
+            <!-- Every cat is on a mat -->
+            <concept type="Assertion">
+                <quantifier>
+                    <existential/>
+                </quantifier>
+                <designator/>
+                <descriptor>
+                    <relation type="on">
+                        <concept type="Cat">
+                            <quantifier>
+                                <universal/>
+                            </quantifier>
+                            <designator/>
+                            <descriptor/>
+                        </concept>
+                        <concept type="Mat">
+                            <quantifier>
+                                <existential/>
+                            </quantifier>
+                            <designator/>
+                            <descriptor/>
+                        </concept>
+                    </relation>
+                </descriptor>
+            </concept>
+            <!-- John goes to Boston by bus -->
+            <concept type="Assertion">
+                <quantifier>
+                    <existential/>
+                </quantifier>
+                <designator/>
+                <descriptor>
+                    <relation type="Agnt">
+                        <concept type="Go" id="go">
+                            <quantifier>
+                                <existential/>
+                            </quantifier>
+                            <designator>
+                            </designator>
+                            <descriptor/>
+                        </concept>
+                        <concept type="Person">
+                            <quantifier>
+                                <existential/>
+                            </quantifier>
+                            <designator>
+                                <locator>John</locator>
+                            </designator>
+                            <descriptor/>
+                        </concept>
+                    </relation>
+                    <relation type="Dest">
+                        <conceptRef>go</conceptRef>
+                        <concept type="City">
+                            <quantifier>
+                                <existential/>
+                            </quantifier>
+                            <designator>
+                                <locator>Boston</locator>
+                            </designator>
+                            <descriptor/>
+                        </concept>
+                    </relation>
+                    <relation type="Inst">
+                        <conceptRef>go</conceptRef>
+                        <concept type="Bus">
+                            <quantifier>
+                                <existential/>
+                            </quantifier>
+                            <designator/>
+                            <descriptor/>
+                        </concept>
+                    </relation>
+                </descriptor>
+            </concept>
+            <!-- Person between rock and hard place -->
+            <concept type="Assertion">
+                <quantifier>
+                    <existential/>
+                </quantifier>
+                <designator/>
+                <descriptor>
+                    <relation type="Betw">
+                        <concept type="Rock">
+                            <quantifier>
+                                <existential/>
+                            </quantifier>
+                            <designator/>
+                            <descriptor/>
+                        </concept>
+                        <concept type="Place" id="place">
+                            <quantifier>
+                                <existential/>
+                            </quantifier>
+                            <designator/>
+                            <descriptor/>
+                        </concept>
+                        <concept type="Person">
+                            <quantifier>
+                                <existential/>
+                            </quantifier>
+                            <designator/>
+                            <descriptor/>
+                        </concept>
+                    </relation>
+                    <relation type="Attr">
+                        <conceptRef>place</conceptRef>
+                        <concept type="Hard">
+                            <quantifier>
+                                <existential/>
+                            </quantifier>
+                            <designator/>
+                            <descriptor/>
+                        </concept>
+                    </relation>
+                </descriptor>
+            </concept>
+            <!-- Tom believes that Mary wants to marry a sailor -->
+            <concept type="Assertion">
+                <quantifier>
+                    <existential/>
+                </quantifier>
+                <designator/>
+                <descriptor>
+                    <relation type="Expr">
+                        <concept type="Believe" id="believe">
+                            <quantifier>
+                                <existential/>
+                            </quantifier>
+                            <designator/>
+                            <descriptor/>
+                        </concept>
+                        <concept type="Person">
+                            <quantifier>
+                                <existential/>
+                            </quantifier>
+                            <designator>
+                                <locator>Tom</locator>
+                            </designator>
+                            <descriptor/>
+                        </concept>
+                    </relation>
+                    <relation type="Thme">
+                        <conceptRef>believe</conceptRef>
+                        <concept type="Proposition">
+                            <quantifier>
+                                <existential/>
+                            </quantifier>
+                            <designator/>
+                            <descriptor>
+                                <relation type="Expr">
+                                    <concept type="Want" id="want">
+                                        <quantifier>
+                                            <existential/>
+                                        </quantifier>
+                                        <designator/>
+                                        <descriptor/>
+                                    </concept>
+                                    <concept type="Person" id="Mary">
+                                        <quantifier>
+                                            <existential/>
+                                        </quantifier>
+                                        <designator>
+                                            <locator>Mary</locator>
+                                        </designator>
+                                        <descriptor/>
+                                    </concept>
+                                </relation>
+                                <relation type="Thme">
+                                    <conceptRef>want</conceptRef>
+                                    <concept type="Situation">
+                                        <quantifier>
+                                            <existential/>
+                                        </quantifier>
+                                        <designator/>
+                                        <descriptor>
+                                            <relation type="Agnt">
+                                                <concept type="Marry" id="marry">
+                                                    <quantifier>
+                                                        <existential/>
+                                                    </quantifier>
+                                                    <designator/>
+                                                    <descriptor/>
+                                                </concept>
+                                                <conceptRef>Mary</conceptRef>
+                                            </relation>
+                                            <relation type="Thme">
+                                                <conceptRef>marry</conceptRef>
+                                                <concept type="Sailor">
+                                                    <quantifier>
+                                                        <existential/>
+                                                    </quantifier>
+                                                    <designator/>
+                                                    <descriptor/>
+                                                </concept>
+                                            </relation>
+                                        </descriptor>
+                                    </concept>
+                                </relation>
+                            </descriptor>
+                        </concept>
+                    </relation>
+                </descriptor>
+            </concept>
+        </descriptor>
+    </outermostContext>
+</module>

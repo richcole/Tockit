@@ -1,49 +1,117 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema xmlns:xsd="http://www.w3.org/2000/10/XMLSchema" elementFormDefault="qualified">
-	<xsd:complexType name="concept">
-		<xsd:attribute name="type" type="xsd:string" use="required"/>
-		<xsd:attribute name="name" type="xsd:string" use="optional"/>
-		<xsd:attribute name="label" type="xsd:string" use="optional"/>
-		<xsd:attribute name="quantifier" use="optional" value="existential">
-			<xsd:simpleType>
-				<xsd:restriction base="xsd:string">
-					<xsd:enumeration value="existential"/>
-					<xsd:enumeration value="universal"/>
-				</xsd:restriction>
-			</xsd:simpleType>
-		</xsd:attribute>
-	</xsd:complexType>
-	<xsd:element name="knowledgeBase">
-		<xsd:complexType>
-			<xsd:sequence>
-				<xsd:element name="cg" type="conceptualGraph" minOccurs="0" maxOccurs="unbounded"/>
-			</xsd:sequence>
-		</xsd:complexType>
-	</xsd:element>
-	<xsd:complexType name="relation">
-		<xsd:choice minOccurs="0" maxOccurs="unbounded">
-			<xsd:element name="ref">
-				<xsd:complexType>
-					<xsd:attribute name="label" type="xsd:string" use="required"/>
-				</xsd:complexType>
-			</xsd:element>
-			<xsd:element name="concept" type="concept"/>
-			<xsd:element name="context">
-				<xsd:complexType>
-					<xsd:complexContent>
-						<xsd:extension base="conceptualGraph">
-							<xsd:attribute name="type" type="xsd:string" use="required"/>
-						</xsd:extension>
-					</xsd:complexContent>
-				</xsd:complexType>
-			</xsd:element>
-		</xsd:choice>
-		<xsd:attribute name="name" type="xsd:string" use="required"/>
-	</xsd:complexType>
-	<xsd:complexType name="conceptualGraph">
-		<xsd:choice minOccurs="0" maxOccurs="unbounded">
-			<xsd:element name="concept" type="concept"/>
-			<xsd:element name="relation" type="relation"/>
-		</xsd:choice>
-	</xsd:complexType>
+<!-- edited with XML Spy v3.5 (http://www.xmlspy.com) by Thomas Tilley (Griffith University) -->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xsd:element name="module">
+        <xsd:annotation>
+            <xsd:documentation>"context" is not yet explicitely modelled, therefore we use concepts in here. The concept types are not yet enforced either. Maybe using additional tools like XSLT (Schematron?) to check this constraint is easier. No keyrings are yet set up, XML Schema allows to define distinct sets of identifiers.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="typeHierarchy" type="concept">
+                    <xsd:annotation>
+                        <xsd:documentation>Not yet modelled (do we want to?)</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="relationHierarchy" type="concept">
+                    <xsd:annotation>
+                        <xsd:documentation>Not yet modelled (do we want to?)</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="catalogOfIndividiuals" type="concept">
+                    <xsd:annotation>
+                        <xsd:documentation>Not yet modelled (do we want to?)</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="outermostContext" type="concept"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:complexType name="concept">
+        <xsd:annotation>
+            <xsd:documentation>Type is modelled as attribute, the notion of an explicit "referent" has been dropped.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="quantifier">
+                <xsd:annotation>
+                    <xsd:documentation>quantifier could be modelled as attribute, defaulting to "existential". We would need some way to represent the defined quantifiers then and it will be harder to validate.</xsd:documentation>
+                </xsd:annotation>
+                <xsd:complexType>
+                    <xsd:choice>
+                        <xsd:element name="existential"/>
+                        <xsd:element name="universal">
+                            <xsd:annotation>
+                                <xsd:documentation>This is different compared to section 6.7 of the standard draft, where the universal quantifier is a defined quantifier.</xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="defined" type="xsd:string">
+                            <xsd:annotation>
+                                <xsd:documentation>How to model this one? (TODO)</xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:element>
+                    </xsd:choice>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="designator">
+                <xsd:annotation>
+                    <xsd:documentation>An empty element represents an undetermined designator. We still don't understand the distinction between literals and locators (TODO)</xsd:documentation>
+                </xsd:annotation>
+                <xsd:complexType>
+                    <xsd:choice minOccurs="0">
+                        <xsd:element name="literal"/>
+                        <xsd:element name="locator"/>
+                    </xsd:choice>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="descriptor" type="graphType"/>
+        </xsd:sequence>
+        <xsd:attribute name="type" type="xsd:string" use="required"/>
+        <xsd:attribute name="id" type="xsd:string" use="optional"/>
+    </xsd:complexType>
+    <xsd:element name="graph" type="graphType">
+        <xsd:annotation>
+            <xsd:documentation>"graph" is modelled as element so it can be used as starting element</xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+    <xsd:complexType name="relation">
+        <xsd:choice maxOccurs="unbounded">
+            <xsd:element name="conceptRef" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>The content of this has to match an id of a concept</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="concept" type="concept">
+                <xsd:annotation>
+                    <xsd:documentation>this could be dropped in favour of forcing a declaration as separate construct somewhere</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="parameterRef" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>The content of this has to match the id of a parameter in a lambda expression</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:choice>
+        <xsd:attribute name="type" type="xsd:string" use="required"/>
+    </xsd:complexType>
+    <xsd:complexType name="graphType">
+        <xsd:sequence>
+            <xsd:element name="parameter" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation>If at least one parameter is given the graph is a lambda expression (ok? what about 0-adic lambda expressions?). The type is modelled as attribute, the number and order is defined by the XML structure.</xsd:documentation>
+                </xsd:annotation>
+                <xsd:complexType>
+                    <xsd:attribute name="type" type="xsd:string" use="required"/>
+                    <xsd:attribute name="id" type="xsd:string" use="required"/>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:choice minOccurs="0" maxOccurs="unbounded">
+                <xsd:element name="concept" type="concept">
+                    <xsd:annotation>
+                        <xsd:documentation>has type (required) and id (optional) as attribute. The id can be used for coreferences, maybe it should be required.</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="relation" type="relation"/>
+            </xsd:choice>
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:string" use="optional"/>
+    </xsd:complexType>
 </xsd:schema>

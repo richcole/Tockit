@@ -1,15 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XML Spy v3.5 NT (http://www.xmlspy.com) by nataliya (nat) -->
-<knowledgeBase xmlns:xsi="http://www.w3.org/2000/10/XMLSchema-instance" xsi:noNamespaceSchemaLocation="H:\experiments\CG-XML\cgxml.xsd">
-	<cg>
-		<relation name="Betw">
-			<concept type="Rock"/>
-			<concept type="Place" label="x"/>
-			<concept type="Person"/>
-		</relation>
-		<relation name="Attr">
-			<ref label="x"/>
-			<concept type="Hard"/>
-		</relation>
-	</cg>
-</knowledgeBase>
+<graph xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://tockit.sf.net/cgxml/schema/cgxml20010821.xsd">
+    <relation type="Betw">
+        <concept type="Rock">
+            <quantifier>
+                <existential/>
+            </quantifier>
+            <designator/>
+            <descriptor/>
+        </concept>
+        <concept type="Place" id="place">
+            <quantifier>
+                <existential/>
+            </quantifier>
+            <designator/>
+            <descriptor/>
+        </concept>
+        <concept type="Person">
+            <quantifier>
+                <existential/>
+            </quantifier>
+            <designator/>
+            <descriptor/>
+        </concept>
+    </relation>
+    <relation type="Attr">
+        <conceptRef>place</conceptRef>
+        <concept type="Hard">
+            <quantifier>
+                <existential/>
+            </quantifier>
+            <designator/>
+            <descriptor/>
+        </concept>
+    </relation>
+</graph>

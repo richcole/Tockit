@@ -1,19 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XML Spy v3.5 NT (http://www.xmlspy.com) by nataliya (nat) -->
-<knowledgeBase xmlns:xsi="http://www.w3.org/2000/10/XMLSchema-instance" xsi:noNamespaceSchemaLocation="H:\experiments\CG-XML\cgxml.xsd">
-	<cg>
-		<concept type="Go" label="x"/>
-		<relation name="Agnt">
-			<ref label="x"/>
-			<concept type="Person" name="John"/>
-		</relation>
-		<relation name="Dest">
-			<ref label="x"/>
-			<concept type="City" name="Boston"/>
-		</relation>
-		<relation name="Inst">
-			<ref label="x"/>
-			<concept type="Bus"/>
-		</relation>
-	</cg>
-</knowledgeBase>
+<graph xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://tockit.sf.net/cgxml/schema/cgxml20010821.xsd">
+    <relation type="Agnt">
+        <concept type="Go" id="go">
+            <quantifier>
+                <existential/>
+            </quantifier>
+            <designator/>
+            <descriptor/>
+        </concept>
+        <concept type="Person">
+            <quantifier>
+                <existential/>
+            </quantifier>
+            <designator>
+                <locator>John</locator>
+            </designator>
+            <descriptor/>
+        </concept>
+    </relation>
+    <relation type="Dest">
+        <conceptRef>go</conceptRef>
+        <concept type="City">
+            <quantifier>
+                <existential/>
+            </quantifier>
+            <designator>
+                <locator>Boston</locator>
+            </designator>
+            <descriptor/>
+        </concept>
+    </relation>
+    <relation type="Inst">
+        <conceptRef>go</conceptRef>
+        <concept type="Bus">
+            <quantifier>
+                <existential/>
+            </quantifier>
+            <designator/>
+            <descriptor/>
+        </concept>
+    </relation>
+</graph>
