@@ -378,6 +378,10 @@ public class DoccoMainFrame extends JFrame {
 				closeMainPanel();
 			}
 		});
+        
+        if(this.indexes.size() == 0) {
+            createNewIndex();
+        }
 	}
 
 	private void loadPlugins() {
