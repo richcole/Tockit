@@ -94,7 +94,7 @@ import org.tockit.docco.query.util.QueryWithResultSet;
 
 public class DoccoMainFrame extends JFrame {
 	
-    private Thread indexThread;
+    private Indexer indexThread;
 	private JLabel statusBarMessage;
     private static final int VISIBLE_TREE_DEPTH = 2;
     private static final int DEFAULT_VERTICAL_DIVIDER_LOCATION = 600;
@@ -483,17 +483,12 @@ public class DoccoMainFrame extends JFrame {
 			return;
 		}
         final String indexTo = new String(indexLocation); 
-        Runnable indexRunner = new Runnable() {
-            public void run() {
-        		new Indexer(dirToIndex, indexTo, new Indexer.CallbackRecipient(){
-        			public void showFeedbackMessage(String message) {
-						statusBarMessage.setText(message);
-                    }
-        		});
-            }
-        };
-        /// @todo implement a proper stop to get rid of the write lock
-        this.indexThread = new Thread(indexRunner, "indexer");
+		this.indexThread = new Indexer(indexTo, new Indexer.CallbackRecipient(){
+			public void showFeedbackMessage(String message) {
+				statusBarMessage.setText(message);
+			}
+		});
+		this.indexThread.enqueue(new File(dirToIndex));
         this.indexThread.start();
     }
 
@@ -715,6 +710,13 @@ public class DoccoMainFrame extends JFrame {
 	}
 	
 	private void closeMainPanel() {
+		// shut down indexer
+		try {
+            this.indexThread.stopIndexing();
+        } catch (IOException e) {
+        	ErrorDialog.showError(this, e, "Could not shut down indexer");
+        }
+		
 		// store current position
 		ConfigurationManager.storePlacement(CONFIGURATION_SECTION_NAME, this);
 		

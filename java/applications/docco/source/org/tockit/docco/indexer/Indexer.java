@@ -12,27 +12,27 @@ import org.apache.lucene.index.IndexWriter;
 import org.tockit.docco.GlobalConstants;
 
 import java.io.File;
-import java.util.Date;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
-/**
- * based on lucene demo indexer
- * 
- * @todo this could all be static 
- */
-public class Indexer {
+public class Indexer extends Thread {
 	public interface CallbackRecipient {
 		void showFeedbackMessage(String message);
 	}
 
+	private String indexLocation;
+    private IndexWriter writer;
+	private boolean stateChangeRequested = false;
+	private boolean running = true;
+    private List fileQueue = new LinkedList();
 	private CallbackRecipient callbackRecipient;
     private DocumentProcessingFactory docProcessingFactory = new DocumentProcessingFactory();
 	
-	private String curDir;
-	public Indexer (String filesToIndexLocation, String indexLocation, CallbackRecipient output) {
+	public Indexer(String indexLocation, CallbackRecipient output) {
 		this.callbackRecipient = output;
+		this.indexLocation = indexLocation;
 		try {
-			Date start = new Date();
-			
 			Class htmlDocProcessorClass = HtmlDocumentProcessor.class;
 			this.docProcessingFactory.registerExtension("html", htmlDocProcessorClass);
 			this.docProcessingFactory.registerExtension("htm", htmlDocProcessorClass);
@@ -46,43 +46,55 @@ public class Indexer {
 
 			this.docProcessingFactory.registerExtension("xls", MSExcelDocProcessor.class);
 
-
-			File f = new File(indexLocation);
-			createDirPath(f);
-
-
-			IndexWriter writer = new IndexWriter(
-									indexLocation,
-									GlobalConstants.DEFAULT_ANALYZER,
-									false);
-
-			indexDocs(writer, new File(filesToIndexLocation));
-			
-			writer.optimize();
-			writer.close();
-
-			Date end = new Date();
-			long diff = end.getTime() - start.getTime();
-			diff /= 1000;
-			long secs = diff % 60;
-			diff /= 60;
-			long mins = diff % 60;
-			diff /= 60;
-			long hours = diff;
-			
-			if(this.callbackRecipient != null) {
-				this.callbackRecipient.showFeedbackMessage("Indexing took " + 
-												hours + " hours " + mins + " mins " + secs + " secs");
-			}
+			startIndexing();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+	
+	synchronized public void startIndexing() throws IOException {
+		this.writer = new IndexWriter(this.indexLocation,
+									  GlobalConstants.DEFAULT_ANALYZER,
+								      false);
+	}
 
+	public void stopIndexing() throws IOException {
+		showFeedbackMessage("Shutting down...");
+		synchronized (this) {
+			this.writer.optimize();
+			this.writer.close();
+			this.fileQueue.clear();
+			this.writer = null;
+		}
+	}
 
-	private void indexDocs(IndexWriter writer, File file) {
-		showFeedback(writer.docCount());
+	public void run() {
+		while(true) {
+			File file;
+			synchronized(this) {
+				if(!this.fileQueue.isEmpty()) {  
+					file = (File) this.fileQueue.remove(0);
+				} else {
+					file = null;
+				}
+			}
+			if(this.writer != null && file != null) {
+				indexDocs(file);
+			} else {
+				if(this.callbackRecipient != null) {
+					this.callbackRecipient.showFeedbackMessage("Ready!");
+				}
+			}
+		}
+	}
+	
+	synchronized public void enqueue(File file) {
+		this.fileQueue.add(file);
+	}
+	
+	private void indexDocs(File file) {
+		showProgress(writer.docCount(), file.getAbsolutePath());
 		try {
 			if (file.isDirectory()) {
 				String[] files = file.list();
@@ -91,12 +103,15 @@ public class Indexer {
 					return; 
 				}
 				for (int i = 0; i < files.length; i++) {
-					this.curDir = file.getAbsolutePath();
-					indexDocs(writer, new File(file, files[i]));
+					synchronized(this) {  
+						this.fileQueue.add(new File(file, files[i]));
+					}
 				}
 			}
 			else {
-				writer.addDocument(this.docProcessingFactory.processDocument(file));
+				synchronized(this) {  
+					writer.addDocument(this.docProcessingFactory.processDocument(file));
+				}
 			}
 		}
 		catch (Exception e) {
@@ -108,15 +123,17 @@ public class Indexer {
 	}
 
 
-	private void showFeedback(int docCount) {
-		if(this.callbackRecipient != null) {
-			this.callbackRecipient.showFeedbackMessage("Indexing: " +
-														docCount + " documents so far" +
-														" (" + curDir + ")");
-		}
+	private void showProgress(int docCount, String dir) {
+		showFeedbackMessage("Indexing: " + docCount + " documents so far" + " (" + dir + ")");
 	}
 
-	private void createDirPath(File file) {
+	private void showFeedbackMessage(String string) {
+		if(this.callbackRecipient != null) {
+			this.callbackRecipient.showFeedbackMessage(string);
+		}
+    }
+
+    private void createDirPath(File file) {
 		if (!file.exists()) {
 			File parent = file.getParentFile();
 			if (!parent.exists()) {
@@ -126,20 +143,5 @@ public class Indexer {
 				file.mkdir();
 			}
 		}
-	}
-	
-	private void errorExit (Exception e) {
-		e.printStackTrace();
-		System.exit(1);
-	}
-
-	public static void main(String[] args) {
-
-		if (args.length != 2) {
-			System.out.println("Usage: Indexer path_to_files_to_index indexLocation");
-			System.exit(1);
-		}
-		new Indexer(args[0], args[1], null);
-
 	}
 }
