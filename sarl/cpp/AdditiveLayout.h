@@ -2,7 +2,7 @@
 #define SARL_CPP_ADDITIVE_LAYOUT_H
 
 extern "C" {
-#include "sarl/config.h"
+#include "sarl/global.h"
 #include "sarl/read_cxt_context.h"
 }
 
