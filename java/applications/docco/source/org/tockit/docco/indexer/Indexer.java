@@ -36,12 +36,6 @@ public class Indexer {
 
 			Class plainTextDocProcessorClass = PlainTextDocumentProcessor.class;
 			this.docProcessingFactory.registerExtension("txt", plainTextDocProcessorClass);
-			this.docProcessingFactory.registerExtension("java", plainTextDocProcessorClass);
-			this.docProcessingFactory.registerExtension("c", plainTextDocProcessorClass);
-			this.docProcessingFactory.registerExtension("cc", plainTextDocProcessorClass);
-			this.docProcessingFactory.registerExtension("cpp", plainTextDocProcessorClass);
-			this.docProcessingFactory.registerExtension("h", plainTextDocProcessorClass);
-			this.docProcessingFactory.registerExtension("hh", plainTextDocProcessorClass);
 
 			this.docProcessingFactory.registerExtension("pdf", PdfDocumentProcessor.class);
 
