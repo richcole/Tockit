@@ -77,30 +77,44 @@ public class ConfigurationManager {
     /**
      * Stores the size and position of a window.
      */
-    static public void storePlacement(String section, Window window) {
-        properties.setProperty(section + "-x", String.valueOf(window.getX()));
-        properties.setProperty(section + "-y", String.valueOf(window.getY()));
-        properties.setProperty(section + "-width", String.valueOf(window.getWidth()));
-        properties.setProperty(section + "-height", String.valueOf(window.getHeight()));
-    }
+	static public void storePlacement(String section, Window window) {
+		if(window instanceof Frame) {
+			Frame frame = (Frame)window;
+			properties.setProperty(section + "-windowstate", String.valueOf(frame.getExtendedState()));
+			frame.setExtendedState(Frame.NORMAL);			
+		}
+		properties.setProperty(section + "-x", String.valueOf(window.getX()));
+		properties.setProperty(section + "-y", String.valueOf(window.getY()));
+		properties.setProperty(section + "-width", String.valueOf(window.getWidth()));
+		properties.setProperty(section + "-height", String.valueOf(window.getHeight()));
+	}
 
-    /**
-     * Restores the size and position of a window.
-     *
-     * If the configuration could not be found or is broken this will do nothing.
-     */
-    static public void restorePlacement(String section, Window window, Rectangle defaultPlacement) {
-        try {
-            int x = Integer.parseInt(properties.getProperty(section + "-x"));
-            int y = Integer.parseInt(properties.getProperty(section + "-y"));
-            int w = Integer.parseInt(properties.getProperty(section + "-width"));
-            int h = Integer.parseInt(properties.getProperty(section + "-height"));
-            window.setBounds(x, y, w, h);
-        } catch (NumberFormatException e) {
-            // use default
-            window.setBounds(defaultPlacement);
-        }
-    }
+	/**
+	 * Restores the size and position of a window.
+	 *
+	 * If the configuration could not be found or is broken this will do nothing.
+	 */
+	static public void restorePlacement(String section, Window window, Rectangle defaultPlacement) {
+		try {
+			int x = Integer.parseInt(properties.getProperty(section + "-x"));
+			int y = Integer.parseInt(properties.getProperty(section + "-y"));
+			int w = Integer.parseInt(properties.getProperty(section + "-width"));
+			int h = Integer.parseInt(properties.getProperty(section + "-height"));
+			window.setBounds(x, y, w, h);
+		} catch (NumberFormatException e) {
+			// use default
+			window.setBounds(defaultPlacement);
+		}
+		if(window instanceof Frame) {
+			Frame frame = (Frame)window;
+			try {
+				int state = Integer.parseInt(properties.getProperty(section + "-windowstate"));
+				frame.setExtendedState(state);
+			} catch (NumberFormatException e) {
+				frame.setExtendedState(Frame.NORMAL);
+			}			
+		}
+	}
 
     /**
      * Stores an int value.
