@@ -88,6 +88,8 @@ import org.tockit.canvas.events.CanvasItemSelectedEvent;
 import org.tockit.events.Event;
 import org.tockit.events.EventBroker;
 import org.tockit.events.EventBrokerListener;
+import org.tockit.plugin.PluginLoader;
+import org.tockit.plugin.PluginLoaderException;
 
 
 import org.tockit.docco.ConfigurationManager;
@@ -326,8 +328,11 @@ public class DoccoMainFrame extends JFrame {
 		
 		this.indexingPriority = ConfigurationManager.fetchInt(CONFIGURATION_SECTION_NAME, 
 															  CONFIGURATION_INDEXING_PRIORITY_NAME, MEDIUM_PRIORITY);	
-		this.lastDirectoryIndexed = new File(ConfigurationManager.fetchString(CONFIGURATION_SECTION_NAME, CONFIGURATION_LAST_INDEX_DIR,
-										     null));
+		String lastDirectory = ConfigurationManager.fetchString(CONFIGURATION_SECTION_NAME, CONFIGURATION_LAST_INDEX_DIR,
+										                        null);
+		if(lastDirectory != null) {
+			this.lastDirectoryIndexed = new File(lastDirectory);
+		}
 		
         openIndexes(forceIndexAccess);
 
@@ -345,9 +350,39 @@ public class DoccoMainFrame extends JFrame {
 	}
 
 	private void loadPlugins() {
-		this.statusBarMessage.setText("Loading plugins...");
-//		new PluginLoader();
-		this.statusBarMessage.setText("Ready!");
+		/// @todo this should be read from config manager?...
+		String pluginsDirName = "plugins";
+
+		String pluginsBaseDir = System.getProperty("user.dir") + File.separator;
+		
+		File pluginsDirFile1 = new File(pluginsBaseDir + pluginsDirName);
+		File pluginsDirFile2 = new File(pluginsBaseDir +
+										"docco" +
+										File.separator + 
+										pluginsDirName);
+		
+		File[] pluginsBaseFiles = { pluginsDirFile1, pluginsDirFile2	};
+		
+		try {
+			PluginLoader.Error[] errors = PluginLoader.loadPlugins(pluginsBaseFiles);
+			if (errors.length > 0) {
+				String errorMsg = "";
+				for (int i = 0; i < errors.length; i++) {
+					PluginLoader.Error error = errors[i];
+					errorMsg += "Plugin location: " + error.getPluginLocation().getAbsolutePath();
+					errorMsg += "\n";
+					errorMsg += "Error: " + error.getException().getMessage();
+					errorMsg += "\n\n";
+					error.getException().printStackTrace();
+				}
+				JOptionPane.showMessageDialog(this, "There were errors loading plugins: \n" + errorMsg,
+											"Error loading plugins", 
+											JOptionPane.ERROR_MESSAGE);
+			}
+		}
+		catch (PluginLoaderException e) {
+			ErrorDialog.showError(this, e, "Error loading plugins");
+		}
 	}
 	
 	private void loadDefaultSettings () {

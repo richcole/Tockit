@@ -20,6 +20,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
@@ -58,6 +59,8 @@ public class PluginClassLoader extends ClassLoader {
 	 */
 	private Hashtable loadedClasses = new Hashtable();
 	
+	private String classNotFound;
+
 	private interface Resource {
 		public byte[] getData() throws IOException;
 		public String getRelativePath();
@@ -160,6 +163,8 @@ public class PluginClassLoader extends ClassLoader {
 	public PluginClassLoader(File file) throws FileNotFoundException {
 		super();
 		this.pluginsDirLocation = file;
+		logger.setLevel(Level.FINER);
+		
 		logger.entering("PluginClassLoader", "Constructor", file.getAbsoluteFile());
 		
 		if (!file.exists()) {
@@ -244,12 +249,20 @@ public class PluginClassLoader extends ClassLoader {
 	 * contain duplicates 
 	 */
 	public Class findClass(String name) throws ClassNotFoundException {
+		// the ClassNotFoundException will not go up through the native ClassLoader code,
+		// thus we use a member variable to indicate the class causing the error
+		this.classNotFound = null;
 		logger.entering("PluginClassLoader", "findClass", name);
 		Resource resource = findResourceLocation(name.replace('.','/').replace('\\','/') + ".class");
 		if (resource == null) {
-			throw new ClassNotFoundException ("Couldn't find class with name " + name);
+			this.classNotFound = name;
+			ClassNotFoundException exc = new ClassNotFoundException ("Couldn't find class with name " + name); 
+			logger.throwing("PluginClassLoader", "findClass", exc);
+			throw exc;
 		}
-		return loadClass(resource);
+		Class res = loadClass(resource);
+		logger.exiting("PluginClassLoader", "findClass",res);
+		return res;
 	 }
 	 
 	 /**
@@ -269,8 +282,7 @@ public class PluginClassLoader extends ClassLoader {
 		try {
 			byte [] b = resource.getData();
 			resClass = defineClass(null, b, 0, b.length);
-		}
-		catch (LinkageError e) {
+		} catch (LinkageError e) {
 			if (e.getMessage().startsWith("duplicate class definition: ")) {
 				String className = resource.getRelativePath().replace('/','.').replaceAll(".class", "");
 				logger.fine("DUPLICATE class def for " + className);
@@ -284,11 +296,18 @@ public class PluginClassLoader extends ClassLoader {
 				}
 			}
 		} catch (IOException exc) {
+			logger.throwing("PluginClassLoader", "loadClass", exc);
 			throw new ClassNotFoundException("Couldn't find resource " + resource.getRelativePath(), exc);			
 		}
 		
 		if (resClass == null) {
-			throw new ClassNotFoundException("Couldn't find and load class " + resource.getRelativePath());
+			String errMessage = "Couldn't find and load class '" + resource.getRelativePath() + "'";
+			if(this.classNotFound != null) {
+				errMessage +=  " since '" + this.classNotFound + "' could not be loaded.";
+			}
+			ClassNotFoundException exc = new ClassNotFoundException(errMessage);
+			logger.throwing("PluginClassLoader", "loadClass", exc);
+			throw exc;
 		}
 		
 		this.loadedClasses.put(resClass.getName(), resClass);

@@ -9,89 +9,80 @@ package org.tockit.plugin;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import net.sourceforge.toscanaj.gui.dialog.ErrorDialog;
-
 
 
 public class PluginLoader {
 
 	private static final Logger logger = Logger.getLogger(PluginLoader.class.getName());
 	
-	private List errors = new ArrayList();
+	private static List errors = new ArrayList();
 	
-	private class DirectoryFileFilter implements FileFilter {
-		public boolean accept(File pathname) {
-			if (pathname.isDirectory()) {
-				return true;
-			}
-			return false;
+	public static class Error {
+		private File file;
+		private Exception e;
+		private Error (File file, Exception e) {
+			this.file = file;
+			this.e = e;
 		}
+		public Exception getException() {
+			return e;
+		}
+		public File getPluginLocation() {
+			return file;
+		}
+
+	}
+		
+	private PluginLoader () {
 	}
 	
-	public PluginLoader () {
+	public static PluginLoader.Error[] loadPlugins (File[] pluginsBaseFiles) throws PluginLoaderException {
 		logger.setLevel(Level.FINER);
-		
-		/// @todo this should be read from config manager?...
-		String pluginsDirName = "plugins";
 
-		String pluginsBaseDir = System.getProperty("user.dir") + File.separator;
-		
-		File pluginsDirFile1 = new File(pluginsBaseDir + pluginsDirName);
-		File pluginsDirFile2 = new File(pluginsBaseDir +
-										"docco" +
-										File.separator + 
-										pluginsDirName);
-		
-		File[] pluginsBaseFiles = { pluginsDirFile1, pluginsDirFile2	};
-		
 		File[] pluginDirs = null;
 		for (int i = 0; i < pluginsBaseFiles.length; i++) {
 			File file = pluginsBaseFiles[i];
 			if (file.exists()) {
-				pluginDirs = file.listFiles(new DirectoryFileFilter());
+				pluginDirs = file.listFiles( new FileFilter () {
+					public boolean accept(File pathname) {
+						return pathname.isDirectory();
+					}
+				});
 				break; 
 			}
 		}
 		logger.fine("STARTING to load plugins. Found " + pluginDirs.length + " plugins");
 		
 		if (pluginDirs == null) {
-			ErrorDialog.showError(null, null, "Didn't find any plugins");			
+			throw new PluginLoaderException("Didn't find any plugins in specified plugins directories: " + pluginDirs);
 		}
-		else {
-			for (int i = 0; i < pluginDirs.length; i++) {
-				try {
-					logger.fine("Loading class loader for " + pluginDirs[i]);
-					PluginClassLoader classLoader = new PluginClassLoader(pluginDirs[i]);
-					Class[] foundPlugins = classLoader.findClassesImplementingGivenIterface(Plugin.class);
-					loadPlugins(foundPlugins);
-					logger.fine("Finished loading plugins in " + pluginDirs[i]);
-				}
-				catch (FileNotFoundException e) {
-					e.printStackTrace();
-					errors.add(e);
-				} catch (NoClassDefFoundError e) {
-				} catch (ClassNotFoundException e) {
-				} catch (InstantiationException e) {
-				} catch (IllegalAccessException e) {
-				}
+
+		for (int i = 0; i < pluginDirs.length; i++) {
+			try {
+				logger.fine("Loading class loader for " + pluginDirs[i]);
+
+				PluginClassLoader classLoader = new PluginClassLoader(pluginDirs[i]);
+				Class[] foundPlugins = classLoader.findClassesImplementingGivenIterface(Plugin.class);
+				loadPluginClasses(foundPlugins);
+
+				logger.fine("Finished loading plugins in " + pluginDirs[i]);
+			}
+			catch (Exception e) {
+				errors.add(new PluginLoader.Error(pluginDirs[i], e));
 			}
 		}
 		
-		if (errors.size() > 0) {
-			/// @todo need to deal with errors in a better fashion. 
-			ErrorDialog.showError(null, null, "There were errors loading plugins. Check exceptions stack trace");
-		}
-		logger.fine("FINISHED loading plugins");
+		logger.fine("FINISHED loading plugins with " + errors.size() + " error(s)");
+		PluginLoader.Error[] res = (PluginLoader.Error[]) errors.toArray(new PluginLoader.Error[errors.size()]);
+		return res;
 	}
 	
 	
-	private void loadPlugins (Class[] plugins) throws InstantiationException,
+	private static void loadPluginClasses (Class[] plugins) throws InstantiationException,
 											IllegalAccessException {
 		for (int i = 0; i < plugins.length; i++) {
 			Class cur = plugins[i];
