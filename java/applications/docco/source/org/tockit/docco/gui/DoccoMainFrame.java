@@ -26,7 +26,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.BorderFactory;
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -77,13 +76,12 @@ import org.tockit.docco.query.util.QueryWithResultSet;
 
 
 public class DoccoMainFrame extends JFrame {
-	private JTextField queryField = new JTextField(20);
+	private JList resList;
+    private JTextField queryField = new JTextField(20);
 	private JButton searchButton = new JButton("Submit");
 	private JTextArea resultArea = new JTextArea(40, 80);
 	private JCheckBox showPhantomNodesCheckBox = new JCheckBox("Show phantom nodes");
-	
-	private DefaultListModel resListModel = new DefaultListModel();
-	
+
 	private DiagramView diagramView;
 	
 	private EventBroker eventBroker;
@@ -292,13 +290,16 @@ public class DoccoMainFrame extends JFrame {
 			}
 			DiagramNode node = nodeView.getDiagramNode();
 			Concept concept = node.getConcept();
-			resListModel.removeAllElements();
+			HitReference[] newContent = new HitReference[concept.getExtentSize()];
 			Iterator extentIterator = concept.getExtentIterator();
+			int i = 0;
 			while (extentIterator.hasNext()) {
 				HitReference cur = (HitReference) extentIterator.next();
-				resListModel.addElement(cur);
+				newContent[i++] = cur;
 			}
 			
+			resList.setListData(newContent);
+						
 			/// @todo highlight object contingent
 		}
 	}
@@ -413,7 +414,7 @@ public class DoccoMainFrame extends JFrame {
 									CanvasItemSelectedEvent.class,
 									LabelView.class);
 
-		JList resList = new JList(this.resListModel);
+		this.resList = new JList();
 		JScrollPane scrollPane = new JScrollPane(resList);
 		
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
