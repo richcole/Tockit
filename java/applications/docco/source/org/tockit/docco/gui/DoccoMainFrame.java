@@ -610,6 +610,7 @@ public class DoccoMainFrame extends JFrame {
 		if(rv != JFileChooser.APPROVE_OPTION) {
 			return;
 		}
+		/// @todo add some better feedback here
 		new Indexer(fileDialog.getSelectedFile().getAbsolutePath());
     }
 	

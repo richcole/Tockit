@@ -8,8 +8,6 @@
 package org.tockit.docco.indexer;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Date;
 import java.util.Hashtable;
 
@@ -35,31 +33,35 @@ public class DocumentProcessingFactory {
 		this.docRegistry.put(fileExtension, docProcessor);
 	}
 
-	public Document processDocument(File file) throws DocumentProcessingException, IOException, FileNotFoundException {
-
-		String fileExtension = getFileExtension(file);
-
-		DocumentProcessor docProcessor = (DocumentProcessor) this.docRegistry.get(fileExtension);
-
-		if (docProcessor != null) {
-			/// @todo check what else we can get from the JDK side. Every feature we can get from the File API should be
-			/// worthwhile keeping
-			Document doc = docProcessor.getDocument(file);
-			doc.add(Field.Text(GlobalConstants.FIELD_DOC_PATH, file.getPath()));
-			if (doc.get(GlobalConstants.FIELD_DOC_DATE) == null) {
-				doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_DATE,new Date(file.lastModified())));
+	public Document processDocument(File file) throws DocumentProcessingException {
+		try {
+			String fileExtension = getFileExtension(file);
+	
+			DocumentProcessor docProcessor = (DocumentProcessor) this.docRegistry.get(fileExtension);
+	
+			if (docProcessor != null) {
+				/// @todo check what else we can get from the JDK side. Every feature we can get from the File API should be
+				/// worthwhile keeping
+				Document doc = docProcessor.getDocument(file);
+				doc.add(Field.Text(GlobalConstants.FIELD_DOC_PATH, file.getPath()));
+				if (doc.get(GlobalConstants.FIELD_DOC_DATE) == null) {
+					doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_DATE,new Date(file.lastModified())));
+				}
+				doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_SIZE, new Long(file.length()).toString()));
+				//printDebug(doc);
+				return doc;								
 			}
-			doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_SIZE, new Long(file.length()).toString()));
-			//printDebug(doc);
-			return doc;								
+			else {
+				throw new DocumentProcessingException(
+									"Don't know how to process document with extension " 
+									+ fileExtension +
+									" ( file: " + file.getPath() + ")");
+			}
+		} catch (Exception e) {
+			DocumentProcessingException docExc = new DocumentProcessingException("Couldn't process document: " + file.getAbsolutePath(), e);
+			docExc.printStackTrace();
+            throw docExc;
 		}
-		else {
-			throw new DocumentProcessingException(
-								"Don't know how to process document with extension " 
-								+ fileExtension +
-								" ( file: " + file.getPath() + ")");
-		}
-
 	}
 	
 	private String getFileExtension (File file) throws DocumentProcessingException {
