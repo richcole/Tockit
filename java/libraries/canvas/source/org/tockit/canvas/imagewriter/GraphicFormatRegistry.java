@@ -81,6 +81,27 @@ public class GraphicFormatRegistry {
     }
 
     /**
+     * Returns a format matching the given name.
+     *
+     * The name given will be matched against all names of GraphicFormats registered.
+     * 
+     * The return value can be null if no such type can be found. If multiple types support
+     * this extension only the first one (in order of registration) will be given.
+     * 
+     * @see GraphicFormat.getName()
+     */
+    static public GraphicFormat getTypeByName(String name) {
+        Iterator it = formats.iterator();
+        while (it.hasNext()) {
+            GraphicFormat format = (GraphicFormat) it.next();
+            if (name.equals(format.getName())) {
+                return format;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Convenience method calling the string version.
      *
      * @see #getTypeByExtension(String)
