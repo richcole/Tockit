@@ -11,9 +11,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import ord.tockit.context.model.BinaryRelation;
-import ord.tockit.context.model.FCAElement;
-import ord.tockit.context.model.FCAElementImplementation;
+import org.tockit.context.model.BinaryRelation;
+import org.tockit.context.model.FCAElement;
+import org.tockit.context.model.FCAElementImplementation;
+
 
 public class ViewContext {
     private CernatoModel model;

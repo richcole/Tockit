@@ -11,9 +11,9 @@ import java.io.PrintStream;
 import java.util.Collection;
 import java.util.Iterator;
 
-import ord.tockit.context.model.BinaryRelation;
 
 import org.tockit.cernatoXML.model.*;
+import org.tockit.context.model.BinaryRelation;
 
 public class TextDumps {
     public static final void dump(CernatoTable context, PrintStream stream) {

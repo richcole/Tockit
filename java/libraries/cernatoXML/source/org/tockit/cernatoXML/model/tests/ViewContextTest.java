@@ -15,10 +15,10 @@ import java.util.Collection;
 import java.util.Iterator;
 
 
-import ord.tockit.context.model.FCAElement;
-import ord.tockit.context.model.FCAElementImplementation;
 
 import org.tockit.cernatoXML.model.*;
+import org.tockit.context.model.FCAElement;
+import org.tockit.context.model.FCAElementImplementation;
 
 public class ViewContextTest extends TestCase {
     final static Class THIS = ViewContextTest.class;
