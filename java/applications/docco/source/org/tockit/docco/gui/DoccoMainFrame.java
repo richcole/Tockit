@@ -100,7 +100,7 @@ import org.tockit.docco.query.QueryEngine;
 import org.tockit.docco.query.util.QueryWithResultSet;
 
 public class DoccoMainFrame extends JFrame {
-	private JLabel statusBarMessage;
+    private JLabel statusBarMessage;
     private static final int VISIBLE_TREE_DEPTH = 2;
     private static final int DEFAULT_VERTICAL_DIVIDER_LOCATION = 600;
 	private static final int DEFAULT_HORIZONTAL_DIVIDER_LOCATION = 500;
@@ -115,6 +115,8 @@ public class DoccoMainFrame extends JFrame {
 	private static final String CONFIGURATION_HORIZONTAL_DIVIDER_LOCATION = "horizontalDivider";
 	private static final String CONFIGURATION_INDEX_NAME = "indexName";
 	private static final String CONFIGURATION_LAST_INDEX_DIR = "lastIndexDir";
+	private static final String CONFIGURATION_SHOW_PHANTOM_NODES_NAME = "showPhantomNodes";
+	private static final String CONFIGURATION_SHOW_CONTINGENT_ONLY_NAME = "showContingentOnly";
 	
 	private QueryEngine queryEngine;
 	private Index index;
@@ -397,7 +399,10 @@ public class DoccoMainFrame extends JFrame {
         
         this.showPhantomNodesCheckBox = new JCheckBoxMenuItem("Show all possible combinations");
         this.showPhantomNodesCheckBox.setMnemonic('p');
-        this.showPhantomNodesCheckBox.setSelected(true);
+        this.showPhantomNodesCheckBox.setSelected(
+        				ConfigurationManager.fetchInt(CONFIGURATION_SECTION_NAME, 
+        											  CONFIGURATION_SHOW_PHANTOM_NODES_NAME, 1) == 1
+        );
         this.showPhantomNodesCheckBox.addActionListener(new ActionListener(){
         	public void actionPerformed(ActionEvent e) {
         		/// @todo this is a bit brute force and will be confusing if the text field has changed since
@@ -409,6 +414,10 @@ public class DoccoMainFrame extends JFrame {
         
         this.showContingentOnlyCheckBox = new JCheckBoxMenuItem("Show matches only once");
         this.showContingentOnlyCheckBox.setMnemonic('o');
+		this.showContingentOnlyCheckBox.setSelected(
+						ConfigurationManager.fetchInt(CONFIGURATION_SECTION_NAME, 
+													  CONFIGURATION_SHOW_CONTINGENT_ONLY_NAME, 0) == 1
+	    );
         this.showContingentOnlyCheckBox.addActionListener(new ActionListener(){
         	public void actionPerformed(ActionEvent e) {
         		if(showContingentOnlyCheckBox.isSelected()) {
@@ -782,6 +791,12 @@ public class DoccoMainFrame extends JFrame {
 								this.viewsSplitPane.getDividerLocation());
 		ConfigurationManager.storeString(CONFIGURATION_SECTION_NAME, CONFIGURATION_INDEX_NAME, 
 								DEFAULT_INDEX_NAME);
+								
+		// store menu settings
+		ConfigurationManager.storeInt(CONFIGURATION_SECTION_NAME, CONFIGURATION_SHOW_PHANTOM_NODES_NAME,
+								this.showPhantomNodesCheckBox.isSelected()?1:0);
+		ConfigurationManager.storeInt(CONFIGURATION_SECTION_NAME, CONFIGURATION_SHOW_CONTINGENT_ONLY_NAME,
+								this.showContingentOnlyCheckBox.isSelected()?1:0);
 		
 		ConfigurationManager.saveConfiguration();
 		System.exit(0);
