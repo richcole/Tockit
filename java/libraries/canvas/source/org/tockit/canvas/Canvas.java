@@ -137,7 +137,9 @@ public class Canvas extends JPanel implements Printable {
         	Iterator itemIt = layer.iterator();
         	while(itemIt.hasNext()) {
 		        CanvasItem cur = (CanvasItem) itemIt.next();
-		        cur.draw(graphics);
+		        if(cur.getPosition() != null) {
+		        	cur.draw(graphics);
+		        }
         	}
         }
         this.controller.getEventBroker().processEvent(new CanvasDrawnEvent(this));
@@ -204,10 +206,14 @@ public class Canvas extends JPanel implements Printable {
 			Iterator itemIt = layer.iterator();        
 	        while (itemIt.hasNext()) {
 	            CanvasItem cur = (CanvasItem) itemIt.next();
-	            if(retVal == null) {
-	                retVal = cur.getCanvasBounds(graphics);
+	            Rectangle2D curBounds = cur.getCanvasBounds(graphics);
+	            if(curBounds == null) {
+	            	continue; // not visible
+	            }
+                if(retVal == null) {
+	                retVal = curBounds;
 	            } else {
-	            	retVal = retVal.createUnion(cur.getCanvasBounds(graphics));
+	            	retVal = retVal.createUnion(curBounds);
 	            }
 	        }
 		}

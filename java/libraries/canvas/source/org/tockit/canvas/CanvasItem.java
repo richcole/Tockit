@@ -16,6 +16,8 @@ import java.awt.geom.Rectangle2D;
  *
  * CanvasItems can be put on a Canvas where they will have a z-order and
  * can be moved.
+ * 
+ * If getPosition() returns null the item is considered to be hidden.
  */
 public abstract class CanvasItem {
     /**
@@ -33,7 +35,7 @@ public abstract class CanvasItem {
     /**
      * Returns the rectangular bounds of the canvas item.
      */
-    abstract public Rectangle2D getCanvasBounds(Graphics2D g);
+    public abstract Rectangle2D getCanvasBounds(Graphics2D g);
 
     /**
      * Returns true if the item should be raised on clicks.
