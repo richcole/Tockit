@@ -122,7 +122,7 @@ public class DocumentProcessingFactory {
 		String fileName = file.getName();
 		int index = fileName.lastIndexOf(".") + 1;
 		if (index > 0) {
-			return fileName.substring(index, fileName.length());
+			return fileName.substring(index, fileName.length()).toLowerCase();
 		}
 		else {
 			throw new NotFoundFileExtensionException("Couldn't extract file extention for file " + file.getPath());
