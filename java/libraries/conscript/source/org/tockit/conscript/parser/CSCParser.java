@@ -38,6 +38,8 @@ public class CSCParser {
           		currentSectionParser.parse(tokenizer, mainFile);
             }
         
+            mainFile.checkForInitialization();
+            
 			return mainFile;
         } catch (FileNotFoundException e) {
             throw e; // we keep the file not found ones

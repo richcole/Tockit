@@ -16,6 +16,8 @@ public abstract class ConscriptStructure {
     private FormattedString title = null;
     private String remark = null;
     private Map specials = new Hashtable();
+    
+    private boolean initialized = false;
 
     public ConscriptStructure(String name) {
         this.name = name;
@@ -47,5 +49,13 @@ public abstract class ConscriptStructure {
 
     public void setTitle(FormattedString title) {
     	this.title = title;
+    }
+    
+    public void setInitialized() {
+        this.initialized = true;
+    }
+    
+    public boolean isInitialized() {
+        return this.initialized;
     }
 }

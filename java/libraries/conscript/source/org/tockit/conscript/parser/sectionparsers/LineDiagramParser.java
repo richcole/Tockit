@@ -34,7 +34,7 @@ class LineDiagramParser extends CSCFileSectionParser {
 	public void parse(CSCTokenizer tokenizer, CSCFile file)
 	                        throws IOException, DataFormatException {
 		String identifier = tokenizer.popCurrentToken();
-        LineDiagram diagram = new LineDiagram(identifier);
+        LineDiagram diagram = getLineDiagram(file, identifier);
 
         tokenizer.consumeToken("=");
 
@@ -141,7 +141,8 @@ class LineDiagramParser extends CSCFileSectionParser {
 			tokenizer.advance();
 		}
         tokenizer.consumeToken(";");
-        
+
+        diagram.setInitialized();
         file.add(diagram);
         CSCParser.logger.log(Level.FINER, "Line diagram added: '" + diagram.getName() + "'");
 	}

@@ -9,9 +9,16 @@ package org.tockit.conscript.parser.sectionparsers;
 
 import java.io.IOException;
 
+import org.tockit.conscript.model.*;
+import org.tockit.conscript.model.AbstractScale;
 import org.tockit.conscript.model.CSCFile;
+import org.tockit.conscript.model.FormalContext;
 import org.tockit.conscript.model.FormattedString;
 import org.tockit.conscript.model.ConscriptStructure;
+import org.tockit.conscript.model.IdentifierMap;
+import org.tockit.conscript.model.LineDiagram;
+import org.tockit.conscript.model.QueryMap;
+import org.tockit.conscript.model.StringMap;
 import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
@@ -70,9 +77,102 @@ public abstract class CSCFileSectionParser {
         }
     }
 
-    protected void throwFailedReferenceException(CSCTokenizer tokenizer, CSCFile file, String type, String reference) throws DataFormatException {
-        throw new DataFormatException("Can not resolve reference to " + 
-                                      type + " '" + reference + "' referenced in file '" +
-                                      file.getLocation() + "', line " + tokenizer.getCurrentLine() +".");
+    protected FormalContext getFormalContext(CSCFile file, String contextId) {
+        FormalContext context = file.findFormalContext(contextId);
+        if(context == null) {
+            context = new FormalContext(contextId);
+            file.add(context);
+        }
+        return context;
+    }
+
+    protected LineDiagram getLineDiagram(CSCFile file, String diagramId) {
+        LineDiagram diagram = file.findLineDiagram(diagramId);
+        if(diagram == null) {
+            diagram = new LineDiagram(diagramId);
+            file.add(diagram);
+        }
+        return diagram;
+    }
+
+    protected StringMap getStringMap(CSCFile file, String mapId) {
+        StringMap map = file.findStringMap(mapId);
+        if(map == null) {
+            map = new StringMap(mapId);
+            file.add(map);
+        }
+        return map;
+    }
+
+    protected IdentifierMap getIdentifierMap(CSCFile file, String mapId) {
+        IdentifierMap map = file.findIdentifierMap(mapId);
+        if(map == null) {
+            map = new IdentifierMap(mapId);
+            file.add(map);
+        }
+        return map;
+    }
+
+    protected QueryMap getQueryMap(CSCFile file, String mapId) {
+        QueryMap map = file.findQueryMap(mapId);
+        if(map == null) {
+            map = new QueryMap(mapId);
+            file.add(map);
+        }
+        return map;
+    }
+
+    protected AbstractScale getAbstractScale(CSCFile file, String scaleId) {
+        AbstractScale scale = file.findAbstractScale(scaleId);
+        if(scale == null) {
+            scale = new AbstractScale(scaleId);
+            file.add(scale);
+        }
+        return scale;
+    }
+
+    protected ConcreteScale getConcreteScale(CSCFile file, String scaleId) {
+        ConcreteScale scale = file.findConcreteScale(scaleId);
+        if(scale == null) {
+            scale = new ConcreteScale(scaleId);
+            file.add(scale);
+        }
+        return scale;
+    }
+
+    protected RealisedScale getRealisedScale(CSCFile file, String scaleId) {
+        RealisedScale scale = file.findRealisedScale(scaleId);
+        if(scale == null) {
+            scale = new RealisedScale(scaleId);
+            file.add(scale);
+        }
+        return scale;
+    }
+
+    protected DatabaseDefinition getDatabaseDefinition(CSCFile file, String dbDefId) {
+        DatabaseDefinition dbDef = file.findDatabaseDefinition(dbDefId);
+        if(dbDef == null) {
+            dbDef = new DatabaseDefinition(dbDefId);
+            file.add(dbDef);
+        }
+        return dbDef;
+    }
+
+    protected ConceptualSchema getConceptualSchema(CSCFile file, String schemaId) {
+        ConceptualSchema schema = file.findConceptualSchema(schemaId);
+        if(schema == null) {
+            schema = new ConceptualSchema(schemaId);
+            file.add(schema);
+        }
+        return schema;
+    }
+
+    protected ConceptualFile getConceptualFile(CSCFile file, String fileId) {
+        ConceptualFile conceptualFile = file.findConceptualFile(fileId);
+        if(file == null) {
+            conceptualFile = new ConceptualFile(fileId);
+            file.add(conceptualFile);
+        }
+        return conceptualFile;
     }
 }

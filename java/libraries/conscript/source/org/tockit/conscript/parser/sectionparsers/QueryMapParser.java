@@ -24,7 +24,7 @@ class QueryMapParser extends CSCFileSectionParser {
     public void parse(CSCTokenizer tokenizer, CSCFile file)
         throws IOException, DataFormatException {
         String queryMapId = tokenizer.popCurrentToken();
-        QueryMap queryMap = new QueryMap(queryMapId);
+        QueryMap queryMap = getQueryMap(file, queryMapId);
 
         int line = tokenizer.getCurrentLine();
         tokenizer.consumeToken("=");
@@ -43,6 +43,7 @@ class QueryMapParser extends CSCFileSectionParser {
 
         tokenizer.consumeToken(";");
 
+        queryMap.setInitialized();
         file.add(queryMap);
         CSCParser.logger.log(Level.FINER, "Query map added: '" + queryMap.getName() + "'");
     }

@@ -9,10 +9,13 @@ package org.tockit.conscript.model;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.tockit.conscript.parser.DataFormatException;
 
 public class CSCFile {
 	private URL location;
@@ -250,5 +253,20 @@ public class CSCFile {
             }
         }
         return null;
+    }
+
+    public void checkForInitialization() throws DataFormatException {
+        Collection structureMaps = this.structures.values();
+        for (Iterator iter = structureMaps.iterator(); iter.hasNext();) {
+            Map structureMap = (Map) iter.next();
+            Collection structureList = structureMap.values();
+            for (Iterator iterator = structureList.iterator(); iterator.hasNext();) {
+                ConscriptStructure structure = (ConscriptStructure) iterator.next();
+                if(!structure.isInitialized()) {
+                    throw new DataFormatException("Structure '" + structure.getName() + "' of type '" +
+                            structure.getClass().getName() + "' was not initialised.");
+                }
+            }
+        }
     }
 }

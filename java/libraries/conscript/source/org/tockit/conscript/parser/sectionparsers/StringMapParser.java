@@ -23,7 +23,7 @@ class StringMapParser extends CSCFileSectionParser {
 
 	public void parse(CSCTokenizer tokenizer, CSCFile file) throws IOException, DataFormatException {
         String id = tokenizer.popCurrentToken();
-        StringMap map = new StringMap(id);
+        StringMap map = getStringMap(file, id);
         tokenizer.consumeToken("=");
         while(!tokenizer.getCurrentToken().equals(";")) {
             tokenizer.consumeToken("(");
@@ -34,7 +34,8 @@ class StringMapParser extends CSCFileSectionParser {
             map.addEntry(concreteObject, abstractObjectId);
         }
         tokenizer.consumeToken(";");
-        
+
+        map.setInitialized();
         file.add(map);
         CSCParser.logger.log(Level.FINER, "String map added: '" + map.getName() + "'");
 	}

@@ -25,7 +25,7 @@ class AbstractScaleParser extends CSCFileSectionParser {
 
 	public void parse(CSCTokenizer tokenizer, CSCFile file) throws IOException, DataFormatException {
         String name = tokenizer.popCurrentToken();
-        AbstractScale scale = new AbstractScale(name);
+        AbstractScale scale = getAbstractScale(file, name);
         
         tokenizer.consumeToken("=");
         
@@ -35,10 +35,7 @@ class AbstractScaleParser extends CSCFileSectionParser {
         String contextId = tokenizer.popCurrentToken();
         tokenizer.consumeToken(",");
         
-        FormalContext context = file.findFormalContext(contextId);
-        if(context == null) {
-            throwFailedReferenceException(tokenizer, file, "formal context", contextId);
-        }
+        FormalContext context = getFormalContext(file, contextId);
         scale.setContext(context);
         
         if(!tokenizer.getCurrentToken().equals(",")) {
@@ -48,16 +45,14 @@ class AbstractScaleParser extends CSCFileSectionParser {
         do {
             tokenizer.consumeToken(",");
             String diagramId = tokenizer.popCurrentToken();
-            LineDiagram diagram = file.findLineDiagram(diagramId);
-            if(diagram == null) {
-                throwFailedReferenceException(tokenizer, file, "line diagram", diagramId);
-            }
+            LineDiagram diagram = getLineDiagram(file, diagramId);
             scale.addLineDiagram(diagram);
         } while(!tokenizer.getCurrentToken().equals(")"));
         
         tokenizer.consumeToken(")");
         tokenizer.consumeToken(";");
-        
+
+        scale.setInitialized();
         file.add(scale);
         CSCParser.logger.log(Level.FINER, "Abstract scale added: '" + scale.getName() + "'");
 	}
