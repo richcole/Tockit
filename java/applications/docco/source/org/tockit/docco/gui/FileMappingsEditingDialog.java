@@ -61,12 +61,13 @@ public class FileMappingsEditingDialog extends JDialog {
 			super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 			
 			DocumentHandlerMapping mapping = (DocumentHandlerMapping) value;
-			String text = mapping.getFileFilter().getDisplayString() + 
+			String text = mapping.getFileFilter().getDisplayName() + 
+								" (" + mapping.getFileFilter().getFilteringString() + ") " + 
 								": " + mapping.getHandler().getDisplayName();
 			
 			setText(text);
 			
-			String tooltipText = "File Filter accepting: " + mapping.getFileFilter().getDisplayString() +
+			String tooltipText = "File Filter accepting: " + mapping.getFileFilter().getFilteringString() +
 								" is mapped to document handler: " + mapping.getHandler().getDisplayName();
 			setToolTipText(tooltipText);  
 			return this;
@@ -342,7 +343,7 @@ public class FileMappingsEditingDialog extends JDialog {
 		
 		if (this.jlist.getSelectedIndex() != -1) {
 			DocumentHandlerMapping mapping = (DocumentHandlerMapping) this.jlist.getSelectedValue();
-			this.fileFilterDisplayLabel.setText(mapping.getFileFilter().getDisplayString());
+			this.fileFilterDisplayLabel.setText(mapping.getFileFilter().getFilteringString());
 			this.docHandlerDisplayLabel.setText(mapping.getHandler().getDisplayName());
 		}
 		

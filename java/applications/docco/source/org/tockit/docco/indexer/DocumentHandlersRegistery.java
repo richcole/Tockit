@@ -7,6 +7,8 @@
  */
 package org.tockit.docco.indexer;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -17,7 +19,6 @@ import org.tockit.docco.ConfigurationManager;
 
 import org.tockit.docco.indexer.documenthandler.DocumentHandler;
 import org.tockit.docco.indexer.filefilter.DoccoFileFilter;
-import org.tockit.docco.indexer.filefilter.ExtensionFileFilter;
 
 public class DocumentHandlersRegistery {
 	
@@ -59,30 +60,39 @@ public class DocumentHandlersRegistery {
 	}
 	
 	private void loadDocumentHandlersRegistery()
-				throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+				throws InstantiationException, IllegalAccessException, ClassNotFoundException,
+						NoSuchMethodException, InvocationTargetException {
 		List mappings = ConfigurationManager.fetchStringList(CONFIGURATION_SECTION_NAME, CONFIGURATION_MAPPING_ENTRY_NAME, 50);
 		if(mappings.size() == 0) {
 			mappings = new ArrayList(20);
-			mappings.add("html:org.tockit.docco.indexer.documenthandler.HtmlDocumentHandler");
-			mappings.add("htm:org.tockit.docco.indexer.documenthandler.HtmlDocumentHandler");
-			//mappings.add("pdf:org.tockit.docco.indexer.documenthandler.PdfMultivalentDocumentHandler");
-			mappings.add("pdf:org.tockit.docco.indexer.documenthandler.PdfDocumentHandler");
-			mappings.add("doc:org.tockit.docco.indexer.documenthandler.MSWordHandler");
-			mappings.add("txt:org.tockit.docco.indexer.documenthandler.PlainTextDocumentHandler");
-			mappings.add("xls:org.tockit.docco.indexer.documenthandler.MSExcelDocHandler");
+			mappings.add("html?:org.tockit.docco.indexer.filefilter.RegularExpresionExtensionFileFilter:org.tockit.docco.indexer.documenthandler.HtmlDocumentHandler");
+			mappings.add("pdf:org.tockit.docco.indexer.filefilter.ExtensionFileFilter:org.tockit.docco.indexer.documenthandler.PdfDocumentHandler");
+			mappings.add("doc:org.tockit.docco.indexer.filefilter.ExtensionFileFilter:org.tockit.docco.indexer.documenthandler.MSWordHandler");
+			mappings.add("txt:org.tockit.docco.indexer.filefilter.ExtensionFileFilter:org.tockit.docco.indexer.documenthandler.PlainTextDocumentHandler");
+			mappings.add("xls:org.tockit.docco.indexer.filefilter.ExtensionFileFilter:org.tockit.docco.indexer.documenthandler.MSExcelDocHandler");
 			ConfigurationManager.storeStringList(CONFIGURATION_SECTION_NAME, CONFIGURATION_MAPPING_ENTRY_NAME, mappings);
 		}
 		for (Iterator iter = mappings.iterator(); iter.hasNext();) {
 			String mapping = (String) iter.next();
-			int colonIndex = mapping.indexOf(':');
-			String extension = mapping.substring(0,colonIndex);
-			String className = mapping.substring(colonIndex + 1);
+			int firstColonIndex = mapping.indexOf(':');
+			int lastColonIndex = mapping.lastIndexOf(':');
+			String extension = mapping.substring(0,firstColonIndex);
+			String fileFilterClassName = mapping.substring(firstColonIndex + 1, lastColonIndex);
+			String docHandlerClassName = mapping.substring(lastColonIndex + 1);			
 			try {
-				DoccoFileFilter fileFilter = new ExtensionFileFilter(extension);
-				DocumentHandler docHandler = (DocumentHandler) Class.forName(className).newInstance();
+				Class fileFilterClass = Class.forName(fileFilterClassName);
+				
+				Class[] parameterTypes = { String.class };
+				Constructor constructor = fileFilterClass.getConstructor(parameterTypes);
+				
+				Object[] args = { extension };
+				DoccoFileFilter fileFilter = (DoccoFileFilter) constructor.newInstance(args);
+
+				DocumentHandler docHandler = (DocumentHandler) Class.forName(docHandlerClassName).newInstance();
+
 				this.register(fileFilter, docHandler);
 			} catch(ClassCastException e) {
-				System.err.println("WARNING: class " + className + " could not be loaded due to this error:");
+				System.err.println("WARNING: class " + docHandlerClassName + " could not be loaded due to this error:");
 				e.printStackTrace();
 			}
 		}

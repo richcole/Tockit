@@ -8,19 +8,20 @@
 package org.tockit.docco.indexer.filefilter;
 
 import java.io.File;
+import java.util.regex.Pattern;
 
 
-public class ExtensionFileFilter implements DoccoFileFilter {
-	String extensionString;
+public class RegularExpresionExtensionFileFilter implements DoccoFileFilter {
+	String regexString;
 
-	public ExtensionFileFilter (String extensionString) {
-		this.extensionString = extensionString;
+	public RegularExpresionExtensionFileFilter (String regexString) {
+		this.regexString = regexString;
 	}
 	
 	public boolean accept(File file) {
 		try {
 			String fileExtension = FileExtensionExtractor.getExtension(file.getAbsoluteFile());
-			if (fileExtension.equalsIgnoreCase(extensionString)) {
+			if (Pattern.matches(regexString, fileExtension)) {
 				return true;
 			}
 		}
@@ -31,15 +32,15 @@ public class ExtensionFileFilter implements DoccoFileFilter {
 	}
 	
 	public String getFilteringString () {
-		return this.extensionString;
+		return this.regexString;
 	}
 
 	public String getDisplayName() {
-		return "Filter by File Extension";
+		return "Filter using Regular Expression File Extensions";
 	}
 	
 	public String toString() {
-		String str = "Extension FileFilter for extension " + this.extensionString;
+		String str = "Extension FileFilter for extension " + this.regexString;
 		return str;
 	}
 

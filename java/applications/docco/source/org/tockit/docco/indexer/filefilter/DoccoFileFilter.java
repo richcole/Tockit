@@ -12,5 +12,6 @@ import java.io.FileFilter;
 
 public interface DoccoFileFilter  extends FileFilter {
 
-	public String getDisplayString();
+	public String getFilteringString();
+	public String getDisplayName();
 }
