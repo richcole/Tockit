@@ -119,7 +119,7 @@ public class HtmlDocumentProcessor implements DocumentProcessor {
 
 		doc.add(Field.Text(GlobalConstants.FIELD_DOC_TITLE, handler.title));
 
-		doc.add(Field.Text(GlobalConstants.FIELD_QUERY_BODY, handler.docTextContent.toString()));
+		doc.add(Field.UnStored(GlobalConstants.FIELD_QUERY_BODY, handler.docTextContent.toString()));
 	
 		String summary = "";
 		if (handler.metaDescription.length() > 0 ) {

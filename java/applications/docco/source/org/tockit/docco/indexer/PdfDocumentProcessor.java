@@ -64,7 +64,7 @@ public class PdfDocumentProcessor implements DocumentProcessor {
 		StringWriter writer = new StringWriter();
 		try {
 			pdfToText.writeText(cosDoc, writer);
-			doc.add(Field.Text(GlobalConstants.FIELD_QUERY_BODY, writer.toString()));
+			doc.add(Field.UnStored(GlobalConstants.FIELD_QUERY_BODY, writer.toString()));
 		} catch (NullPointerException e) {
 			/// @todo something seems to be dodgy with the PDFBox tool -- I get NPEs on some files (OOo?)
 			System.err.println("Caught null pointer exception in PDF reader for document " + file.getAbsolutePath());
