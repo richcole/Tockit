@@ -36,7 +36,7 @@ public class PluginClassLoaderTest extends TestCase {
 							+ System.getProperty("file.separator")
 							+ "docco"
 							+ System.getProperty("file.separator")
-							+ "plugins/multivalent/dist";
+							+ "plugins/multivalent";
 		try {	
 			Logger logger = Logger.getLogger(PluginClassLoader.class.getName());
 			logger.setLevel(Level.FINE);
@@ -83,11 +83,10 @@ public class PluginClassLoaderTest extends TestCase {
 		Class[] classes = classLoader.findClassesImplementingGivenIterface(DocumentHandler.class);
 		assertEquals("should be able to find and load some classes implementing given interface ",
 										true, classes.length != 0);
-		/// @todo should we also test if we can instantiate found classes?
 		for (int i = 0; i < classes.length; i++) {
 			Class class1 = classes[i];
 			Object obj = class1.newInstance();
-			System.out.println(obj);
+			System.out.println("Instantiated object: " + obj);
 		}
 	}
 }

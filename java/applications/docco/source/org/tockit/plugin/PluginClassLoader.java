@@ -180,6 +180,9 @@ public class PluginClassLoader extends ClassLoader {
 			String name = curResource.getRelativePath();
 			if (name.endsWith(".class")) {
 				Class curClass = loadClass(curResource);
+				if (result.contains(curClass)) {
+					continue;
+				}
 				Class[] interfaces = curClass.getInterfaces();
 				for (int i = 0; i < interfaces.length; i++) {
 					Class class1 = interfaces[i];
@@ -225,13 +228,20 @@ public class PluginClassLoader extends ClassLoader {
 	 
 	/**
 	 * Find a class with the specified name.
+	 * 
 	 * @param name - fully qualified class name.
+	 * 
 	 * If duplicates occur within this class loader - the first one
 	 * found will be returned. At this stage there is no way to inforce
 	 * the order in which we search for classes, therefore there is no
 	 * way to predict which one of the duplicates would be found first.
+	 * 
 	 * Classes defined in classpath are loaded by default class loader 
 	 * and take precedence to classes found in plugins path.
+	 * 
+	 * Please note that although we do ignore multiple class definitions
+	 * in a plugin path - it would more efficient if plugins path didn't 
+	 * contain duplicates 
 	 */
 	public Class findClass(String name) throws ClassNotFoundException {
 		logger.entering("PluginClassLoader", "findClass", name);
