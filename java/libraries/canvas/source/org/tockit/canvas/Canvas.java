@@ -407,6 +407,9 @@ public class Canvas extends JPanel implements Printable {
      * It will appear on top of all other items in the highest layer.
      */
     public void addCanvasItem(CanvasItem node) {
+    	if (node == null) {
+    		throw new NullPointerException("CanvasItem to be added must not be null.");
+    	}
         if (this.canvasLayers.isEmpty()) {
             List newLayer = new ArrayList();
             this.canvasLayers.add(newLayer);
