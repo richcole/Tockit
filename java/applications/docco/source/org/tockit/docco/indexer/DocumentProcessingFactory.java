@@ -24,15 +24,15 @@ import org.tockit.docco.indexer.filefilter.NotFoundFileExtensionException;
  */
 public class DocumentProcessingFactory {
 	
-	private DocumentHandlerRegistry docHandlersRegistery;
+	private DocumentHandlerRegistry docHandlersRegistry;
 	
-	public DocumentProcessingFactory(DocumentHandlerRegistry docHandlersRegistery) {
-		this.docHandlersRegistery = docHandlersRegistery;
+	public DocumentProcessingFactory(DocumentHandlerRegistry docHandlersRegistry) {
+		this.docHandlersRegistry = docHandlersRegistry;
 	}
 
 	public Document processDocument(File file) throws DocumentProcessingException,
 													IOException {
-		Iterator it = this.docHandlersRegistery.getDocumentMappingList().iterator();
+		Iterator it = this.docHandlersRegistry.getDocumentMappingList().iterator();
 		DocumentSummary docSummary = null;
 		DocumentProcessingException caughtException = null;
 		while (it.hasNext()) {

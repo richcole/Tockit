@@ -48,7 +48,7 @@ import org.tockit.docco.indexer.filefilter.DoccoFileFilter;
 
 public class CreateNewFileMappingDialog extends JDialog {
 	
-	private DocumentHandlerRegistry docHandlersRegistery;
+	private DocumentHandlerRegistry docHandlersRegistry;
 	private DefaultComboBoxModel instantiatedFileFiltersModel;
 	private DefaultComboBoxModel fileFilterImplementationsModel;
 	private DefaultComboBoxModel docHandlerImplementationsModel;
@@ -104,10 +104,10 @@ public class CreateNewFileMappingDialog extends JDialog {
 		}
 	}	
 
-	public CreateNewFileMappingDialog(Dialog owner, DocumentHandlerRegistry registery) 
+	public CreateNewFileMappingDialog(Dialog owner, DocumentHandlerRegistry registry) 
 										throws HeadlessException {
 		super(owner, "Create new mapping", true);
-		this.docHandlersRegistery = registery;
+		this.docHandlersRegistry = registry;
 		
 		initAllComboBoxModels();
 		
@@ -131,7 +131,7 @@ public class CreateNewFileMappingDialog extends JDialog {
 		
 		this.instantiatedFileFiltersModel = new DefaultComboBoxModel();
 		this.instantiatedFileFiltersModel.addElement("<Choose File Filter>");
-		Iterator it = docHandlersRegistery.getDocumentMappingList().iterator();
+		Iterator it = docHandlersRegistry.getDocumentMappingList().iterator();
 		while (it.hasNext()) {
 			DocumentHandlerMapping curMapping = (DocumentHandlerMapping) it.next();
 			this.instantiatedFileFiltersModel.addElement(curMapping.getFileFilter());
