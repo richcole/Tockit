@@ -86,81 +86,86 @@ public class DocumentDisplayPane extends JPanel {
 		this.shellExecuteButton.setEnabled(false);
 		
 		JPanel mainPanel = new JPanel(new GridBagLayout());
-		mainPanel.add(titleLabel, new GridBagConstraints(
-						0, 0, 1, 1, 0, 0,
-						GridBagConstraints.WEST,
-						GridBagConstraints.NONE,
-						new Insets(5,5,5,5),
-						0,0 ));
-		mainPanel.add(this.titleField, new GridBagConstraints(
-						1, 0, 3, 1, 1, 0,
-						GridBagConstraints.WEST,
-						GridBagConstraints.HORIZONTAL,
-						new Insets(5,5,5,5),
-						0,0 ));
-		mainPanel.add(authorLabel, new GridBagConstraints(
-						0, 1, 1, 1, 0, 0,
-						GridBagConstraints.WEST,
-						GridBagConstraints.NONE,
-						new Insets(5,5,5,5),
-						0,0 ));
-		mainPanel.add(this.authorField, new GridBagConstraints(
-						1, 1, 3, 1, 1, 0,
-						GridBagConstraints.WEST,
-						GridBagConstraints.HORIZONTAL,
-						new Insets(5,5,5,5),
-						0,0 ));
+		int row = 0;
 		mainPanel.add(pathLabel, new GridBagConstraints(
-						0, 2, 1, 1, 0, 0,
-						GridBagConstraints.WEST,
+						0, row, 1, 1, 0, 0,
+						GridBagConstraints.NORTHWEST,
 						GridBagConstraints.NONE,
 						new Insets(5,5,5,5),
 						0,0 ));
 		mainPanel.add(this.pathField, new GridBagConstraints(
-						1, 2, 3, 1, 1, 0,
-						GridBagConstraints.WEST,
+						1, row, 3, 1, 1, 0,
+						GridBagConstraints.NORTHWEST,
 						GridBagConstraints.HORIZONTAL,
 						new Insets(5,5,5,5),
 						0,0 ));
+		row++;
+		mainPanel.add(titleLabel, new GridBagConstraints(
+						0, row, 1, 1, 0, 0,
+						GridBagConstraints.NORTHWEST,
+						GridBagConstraints.NONE,
+						new Insets(5,5,5,5),
+						0,0 ));
+		mainPanel.add(this.titleField, new GridBagConstraints(
+						1, row, 1, 1, 2, 0,
+						GridBagConstraints.NORTHWEST,
+						GridBagConstraints.HORIZONTAL,
+						new Insets(5,5,5,5),
+						0,0 ));
+		mainPanel.add(authorLabel, new GridBagConstraints(
+						2, row, 1, 1, 0, 0,
+						GridBagConstraints.NORTHWEST,
+						GridBagConstraints.NONE,
+						new Insets(5,5,5,5),
+						0,0 ));
+		mainPanel.add(this.authorField, new GridBagConstraints(
+						3, row, 1, 1, 1, 0,
+						GridBagConstraints.NORTHWEST,
+						GridBagConstraints.HORIZONTAL,
+						new Insets(5,5,5,5),
+						0,0 ));
+		row++;
 		mainPanel.add(dateLabel, new GridBagConstraints(
-						0, 3, 1, 1, 0, 0,
-						GridBagConstraints.WEST,
+						0, row, 1, 1, 0, 0,
+						GridBagConstraints.NORTHWEST,
 						GridBagConstraints.NONE,
 						new Insets(5,5,5,5),
 						0,0 ));
 		mainPanel.add(this.dateField, new GridBagConstraints(
-						1, 3, 1, 1, 1, 0,
-						GridBagConstraints.WEST,
+						1, row, 1, 1, 2, 0,
+						GridBagConstraints.NORTHWEST,
 						GridBagConstraints.HORIZONTAL,
 						new Insets(5,5,5,5),
 						0,0 ));
 		mainPanel.add(sizeLabel, new GridBagConstraints(
-						2, 3, 1, 1, 0, 0,
-						GridBagConstraints.WEST,
+						2, row, 1, 1, 0, 0,
+						GridBagConstraints.NORTHWEST,
 						GridBagConstraints.NONE,
 						new Insets(5,5,5,5),
 						0,0 ));
 		mainPanel.add(this.sizeField, new GridBagConstraints(
-						3, 3, 1, 1, 1, 0,
-						GridBagConstraints.WEST,
+						3, row, 1, 1, 1, 0,
+						GridBagConstraints.NORTHWEST,
 						GridBagConstraints.HORIZONTAL,
 						new Insets(5,5,5,5),
 						0,0 ));
+		row++;
 		mainPanel.add(summaryLabel, new GridBagConstraints(
-						0, 4, 4, 1, 0, 0,
-						GridBagConstraints.WEST,
+						0, row, 1, 1, 0, 0,
+						GridBagConstraints.NORTHWEST,
 						GridBagConstraints.NONE,
 						new Insets(5,5,5,5),
 						0,0 ));
 		mainPanel.add(summaryPane, new GridBagConstraints(
-						0, 5, 4, 1, 0, 10,
-						GridBagConstraints.WEST,
+						1, row, 3, 1, 0, 10,
+						GridBagConstraints.NORTHWEST,
 						GridBagConstraints.BOTH,
 						new Insets(5,5,5,5),
 						0,0 ));
+		row++;
 		mainPanel.add(this.shellExecuteButton, new GridBagConstraints(
-						1, 6, 3, 1, 0, 0,
-						GridBagConstraints.WEST,
+						1, row, 3, 1, 0, 0,
+						GridBagConstraints.NORTHWEST,
 						GridBagConstraints.NONE,
 						new Insets(5,5,5,5),
 						0,0 ));
