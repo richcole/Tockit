@@ -125,7 +125,7 @@ java/%.class: java/%.java
 	$(CPPX) -g "-c -I../" $<
 
 
-$(TESTS:%=%.exe) : $(@:%.exe=%.o) $(OBJECTS:%=%.o)
+$(TESTS:%=%.exe) : $(TESTS:%=%.o) $(OBJECTS:%=%.o)
 	$(CCC) $(DEBUG) -I../ -o $@ -lstdc++ $(@:%.exe=%.o) $(OBJECTS:%=%.o)
 
 
