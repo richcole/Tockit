@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XML Spy v3.5 NT (http://www.xmlspy.com) by nataliya (nat) -->
+<knowledgeBase xmlns:xsi="http://www.w3.org/2000/10/XMLSchema-instance" xsi:noNamespaceSchemaLocation="H:\experiments\CG-XML\cgxml.xsd">
+	<cg>
+		<relation name="On">
+			<concept type="Cat"/>
+			<concept type="Mat"/>
+		</relation>
+	</cg>
+</knowledgeBase>

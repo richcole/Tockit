@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XML Spy v3.5 NT (http://www.xmlspy.com) by nataliya (nat) -->
+<knowledgeBase xmlns:xsi="http://www.w3.org/2000/10/XMLSchema-instance" xsi:noNamespaceSchemaLocation="H:\experiments\CG-XML\cgxml.xsd">
+	<cg>
+		<concept type="Person" name="Tom" label="x1"/>
+		<concept type="Believe" label="x2"/>
+		<relation name="Expr">
+			<ref label="x2"/>
+			<ref label="x1"/>
+		</relation>
+		<relation name="Thme">
+			<ref label="x2"/>
+			<context type="Proposition">
+				<concept type="Person" name="Mary" label="x3"/>
+				<concept type="Want" label="x4"/>
+				<relation name="Expr">
+					<ref label="x4"/>
+					<ref label="x3"/>
+				</relation>
+				<relation name="Thme">
+					<ref label="x4"/>
+					<context type="Situation">
+						<concept type="Marry" label="x5"/>
+						<relation name="Agnt">
+							<ref label="x5"/>
+							<ref label="x3"/>
+						</relation>
+						<relation name="Thme">
+							<ref label="x5"/>
+							<concept type="Sailor"/>
+						</relation>
+					</context>
+				</relation>
+			</context>
+		</relation>
+	</cg>
+</knowledgeBase>

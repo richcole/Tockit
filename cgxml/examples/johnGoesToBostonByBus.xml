@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XML Spy v3.5 NT (http://www.xmlspy.com) by nataliya (nat) -->
+<knowledgeBase xmlns:xsi="http://www.w3.org/2000/10/XMLSchema-instance" xsi:noNamespaceSchemaLocation="H:\experiments\CG-XML\cgxml.xsd">
+	<cg>
+		<concept type="Go" label="x"/>
+		<relation name="Agnt">
+			<ref label="x"/>
+			<concept type="Person" name="John"/>
+		</relation>
+		<relation name="Dest">
+			<ref label="x"/>
+			<concept type="City" name="Boston"/>
+		</relation>
+		<relation name="Inst">
+			<ref label="x"/>
+			<concept type="Bus"/>
+		</relation>
+	</cg>
+</knowledgeBase>
