@@ -42,7 +42,6 @@
 	</target>
 
 	<target name="makePluginJar">
-		<echo>makePluginJar for file ${param}</echo>
 		<ant antfile="${basedir}/buildPlugin.xml" dir="${param}" target="makeJar" inheritall="false">
 			<property name="plugin.name" value="${param}Plugin"/>
 			<property name="docco.build.dir" value="../${docco.build.dir}"/>

@@ -53,9 +53,6 @@
 	</target>
 
 	<target name="compile" depends="prepare">
-		<echo>plugin.name = ${plugin.name}</echo>
-		<echo>docco.build.dir = ${docco.build.dir}</echo>
-		<echo>basedir = ${basedir}</echo>
 		<javac srcdir="${plugin.src.dir}" destdir="${plugin.build.dir}" debug="on" optimize="off" deprecation="on">
 			<classpath refid="plugin.class.path"/>
 		</javac>
