@@ -40,19 +40,14 @@ public class GlobalConstants {
 	 * dynamically somehow (check for implementators of DoccoFileFilter?).
 	 */
 	public static final String[] FILE_FILTER_IMPLEMENTAIONS = {
-										"org.tockit.docco.indexer.filefilter.ExtensionFileFilter",
-										"org.tockit.docco.indexer.filefilter.RegularExpresionExtensionFileFilter"}; 
+										"org.tockit.docco.filefilter.ExtensionFileFilter",
+										"org.tockit.docco.filefilter.RegularExpresionExtensionFileFilter"}; 
 	/**
 	 * @todo see todo above, the same applies to document handler implementations
 	 */
 	public static final String[] DOC_HANDLER_IMPLEMENTATIONS = {
-										"org.tockit.docco.indexer.documenthandler.HtmlDocumentHandler",
-										"org.tockit.docco.indexer.documenthandler.XmlDocumentHandler",
-										"org.tockit.docco.indexer.documenthandler.MSExcelDocHandler",
-										"org.tockit.docco.indexer.documenthandler.MSWordHandler",
-										"org.tockit.docco.indexer.documenthandler.MultivalentDocumentHandler",
-										"org.tockit.docco.indexer.documenthandler.PdfDocumentHandler",
-										"org.tockit.docco.indexer.documenthandler.PdfMultivalentDocumentHandler",
-										"org.tockit.docco.indexer.documenthandler.PlainTextDocumentHandler"
+										"org.tockit.docco.documenthandler.HtmlDocumentHandler",
+										"org.tockit.docco.documenthandler.XmlDocumentHandler",
+										"org.tockit.docco.documenthandler.PlainTextDocumentHandler"
 										};
 }
