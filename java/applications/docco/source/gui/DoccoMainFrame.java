@@ -153,12 +153,11 @@ public class DoccoMainFrame extends JFrame {
 		this.resultArea.setEditable(false);
 		this.resultArea.setBorder(BorderFactory.createLoweredBevelBorder());
 
-		JScrollPane scrollPane = new JScrollPane(this.resultArea);		
+		JScrollPane scrollPane = new JScrollPane(this.resultArea);
+		scrollPane.setPreferredSize(new Dimension(this.width - 40, this.height/4 - 40));
+				
 		resultsPanel.add(new JLabel("Search Results:"), BorderLayout.NORTH);
 		resultsPanel.add(scrollPane, BorderLayout.CENTER);
-
-		resultsPanel.setMinimumSize(new Dimension(this.width, this.height/4));
-		resultsPanel.setPreferredSize(new Dimension(this.width, this.height/4));
 		
 		return resultsPanel;
 	}
