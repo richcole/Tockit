@@ -12,6 +12,7 @@ import org.apache.lucene.index.IndexWriter;
 import org.tockit.docco.GlobalConstants;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Date;
 
@@ -92,6 +93,14 @@ public class Indexer {
 			}
 		}
 		catch (DocumentProcessingException e) {
+		}
+		catch (FileNotFoundException e) {
+			// this most probably means we don't have access rights -- we coudln't figure out
+			// how to know if we have or have not right to read a file and Java considers
+			// "file not found" and "no access right" to be the same problem (except for the
+			// message string, but we don't really want to start parsing that.
+			// The other situation I can think of is that a file was deleted during the indexing,
+			// but then there is no point in indexing it, so it is not really a problem.
 		}
 		catch (IOException e) {
 			errorExit(e);
