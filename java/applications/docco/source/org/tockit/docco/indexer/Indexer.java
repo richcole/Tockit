@@ -128,6 +128,8 @@ public class Indexer implements Runnable {
 		showProgress(writer.docCount(), file.getAbsolutePath());
 		try {
 			writer.addDocument(this.docProcessingFactory.processDocument(file));
+		} catch (UnknownFileTypeException e) {
+			// just ignore this one
 		} catch (Exception e) {
 			// sometimes shit happens. E.g. the PDF header might be screwed. Some other things
 			// might be broken. We don't want to stop indexing whenever one document fails to be
