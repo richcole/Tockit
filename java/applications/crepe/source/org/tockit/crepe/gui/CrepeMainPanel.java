@@ -63,6 +63,7 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
     private Action exportPigAction;
     private Action addNodeAction;
     private Action addLinkAction;
+    private Action queryPigAction = null;
 
     // menu items list
     // FILE menu
@@ -228,6 +229,51 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
     private void createActions() {
         createFileActions();
         createGraphActions();
+        final String pigFile = ConfigurationManager.fetchString("PIG", "filename", null);
+        final String pigCommandLine = ConfigurationManager.fetchString("PIG", "command", null);
+        if( (pigFile != null) && (pigCommandLine != null) ) {
+            queryPigAction = new AbstractAction("Query") {
+                public void actionPerformed(ActionEvent e) {
+                    exportPig(new File(pigFile));
+                    executeCommand(pigCommandLine);
+                }
+            };
+        }
+    }
+
+    private void executeCommand(String command) {
+        String err = "";
+        String out = "";
+        int exitVal;
+        try {
+            // add command shell on Win32 platforms
+            String osName = System.getProperty("os.name");
+            if (osName.equals("Windows NT")) {
+                command = "cmd.exe /C " + command;
+            } else if (osName.equals("Windows 95")) {
+                command = "command.com /C " + command;
+            }
+
+            Runtime rt = Runtime.getRuntime();
+            Process proc = rt.exec(command);
+            InputStream stderr = proc.getErrorStream();
+            InputStreamReader isr = new InputStreamReader(stderr);
+            BufferedReader br = new BufferedReader(isr);
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                err += line;
+            }
+            InputStream stdout = proc.getInputStream();
+            isr = new InputStreamReader(stdout);
+            br = new BufferedReader(isr);
+            line = null;
+            while ((line = br.readLine()) != null) {
+                out += line;
+            }
+            exitVal = proc.waitFor();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void createGraphActions() {
@@ -618,6 +664,10 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
         toolbar.addSeparator();
         toolbar.add(this.addNodeAction);
         toolbar.add(this.addLinkAction);
+        if( this.queryPigAction != null ) {
+            toolbar.addSeparator();
+            toolbar.add(this.queryPigAction);
+        }
     }
 
     /**
