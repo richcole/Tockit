@@ -27,6 +27,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -48,6 +49,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultTreeSelectionModel;
 import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -362,7 +364,9 @@ public class DoccoMainFrame extends JFrame {
 			flattenResults(child);
 		}
 			
-		this.hitList.setModel(new DefaultTreeModel(rootNode));
+		DefaultTreeModel treeModel = new DefaultTreeModel(rootNode);
+		this.hitList.setModel(treeModel);
+		unfoldTree(treeModel);
 	}
 
 	private void flattenResults(DefaultMutableTreeNode treeNode) {
@@ -405,6 +409,24 @@ public class DoccoMainFrame extends JFrame {
 			flattenResults(child);
 		}
 	}
+	
+	private void unfoldTree(DefaultTreeModel treeModel) {
+		List q = new LinkedList();
+		TreeNode rootNode = (TreeNode) treeModel.getRoot();
+		q.add(rootNode);
+
+		while (! q.isEmpty()) {
+			TreeNode curNode = (TreeNode) q.remove(0);
+			Enumeration children = curNode.children();
+			while (children.hasMoreElements())  {
+				TreeNode curChild = (TreeNode) children.nextElement();
+				q.add(curChild);
+			}
+			TreeNode[] pathToRoot = treeModel.getPathToRoot(curNode);
+			hitList.expandPath(new TreePath(pathToRoot));
+		}
+	}
+	
 
 	public DoccoMainFrame (EventBroker eventBroker) {
 		super("Docco");

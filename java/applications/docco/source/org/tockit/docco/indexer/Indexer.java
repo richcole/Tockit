@@ -69,9 +69,11 @@ public class Indexer {
 	private void indexDocs(IndexWriter writer, File file) {
 		try {
 			if (file.isDirectory()) {
+				System.out.print("\n");
 				String[] files = file.list();
-				for (int i = 0; i < files.length; i++)
+				for (int i = 0; i < files.length; i++) {
 					indexDocs(writer, new File(file, files[i]));
+				}
 			}
 			else {
 				writer.addDocument(this.docProcessingFactory.processDocument(file));
