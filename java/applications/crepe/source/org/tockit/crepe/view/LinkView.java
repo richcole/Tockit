@@ -60,4 +60,9 @@ public class LinkView extends MovableCanvasItem {
     public Point2D getPosition() {
         return new Point2D.Double(ellipse.getX() + ellipse.getWidth()/2, ellipse.getY() + ellipse.getHeight()/2);
     }
+
+    public String toString() {
+        Link link = this.getLink();
+        return "LinkView[" + link.getType().getName() + " (" + link.getId() +")]";
+    }
 }

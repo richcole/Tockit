@@ -16,7 +16,8 @@ import java.awt.geom.Rectangle2D;
 
 public class NodeView extends MovableCanvasItem {
     private static final Rectangle2D defaultRect = new Rectangle2D.Double(0,0,130,40);
-    private Rectangle2D rect = defaultRect;
+    private Rectangle2D rect = new Rectangle2D.Double(defaultRect.getX(), defaultRect.getY(),
+                                                      defaultRect.getWidth(), defaultRect.getHeight());
     private Node node = null;
 
     public NodeView(Node node) {
@@ -79,5 +80,10 @@ public class NodeView extends MovableCanvasItem {
 
     public Point2D getPosition() {
         return new Point2D.Double(rect.getX() + rect.getWidth()/2, rect.getY() + rect.getHeight()/2);
+    }
+
+    public String toString() {
+        Node node = this.getNode();
+        return "NodeView[" + node.getType().getName() + ":" + node.getReferent() + " (" + node.getId() +")]";
     }
 }
