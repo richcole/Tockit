@@ -104,9 +104,9 @@ public class DiagTester extends JFrame {
         Diagram diagram = new Diagram();
 
         diagram.addPoint( new Point2D.Double( 0, 0 ) );
-        diagram.addPoint( new Point2D.Double( -1, 1 ) );
-        diagram.addPoint( new Point2D.Double( 1, 1 ) );
-        diagram.addPoint( new Point2D.Double( 0, 2 ) );
+        diagram.addPoint( new Point2D.Double( -1, -1 ) );
+        diagram.addPoint( new Point2D.Double( 1, -1 ) );
+        diagram.addPoint( new Point2D.Double( 0, -2 ) );
 
         diagram.addLine( 0, 1 );
         diagram.addLine( 0, 2 );
@@ -123,7 +123,7 @@ public class DiagTester extends JFrame {
         label.addEntry( "blablabla" );
         label.addEntry( "auch nicht besser" );
         label.setTextAligment( LabelInfo.ALIGNCENTER );
-        label.setOffset( new Point2D.Double( 0.1, -0.1 ) );
+        label.setOffset( new Point2D.Double( 0.3, 0.3 ) );
 
         label = diagram.getObjectLabel( 2 );
         label.addEntry( "A" );

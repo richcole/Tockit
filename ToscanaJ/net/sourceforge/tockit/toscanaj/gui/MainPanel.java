@@ -51,82 +51,110 @@ import org.jdom.DataConversionException;
 public class MainPanel extends JFrame implements ActionListener {
 
 
-    private JToolBar toolbar = null;
-    private JMenuBar menubar = null;
+  private JToolBar toolbar = null;
+  private JMenuBar menubar = null;
+  /**
+   * switches debug mode
+   */
+  private boolean debug = false;
 
-	// buttons list
-    private JButton newButton      = null;
-    private JButton openButton     = null;
-    private JButton saveButton     = null;
-    private JButton contentsButton = null;
+      // buttons list
+  private JButton newButton      = null;
+  private JButton openButton     = null;
+  private JButton saveButton     = null;
+  private JButton contentsButton = null;
 
 
 	// menu items list
 	// FILE menu
-	private JMenuItem newMenuItem		= null;
-	private JMenuItem openMenuItem		= null;
-	private JMenuItem closeMenuItem		= null;
-	private JMenuItem saveMenuItem		= null;
-	private JMenuItem saveAsMenuItem	= null;
-	private JMenuItem printPrevMenuItem	= null;
-	private JMenuItem printMenuItem		= null;
-	private JMenuItem printSetupMenuItem= null;
-	private JMenuItem exitMenuItem		= null;
+  private JMenuItem newMenuItem		= null;
+  private JMenuItem openMenuItem		= null;
+  private JMenuItem closeMenuItem		= null;
+  private JMenuItem saveMenuItem		= null;
+  private JMenuItem saveAsMenuItem	= null;
+  private JMenuItem printPrevMenuItem	= null;
+  private JMenuItem printMenuItem		= null;
+  private JMenuItem printSetupMenuItem= null;
+  private JMenuItem exitMenuItem		= null;
 
-	// THEMES menu
-	private JMenuItem zoomOutMenuItem	= null;
-	private JMenuItem managMenuItem		= null;
+  // THEMES menu
+  private JMenuItem zoomOutMenuItem	= null;
+  private JMenuItem managMenuItem		= null;
 
-	// DIAGRAM menu
-	private	ButtonGroup diagrGroup1		= null;
-	private	ButtonGroup diagrGroup2		= null;
-	private JMenuItem redrawMenuItem	= null;
-	private JRadioButtonMenuItem exDocMenuItem		= null;
-	private JRadioButtonMenuItem spDocMenuItem		= null;
-	private JRadioButtonMenuItem allDocMenuItem	= null;
-	private JMenuItem numDocMenuItem	= null;
-	private JMenuItem persDistMenuItem	= null;
-	private JMenuItem listDocMenuItem	= null;
-	private JMenuItem moveLabMenuItem	= null;
+  // DIAGRAM menu
+  private	ButtonGroup diagrGroup1		= null;
+  private	ButtonGroup diagrGroup2		= null;
+  private JMenuItem redrawMenuItem	= null;
+  private JRadioButtonMenuItem exDocMenuItem		= null;
+  private JRadioButtonMenuItem spDocMenuItem		= null;
+  private JRadioButtonMenuItem allDocMenuItem	= null;
+  private JMenuItem numDocMenuItem	= null;
+  private JMenuItem persDistMenuItem	= null;
+  private JMenuItem listDocMenuItem	= null;
+  private JMenuItem moveLabMenuItem	= null;
 
-	private int currentSelectedIndex;
+  private int currentSelectedIndex;
 
-    // icon images
-    private static final String OPEN_ICON          = "open.gif";
-    private static final String NEW_ICON           = "new.gif";
-    private static final String SAVE_ICON          = "save.gif";
-    private static final String SAVE_ICON_DISABLED = "saveDisabled.gif";
-    private static final String CONTENTS_ICON      = "contents.gif";
-    private static final String CLEAR_ICON          = "clear.gif";
+  // icon images
+  private static final String OPEN_ICON          = "open.gif";
+  private static final String NEW_ICON           = "new.gif";
+  private static final String SAVE_ICON          = "save.gif";
+  private static final String SAVE_ICON_DISABLED = "saveDisabled.gif";
+  private static final String CONTENTS_ICON      = "contents.gif";
+  private static final String CLEAR_ICON          = "clear.gif";
 
-    /**
-     * The main model member.
-     */
-    private ConceptualSchema conceptualSchema;
+  /**
+   * The main model member.
+   */
+  private ConceptualSchema conceptualSchema;
 
-    /**
-     * The diagram viewing area.
-     */
-    private DiagramView diagramView;
+  /**
+   * The diagram viewing area.
+   */
+  private DiagramView diagramView;
 
-    // specify the location of icon images - this is platform safe
-    // because the String is converted into a URL so the "/" is OK for
-    // all platforms.
-    private static final String IMAGE_PATH         = "resource/icons/";
+  // specify the location of icon images - this is platform safe
+  // because the String is converted into a URL so the "/" is OK for
+  // all platforms.
+  private static final String IMAGE_PATH         = "resource/icons/";
 
-    // flag to indicate if the save icon and menu options should be
-    // enabled
-    public boolean fileIsOpen = false;
+  // flag to indicate if the save icon and menu options should be
+  // enabled
+  public boolean fileIsOpen = false;
 
-    /**
-     *  default constructor
-     */
+  /**
+   *  default constructor
+   */
 
     public MainPanel() {
+      super("ToscanaJ 0.1");
+      buildPanel();
+    }
 
-		super("ToscanaJ 0.1");
-		buildPanel();
 
+     // constructor used for debuging
+    public MainPanel(String schemaFile) {
+      super("ToscanaJ 0.1");
+      debug = true;
+      buildPanel();
+      // parse it
+      try {
+        conceptualSchema = CSXParser.parse(new File(schemaFile));
+      }
+      catch( FileNotFoundException e) {
+        JOptionPane.showMessageDialog( this,
+        "Couldn't access the file.",
+        "File error",
+        JOptionPane.ERROR_MESSAGE );
+        System.err.println( e.getMessage() );
+      }
+      catch(IOException ioe){}
+      catch(DataFormatException dfe){}
+      // if there is at least one diagram, open the first
+      if( conceptualSchema.getNumberOfDiagrams() != 0 ) {
+        currentSelectedIndex = 0;
+        diagramView.showDiagram( conceptualSchema.getDiagram( 0 ) );
+      }
     }
 
 
@@ -654,11 +682,11 @@ public class MainPanel extends JFrame implements ActionListener {
 		list.setSelectedIndex(currentSelectedIndex);
 		String title = "Choose Diagram Veiew";
 		JFrame f = new JFrame(title);
-        f.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                 System.exit(0);
-            }
-        });
+                f.addWindowListener(new WindowAdapter() {
+                    public void windowClosing(WindowEvent e) {
+                         System.exit(0);
+                    }
+                });
 		final JDialog chooseDialog = new JDialog (f, title);
 		chooseDialog.setLocationRelativeTo(f);
 
@@ -697,8 +725,12 @@ public class MainPanel extends JFrame implements ActionListener {
      */
 
     public static void main(String [] args) {
-
-	MainPanel test = new MainPanel();
+        MainPanel test;
+        if(args.length == 1) {
+	  test = new MainPanel(args[0]);
+        } else {
+          test = new MainPanel();
+        }
 
         test.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {

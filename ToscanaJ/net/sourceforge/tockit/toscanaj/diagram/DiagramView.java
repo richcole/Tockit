@@ -4,6 +4,10 @@ import java.awt.*;
 import java.awt.geom.*;
 import javax.swing.*;
 
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseEvent;
+
 import net.sourceforge.tockit.toscanaj.data.Diagram;
 import net.sourceforge.tockit.toscanaj.data.LabelInfo;
 import net.sourceforge.tockit.toscanaj.diagram.LabelView;
@@ -13,7 +17,7 @@ import net.sourceforge.tockit.toscanaj.diagram.ScalingInfo;
  * This class paints a diagram defined by the Diagram class.
  */
 
-public class DiagramView extends JComponent
+public class DiagramView extends JComponent implements MouseListener, MouseMotionListener
 {
     /**
      * The size of a point.
@@ -38,6 +42,8 @@ public class DiagramView extends JComponent
     public DiagramView()
     {
         _diagram = new Diagram();
+        addMouseListener(this);
+        addMouseMotionListener(this);
     }
 
     /**
@@ -138,6 +144,69 @@ public class DiagramView extends JComponent
             label = new LabelView( _diagram.getObjectLabel( i ) );
             label.draw( g2d, si, px, py - RADIUS * invY, LabelView.BELOW );
         }
+    }
+
+    // mouse listeners for diagram events
+    // Example moving labels
+
+    public void mouseClicked(MouseEvent e){
+      //System.out.println("mouseClicked");
+    }
+    public void mousePressed(MouseEvent e) {
+      //System.out.println("mousePressed");
+      Point2D p, found = null;
+      Insets insets = getInsets();
+      int x = getX() + insets.left + MARGIN;
+      int y = getY() + insets.top + MARGIN;
+      int h = getHeight() - insets.left - insets.right - 2 * MARGIN;
+      int w = getWidth() - insets.top - insets.bottom - 2 * MARGIN;
+      double min = getDistance(0, 0, w, h);
+      double xOrigin = x + w/2;
+      double yOrigin = y + h/2;
+      double xScale = 1;
+      double yScale = 1;
+      double dist = 0;
+      ScalingInfo si = new ScalingInfo(
+                     new Point2D.Double( xOrigin, yOrigin ), xScale, yScale );
+      for( int i = 0; i < _diagram.getNumberOfPoints(); i++ ) {
+        p = si.project(_diagram.getPoint(i));
+        //System.out.println("p = " + p);
+        dist = getDistance(e.getX(), e.getY(), p.getX(), p.getY());
+        if(dist < min) {
+          min = dist;
+          found = p;
+        }
+      }
+      if(found != null) {
+        System.out.println("Clostest point is " + found);
+      }
+    }
+
+    private double getDistance(double x1, double y1, double x2, double y2){
+      return Math.sqrt(sqr(x1 - x2) + sqr(y1 - y2));
+    }
+
+    private double sqr(double x) {
+      return x * x;
+    }
+    public void mouseReleased(MouseEvent e) {
+      //System.out.println("mouseReleased");
+    }
+    public void mouseEntered(MouseEvent e) {
+      //System.out.println("mouseEntered");
+    }
+    public void mouseExited(MouseEvent e) {
+      //System.out.println("mouseExited");
+    }
+
+    // Mouse Motion Listener for label drag events
+
+    public void mouseDragged(MouseEvent e) {
+      //System.out.println("mouseDragged");
+    }
+
+    public void mouseMoved(MouseEvent e) {
+      //System.out.println("mouseMoved");
     }
 
     /**
