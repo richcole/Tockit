@@ -587,6 +587,8 @@ public class DoccoMainFrame extends JFrame {
 				return;
 			}
 			
+			this.eventBroker.removeSubscriptions(this.queryEventHandler);
+			this.queryEventHandler = null;
 			indexFile.delete();
 		}
 		JFileChooser fileDialog = new JFileChooser();
