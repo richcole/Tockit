@@ -82,8 +82,11 @@ public class MSWordProcessor implements DocumentProcessor {
 		catch (ArrayIndexOutOfBoundsException e) {
 			System.err.println("ArrayIndexOutOfBoundsException while extracting content in " + file.getPath());
 		}
+		catch (IndexOutOfBoundsException e) {
+			System.err.println("ArrayIndexOutOfBoundsException while extracting content in " + file.getPath());
+		}
 		catch (NegativeArraySizeException e) {
-			System.err.println("NegativeArraySizeException while extracting content in " + file.getPath());
+			System.err.println("IndexOutOfBoundsException while extracting content in " + file.getPath());
 		}
 		catch (NullPointerException e) {
 			System.err.println("NullPointerException while extracting content in " + file.getPath());
