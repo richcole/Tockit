@@ -5,22 +5,28 @@
  *
  * $Id$
  */
-
 package org.tockit.docco.gui;
 
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.Date;
 
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+
+import net.sourceforge.toscanaj.dbviewer.BrowserLauncher;
+import net.sourceforge.toscanaj.gui.dialog.ErrorDialog;
 
 import org.apache.lucene.document.DateField;
 import org.tockit.docco.GlobalConstants;
@@ -33,6 +39,9 @@ public class DocumentDisplayPane extends JPanel {
     private JTextField pathField;
     private JTextField authorField;
     private JTextField titleField;
+    
+    private JButton shellExecuteButton;
+    private String currentDocument;
 
     public DocumentDisplayPane() {
 		super(new BorderLayout());
@@ -60,6 +69,19 @@ public class DocumentDisplayPane extends JPanel {
 		this.summaryArea = new JTextArea();
 		this.summaryArea.setEditable(false);
 		JScrollPane summaryPane = new JScrollPane(this.summaryArea);
+		
+		final JPanel panel = this;
+		this.shellExecuteButton = new JButton("Open with default application...");
+		this.shellExecuteButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				try {
+                    BrowserLauncher.openURL(currentDocument);
+                } catch (IOException ex) {
+                	ErrorDialog.showError(panel,ex,"Unable to open file");
+                }
+	        }
+		});
+		this.shellExecuteButton.setEnabled(false);
 		
 		JPanel mainPanel = new JPanel(new GridBagLayout());
 		mainPanel.add(titleLabel, new GridBagConstraints(
@@ -134,6 +156,12 @@ public class DocumentDisplayPane extends JPanel {
 						GridBagConstraints.HORIZONTAL,
 						new Insets(5,5,5,5),
 						0,0 ));
+		mainPanel.add(this.shellExecuteButton, new GridBagConstraints(
+						1, 6, 3, 1, 0, 0,
+						GridBagConstraints.WEST,
+						GridBagConstraints.NONE,
+						new Insets(5,5,5,5),
+						0,0 ));
 						
 		this.add(new JScrollPane(mainPanel), BorderLayout.CENTER);
 	}
@@ -141,12 +169,14 @@ public class DocumentDisplayPane extends JPanel {
 	public void displayDocument(HitReference reference) {
 		this.titleField.setText(reference.getDocument().get(GlobalConstants.FIELD_DOC_TITLE));
 		this.authorField.setText(reference.getDocument().get(GlobalConstants.FIELD_DOC_AUTHOR));
-		this.pathField.setText(reference.getDocument().get(GlobalConstants.FIELD_DOC_PATH));
+		this.currentDocument = reference.getDocument().get(GlobalConstants.FIELD_DOC_PATH);
+        this.pathField.setText(currentDocument);
 		Date date = DateField.stringToDate(reference.getDocument().get(GlobalConstants.FIELD_DOC_DATE));
 		this.dateField.setText(DateFormat.getDateTimeInstance().format(date));
 		long size = Long.parseLong(reference.getDocument().get(GlobalConstants.FIELD_DOC_SIZE));
         this.sizeField.setText(NumberFormat.getIntegerInstance().format(size) + " bytes");
 		this.summaryArea.setText(reference.getDocument().get(GlobalConstants.FIELD_DOC_SUMMARY));
+		this.shellExecuteButton.setEnabled(true);
 	}
 	
 	public void clearDisplay() {
@@ -156,5 +186,6 @@ public class DocumentDisplayPane extends JPanel {
 		this.dateField.setText("");
 		this.sizeField.setText("");
 		this.summaryArea.setText("");
+		this.shellExecuteButton.setEnabled(false);
 	}
 }
