@@ -362,7 +362,8 @@ public class DoccoMainFrame extends JFrame {
 		howtoItem.setMnemonic('h');
 		howtoItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(outerThis, "Not yet implemented");
+				URL fileUrl = this.getClass().getClassLoader().getResource("doc/index.html");
+				HtmlDisplayDialog.show(outerThis, "Docco Online Help", fileUrl, new Dimension(500, 700));
 			}
 		});
 		helpMenu.add(howtoItem);

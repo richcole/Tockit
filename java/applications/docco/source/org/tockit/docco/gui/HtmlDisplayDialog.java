@@ -33,6 +33,8 @@ import javax.swing.event.HyperlinkListener;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 
+import net.sourceforge.toscanaj.dbviewer.BrowserLauncher;
+
 
 public class HtmlDisplayDialog {
 
@@ -47,7 +49,11 @@ public class HtmlDisplayDialog {
 							doc.processHTMLFrameHyperlinkEvent(evt);
 						} else {
 							try {
-								pane.setPage(e.getURL());
+								if (e.getURL().getProtocol().startsWith("http")) {
+									BrowserLauncher.openURL(e.getURL().toString());
+								} else {
+									pane.setPage(e.getURL());									
+								}
 							} catch (Throwable t) {
 								t.printStackTrace();
 							}
@@ -128,7 +134,7 @@ public class HtmlDisplayDialog {
 
 		public static void show(Frame parent, String title, URL relativePathToHtmlFile, Dimension dialogSize) {
 			ViewerDialog dialog = new ViewerDialog(parent, title);
-			dialog.setBounds(new Rectangle(200, 200, dialogSize.width, dialogSize.height));
+			dialog.setBounds(new Rectangle(150, 150, dialogSize.width, dialogSize.height));
 			dialog.showDescription(relativePathToHtmlFile);
 			dialog.setVisible(true);
 		}
