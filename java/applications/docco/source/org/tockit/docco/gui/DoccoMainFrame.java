@@ -545,6 +545,13 @@ public class DoccoMainFrame extends JFrame {
     }
     
     private void updateIndex() {
+    	if(this.indexThread.isIndexing()) {
+    		int result = JOptionPane.showConfirmDialog(this, "Do you want to stop the current indexing process?", 
+						                			   "Indexer running", JOptionPane.YES_NO_OPTION);
+			if(result != JOptionPane.YES_OPTION) {
+				return;
+			}
+    	}
     	// first check all documents in the index if they disappeared or changed
 		Set knownDocuments;
 		Set filesToAdd = new HashSet();

@@ -54,7 +54,10 @@ public class Indexer extends Thread {
 		}
 		this.writer.close();
 		this.fileQueue.clear();
-		this.writer = null;
+	}
+
+	synchronized public boolean isIndexing() {
+		return this.writer != null;
 	}
 
 	public void run() {
