@@ -108,183 +108,8 @@ public class FileMappingsEditingDialog extends JDialog {
 		
 		JPanel mainPanel = new JPanel(new BorderLayout());
 		
-		upButton.setToolTipText("Move selected mapping up in the list");
-		downButton.setToolTipText("Move selected mapping down in the list");
-		addButton.setToolTipText("Add new mapping");
-		removeButton.setToolTipText("Remove selected mapping");
-		
-		upButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				int index = jlist.getSelectedIndex();
-				if (index >= 1) {
-					Object objectToMove = model.remove(index);
-					model.add(index - 1, objectToMove);
-					jlist.setSelectedIndex(index - 1);
-					setSaveButtonsStatus(true);
-				}
-			}
-		});
-
-
-		downButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				int index = jlist.getSelectedIndex();
-				if (index + 1 < model.getSize()) {
-					Object objectToMove = model.remove(index);
-					model.add(index + 1, objectToMove);
-					jlist.setSelectedIndex(index + 1);
-					setSaveButtonsStatus(true);
-				}
-			}
-		});
-		
-		addButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				createMapping();
-				setSaveButtonsStatus(true);
-			}
-		});
-		
-		removeButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				int selectedIndex = jlist.getSelectedIndex();
-				model.remove(selectedIndex);
-				if (selectedIndex >= model.getSize()) {
-					jlist.setSelectedIndex(model.getSize() - 1);
-				}
-				else {
-					jlist.setSelectedIndex(selectedIndex);
-				}
-				setSaveButtonsStatus(true);
-			}
-		});
-
-		jlist = new JList(this.model);
-		jlist.setCellRenderer(new MappingsListCellRenderer());
-		jlist.addListSelectionListener(new ListSelectionListener(){
-			public void valueChanged(ListSelectionEvent e) {
-				setManipulatorButtonsStatus();
-				displayMappingDetails();
-			}
-		});
-		
-		JScrollPane scrollPane = new JScrollPane(jlist);
-		Dimension d = new Dimension(150, 200);
-		scrollPane.setPreferredSize(d);
-		scrollPane.setMinimumSize(d);
-
-
-		JPanel editingPanel = new JPanel(new GridBagLayout());
-		
-		int row = 0;
-		JLabel headingLabel = new JLabel( "Specify document handlers for different file types ");
-
-		editingPanel.add(headingLabel ,new GridBagConstraints(0, row, 	// gridx, gridy
-								1, 1, 							// gridwidth, gridheight
-								0.3, 0.3,  						// weightx, weighty
-								GridBagConstraints.CENTER,	// anchor
-								GridBagConstraints.BOTH,	// fill
-								new Insets(5, 5, 5, 5),		// insets
-								0, 0						// ipadx, ipady
-								)); 
-
-		row++;
-		editingPanel.add(scrollPane ,new GridBagConstraints(0, row, 	
-								1, 4, 							
-								0.4, 0.2,  						
-								GridBagConstraints.CENTER,	
-								GridBagConstraints.BOTH,	
-								new Insets(5, 5, 5, 5),		
-								0, 0						
-								)); 
-		
-		
-		editingPanel.add(upButton,new GridBagConstraints(1, row, 
-									1, 1, 
-									0.3, 0.1,
-									GridBagConstraints.NORTHWEST,
-									GridBagConstraints.NONE,
-									new Insets(5, 5, 1, 5),
-									0, 0
-									)); 
-		row++;											
-		editingPanel.add(downButton,new GridBagConstraints(1, row, 
-									1, 1, 
-									0.3, 0.1,
-									GridBagConstraints.NORTHWEST,
-									GridBagConstraints.NONE,
-									new Insets(0, 5, 60, 5),
-									0, 0
-									)); 
-		row++;
-		editingPanel.add(addButton,new GridBagConstraints(1, row, 
-									1, 1, 
-									0.3, 0.1,
-									GridBagConstraints.SOUTHWEST,
-									GridBagConstraints.NONE,
-									new Insets(60, 5, 1, 5),
-									0, 0
-									)); 
-		row++;											
-		editingPanel.add(removeButton,new GridBagConstraints(1, row, 
-									1, 1, 
-									0.3, 0.1,
-									GridBagConstraints.SOUTHWEST,
-									GridBagConstraints.NONE,
-									new Insets(0, 5, 5, 5),
-									0, 0
-									)); 
-
-		editingPanel.setBorder(BorderFactory.createTitledBorder(
-								BorderFactory.createEtchedBorder(),
-								" Edit File Filter Settings "));
-		
-		
-		JPanel displayDetailsPanel = new JPanel (new GridBagLayout());
-		
-		JLabel fileFilterLabel = new JLabel("File Filter:");
-		JLabel docHandlerLabel = new JLabel("Document Handler:");
-
-		row = 0;
-		displayDetailsPanel.add(fileFilterLabel,new GridBagConstraints(0, row, 
-										1, 1, 
-										0, 0,
-										GridBagConstraints.NORTHWEST,
-										GridBagConstraints.NONE,
-										new Insets(10, 5, 1, 5),
-										0, 0
-										)); 
-		displayDetailsPanel.add(fileFilterDisplayLabel,new GridBagConstraints(1, row, 
-										GridBagConstraints.REMAINDER, 1, 
-										0, 0,
-										GridBagConstraints.NORTHWEST,
-										GridBagConstraints.NONE,
-										new Insets(10, 5, 1, 5),
-										0, 0
-										)); 
-		
-		row++;
-		displayDetailsPanel.add(docHandlerLabel,new GridBagConstraints(0, row, 
-											1, 1, 
-											0, 0,
-											GridBagConstraints.NORTHWEST,
-											GridBagConstraints.NONE,
-											new Insets(1, 5, 10, 5),
-											0, 0
-											)); 
-		displayDetailsPanel.add(docHandlerDisplayLabel,new GridBagConstraints(1, row, 
-											GridBagConstraints.REMAINDER, 1, 
-											0, 0,
-											GridBagConstraints.NORTHWEST,
-											GridBagConstraints.NONE,
-											new Insets(1, 5, 10, 5),
-											0, 0
-											)); 
-
-		displayDetailsPanel.setBorder(BorderFactory.createTitledBorder(
-								BorderFactory.createEtchedBorder(),
-								" File Type Details: "));
-
+		JPanel editingPanel = createMappingEditingPanel();
+		JPanel displayDetailsPanel = createMappingDetailsDisplayPanel();
 
 		JPanel buttonsPanel = new JPanel();
 		applyButton = new JButton("Apply");
@@ -334,6 +159,192 @@ public class FileMappingsEditingDialog extends JDialog {
 
 		return mainPanel;
 	}
+
+	private JPanel createMappingDetailsDisplayPanel() {
+		int row;
+		JPanel displayDetailsPanel = new JPanel (new GridBagLayout());
+		
+		JLabel fileFilterLabel = new JLabel("File Filter:");
+		JLabel docHandlerLabel = new JLabel("Document Handler:");
+		
+		row = 0;
+		displayDetailsPanel.add(fileFilterLabel,new GridBagConstraints(0, row, 
+										1, 1, 
+										0, 0,
+										GridBagConstraints.NORTHWEST,
+										GridBagConstraints.NONE,
+										new Insets(10, 5, 1, 5),
+										0, 0
+										)); 
+		displayDetailsPanel.add(fileFilterDisplayLabel,new GridBagConstraints(1, row, 
+										GridBagConstraints.REMAINDER, 1, 
+										0, 0,
+										GridBagConstraints.NORTHWEST,
+										GridBagConstraints.NONE,
+										new Insets(10, 5, 1, 5),
+										0, 0
+										)); 
+		
+		row++;
+		displayDetailsPanel.add(docHandlerLabel,new GridBagConstraints(0, row, 
+											1, 1, 
+											0, 0,
+											GridBagConstraints.NORTHWEST,
+											GridBagConstraints.NONE,
+											new Insets(1, 5, 10, 5),
+											0, 0
+											)); 
+		displayDetailsPanel.add(docHandlerDisplayLabel,new GridBagConstraints(1, row, 
+											GridBagConstraints.REMAINDER, 1, 
+											0, 0,
+											GridBagConstraints.NORTHWEST,
+											GridBagConstraints.NONE,
+											new Insets(1, 5, 10, 5),
+											0, 0
+											)); 
+		
+		displayDetailsPanel.setBorder(BorderFactory.createTitledBorder(
+								BorderFactory.createEtchedBorder(),
+								" File Type Details: "));
+								
+		return displayDetailsPanel;
+	}
+
+	private JPanel createMappingEditingPanel() {
+
+		upButton.setToolTipText("Move selected mapping up in the list");
+		downButton.setToolTipText("Move selected mapping down in the list");
+		addButton.setToolTipText("Add new mapping");
+		removeButton.setToolTipText("Remove selected mapping");
+		
+		upButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int index = jlist.getSelectedIndex();
+				if (index >= 1) {
+					Object objectToMove = model.remove(index);
+					model.add(index - 1, objectToMove);
+					jlist.setSelectedIndex(index - 1);
+					setSaveButtonsStatus(true);
+				}
+			}
+		});
+		
+		
+		downButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int index = jlist.getSelectedIndex();
+				if (index + 1 < model.getSize()) {
+					Object objectToMove = model.remove(index);
+					model.add(index + 1, objectToMove);
+					jlist.setSelectedIndex(index + 1);
+					setSaveButtonsStatus(true);
+				}
+			}
+		});
+		
+		addButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				createMapping();
+				setSaveButtonsStatus(true);
+			}
+		});
+		
+		removeButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int selectedIndex = jlist.getSelectedIndex();
+				model.remove(selectedIndex);
+				if (selectedIndex >= model.getSize()) {
+					jlist.setSelectedIndex(model.getSize() - 1);
+				}
+				else {
+					jlist.setSelectedIndex(selectedIndex);
+				}
+				setSaveButtonsStatus(true);
+			}
+		});
+		
+		jlist = new JList(this.model);
+		jlist.setCellRenderer(new MappingsListCellRenderer());
+		jlist.addListSelectionListener(new ListSelectionListener(){
+			public void valueChanged(ListSelectionEvent e) {
+				setManipulatorButtonsStatus();
+				displayMappingDetails();
+			}
+		});
+		
+		JScrollPane scrollPane = new JScrollPane(jlist);
+		Dimension d = new Dimension(150, 200);
+		scrollPane.setPreferredSize(d);
+		scrollPane.setMinimumSize(d);
+		
+		
+		JPanel editingPanel = new JPanel(new GridBagLayout());
+		
+		int row = 0;
+		JLabel headingLabel = new JLabel( "Specify document handlers for different file types ");
+		
+		editingPanel.add(headingLabel ,new GridBagConstraints(0, row, 	// gridx, gridy
+								1, 1, 							// gridwidth, gridheight
+								0.3, 0.3,  						// weightx, weighty
+								GridBagConstraints.CENTER,	// anchor
+								GridBagConstraints.BOTH,	// fill
+								new Insets(5, 5, 5, 5),		// insets
+								0, 0						// ipadx, ipady
+								)); 
+		
+		row++;
+		editingPanel.add(scrollPane ,new GridBagConstraints(0, row, 	
+								1, 4, 							
+								0.4, 0.2,  						
+								GridBagConstraints.CENTER,	
+								GridBagConstraints.BOTH,	
+								new Insets(5, 5, 5, 5),		
+								0, 0						
+								)); 
+		
+		
+		editingPanel.add(upButton,new GridBagConstraints(1, row, 
+									1, 1, 
+									0.3, 0.1,
+									GridBagConstraints.NORTHWEST,
+									GridBagConstraints.NONE,
+									new Insets(5, 5, 1, 5),
+									0, 0
+									)); 
+		row++;											
+		editingPanel.add(downButton,new GridBagConstraints(1, row, 
+									1, 1, 
+									0.3, 0.1,
+									GridBagConstraints.NORTHWEST,
+									GridBagConstraints.NONE,
+									new Insets(0, 5, 60, 5),
+									0, 0
+									)); 
+		row++;
+		editingPanel.add(addButton,new GridBagConstraints(1, row, 
+									1, 1, 
+									0.3, 0.1,
+									GridBagConstraints.SOUTHWEST,
+									GridBagConstraints.NONE,
+									new Insets(60, 5, 1, 5),
+									0, 0
+									)); 
+		row++;											
+		editingPanel.add(removeButton,new GridBagConstraints(1, row, 
+									1, 1, 
+									0.3, 0.1,
+									GridBagConstraints.SOUTHWEST,
+									GridBagConstraints.NONE,
+									new Insets(0, 5, 5, 5),
+									0, 0
+									)); 
+		
+		editingPanel.setBorder(BorderFactory.createTitledBorder(
+								BorderFactory.createEtchedBorder(),
+								" Edit File Filter Settings "));
+		return editingPanel;
+	}
+	
 	
 	private JPanel createButtonsPanel () {
 		JPanel panel = new JPanel();
