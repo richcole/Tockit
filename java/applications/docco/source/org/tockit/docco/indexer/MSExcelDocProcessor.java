@@ -57,16 +57,15 @@ public class MSExcelDocProcessor implements DocumentProcessor {
 					}
 					if (cellStringValue != null) {
 						content.append(cellStringValue);
-						// need to add spaces otherwise we get everything squished 
+						// need to add some separators otherwise we get everything squished 
 						// together into one word.
-						content.append(" ");
+						content.append("\t");
 					}
 				}
 				// add line break for estetic reasons.
 				content.append("\n");
 			}
 		}
-		System.out.println("\n\n" + content.toString());
 		return new DocumentContent(content.toString());
 	}
 
