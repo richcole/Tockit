@@ -8,7 +8,6 @@
 package org.tockit.conscript.parser.sectionparsers;
 
 import java.io.IOException;
-import java.util.Hashtable;
 
 import org.tockit.conscript.model.ConceptualFile;
 import org.tockit.conscript.model.DatabaseDefinition;
@@ -23,6 +22,7 @@ class DatabaseParser extends CSCFileSectionParser {
 
 	public void parse(CSCTokenizer tokenizer, ConceptualFile targetFile) throws IOException, DataFormatException {
         String identifier = tokenizer.popCurrentToken();
+        DatabaseDefinitions dbDefinitions = new DatabaseDefinitions(targetFile, identifier);
         
         tokenizer.consumeToken("=", targetFile);
         
@@ -38,10 +38,9 @@ class DatabaseParser extends CSCFileSectionParser {
         tokenizer.consumeToken(",", targetFile);
         String primaryKey = tokenizer.popCurrentToken();
         tokenizer.consumeToken(")", targetFile);
+
         DatabaseDefinition dbDefinition = new DatabaseDefinition(identifier, name, table, primaryKey);
-        
-        DatabaseDefinitions dbDefinitions = new DatabaseDefinitions(targetFile.getFile(), identifier, null,
-                                                                    "", new Hashtable(), new DatabaseDefinition[] {dbDefinition});
+        dbDefinitions.setDatabases(new DatabaseDefinition[] {dbDefinition});
         targetFile.setDatabaseDefinitions(dbDefinitions);
         
         tokenizer.consumeToken(";", targetFile);

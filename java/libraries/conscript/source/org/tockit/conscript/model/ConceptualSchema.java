@@ -5,35 +5,15 @@
  *
  * $Id$
  */
- package org.tockit.conscript.model;
+package org.tockit.conscript.model;
 
-import java.net.URL;
-import java.util.Map;
 
 public class ConceptualSchema extends SchemaPart{
 	private DatabaseDefinition database;
 	private ConcreteScale[] concreteScales;
 	
-	private URL file;
-	private String identifier;
-	private FormattedString title;
-	private String remark;
-	private Map specials;
-	
-	public ConceptualSchema(URL file, String identifier) {
-		this.file = file;
-		this.identifier = identifier;
-	}
-
-	public ConceptualSchema(URL file, String identifier, FormattedString title, 
-							 String remark, Map specials, DatabaseDefinition database, ConcreteScale[] concreteScales) {
-		this.file = file;
-		this.identifier = identifier;
-		this.title = title;
-		this.remark = remark;
-		this.specials = specials;
-		this.database = database;
-		this.concreteScales = concreteScales;
+	public ConceptualSchema(ConceptualFile file, String identifier) {
+        super(file, identifier);
 	}
 
 	public ConcreteScale[] getConcreteScales() {
@@ -44,51 +24,11 @@ public class ConceptualSchema extends SchemaPart{
 		return database;
 	}
 
-	public URL getFile() {
-		return file;
-	}
-
-	public String getIdentifier() {
-		return identifier;
-	}
-
-	public String getRemark() {
-		return remark;
-	}
-
-	public Map getSpecials() {
-		return specials;
-	}
-
-	public FormattedString getTitle() {
-		return title;
-	}
-
 	public void setConcreteScales(ConcreteScale[] concreteScales) {
 		this.concreteScales = concreteScales;
 	}
 
 	public void setDatabase(DatabaseDefinition database) {
 		this.database = database;
-	}
-
-	public void setFile(URL file) {
-		this.file = file;
-	}
-
-	public void setIdentifier(String identifier) {
-		this.identifier = identifier;
-	}
-
-	public void setRemark(String remark) {
-		this.remark = remark;
-	}
-
-	public void setSpecials(Map specials) {
-		this.specials = specials;
-	}
-
-	public void setTitle(FormattedString title) {
-		this.title = title;
 	}
 }

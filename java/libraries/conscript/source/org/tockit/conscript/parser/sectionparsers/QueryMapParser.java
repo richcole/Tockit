@@ -8,7 +8,6 @@
 package org.tockit.conscript.parser.sectionparsers;
 
 import java.io.IOException;
-import java.util.Hashtable;
 
 import org.tockit.conscript.model.ConceptualFile;
 import org.tockit.conscript.model.QueryMap;
@@ -23,8 +22,7 @@ class QueryMapParser extends CSCFileSectionParser {
     public void parse(CSCTokenizer tokenizer, ConceptualFile targetFile)
         throws IOException, DataFormatException {
         String queryMapId = tokenizer.popCurrentToken();
-        QueryMap queryMap = new QueryMap(targetFile.getFile(), queryMapId, null,
-                                         null, null, new Hashtable());
+        QueryMap queryMap = new QueryMap(targetFile, queryMapId);
 
         int line = tokenizer.getCurrentLine();
         tokenizer.consumeToken("=", targetFile);
@@ -38,7 +36,7 @@ class QueryMapParser extends CSCFileSectionParser {
             tokenizer.consumeToken(",", targetFile);
             String id = tokenizer.popCurrentToken();
             tokenizer.consumeToken(")", targetFile);
-            queryMap.getMap().put(id, clause);
+            queryMap.addEntry(clause, id);
         }
 
         tokenizer.consumeToken(";", targetFile);

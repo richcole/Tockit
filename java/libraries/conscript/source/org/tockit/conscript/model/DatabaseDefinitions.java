@@ -7,72 +7,18 @@
  */
 package org.tockit.conscript.model;
 
-import java.net.URL;
-import java.util.Map;
-
 public class DatabaseDefinitions extends SchemaPart{
 	private DatabaseDefinition[] databases;
-	private URL file;
-	private String identifier;
-	private FormattedString title;
-	private String remark;
-	private Map specials;
-	
-	public DatabaseDefinitions(URL file, String identifier, FormattedString title, 
-								String remark, Map specials, DatabaseDefinition[] databases) {
-		this.file = file;
-		this.identifier = identifier;
-		this.title = title;
-		this.remark = remark;
-		this.specials = specials;
-		this.databases = databases;
+    
+    public DatabaseDefinitions(ConceptualFile file, String identifier) {
+        super(file, identifier);
 	}
 
 	public DatabaseDefinition[] getDatabases() {
 		return databases;
 	}
 
-	public URL getFile() {
-		return file;
-	}
-
-	public String getIdentifier() {
-		return identifier;
-	}
-
-	public String getRemark() {
-		return remark;
-	}
-
-	public Map getSpecials() {
-		return specials;
-	}
-
-	public FormattedString getTitle() {
-		return title;
-	}
-
 	public void setDatabases(DatabaseDefinition[] databases) {
 		this.databases = databases;
-	}
-
-	public void setFile(URL file) {
-		this.file = file;
-	}
-
-	public void setIdentifier(String identifier) {
-		this.identifier = identifier;
-	}
-
-	public void setRemark(String remark) {
-		this.remark = remark;
-	}
-
-	public void setSpecials(Map specials) {
-		this.specials = specials;
-	}
-
-	public void setTitle(FormattedString title) {
-		this.title = title;
 	}
 }

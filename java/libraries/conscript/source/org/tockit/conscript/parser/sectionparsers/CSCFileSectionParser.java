@@ -10,6 +10,8 @@ package org.tockit.conscript.parser.sectionparsers;
 import java.io.IOException;
 
 import org.tockit.conscript.model.ConceptualFile;
+import org.tockit.conscript.model.FormattedString;
+import org.tockit.conscript.model.SchemaPart;
 import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
@@ -39,4 +41,31 @@ public abstract class CSCFileSectionParser {
 	public static CSCFileSectionParser[] getParsers() {
 		return CSC_FILE_SECTIONS_PARSERS;
 	}
+
+    protected void parseTitleRemarkSpecials(CSCTokenizer tokenizer, SchemaPart schemaPart) throws IOException, DataFormatException {
+        if (tokenizer.getCurrentToken().equals("TITLE")) {
+            tokenizer.advance();
+            String title = tokenizer.popCurrentToken();
+            // @todo parse formatting
+            schemaPart.setTitle(new FormattedString(title, null));
+        }
+        if (tokenizer.getCurrentToken().equals("REMARK")) {
+            tokenizer.advance();
+            String remark = tokenizer.popCurrentToken();
+            schemaPart.setRemark(remark);
+        }
+        if(tokenizer.getCurrentToken().equals("SPECIAL")) {
+            do {
+                String special = tokenizer.popCurrentToken();
+                int colonPos = special.indexOf(':');
+                if(colonPos == -1) {
+                    // @todo pass file along to enhance error message
+                    throw new DataFormatException("Can not parse special '" + special + "')");
+                }
+                String specialId = special.substring(0, colonPos);
+                String specialValue = special.substring(colonPos+1);
+                schemaPart.addSpecial(specialId, specialValue);
+            } while (tokenizer.currentTokenIsString());
+        }
+    }
 }

@@ -31,16 +31,11 @@ class LineDiagramParser extends CSCFileSectionParser {
 	public void parse(CSCTokenizer tokenizer, ConceptualFile targetFile)
 	                        throws IOException, DataFormatException {
 		String identifier = tokenizer.popCurrentToken();
+        LineDiagram diagram = new LineDiagram(targetFile, identifier);
 
         tokenizer.consumeToken("=", targetFile);
 
-        String title = "";
-		if (tokenizer.getCurrentToken().equals("TITLE")) {
-			tokenizer.advance();
-			title = tokenizer.popCurrentToken();
-		}
-        
-        LineDiagram diagram = new LineDiagram(targetFile.getFile(), identifier, new FormattedString(title, null), null);
+		parseTitleRemarkSpecials(tokenizer, diagram);
 
 		while (!tokenizer.getCurrentToken().equals("POINTS")) {
 			// we ignore remark, special list and unitlength
@@ -74,13 +69,13 @@ class LineDiagramParser extends CSCFileSectionParser {
             Point fromPoint = (Point)points.get(from);
             if(fromPoint == null) {
                 throw new DataFormatException("Can not resolve line start point " +
-                                              from +" in LINE_DIAGRAM '" + diagram.getIdentifier() +
+                                              from +" in LINE_DIAGRAM '" + diagram.getName() +
                                               "' in file '" + targetFile.getFile() +"', line " + tokenizer.getCurrentLine());
             }
             Point toPoint = (Point)points.get(to);
             if(fromPoint == null) {
                 throw new DataFormatException("Can not resolve line end point " +
-                                              to +" in LINE_DIAGRAM '" + diagram.getIdentifier() +
+                                              to +" in LINE_DIAGRAM '" + diagram.getName() +
                                               "' in file '" + targetFile.getFile() +"', line " + tokenizer.getCurrentLine());
             }
             lines.add(new Line(fromPoint, toPoint, null));
@@ -93,7 +88,7 @@ class LineDiagramParser extends CSCFileSectionParser {
             Point point = (Point) points.get(pointId);
             if(point == null) {
                 throw new DataFormatException("Can not resolve point " +
-                                              point +" for object in LINE_DIAGRAM '" + diagram.getIdentifier() +
+                                              point +" for object in LINE_DIAGRAM '" + diagram.getName() +
                                               "' in file '" + targetFile.getFile() +"', line " + tokenizer.getCurrentLine());
             }
             
@@ -118,7 +113,7 @@ class LineDiagramParser extends CSCFileSectionParser {
             Point point = (Point) points.get(pointId);
             if(point == null) {
                 throw new DataFormatException("Can not resolve point " +
-                                              point +" for attribute in LINE_DIAGRAM '" + diagram.getIdentifier() +
+                                              point +" for attribute in LINE_DIAGRAM '" + diagram.getName() +
                                               "' in file '" + targetFile.getFile() +"', line " + tokenizer.getCurrentLine());
             }
             

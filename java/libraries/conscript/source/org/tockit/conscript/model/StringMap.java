@@ -7,73 +7,22 @@
  */
 package org.tockit.conscript.model;
 
-import java.net.URL;
+import java.util.Collections;
+import java.util.Hashtable;
 import java.util.Map;
 
 public class StringMap extends SchemaPart{
-	private URL file;
-	private String identifier;
-	private FormattedString title;
-	private String remark;
-	private Map specials;
-	private Map map;
+	private Map map = new Hashtable();;
 		
-	public StringMap(URL file, String identifier, FormattedString title,
-					  String remark, Map specials, Map map) {
-		this.file = file;
-		this.identifier = identifier;
-		this.title = title;
-		this.remark = remark;
-		this.specials = specials;
-		this.map = map;
-	}
-
-	public URL getFile() {
-		return file;
-	}
-
-	public String getIdentifier() {
-		return identifier;
+	public StringMap(ConceptualFile file, String identifier) {
+        super(file, identifier);
 	}
 
 	public Map getMap() {
-		return map;
+		return Collections.unmodifiableMap(map);
 	}
-
-	public String getRemark() {
-		return remark;
-	}
-
-	public Map getSpecials() {
-		return specials;
-	}
-
-	public FormattedString getTitle() {
-		return title;
-	}
-
-	public void setFile(URL file) {
-		this.file = file;
-	}
-
-	public void setIdentifier(String identifier) {
-		this.identifier = identifier;
-	}
-
-	public void setMap(Map map) {
-		this.map = map;
-	}
-
-	public void setRemark(String remark) {
-		this.remark = remark;
-	}
-
-	public void setSpecials(Map specials) {
-		this.specials = specials;
-	}
-
-	public void setTitle(FormattedString title) {
-		this.title = title;
-	}
-
+    
+    public void addEntry(String attributeId, String label) {
+        this.map.put(attributeId, label);
+    }
 }

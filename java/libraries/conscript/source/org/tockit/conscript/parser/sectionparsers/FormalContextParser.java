@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.tockit.conscript.model.BinaryRelationImplementation;
 import org.tockit.conscript.model.ConceptualFile;
+import org.tockit.conscript.model.FormalContext;
 import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
@@ -23,14 +24,11 @@ class FormalContextParser extends CSCFileSectionParser {
 		List objects = new ArrayList();
 		List attributes = new ArrayList();
 		String contextId = tokenizer.popCurrentToken();
-        String contextTitle = null;
+        FormalContext context = new FormalContext(targetFile, contextId);
 
+        parseTitleRemarkSpecials(tokenizer, context);
+        
 		while (!tokenizer.getCurrentToken().equals("OBJECTS")) {
-			// ignore everything but the title before the objects
-			if (tokenizer.getCurrentToken().equals("TITLE")) {
-				tokenizer.advance();
-				contextTitle = tokenizer.getCurrentToken();
-			}
 			tokenizer.advance();
 		}
 		tokenizer.consumeToken("OBJECTS", targetFile);

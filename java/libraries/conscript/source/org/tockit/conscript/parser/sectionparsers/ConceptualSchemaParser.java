@@ -15,7 +15,6 @@ import org.tockit.conscript.model.ConceptualFile;
 import org.tockit.conscript.model.ConceptualSchema;
 import org.tockit.conscript.model.ConcreteScale;
 import org.tockit.conscript.model.DatabaseDefinition;
-import org.tockit.conscript.model.FormattedString;
 import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
@@ -27,16 +26,9 @@ class ConceptualSchemaParser extends CSCFileSectionParser {
 	public void parse(CSCTokenizer tokenizer, ConceptualFile targetFile) throws IOException, DataFormatException {
         String identifier = tokenizer.popCurrentToken();
         tokenizer.consumeToken("=", targetFile);
-        ConceptualSchema schema = new ConceptualSchema(targetFile.getFile(), identifier);
-        String nextToken = tokenizer.getCurrentToken();
-        if(nextToken.equals("TITLE")) {
-            String title = tokenizer.popCurrentToken();
-            schema.setTitle(new FormattedString(title, null));
-        }
-        nextToken = tokenizer.getCurrentToken();
-        while(!nextToken.equals("(")) {
-            nextToken = tokenizer.popCurrentToken();
-        }
+        ConceptualSchema schema = new ConceptualSchema(targetFile, identifier);
+        parseTitleRemarkSpecials(tokenizer, schema);
+        tokenizer.consumeToken("(", targetFile);
         String dbIdentifier = tokenizer.popCurrentToken();
         DatabaseDefinition[] dbDefs = targetFile.getDatabaseDefinitions().getDatabases();
         for (int i = 0; i < dbDefs.length; i++) {
@@ -56,7 +48,7 @@ class ConceptualSchemaParser extends CSCFileSectionParser {
             String scaleId = tokenizer.popCurrentToken();
             ConcreteScale scale = findScale(targetFile, scaleId);
             if(scale == null) {
-                scale = new ConcreteScale(targetFile.getFile(), scaleId);
+                scale = new ConcreteScale(targetFile, scaleId);
             }
             scales.add(scale);
         }

@@ -7,20 +7,51 @@
  */
 package org.tockit.conscript.model;
 
-import java.net.URL;
+import java.util.Collections;
+import java.util.Hashtable;
 import java.util.Map;
 
 public abstract class SchemaPart {
+    private ConceptualFile file;
+    private String name;
+    private FormattedString title = null;;
+    private String remark = null;;
+    private Map specials = new Hashtable();;
 
-	abstract public URL getFile();
-	abstract public String getIdentifier();
-	abstract public String getRemark();
-	abstract public Map getSpecials();
-	abstract public FormattedString getTitle();
+    public SchemaPart(ConceptualFile file, String name) {
+        this.file = file;
+        this.name = name;
+    }
+    
+    public ConceptualFile getFile() {
+    	return file;
+    }
 
-	abstract public void setFile(URL file);
-	abstract public void setIdentifier(String identifier);
-	abstract public void setRemark(String remark);
-	abstract public void setSpecials(Map specials);
-	abstract public void setTitle(FormattedString title);
+    public String getName() {
+    	return name;
+    }
+
+    public String getRemark() {
+    	return remark;
+    }
+
+    public Map getSpecials() {
+    	return Collections.unmodifiableMap(specials);
+    }
+
+    public FormattedString getTitle() {
+    	return title;
+    }
+
+    public void setRemark(String remark) {
+    	this.remark = remark;
+    }
+
+    public void addSpecial(String special, String value) {
+        specials.put(special, value);
+    }
+
+    public void setTitle(FormattedString title) {
+    	this.title = title;
+    }
 }

@@ -19,7 +19,7 @@ import org.tockit.conscript.model.*;
 import org.tockit.conscript.parser.sectionparsers.*;
 
 public class CSCParser {
-    public static Logger logger = Logger.getLogger(CSCParser.class.getName());
+    public static final Logger logger = Logger.getLogger(CSCParser.class.getName());
 	
     public static ConceptualFile importCSCFile(URL mainInput) throws FileNotFoundException, DataFormatException {
         try {

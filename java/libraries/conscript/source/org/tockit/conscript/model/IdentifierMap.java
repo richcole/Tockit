@@ -7,73 +7,21 @@
  */
 package org.tockit.conscript.model;
 
-import java.net.URL;
 import java.util.Map;
 
 public class IdentifierMap extends SchemaPart{
-	private URL file;
-	private String identifier;
-	private FormattedString title;
-	private String remark;
-	private Map specials;
-	private Map map;
+    private Map map;
+    
+	public IdentifierMap(ConceptualFile file, String identifier) {
+        super(file, identifier);
+    }
 		
-	public IdentifierMap(URL file, String identifier, FormattedString title,
-					  String remark, Map specials, Map map) {
-		this.file = file;
-		this.identifier = identifier;
-		this.title = title;
-		this.remark = remark;
-		this.specials = specials;
-		this.map = map;
-	}
-
-	public URL getFile() {
-		return file;
-	}
-
-	public String getIdentifier() {
-		return identifier;
-	}
-
 	public Map getMap() {
 		return map;
 	}
 
-	public String getRemark() {
-		return remark;
-	}
-
-	public Map getSpecials() {
-		return specials;
-	}
-
-	public FormattedString getTitle() {
-		return title;
-	}
-
-	public void setFile(URL file) {
-		this.file = file;
-	}
-
-	public void setIdentifier(String identifier) {
-		this.identifier = identifier;
-	}
-
 	public void setMap(Map map) {
 		this.map = map;
-	}
-
-	public void setRemark(String remark) {
-		this.remark = remark;
-	}
-
-	public void setSpecials(Map specials) {
-		this.specials = specials;
-	}
-
-	public void setTitle(FormattedString title) {
-		this.title = title;
 	}
 
 }

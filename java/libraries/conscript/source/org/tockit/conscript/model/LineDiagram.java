@@ -7,9 +7,6 @@
  */
 package org.tockit.conscript.model;
 
-import java.net.URL;
-import java.util.Map;
-
 public class LineDiagram extends SchemaPart{
 	private TypedSize unitLength;
 	private Point[] points;
@@ -18,18 +15,8 @@ public class LineDiagram extends SchemaPart{
 	private FCAAttribute[] attributes;
 	private Concept[] concepts;
 	
-	private URL file;
-	private String identifier;
-	private FormattedString title;
-	private String remark;
-	private Map specials;
-	
-	public LineDiagram(URL file, String identifier, FormattedString title,
-						String remark) {
-		this.file = file;
-		this.identifier = identifier;
-		this.title = title;
-		this.remark = remark;
+	public LineDiagram(ConceptualFile file, String identifier) {
+        super(file, identifier);
 	}
 
 	public FCAAttribute[] getAttributes() {
@@ -38,14 +25,6 @@ public class LineDiagram extends SchemaPart{
 
 	public Concept[] getConcepts() {
 		return concepts;
-	}
-
-	public URL getFile() {
-		return file;
-	}
-
-	public String getIdentifier() {
-		return identifier;
 	}
 
 	public Line[] getLines() {
@@ -60,18 +39,6 @@ public class LineDiagram extends SchemaPart{
 		return points;
 	}
 
-	public String getRemark() {
-		return remark;
-	}
-
-	public Map getSpecials() {
-		return specials;
-	}
-
-	public FormattedString getTitle() {
-		return title;
-	}
-
 	public TypedSize getUnitLength() {
 		return unitLength;
 	}
@@ -84,14 +51,6 @@ public class LineDiagram extends SchemaPart{
 		this.concepts = concepts;
 	}
 
-	public void setFile(URL file) {
-		this.file = file;
-	}
-
-	public void setIdentifier(String identifier) {
-		this.identifier = identifier;
-	}
-
 	public void setLines(Line[] lines) {
 		this.lines = lines;
 	}
@@ -102,18 +61,6 @@ public class LineDiagram extends SchemaPart{
 
 	public void setPoints(Point[] points) {
 		this.points = points;
-	}
-
-	public void setRemark(String remark) {
-		this.remark = remark;
-	}
-
-	public void setSpecials(Map specials) {
-		this.specials = specials;
-	}
-
-	public void setTitle(FormattedString title) {
-		this.title = title;
 	}
 
 	public void setUnitLength(TypedSize unitLength) {

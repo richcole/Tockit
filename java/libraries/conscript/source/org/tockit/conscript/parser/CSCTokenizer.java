@@ -19,6 +19,7 @@ public class CSCTokenizer {
     private int currentLine = 1;
     private boolean newLineStarted = true;
     private int characterWaiting = -1;
+    private boolean currentTokenIsString = false;
 
 	public CSCTokenizer(Reader in) throws IOException, DataFormatException {
 	    this.inputReader = new BufferedReader(in);
@@ -44,6 +45,7 @@ public class CSCTokenizer {
 	
 	public void advance() throws IOException, DataFormatException {
         if(this.characterWaiting != -1) {
+            this.currentTokenIsString = false;
             this.currentToken = "" + (char)this.characterWaiting;
             this.characterWaiting = -1;
             CSCParser.logger.log(Level.FINEST, "Tokenizer generized token '" + this.currentToken + "'");
@@ -72,6 +74,7 @@ public class CSCTokenizer {
 	}
 
     private void advanceString() throws IOException, DataFormatException {
+        this.currentTokenIsString = true;
         int character = this.inputReader.read();
         int startLine = this.currentLine;
         while( character != -1 && character != '\"' ) {
@@ -89,6 +92,7 @@ public class CSCTokenizer {
     }
 
     private void advanceNormal(int character) throws IOException {
+        this.currentTokenIsString = false;
         if(character == ',' || character == ')') {
             this.currentToken += (char) character;
         } else {
@@ -128,5 +132,9 @@ public class CSCTokenizer {
         if(!done()) {
             advance();
         }
+    }
+
+    public boolean currentTokenIsString() {
+        return this.currentTokenIsString;
     }
 }
