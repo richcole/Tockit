@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dummy [
+<!ENTITY website SYSTEM "../website.xml">
+]>
+
+<webpage title="Tockit -- People">
+	&website;
+
+	<html>
+
+<h1>People involved in the Tockit project</h1>
+
+<p>Currently there are mainly two people working on this project:</p>
+
+<h3>Peter Becker</h3>
+
+<p>Peter is currently the main developer and project and project administrator -- mainly due to the fact that he is the only one paid for working on the project. He currently works for the <a href="http://www.dstc.edu.au">Distributed Systems Technology Center</a> and is located at the <a href="http://www.int.gu.edu.au/kvo">Knowledge, Visualization and Ordering Laboratories</a> in Gold Coast, Australia.</p>
+
+<p>Until last year he worked for <a href="http://www.navicon.de">NaviCon</a> where he developed <tt>Cernato</tt>, a program for Formal Concept Analysis.</p>
+
+<h3>Joachim Hereth</h3>
+
+<p>Jo is currently working on his Ph.D. at the <a href="http://www.tu-darmstadt.de">TU Darmstadt</a> (<a href="http://www.mathematik.tu-darmstadt.de/ags/ag1/Sekretariat/beschreibung_de.html">AG 1</a>).</p>
+
+<p>Last year he also worked on <tt>Cernato</tt> for <a href="http://www.navicon.de">NaviCon</a>.</p>
+
+	</html>
+</webpage>

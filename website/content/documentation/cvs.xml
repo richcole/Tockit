@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dummy [
+<!ENTITY website SYSTEM "../website.xml">
+]>
+
+<webpage title="Tockit -- CVS access">
+	&website;
+
+	<html>
+
+<h1>Accessing the Tockit CVS</h1>
+
+<p>Tockit is an Open Source project which means you can access each part of it as source code. This will include the source code for the framework, the demo applications, the prototypes and what else we might implement and also the sources for this website and other documentation we will write.</p>
+
+<p>You can access the CVS using anonymous access via the WWW. Just follow the link to the <a href="http://cvs.sourceforge.net/cgi-bin/cvsweb.cgi/?cvsroot=tockit">Sourceforge CVSWeb</a> pages. If you want to get write access you can contact <a href="mailto:peterbecker@users.sourceforge.net?subject=CVS Access">Peter</a>.</p>
+
+	</html>
+</webpage>

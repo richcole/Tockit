@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dummy [
+<!ENTITY website SYSTEM "../website.xml">
+]>
+
+<webpage title="Tockit -- Goals">
+	&website;
+
+	<html>
+
+<h1>Goals of the Tockit project</h1>
+
+<p>The short version: &quot;To write a framework for Conceptual Knowledge Processing&quot;</p>
+
+<p>The long version:</p>
+
+<p>We think Conceptual Knowledge Processing with its technologies for storing and computing human concepts as one of the most interesting IT concepts that are currently developed.</p>
+
+<p>It is useful in different <a href="../documentation/applications.html">applications</a>, the most interesting of them are probably Data Warehousing and the restructuring of the World Wide Web (see e.g. <a href="http://www.semanticweb.org/">SemanticWeb.org</a>). These fields need some ways of storing knowledge and some way to process it, since an ontology without the option of reasoning or at least querying for strucutures is not that useful.</p>
+
+<p>Techniques that we include in our understanding of Conceptual Knowledge Processing are <a href="http://php.indiana.edu/~upriss/fca/fca.html">Formal Concept Analysis</a>(FCA) and <a href="http://www.cs.uah.edu/~delugach/CG/">Conceptual Graphs</a>(CGs). Of course there are many other techniques and maybe we'll extend our project in one or the other direction later.</p>
+
+<p>One of the main goals for this project is to build a platform for academic and commercial development in this field. Currently many different people around the world develop applications and tools for FCA and CGs but many work is done more than once since there is no coordination between the different projects.</p>
+
+<p>What we want to achieve is to build a pool of components that can be used to build applications easily and fast, thus allowing commercial users to implement solutions fast and academic developers to test new algorithms easily.</p>
+
+<p>Another goal is to build some glue between different projects by offering import and export filters for the existing file formats and maybe even to build wrapper classes for existing code, so other projects are able to use our code in combination with their code.</p>
+
+	</html>
+</webpage>

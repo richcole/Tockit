@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../stylesheets/index_plain.xsl"?>
+<!DOCTYPE dummy [
+<!ENTITY website SYSTEM "website.xml">
+]>
+
+<webpage title="Tockit: Framework for Conceptual Knowledge Processing">
+	&website;
+
+	<html>
+<h1>Welcome to Tockit</h1>
+
+<p>Currently there is not much information on the project available. Please use the navigation bar for basic information and go to the mailing list if you want more details. We expect to get more information up soon (i.e. in March 2001)</p>
+
+<p>If you think these pages need some more layout, please contact <a href="mailto:peterbecker@users.sourceforge.net?subject=Website&amp;body=I want to help!">Peter</a> to offer your help. The sources are XML with embedded HTML so your job would be to write some nice XSL stylesheets and maybe add some nice graphics. Experiences with XSL are not needed (we'll help you). Feel free to <a href="documentation/cvs.html">check out</a> the website module to see how the website is build.</p>
+	</html>
+</webpage>
