@@ -1,6 +1,3 @@
-import SetIterator;
-import Set;
-import sarl;
 
 class TestSarl
 {
@@ -9,9 +6,9 @@ class TestSarl
       System.loadLibrary("sarl");
     } catch (UnsatisfiedLinkError e) {
       System.err.println(
-	"Native code library failed to load. See "
-	+ "the chapter on Dynamic Linking Problems "
-	+ "in the SWIG Java documentation for help.\n" + e
+          "Native code library failed to load. See "
+          + "the chapter on Dynamic Linking Problems "
+          + "in the SWIG Java documentation for help.\n" + e
       );
       System.exit(1);
     }
@@ -26,26 +23,26 @@ class TestSarl
 
     for (i=1; i < LEN; i++) {
       if ( i % 2 == 0 ) {
-	A.insert(i);
+          A.insert(i);
       }
       if ( i % 3 == 0 ) {
-	B.insert(i);
+          B.insert(i);
       }
     }
 
     SetIterator it = new SetIterator(A).iterator_meet(
       new SetIterator(B));
-    
+
     if ( it.count() != LEN/6 ) {
       System.out.println("Error, it.count() != " + LEN/6);
     }
 
   }
 
-  public static void main(String argv[]) 
+  public static void main(String argv[])
   {
     test();
     System.gc();
   }
-  
+
 }
