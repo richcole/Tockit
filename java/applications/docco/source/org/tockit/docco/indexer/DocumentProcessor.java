@@ -16,8 +16,6 @@ import java.util.List;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.tockit.docco.GlobalConstants;
-import org.tockit.docco.filefilter.FileExtensionExtractor;
-import org.tockit.docco.filefilter.NotFoundFileExtensionException;
 
 /**
  * @todo search for something doing file magic (as in the GNU "file" command). That would be
@@ -66,8 +64,7 @@ public class DocumentProcessor {
 		}
 	}
 
-	private Document fillDocumentFields(File file, DocumentSummary docSummary)
-											throws NotFoundFileExtensionException {
+	private Document fillDocumentFields(File file, DocumentSummary docSummary) {
 		/// @todo check what else we can get from the JDK side. Every feature we can get from the File API should be
 		/// worthwhile keeping
 		Document doc = new Document(); 
@@ -114,8 +111,10 @@ public class DocumentProcessor {
 		// @todo use paths relative to the base directory of the index
 		doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_PATH, file.getPath()));
 		doc.add(Field.Text(GlobalConstants.FIELD_DOC_PATH_WORDS, file.getParent().replace(File.separatorChar, ' ')));
-		String fileExtension = FileExtensionExtractor.getExtension(file);
-		if (fileExtension != null) {
+		String fileName = file.getName();
+		int index = fileName.lastIndexOf(".") + 1;
+		if (index > 0) {
+			String fileExtension = fileName.substring(index, fileName.length()).toLowerCase();
 			doc.add(Field.Text(GlobalConstants.FIELD_DOC_EXTENSION, fileExtension));
 			String fileNameWithoutExtension = file.getName().substring(0,file.getName().length() - fileExtension.length() - 1);
 			doc.add(Field.Text(GlobalConstants.FIELD_DOC_NAME,fileNameWithoutExtension));

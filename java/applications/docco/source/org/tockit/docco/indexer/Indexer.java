@@ -13,8 +13,6 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.tockit.docco.GlobalConstants;
-import org.tockit.docco.documenthandler.DocumentHandlerException;
-import org.tockit.docco.filefilter.NotFoundFileExtensionException;
 
 import java.io.File;
 import java.io.IOException;
@@ -130,12 +128,6 @@ public class Indexer implements Runnable {
 		showProgress(writer.docCount(), file.getAbsolutePath());
 		try {
 			writer.addDocument(this.docProcessingFactory.processDocument(file));
-		} catch (UnknownFileTypeException e) {
-		} catch (NotFoundFileExtensionException e) {
-		} catch (DocumentHandlerException e) {
-			System.err.println("Error processing document " + file.getAbsolutePath() + ": " + e.getMessage());
-		} catch (DocumentProcessingException e) {
-			System.err.println("Error processing document " + file.getAbsolutePath() + ": " + e.getMessage());
 		} catch (Exception e) {
 			// sometimes shit happens. E.g. the PDF header might be screwed. Some other things
 			// might be broken. We don't want to stop indexing whenever one document fails to be
