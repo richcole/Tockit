@@ -21,7 +21,6 @@ public class Indexer extends Thread {
 		void showFeedbackMessage(String message);
 	}
 
-	private String indexLocation;
     private IndexWriter writer;
 	private boolean stateChangeRequested = false;
 	private boolean running = true;
@@ -29,9 +28,8 @@ public class Indexer extends Thread {
 	private CallbackRecipient callbackRecipient;
     private DocumentProcessingFactory docProcessingFactory = new DocumentProcessingFactory();
 	
-	public Indexer(String indexLocation, CallbackRecipient output) {
+	public Indexer(CallbackRecipient output) {
 		this.callbackRecipient = output;
-		this.indexLocation = indexLocation;
 		try {
 			Class htmlDocProcessorClass = HtmlDocumentProcessor.class;
 			this.docProcessingFactory.registerExtension("html", htmlDocProcessorClass);
@@ -45,22 +43,24 @@ public class Indexer extends Thread {
 			this.docProcessingFactory.registerExtension("doc", MSWordProcessor.class);
 
 			this.docProcessingFactory.registerExtension("xls", MSExcelDocProcessor.class);
-
-			startIndexing();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	synchronized public void startIndexing() throws IOException {
-		this.writer = new IndexWriter(this.indexLocation,
+	synchronized public void startIndexing(String indexLocation) throws IOException {
+		this.writer = new IndexWriter(indexLocation,
 									  GlobalConstants.DEFAULT_ANALYZER,
 								      false);
 	}
 
 	public void stopIndexing() throws IOException {
+		if(this.writer == null) {
+			return; // nothing to stop
+		}
 		showFeedbackMessage("Shutting down...");
+		yield();
 		synchronized (this) {
 			this.writer.optimize();
 			this.writer.close();

@@ -315,6 +315,13 @@ public class DoccoMainFrame extends JFrame {
 											CONFIGURATION_INDEX_NAME,
 											DEFAULT_INDEX_NAME);
 
+		this.indexThread = new Indexer(new Indexer.CallbackRecipient(){
+			public void showFeedbackMessage(String message) {
+				statusBarMessage.setText(message);
+			}
+		});
+		this.indexThread.start();
+
 		File indexFile = new File(indexLocation);
 		if(!indexFile.canRead()) {
 			createNewIndex();
@@ -411,15 +418,16 @@ public class DoccoMainFrame extends JFrame {
 		});
 		fileMenu.add(newIndexItem);
 
-		JMenuItem updateIndexItem = new JMenuItem("Update Index");
-		updateIndexItem.setMnemonic('u');
-		updateIndexItem.addActionListener(new ActionListener(){
+		JMenuItem addDirectoryItem = new JMenuItem("Add a Directory Into Index...");
+		addDirectoryItem.setMnemonic('a');
+		addDirectoryItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				updateIndex();
+				addDirectoryToIndex();
 			}
 		});
-		fileMenu.add(updateIndexItem);
+		fileMenu.add(addDirectoryItem);
 
+		fileMenu.addSeparator();
 		JMenuItem exitItem = new JMenuItem("Exit");
 		exitItem.setMnemonic('x');
 		exitItem.addActionListener(new ActionListener(){
@@ -433,26 +441,35 @@ public class DoccoMainFrame extends JFrame {
     }
     
     private void createNewIndex(){
-		File indexFile = new File(this.indexLocation);
-		if(indexFile.canRead()) {
-			int result = JOptionPane.showConfirmDialog(this, "An index already exists. Overwrite?", "Overwrite Index?",
-			                                           JOptionPane.OK_CANCEL_OPTION);
-			if(result != JOptionPane.OK_OPTION) {
-				return;
+		try {
+			File indexFile = new File(this.indexLocation);
+			if(indexFile.canRead()) {
+				int result = JOptionPane.showConfirmDialog(this, "This will delete the existing index. Continue?", "Delete Index?",
+				                                           JOptionPane.OK_CANCEL_OPTION);
+				if(result != JOptionPane.OK_OPTION) {
+					return;
+				}
+				
+				this.indexThread.stopIndexing();
+				indexFile.delete();
 			}
 			
-			indexFile.delete();
-		}
-		try {
+			this.indexThread.stopIndexing();
             IndexWriter writer = new IndexWriter(
-            						indexLocation,
+            						this.indexLocation,
             						GlobalConstants.DEFAULT_ANALYZER,
             						true);
             writer.close();
+            
+			this.indexThread.startIndexing(this.indexLocation);
         } catch (IOException e) {
 			ErrorDialog.showError(this, e, "There has been an error creating a new index");
         }
 
+		createQueryEngine();
+    }
+
+    private void addDirectoryToIndex() {
 		JFileChooser fileDialog;
 		String lastIndexedDir = getIndexLocation();
 		if (lastIndexedDir != null) {
@@ -467,29 +484,10 @@ public class DoccoMainFrame extends JFrame {
 		if(rv != JFileChooser.APPROVE_OPTION) {
 			return;
 		}
-		/// @todo add some better feedback here
 		ConfigurationManager.storeString(CONFIGURATION_SECTION_NAME, CONFIGURATION_LAST_INDEX_DIR,
 									fileDialog.getSelectedFile().getAbsolutePath());
-		updateIndex();
-		
 
-		createQueryEngine();
-    }
-
-    private void updateIndex() {
-		final String dirToIndex = new String(getIndexLocation());
-		if(dirToIndex == null) {
-			createNewIndex();
-			return;
-		}
-        final String indexTo = new String(indexLocation); 
-		this.indexThread = new Indexer(indexTo, new Indexer.CallbackRecipient(){
-			public void showFeedbackMessage(String message) {
-				statusBarMessage.setText(message);
-			}
-		});
-		this.indexThread.enqueue(new File(dirToIndex));
-        this.indexThread.start();
+		this.indexThread.enqueue(fileDialog.getSelectedFile());
     }
 
 	private String getIndexLocation() {
@@ -713,7 +711,7 @@ public class DoccoMainFrame extends JFrame {
 		// shut down indexer
 		try {
             this.indexThread.stopIndexing();
-        } catch (IOException e) {
+        } catch (Exception e) {
         	ErrorDialog.showError(this, e, "Could not shut down indexer");
         }
 		
