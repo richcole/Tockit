@@ -9,6 +9,7 @@ package org.tockit.relations.model;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 
@@ -95,5 +96,37 @@ public class RelationImplementation implements Relation {
      */    
     public boolean isRelated(Object[] data) {
         return isRelated(new Tuple(data));
+    }
+
+    public Set toSet() {
+        return Collections.unmodifiableSet(this.tuples);
+    }
+
+	/**
+	 * Creates a relation from a set of tuples or objects representing tuples.
+	 * 
+	 * @param baseSet a set containing either Tuple object or objects whose toString() contains tab-delimited tuples
+	 * @return the relation using this tuple set. The arity is either the tuple length or 0 if there are no tuples.
+	 * @throws IllegalArgumentException if the objects in the input set are not of consistent length
+	 */
+    public static Relation fromSet(Set baseSet) {
+    	Relation retVal = null;
+    	for (Iterator iter = baseSet.iterator(); iter.hasNext();) {
+            Object cur = iter.next();
+            Tuple tuple;
+            if(cur instanceof Tuple) {
+            	tuple = (Tuple) cur;
+            } else {
+            	tuple = Tuple.fromString(cur.toString());
+            }
+            if(retVal == null) {
+            	retVal = new RelationImplementation(tuple.getLength());
+            }
+            retVal.addTuple(tuple);
+        }
+		if(retVal == null) {
+			retVal = new RelationImplementation(0);
+		}
+        return retVal;
     }
 }

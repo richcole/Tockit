@@ -18,6 +18,9 @@ package org.tockit.relations.model;
 public class Tuple {
 	private Object[] data;
 
+	private Tuple(){ // used for fromString()
+	}
+
 	/**
 	 * Constructs a new tuple with the data given.
 	 * 
@@ -30,6 +33,12 @@ public class Tuple {
 		for (int i = 0; i < data.length; i++) {
             this.data[i] = data[i];
         }    
+	}
+	
+	public static Tuple fromString(String tabDelimitedData) {
+		Tuple retVal = new Tuple();
+		retVal.data = tabDelimitedData.split("\t");
+		return retVal;
 	}
 	
 	public Object[] getData() {
@@ -80,7 +89,7 @@ public class Tuple {
 	}
 
 	/**
-	 * Returns a space-delimited version of this tuple for debug purposes.
+	 * Returns a tab-delimited version of this tuple.
 	 * 
 	 * The toString method will be called on each element.
 	 */
@@ -88,7 +97,7 @@ public class Tuple {
 		StringBuffer retVal = new StringBuffer();
 		for (int i = 0; i < this.data.length; i++) {
 			if(i != 0) {
-				retVal.append(" ");
+				retVal.append("\t");
 			}
 			retVal.append(this.data[i].toString());
 		}

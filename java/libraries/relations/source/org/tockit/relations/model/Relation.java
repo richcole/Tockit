@@ -90,4 +90,13 @@ public interface Relation {
      * @throws IllegalArgumentException if the arity is not matched
      */
     boolean isRelated(Object[] data);
+
+	/**
+	 * Returns the relation as a set of tuples.
+	 * 
+	 * The dimension names will get lost in the reutrn value.
+	 * 
+	 * @return a read-only Set of the tuples of the relation.
+	 */
+    Set toSet();
 }
