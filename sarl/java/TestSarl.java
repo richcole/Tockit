@@ -1,4 +1,3 @@
-import SetIteratorFunctions;
 
 class TestSarl extends SetIteratorFunctions
 {
