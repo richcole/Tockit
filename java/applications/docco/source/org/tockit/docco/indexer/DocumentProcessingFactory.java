@@ -58,9 +58,8 @@ public class DocumentProcessingFactory {
 									" ( file: " + file.getPath() + ")");
 			}
 		} catch (Exception e) {
-			DocumentProcessingException docExc = new DocumentProcessingException("Couldn't process document: " + file.getAbsolutePath(), e);
-			docExc.printStackTrace();
-            throw docExc;
+			System.err.println("Couldn't process '" + file.getAbsolutePath() + "' - " + e.getMessage());
+            throw new DocumentProcessingException("Couldn't process document: " + file.getAbsolutePath(), e);
 		}
 	}
 	
