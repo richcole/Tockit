@@ -39,11 +39,13 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -93,7 +95,9 @@ import net.sourceforge.toscanaj.model.context.FCAElement;
 import net.sourceforge.toscanaj.model.database.AggregateQuery;
 import net.sourceforge.toscanaj.model.diagram.Diagram2D;
 import net.sourceforge.toscanaj.model.diagram.DiagramNode;
+import net.sourceforge.toscanaj.model.diagram.NestedLineDiagram;
 import net.sourceforge.toscanaj.model.lattice.Concept;
+import net.sourceforge.toscanaj.model.lattice.ConceptImplementation;
 import net.sourceforge.toscanaj.view.diagram.DiagramView;
 import net.sourceforge.toscanaj.view.diagram.LabelView;
 import net.sourceforge.toscanaj.view.diagram.NodeView;
@@ -123,6 +127,10 @@ import org.tockit.events.filters.SubjectTypeFilter;
 import org.tockit.plugin.PluginLoader;
 import org.tockit.swing.preferences.ExtendedPreferences;
 
+/**
+ * @TODO manipulating a nested diagram creates exceptions
+ * @TODO the results shown when selected nodes in nested diagrams are sometimes wrong (too many)
+ */
 public class DoccoMainFrame extends JFrame {
     private int indexingPriority;
     private File lastDirectoryIndexed;
@@ -160,6 +168,7 @@ public class DoccoMainFrame extends JFrame {
     private JTree hitList;
     private JComboBox queryField = new JComboBox();
 	private JButton searchButton = new JButton("Submit");
+	private JButton nestedSearchButton = new JButton("Nest");
 	private JCheckBoxMenuItem showPhantomNodesCheckBox;
 	private JCheckBoxMenuItem showContingentOnlyCheckBox;
 	private JLabel statusBarMessage;
@@ -189,8 +198,7 @@ public class DoccoMainFrame extends JFrame {
 			}
 			DiagramNode node = nodeView.getDiagramNode();
 			selectedConcept = node.getConcept();
-			diagramView.setSelectedConcepts(new Concept[]{selectedConcept});
-			
+			diagramView.setSelectedConcepts(node.getConceptNestingList());
 			fillTreeList();
 		}
 	}
@@ -511,7 +519,7 @@ public class DoccoMainFrame extends JFrame {
         	public void actionPerformed(ActionEvent e) {
         		/// @todo this is a bit brute force and will be confusing if the text field has changed since
         		/// the last query
-        		doQuery();
+        		doQuery(false);
         	}
         });
         diagramMenu.add(this.showPhantomNodesCheckBox);
@@ -888,14 +896,13 @@ public class DoccoMainFrame extends JFrame {
 
         this.queryField.getEditor().addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                doQuery();
+                doQuery(false);
             }
         });
 
         this.queryField.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
                 if(e.getStateChange() == ItemEvent.SELECTED) {
-                    doQuery();
                     setSearchEnabledStatus();
                 }
             }
@@ -908,7 +915,12 @@ public class DoccoMainFrame extends JFrame {
 
 		this.searchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				doQuery();
+				doQuery(false);
+			}
+		});
+		this.nestedSearchButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				doQuery(true);
 			}
 		});
 		
@@ -923,7 +935,11 @@ public class DoccoMainFrame extends JFrame {
 		queryPanel.add(this.searchButton, 
 							new GridBagConstraints( 2, 0, 1, 1, 0, 0,
 								GridBagConstraints.EAST, GridBagConstraints.NONE,
-								new Insets(5,15,5,15), 0, 0));
+								new Insets(5,15,5,5), 0, 0));
+		queryPanel.add(this.nestedSearchButton, 
+							new GridBagConstraints( 3, 0, 1, 1, 0, 0,
+								GridBagConstraints.EAST, GridBagConstraints.NONE,
+								new Insets(5,5,5,15), 0, 0));
 		return queryPanel;
 	}
 	
@@ -1076,9 +1092,11 @@ public class DoccoMainFrame extends JFrame {
 		String queryString = getQueryString();
         if(queryString.length() == 0 ) {
             this.searchButton.setEnabled(false);
+            this.nestedSearchButton.setEnabled(false);
             return;
         }
         this.searchButton.setEnabled(true);
+        this.nestedSearchButton.setEnabled(this.diagramView.getDiagram() != null);
 	}
 	
 	private String getQueryString() {
@@ -1089,7 +1107,7 @@ public class DoccoMainFrame extends JFrame {
         return queryString;
     }
 
-    private void doQuery() {
+    private void doQuery(boolean nestDiagram) {
         addEntryToQueryHistory();
 		if(getQueryString().length() != 0) {
 			this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
@@ -1097,6 +1115,42 @@ public class DoccoMainFrame extends JFrame {
             try {
                 results = this.queryEngine.executeQueryUsingDecomposer(getQueryString());
 				Diagram2D diagram = DiagramGenerator.createDiagram(results, this.showPhantomNodesCheckBox.isSelected());
+				Diagram2D oldDiagram = this.diagramView.getDiagram();
+				if(nestDiagram && oldDiagram != null) {
+					// before nesting make sure apposition is ok by synchronizing object sets to their join
+					Iterator oldObjectSetIterator = oldDiagram.getTopConcept().getExtentIterator();
+					Set oldObjects = new HashSet();
+					while (oldObjectSetIterator.hasNext()) {
+						oldObjects.add(oldObjectSetIterator.next());
+					}
+					Iterator newObjectSetIterator = diagram.getTopConcept().getExtentIterator();
+					while (newObjectSetIterator.hasNext()) {
+						Object object = newObjectSetIterator.next();
+						if(oldObjects.contains(object)) {
+							// remove the common ones from the old set
+							oldObjects.remove(object);
+						} else {
+							// add the ones that are only in new to the top node of the old diagram if its intent is empty
+							// if the intent is not empty, the object gets lost since it does not fit mandatory attributes
+							// of the other diagram
+							// note that if there is intent which would match, the object should be in both diagrams in the
+							// first place
+							if(oldDiagram.getTopConcept().getIntentSize() == 0) {
+								((ConceptImplementation)oldDiagram.getTopConcept()).addObject(object);
+							}
+						}
+					}
+					// now add the ones that are in the old diagram but not found in the new one to
+					// the new top concept
+					// this is again only happening if there is no intent attached to the top node
+					if(diagram.getTopConcept().getIntentSize() == 0) {
+						for (Iterator iter = oldObjects.iterator(); iter.hasNext();) {
+							((ConceptImplementation)diagram.getTopConcept()).addObject(iter.next());
+						}
+					}
+					// nest the results
+					diagram = new NestedLineDiagram(oldDiagram, diagram);
+				}
 				this.diagramView.showDiagram(diagram);
             } catch (ParseException e) {
             	ErrorDialog.showError(this, e, "Couldn't parse query");

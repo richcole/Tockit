@@ -6,6 +6,8 @@ Docco:
 - extra information for index (contents, mappings) is stored after the index
   was created, not only on shutdown. This means Docco can access the index
   even after an unclean exit (it will be locked, though).
+- support for the RTF format (some of it)
+- nested diagrams can be created using a new button (still buggy)
 
 POI-Plugin:
 - support for PowerPoint files

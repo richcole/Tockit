@@ -15,7 +15,7 @@
 	<classpathentry kind="lib" path="libs/tockit-pluginArchitecture.jar"/>
 	<classpathentry kind="lib" path="libs/tockit-swing.jar"/>
 	<classpathentry kind="lib" path="libs/tockit-utils.jar"/>
-	<classpathentry kind="lib" path="libs/ToscanaJ.jar"/>
+	<classpathentry sourcepath="/ToscanaJ/source" kind="lib" path="libs/ToscanaJ.jar"/>
 	<classpathentry kind="lib" path="plugins/multivalent/libs/Multivalent.jar"/>
 	<classpathentry kind="lib" path="plugins/pdfbox/libs/log4j.jar"/>
 	<classpathentry kind="lib" path="plugins/poi/libs/jakarta-poi.jar"/>
