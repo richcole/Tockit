@@ -35,19 +35,30 @@ public class TempPluginLoaderTester {
 			logger.setLevel(Level.FINE);
 //			logger.addHandler(new FileHandler("%h/log%u.log"));
 
-			PluginClassLoader pluginClassLoader;
+			ClassLoader doccoClassLoader = Docco.class.getClassLoader();
+
+			ClassLoader pluginClassLoader;
 			try {
 				pluginClassLoader = new PluginClassLoader(new File(pluginsDirLoc1));
 			}
 			catch (FileNotFoundException e) {
 				pluginClassLoader = new PluginClassLoader(new File(pluginsDirLoc2));
 			}
+			
+			//pluginClassLoader = doccoClassLoader;
+			
 			System.out.println("getResource(libs/PDFBox.jar): " + pluginClassLoader.getResource("libs/PDFBox.jar"));
 			System.out.println("getResource(org/pdfbox/pdfparser/PDFParser.class): " + pluginClassLoader.getResource("org/pdfbox/pdfparser/PDFParser.class"));
+			System.out.println("getResource(PDFParser.class): " + pluginClassLoader.getResource("PDFParser.class"));
+			System.out.println("getResource(PdfDocumentHandler.class): " + pluginClassLoader.getResource("PdfDocumentHandler.class"));
 			System.out.println("getResource(org/pdfbox/pdfparser/PDFParser.class): " + pluginClassLoader.getResource("org/pdfbox/pdfparser/PDFParser.class"));
 			System.out.println("getResource(org\\tockit\\docco\\indexer\\documenthandler\\PdfDocumentHandler.class): " + pluginClassLoader.getResource("org\\tockit\\docco\\indexer\\documenthandler\\PdfDocumentHandler.class"));
-			System.out.println("findClass(org.tockit.docco.indexer.documenthandler.PdfDocumentHandler): " + pluginClassLoader.findClass("org.tockit.docco.indexer.documenthandler.PdfDocumentHandler"));
+			System.out.println("loadClass(org.tockit.docco.indexer.documenthandler.PdfDocumentHandler): " + pluginClassLoader.loadClass("org.tockit.docco.indexer.documenthandler.PdfDocumentHandler"));
 			//System.out.println("findClass(org/pdfbox/pdfparser/PDFParser.class): " + pluginClassLoader.findClass("org/pdfbox/pdfparser/PDFParser.class"));
+			System.out.println("getResource(doc/UQlogo.jpg): " + pluginClassLoader.getResource("doc/UQlogo.jpg"));
+			System.out.println("getResource(test/doc.jar/!/doc/UQlogo.jpg): " + pluginClassLoader.getResource("test/doc.jar/!/doc/UQlogo.jpg"));
+
+
 				
 //			Class[] classes = pluginClassLoader.findClassesImplementingGivenIterface(DocumentHandler.class);
 //			System.out.println("\n\n");

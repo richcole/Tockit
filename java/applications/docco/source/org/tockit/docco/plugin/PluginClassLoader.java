@@ -24,6 +24,16 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
+/**
+ * Class loader used to load resources found in the plugins directory.
+ * 
+ * This class loader will recurse through given directory and list
+ * all resources found, including all resources contained in any jar
+ * files found.
+ * 
+ * For more information on loading classes or resources 
+ * @see findClass(String name) and findResource(String name)   
+ */
 public class PluginClassLoader extends ClassLoader {
 	private static final Logger logger = Logger.getLogger(PluginClassLoader.class.getName());
 	
@@ -32,6 +42,7 @@ public class PluginClassLoader extends ClassLoader {
 		public String getRelativePath();
 		public URL getURL() throws MalformedURLException;
 	}
+	
 	
 	private class FileResource implements Resource {
 		private File file;
@@ -51,28 +62,7 @@ public class PluginClassLoader extends ClassLoader {
 		}
 		
 		public String getRelativePath () {
-			if (this.file.compareTo(pluginsDirLocation) > 0) {
-				String result = "";
-				File curFile = this.file;
-				File parent = curFile.getParentFile();
-				while (parent != null) {
-					if (curFile.equals(pluginsDirLocation)) {
-						break;
-					}
-					else {
-						if (result.length() == 0) {
-							result = curFile.getName();
-						}
-						else {
-							result = curFile.getName() + File.separator + result;
-						}
-					}
-					curFile = parent;
-					parent = curFile.getParentFile();
-				}
-				return result;
-			}
-			return file.getName();
+			return getPathRelativeToPluginsBaseDir(this.file);
 		}
 		
 		public File getFile() {
@@ -125,7 +115,9 @@ public class PluginClassLoader extends ClassLoader {
 		}
 		
 		public String getRelativePath() {
-			return this.zipEntry.getName();
+			String relZipFilePath = getPathRelativeToPluginsBaseDir(this.jarFile);
+			String result = relZipFilePath + "/!/" + this.zipEntry.getName();
+			return result;
 		}
 		
 		public URL getURL() throws MalformedURLException {
@@ -184,6 +176,28 @@ public class PluginClassLoader extends ClassLoader {
 		return (Class[]) result.toArray(new Class[result.size()]);
 	}
 	
+	/**
+	 * Find a resource with given name in this class loader. This
+	 * method will return first resource found with the given name.
+	 * In case of duplicate resources with the same name there is no 
+	 * guarantee which one will be found first.
+	 * @param name - this parameter should refer to the resource path
+	 * relative to the class loader directory specified in constructor
+	 * parameter for files. OR zip file entry name in case of jar file 
+	 * For example, if plugins directory is located at 
+	 * C:/projects/someProject/plugins 
+	 * and we want to find file:
+	 * C:/projects/someProject/plugins/img/someFile.jpg, 
+	 * parameter name should be "img/someFile.jpg"
+	 * If we are looking for a resource within one of the jar files
+	 * included in plugins directory, then specify path to this resource
+	 * within the jar file, this path should still be relative to plugins
+	 * directory. For instance, if we are looking for an entry in the 
+	 * jar file, jar file: 
+	 * C:/projects/someProject/plugins/libs/someJar.jar with entry:
+	 * "img/someFile.jpg" then we should use parameter:
+	 * "libs/someJar.jar/!/img/someFile.jpg"
+	 */
 	public URL findResource (String name ) {
 		Resource resource = findResourceLocation(name);
 		if (resource != null) {
@@ -197,6 +211,14 @@ public class PluginClassLoader extends ClassLoader {
 		return null;
 	}
 	 
+	/**
+	 * Find a class with the specified name.
+	 * @param name - fully qualified class name.
+	 * If duplicates occur within this class loader - the first one
+	 * found will be returned. At this stage there is no way to inforce
+	 * the order in which we search for classes, therefore there is no
+	 * way to predict which one of the duplicates would be found first.
+	 */
 	public Class findClass(String name) throws ClassNotFoundException {
 		logger.entering("PluginClassLoader", "findClass", name);
 		Resource resource = findResourceLocation(name.replace('.','/') + ".class");
@@ -272,6 +294,31 @@ public class PluginClassLoader extends ClassLoader {
 			e.printStackTrace();
 		}
 		return zipFileEntriesList;
+	}
+
+	private String getPathRelativeToPluginsBaseDir (File file) {
+		if (file.compareTo(this.pluginsDirLocation) > 0) {
+			String result = "";
+			File curFile = file;
+			File parent = curFile.getParentFile();
+			while (parent != null) {
+				if (curFile.equals(this.pluginsDirLocation)) {
+					break;
+				}
+				else {
+					if (result.length() == 0) {
+						result = curFile.getName();
+					}
+					else {
+						result = curFile.getName() + File.separator + result;
+					}
+				}
+				curFile = parent;
+				parent = curFile.getParentFile();
+			}
+			return result;
+		}
+		return file.getName();
 	}
 
 }
