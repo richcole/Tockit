@@ -12,11 +12,13 @@ extern "C" {
 
 class ContextIterator;
 class SetIterator;
+class MapIterator;
 
 class RelationIterator {
 public:
   friend class ContextIterator;
   friend class SetIterator;
+  friend class MapIterator;
   friend class Lattice;
 
   RelationIterator(Relation const& relation) {

@@ -45,7 +45,8 @@ sarlplusinclude_HEADERS = \
 	ContextReader.h \
 	ContextIterator.h \
 	RefCount.h \
-	String.h
+	String.h \
+	MapIterator.h
 #
 # Sources and headers not to be installed
 #

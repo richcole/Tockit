@@ -74,7 +74,7 @@ sarlinclude_HEADERS = \
         transitive_relation.h \
         triadic_relation.h \
         triple.h \
-        write_cxt_context.h
+        write_cxt_context.h 
 
 #
 # Sources and headers not to be installed
