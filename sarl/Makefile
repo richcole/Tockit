@@ -146,7 +146,7 @@ java/%.class: java/%.java
 # Rules for testing
 
 tests/%.exe: objs_d/%.o $(OBJECTS:%=objs_d/%.o)
-	$(CCC) $(DEBUG) -I../ -o $@ -lstdc++ $^
+	$(CCC) $(DEBUG) -I../ -o $@ $^
 
 %.run: tests/%.exe 
 	./$<
@@ -211,6 +211,7 @@ lib_clean:
 # Depend.
 
 depend:
+	$(MAKE) -C cpp depend
 	makedepend -Y../ *.cpp -fdepend.mak >& /dev/null
 	sed -e 's/\(^.*\.o:\)/objs\/\1/' depend.mak > depend.mak.tmp
 	sed -e 's/\(^.*\.o:\)/objs_d\/\1/' depend.mak >> depend.mak.tmp

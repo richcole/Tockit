@@ -26,7 +26,7 @@ int main()
 
   SetIterator it_intent_8 = it.intent(8);
   SetIterator t1_intent_8 = t1.intent(8);
-  SARL_TEST_ASSERT(t1_intent_8.subset(it_intent_8));
+  SARL_TEST_ASSERT(t1_intent_8.subseteq(it_intent_8));
 
   for(
     it.reset(), t1.reset(); 
