@@ -776,7 +776,7 @@ public class DoccoMainFrame extends JFrame {
 	private void closeMainPanel() {
 		// shut down indexer
 		try {
-            this.index.close();
+            this.index.shutdown();
         } catch (Exception e) {
         	ErrorDialog.showError(this, e, "Could not shut down indexer");
         }

@@ -125,11 +125,11 @@ public class FileMappingsEditingDialog extends JDialog {
 	}
 
 	
-	public FileMappingsEditingDialog(Frame parent, DocumentHandlerRegistry registery) 
+	public FileMappingsEditingDialog(Frame parent, DocumentHandlerRegistry registry) 
 													throws HeadlessException {
-		super(parent, "Edit File Mappins Configuration", true);
-		this.docHandlersRegistery = registery;
-		this.model = new DocHandlersRegisteryListModel(registery);
+		super(parent, "Edit File Mappings Configuration", true);
+		this.docHandlersRegistery = registry;
+		this.model = new DocHandlersRegisteryListModel(registry);
 		
 		getContentPane().add(createMainPanel(), BorderLayout.CENTER);
 		getContentPane().add(createButtonsPanel(), BorderLayout.SOUTH);
@@ -156,7 +156,7 @@ public class FileMappingsEditingDialog extends JDialog {
 				if (index >= 1) {
 					model.moveMapping(index, index -1);
 					jlist.setSelectedIndex(index - 1);
-					saveMappings();
+					// @todo store mappings in index ???
 				}
 			}
 		});
@@ -168,7 +168,7 @@ public class FileMappingsEditingDialog extends JDialog {
 				if (index + 1 < model.getSize()) {
 					model.moveMapping(index, index + 1);
 					jlist.setSelectedIndex(index + 1);
-					saveMappings();
+					// @todo store mappings in index ???
 				}
 			}
 		});
@@ -325,7 +325,7 @@ public class FileMappingsEditingDialog extends JDialog {
 		okButton.setToolTipText("Save changes and exit this dialog");
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				saveMappings();
+				docHandlersRegistery.setDocumentMappingList(model.getRegistery().getDocumentMappingList());
 				setVisible(false);
 			}
 		});
@@ -352,16 +352,6 @@ public class FileMappingsEditingDialog extends JDialog {
 		
 		return panel;
 	}
-	
-	private void saveMappings () {
-		int itemsToDelete = this.docHandlersRegistery.getDocumentMappingList().size() -
-						model.getRegistery().getDocumentMappingList().size();
-		this.docHandlersRegistery = model.getRegistery();
-		System.out.println("orig registery size: " + this.docHandlersRegistery.getDocumentMappingList().size());
-		System.out.println("itemsToDelete = " + itemsToDelete);
-		this.docHandlersRegistery.saveDocumentHandlersRegisteryConfig(itemsToDelete);
-
-	}	
 	
 	private void setButtonsStatus() {
 		if (this.jlist.getSelectedIndex() == -1) {

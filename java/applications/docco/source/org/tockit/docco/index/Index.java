@@ -41,6 +41,7 @@ public class Index {
 		if(infoFilesPath.endsWith(File.separator)) {
 			infoFilesPath = infoFilesPath.substring(0, infoFilesPath.length() - File.separator.length());
 		}
+		
 		File indexContents = getContentsFile();
 		if(indexContents.exists()) {
 			String[] paths = getLinesOfFile(indexContents);
@@ -51,15 +52,24 @@ public class Index {
             }
 		}
 
-		this.docHandlersRegistry = new DocumentHandlerRegistry(true);
+		File mappingsFile = getMappingsFile();
+		if(mappingsFile.exists()) {
+			this.docHandlersRegistry = new DocumentHandlerRegistry(getLinesOfFile(mappingsFile));
+		} else {
+			this.docHandlersRegistry = new DocumentHandlerRegistry(DocumentHandlerRegistry.DEFAULT_MAPPINGS);
+		}
 		
         this.indexThread = new Indexer(this.docHandlersRegistry, callbackRecipient);
 		this.indexThread.start();
 	}
 
-    private File getContentsFile() {
-        return new File(infoFilesPath + ".contents");
-    }
+	private File getContentsFile() {
+		return new File(infoFilesPath + ".contents");
+	}
+
+	private File getMappingsFile() {
+		return new File(infoFilesPath + ".mappings");
+	}
 
     private String[] getLinesOfFile(File inputFile) throws FileNotFoundException, IOException {
         BufferedReader reader = new BufferedReader(new FileReader(inputFile));
@@ -154,14 +164,20 @@ public class Index {
 		this.indexThread.stopIndexing();
 	}
 	
-	public void close() throws IOException {
+	public void shutdown() throws IOException {
 		stop();
-		// @todo stop indexing/updating
 		PrintStream out = new PrintStream(new FileOutputStream(getContentsFile()));
 		for (int i = 0; i < this.filesIndexed.length; i++) {
-            File file = this.filesIndexed[i];
-            out.println(file.getPath());
-        }
+			File file = this.filesIndexed[i];
+			out.println(file.getPath());
+		}
+		out.close();
+		out = new PrintStream(new FileOutputStream(getMappingsFile()));
+		String[] mappings = this.docHandlersRegistry.getMappingStringsList();
+        for (int i = 0; i < mappings.length; i++) {
+			out.println(mappings[i]);
+		}
+		out.close();
 	}
 	
 	public boolean isWorking() {
