@@ -3,6 +3,7 @@
 
 extern "C" {
 #include <sarl/set_iterator.h>
+#include <sarl/assert.h>
 }
 
 #include <sarl/cpp/Index.h>
@@ -16,8 +17,7 @@ class LatticeIterator;
 
 class SetIterator {
 
-  class Temporary;
-
+public:
   friend class Set;
   friend class Relation;
   friend class RelationIterator;
@@ -25,7 +25,7 @@ class SetIterator {
   friend class ConceptIterator;
   friend class LatticeIterator;
 
-  friend SetIterator::Temporary meet(SetIterator& a_it, SetIterator& b_it);
+  friend SetIterator meet(SetIterator& a_it, SetIterator& b_it);
   friend SetIterator join(SetIterator& a_it, SetIterator& b_it);
   friend SetIterator minus(SetIterator& a_it, SetIterator& b_it);
 
@@ -36,53 +36,71 @@ public:
   SetIterator& operator=(SetIterator const& it);
 
   virtual ~SetIterator() {
+    SARL_ASSERT(mp_itRef != 0);
     if ( mp_itRef != 0 ) {
       sarl_set_iterator_decr_ref(mp_itRef);
     }
   };
 
   SetIterator copy() {
+    SARL_ASSERT(mp_itRef != 0);
     return SetIterator(*this);
   }
 
   void next() {
+    SARL_ASSERT(mp_itRef != 0);
     sarl_set_iterator_next(mp_itRef);
   };
 
   void next_gte(Index v) {
+    SARL_ASSERT(mp_itRef != 0);
     sarl_set_iterator_next_gte(mp_itRef, v);
   };
 
   Index value() {
+    SARL_ASSERT(mp_itRef != 0);
     return sarl_set_iterator_value(mp_itRef);
   };
 
   bool at_end() {
+    SARL_ASSERT(mp_itRef != 0);
     return sarl_set_iterator_at_end(mp_itRef);
   };
 
   void reset() {
+    SARL_ASSERT(mp_itRef != 0);
     return sarl_set_iterator_reset(mp_itRef);
   };
 
   Index count_remaining() {
+    SARL_ASSERT(mp_itRef != 0);
     return sarl_set_iterator_count_remaining(mp_itRef);
   }
 
   Index count() {
+    SARL_ASSERT(mp_itRef != 0);
     return sarl_set_iterator_count(mp_itRef);
   }
 
   bool subset(SetIterator& a_it)
   {
+    SARL_ASSERT(mp_itRef != 0);
     return
       sarl_set_iterator_subset(mp_itRef, a_it.mp_itRef);
   };
 
   int lexical_compare(SetIterator& a_it)
   {
+    SARL_ASSERT(mp_itRef != 0);
     return
       sarl_set_iterator_lexical_compare(mp_itRef, a_it.mp_itRef);
+  };
+
+protected:
+  SetIterator retn() 
+  {
+    sarl_set_iterator_release_ownership(mp_itRef);
+    return *this;
   };
 
 private:
@@ -90,28 +108,6 @@ private:
 
   SetIterator(Sarl_SetIterator* ap_itRef) {
     mp_itRef = ap_itRef;
-  };
-
-  class Temporary {
-  public:
-    Sarl_SetIterator* mp_itRef;
-    Temporary(Sarl_SetIterator *itRef) {
-      sarl_set_iterator_incr_ref(itRef);
-      mp_itRef = itRef;
-      sarl_set_iterator_release_ownership(itRef);
-    }
-    Temporary(Temporary const& t) {
-      sarl_set_iterator_incr_ref(t.mp_itRef);
-      mp_itRef = t.mp_itRef;
-    }
-    ~Temporary() {
-      sarl_set_iterator_decr_ref(mp_itRef);
-    };
-  };
-
-public:
-  SetIterator(Temporary const& t) {
-    mp_itRef = sarl_set_iterator_obtain_ownership(t.mp_itRef);
   };
 
 public: // nasty hack for SWIG
@@ -132,19 +128,18 @@ inline SetIterator::SetIterator(Set const& set) {
   };
 };
 
-inline SetIterator::SetIterator(SetIterator const& it) {
-  if ( it.mp_itRef != 0 ) {
-    mp_itRef = sarl_set_iterator_obtain_ownership(it.mp_itRef);
-  }
-  else {
-    mp_itRef = 0;
-  };
+inline SetIterator::SetIterator(SetIterator const& it) 
+{
+  SARL_ASSERT(it.mp_itRef != 0);
+  mp_itRef = sarl_set_iterator_obtain_ownership(it.mp_itRef);
 };
 
-inline SetIterator& SetIterator::operator=(SetIterator const& it) {
+inline SetIterator& SetIterator::operator=(SetIterator const& it) 
+{
   if ( it.mp_itRef == mp_itRef ) {
     return *this;
   }
+  // this is the only function that tollerates mp_itRef being zero
   if ( mp_itRef != 0 ) {
     sarl_set_iterator_decr_ref(mp_itRef);
   }
@@ -152,42 +147,34 @@ inline SetIterator& SetIterator::operator=(SetIterator const& it) {
   return *this;
 };
 
-inline SetIterator::Temporary meet(SetIterator& a_it, SetIterator& b_it) 
+inline SetIterator meet(SetIterator& a_it, SetIterator& b_it) 
 {
-  Sarl_SetIterator *p_it;
-  
-  if ( a_it.mp_itRef != 0 && b_it.mp_itRef != 0 ) {
-    p_it = sarl_set_iterator_meet(a_it.mp_itRef, b_it.mp_itRef);
-  }
-  else {
-    Sarl_Set* empty = sarl_set_create();
-    p_it = sarl_set_iterator_create(empty);
-    sarl_set_decr_ref(empty);
-  }
-  return SetIterator::Temporary(p_it);
+  SARL_ASSERT(a_it.mp_itRef != 0 && b_it.mp_itRef != 0);
+
+  return 
+    SetIterator(
+      sarl_set_iterator_meet(a_it.mp_itRef, b_it.mp_itRef)
+    ).retn();
 };
 
 inline SetIterator join(SetIterator& a_it, SetIterator& b_it) 
 {
-  if ( a_it.mp_itRef != 0 && b_it.mp_itRef != 0 ) {
-    Sarl_SetIterator *p_it = 
-      sarl_set_iterator_union(a_it.mp_itRef, b_it.mp_itRef);
-    return SetIterator(p_it);
-  }
-  else {
-    return SetIterator();
-  };
+  SARL_ASSERT(a_it.mp_itRef != 0 && b_it.mp_itRef != 0);
+
+  return 
+    SetIterator(
+      sarl_set_iterator_union(a_it.mp_itRef, b_it.mp_itRef)
+    ).retn();
 };
 
-inline SetIterator minus(SetIterator& a_it, SetIterator& b_it) {
-  if ( a_it.mp_itRef != 0 && b_it.mp_itRef != 0 ) {
-    Sarl_SetIterator *p_it = 
-      sarl_set_iterator_minus(a_it.mp_itRef, b_it.mp_itRef);
-    return SetIterator(p_it);
-  }
-  else {
-    return SetIterator();
-  }
+inline SetIterator minus(SetIterator& a_it, SetIterator& b_it) 
+{
+  SARL_ASSERT(a_it.mp_itRef != 0 && b_it.mp_itRef != 0);
+
+  return 
+    SetIterator(
+      sarl_set_iterator_minus(a_it.mp_itRef, b_it.mp_itRef)
+    ).retn();
 };
 
 class SetIteratorFunctions {
@@ -195,19 +182,19 @@ public:
   inline static 
   SetIterator meet(SetIterator& a_it, SetIterator& b_it) 
   {
-    return ::meet(a_it, b_it);
+    return ::meet(a_it, b_it).retn();
   }
 
   inline static 
   SetIterator join(SetIterator& a_it, SetIterator& b_it) 
   {
-    return ::join(a_it, b_it);
+    return ::join(a_it, b_it).retn();
   }
 
   inline static 
   SetIterator minus(SetIterator& a_it, SetIterator& b_it) 
   {
-    return ::minus(a_it, b_it);
+    return ::minus(a_it, b_it).retn();
   }
 };
 

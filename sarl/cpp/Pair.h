@@ -7,4 +7,8 @@ inline bool operator!=(Pair const& s, Pair const& t) {
   return (s.dom != t.dom) || (s.rng != t.rng);
 };
 
+inline bool operator==(Pair const& s, Pair const& t) {
+  return (s.dom == t.dom) || (s.rng == t.rng);
+};
+
 #endif

@@ -34,7 +34,7 @@ int main()
     it.next(), t1.next()
   )
   {
-    SARL_TEST_ASSERT_EQ(it.value(), t1.value());
+    SARL_TEST_ASSERT(it.value() == t1.value());
   }
 
   SARL_TEST_ASSERT_EQ(it.at_end(), t1.at_end());

@@ -2,6 +2,10 @@
 #include <sarl/cpp/Set.h>
 #include <sarl/cpp/SetIterator.h>
 
+extern "C" {
+  #include <sarl/test.h>
+}
+
 #include <iostream>
 #include <stdlib.h> // exit()
 
@@ -27,13 +31,15 @@ int main()
   SetIterator it_t(t);
   
   SetIterator it  = meet(it_s, it_t);
+  SARL_TEST_ASSERT_EQ(it.count_remaining(), LEN/6);
   
   it  = SetIteratorFunctions::meet(it_s, it_t);
-  if ( it.count_remaining() != LEN/6 ) {
-    cerr << "Error, expected count_remaining=" << LEN/6 << ", but got ";
-    cerr << it.count_remaining() << endl;
-    exit(-1);
-  }
+  SARL_TEST_ASSERT_EQ(it.count_remaining(), LEN/6);
+
+  SARL_TEST_ASSERT_EQ(
+    SetIterator(SetIteratorFunctions::meet(it_s, it_t)).count_remaining(),
+    LEN/6
+  );
 
   return 0;
 };

@@ -3,12 +3,17 @@ CCC = g++
 CPP_FLAGS = -DSARL_NATIVE
 
 OBJECTS = \
-  Set SetIterator Relation RelationIterator RefCount
+  Set      SetIterator      \
+  Relation RelationIterator \
+  Context  ContextIterator  \
+  Lattice  LatticeIterator  \
+  RefCount
 
 TEST = \
   test_intersection test_relation \
   test_relation_join test_context \
-  test_assignment
+  test_assignment \
+  test_stl
 
 SARL_LIB_DIR   = ../lib
 SARL_LIB_DIR_D = ../lib_d

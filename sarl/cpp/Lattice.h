@@ -45,12 +45,13 @@ private:
 #include <sarl/cpp/LatticeIterator.h>
 
 inline Lattice::Lattice(Lattice const& lattice) {
+  SARL_ASSERT(lattice.mp_latticeRef);
   LatticeIterator it(lattice);
   mp_latticeRef = sarl_lattice_copy(it.mp_itRef);
 };
 
 inline Lattice::Lattice(LatticeIterator const& it) {
-  mp_latticeRef = sarl_lattice_create(it.mp_itRef);
+  mp_latticeRef = sarl_lattice_copy(it.mp_itRef);
 };
 
 inline Lattice& Lattice::operator=(Lattice const& L) {
@@ -60,6 +61,7 @@ inline Lattice& Lattice::operator=(Lattice const& L) {
   if ( mp_latticeRef != 0 ) {
     sarl_lattice_decr_ref(mp_latticeRef);
   }
+  LatticeIterator it(L);
   mp_latticeRef = sarl_lattice_copy(it.mp_itRef);
   return *this;
 };
