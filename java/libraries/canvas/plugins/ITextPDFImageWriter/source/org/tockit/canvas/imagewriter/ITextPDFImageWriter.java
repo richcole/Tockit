@@ -90,12 +90,12 @@ public class ITextPDFImageWriter implements ImageWriter {
 			int width = settings.getImageWidth();
             int height = settings.getImageHeight();
 
-            Document document = new Document();
-            // set size for the document, but keep existing margins
-            float docWidth = width + document.leftMargin() + document.rightMargin();
-            float docHeight = height + document.topMargin() + document.bottomMargin();
-			document.setPageSize(new Rectangle(0,docWidth,docHeight,0));
+            Document document = new Document(new Rectangle(width,height));
+
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
+            document.addTitle(metadata.getProperty("title"));
+            document.addKeywords(metadata.getProperty("description"));
+            document.addHeader("diagram history", metadata.getProperty("description"));
             document.open();
             
             DefaultFontMapper mapper = new DefaultFontMapper();
