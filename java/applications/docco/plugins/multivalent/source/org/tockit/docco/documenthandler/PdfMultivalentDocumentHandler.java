@@ -80,7 +80,7 @@ public class PdfMultivalentDocumentHandler implements DocumentHandler, Plugin {
 	}
 	
 	public void load() {
-		/// @todo should be registering with appropriate registry here
+		DocumentHandlerRegistry.registerDocumentHandler(this);		
 	}
 	
 }

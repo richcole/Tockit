@@ -180,12 +180,11 @@ public class MultivalentDocumentHandler implements DocumentHandler, Plugin {
 	}
 
 	public String getDisplayName() {
-		return "Handler based on Multivalent tool, capable of parsing " + 
-			"HTML, PDF, scanned paper, UNIX manual pages, TeX DVI";
+		return "HTML, PDF, scanned paper, UNIX manual pages, TeX DVI document handler based on Multivalent tool"; 
 	}
 	
 	public void load() {
-		/// @todo should be registering with appropriate registry here
+		DocumentHandlerRegistry.registerDocumentHandler(this);
 	}
 
 	
