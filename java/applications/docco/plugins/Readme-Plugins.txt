@@ -30,8 +30,17 @@ file plugin.txt containing a list of fully qualified plugin class names.
 If class names are found - these classes will be loaded. Otherwise,
 PluginLoader will check the entire plugin directory for classes 
 implementing Plugin interface and load all such classes. The former
-approach using plugin.txt file is more efficient. ( plugin.txt file should 
-contain class name per line.)
+approach using plugin.txt file is more efficient. Another advantage
+of the formet approach is that you don't need include some libraries
+not used in the production. For example, if your code is using junit 
+test framework for TestCases, but you are not making use of this
+classes in the actual plugin - we don't need to load them, but unless you
+specify what classes to load - plugin loader will attempt to load
+each class in order to figure out which ones of those are plugins.
+Loading each class means loading all classes used by this class. Therefore
+all TestCases will be loaded and if they use junit package, then classes
+from this package will need to be loaded as well.
+( plugin.txt file should contain class name per line.)
 - after all plugin classes found for the current plugin - PluginLoader
 will instantiate these using PluginClassLoader and call method load() on
 each plugin implementation.
