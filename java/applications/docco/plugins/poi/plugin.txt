@@ -1,2 +1,3 @@
 org.tockit.docco.documenthandler.MSExcelDocumentHandler
 org.tockit.docco.documenthandler.MSWordDocumentHandler
+org.tockit.docco.documenthandler.MSPowerPointDocumentHandler

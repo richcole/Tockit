@@ -13,13 +13,9 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 
-import org.apache.poi.hpsf.PropertySetFactory;
 import org.apache.poi.hpsf.SummaryInformation;
 import org.apache.poi.poifs.eventfilesystem.POIFSReader;
-import org.apache.poi.poifs.eventfilesystem.POIFSReaderEvent;
-import org.apache.poi.poifs.eventfilesystem.POIFSReaderListener;
 
 import org.textmining.text.extraction.WordExtractor;
 import org.tockit.docco.filefilter.DoccoFileFilter;
@@ -29,25 +25,10 @@ import org.tockit.plugin.Plugin;
 
 public class MSWordDocumentHandler implements DocumentHandler, Plugin {
 	
-	private class DocSummaryPOIFSReaderListener implements POIFSReaderListener {
-		private SummaryInformation summary = null;
-		public void processPOIFSReaderEvent(POIFSReaderEvent event) {
-			try {
-				summary = (SummaryInformation) PropertySetFactory.create(event.getStream());
-			} catch (Exception ex) {
-				throw new RuntimeException
-						("Property set stream \"" + event.getPath() +
-						event.getName() + "\": " + ex);
-			}
-		}
-		public SummaryInformation getSummary() {
-			return summary;
-		}
-	}
-
 	public DocumentSummary parseDocument(URL url) throws IOException, DocumentHandlerException {
+		InputStream inputStream = null;
 		try {		
-			InputStream inputStream = url.openStream();
+            inputStream = url.openStream();
 			
 			POIFSReader poiReader = new POIFSReader();
 			DocSummaryPOIFSReaderListener summaryListener = new DocSummaryPOIFSReaderListener();
@@ -58,7 +39,9 @@ public class MSWordDocumentHandler implements DocumentHandler, Plugin {
 			SummaryInformation info = summaryListener.getSummary();
 			
 			DocumentSummary docSummary = new DocumentSummary();
-			docSummary.authors = getAuthors(info);
+			docSummary.authors = DocSummaryPOIFSReaderListener.getAuthors(info);
+			/// @todo we could probably read the document in one go, extracting both
+			/// text and metadata
 			docSummary.contentReader = getDocumentContent(url.openStream());
 			docSummary.creationDate = info.getCreateDateTime();
 			docSummary.keywords = new ArrayList();
@@ -67,14 +50,17 @@ public class MSWordDocumentHandler implements DocumentHandler, Plugin {
 			docSummary.title = info.getTitle();
 			
 			return docSummary;
-		}
-		catch (IOException e) {
+        } catch (IOException e) {
 			if (e.getMessage().startsWith("Unable to read entire header")) {
 				throw new DocumentHandlerException("Couldn't process document", e);
 			} else {
 				throw e;
 			}
-		}
+        } finally {
+            if(inputStream != null) {
+                inputStream.close();
+            }
+        }
 	}
 	
 	private Reader getDocumentContent(InputStream inputStream) throws DocumentHandlerException {
@@ -84,15 +70,6 @@ public class MSWordDocumentHandler implements DocumentHandler, Plugin {
         } catch (Exception e) {
             throw new DocumentHandlerException("Failed to extract text from Word document.", e);
         }
-	}
-
-	private List getAuthors(SummaryInformation info) {
-		if (info.getAuthor() != null) {
-			List res = new ArrayList();
-			res.add(info.getAuthor());
-			return res;
-		}
-		return null;
 	}
 
 	public String getDisplayName() {

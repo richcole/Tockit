@@ -8,6 +8,7 @@
 package org.tockit.docco.documenthandler;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.net.URL;
@@ -28,17 +29,22 @@ import org.tockit.plugin.Plugin;
 public class MSExcelDocumentHandler implements DocumentHandler, Plugin {
 
 	public DocumentSummary parseDocument(URL url) throws IOException, DocumentHandlerException {
+		InputStream inputStream = null;
 		try {
-			HSSFWorkbook workbook = new HSSFWorkbook(url.openStream());	
+            inputStream = url.openStream();
+            HSSFWorkbook workbook = new HSSFWorkbook(inputStream);	
 			
 			DocumentSummary docSummary = new DocumentSummary();
 			docSummary.contentReader = getDocumentContent(workbook);
 			
 			return docSummary;	
-		}
-		catch (RecordFormatException e) {
+		} catch (RecordFormatException e) {
 			throw new DocumentHandlerException("Caught RecordFormatException while processing " + url.toString(), e);
-		}		
+        } finally {
+            if(inputStream != null) {
+                inputStream.close();
+            }
+        }
 	}
 
 	private Reader getDocumentContent(HSSFWorkbook workbook) throws IOException {
