@@ -22,23 +22,30 @@ up to date information about how to compile and install Sarl.
 
 3.0 Compilation and Testing
 
-Currently only linux is supported, although we intend to also support
-MacOS and Win32. The current implementation requires a C++ compiler
-and the standard template library.
+Currently the only distribution method for Sarl is from CVS.
 
-  To compile the shared library:
+3.1 Building from CVS
 
-    > make
+The construct a ./configure file 
 
-  To compile and run the C interface tests:
+  aclocal -I.
+  automake 
+  autoconf
 
-    > make test
+Then to the configuration script
 
-  To run the python interface test
+ ./configure --prefix=/usr/local/test; 
 
-    > make
-    > cd python
-    > python py_sarl.py
+Then to build and check the software
+
+  make check
+
+Then to install the libraries
+
+  make install
+
+Since the change to autoconf the java and python builds are
+incomplete. An help anyone can provide here would be much appreciated.
 
 4.0 Documentation and Links
 
@@ -47,9 +54,4 @@ project will hopefully be constructed within a week and most design
 discussion will take place there as well as the production of
 tutorials and interface documentation.
 
-5.0 Use of aclocal, automake and autoconf
-
-To generate the ./configure run the following:
-
-  aclocal -I .; automake; autoconf
 
