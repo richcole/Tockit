@@ -9,20 +9,18 @@ package events;
 
 import org.tockit.events.Event;
 
-public class QueryEvent implements Event{
-	private String queryString;
-	private boolean useDecomposer;
+import query.util.QueryWithResultSet;
+
+
+public class QueryFinishedEvent implements Event{
+	QueryWithResultSet queryResult;
 	
-	public QueryEvent(String queryString, boolean useDecomposer) {
-		this.queryString = queryString;
-		this.useDecomposer = useDecomposer;
+	public QueryFinishedEvent(QueryWithResultSet queryResult) {
+		this.queryResult = queryResult;
 	}
 
 	public Object getSubject() {
-		return queryString;
+		return queryResult;
 	}
 	
-	public boolean useDecomposer() {
-		return this.useDecomposer;
-	}
 }

@@ -1,4 +1,18 @@
+import java.io.IOException;
+
+import net.sourceforge.toscanaj.gui.dialog.ErrorDialog;
+
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.tockit.events.EventBroker;
+
+import docsearcher.DocSearch;
+import events.QueryEvent;
+
+import query.QueryDecomposer;
+import query.QueryEngine;
+
 import gui.DoccoMainFrame;
+import handlers.QueryEventHandler;
 
 /*
  * Copyright DSTC Pty.Ltd. (http://www.dstc.com), Technische Universitaet Darmstadt
@@ -8,9 +22,37 @@ import gui.DoccoMainFrame;
  * $Id$
  */
 public class Docco {
+	private static final String defaultIndexName = "test";
+	private String indexLocation = DocSearch.indexDir + "/" + defaultIndexName;
+	private String defaultQueryField = "body";
+	
+	
+	private EventBroker eventBroker = new EventBroker();
+	
+	public Docco () {
+		try {
+			QueryDecomposer queryDecomposer = new QueryDecomposer(this.defaultQueryField, new StandardAnalyzer());
+			QueryEngine queryEngine = new QueryEngine(this.indexLocation, 
+													this.defaultQueryField, 
+													new StandardAnalyzer(),
+													queryDecomposer);
+
+			this.eventBroker.subscribe(new QueryEventHandler(eventBroker, queryEngine), QueryEvent.class, Object.class);
+		
+			DoccoMainFrame mainFrame = new DoccoMainFrame(this.eventBroker);
+			mainFrame.setVisible(true);
+		}
+		catch (IOException e) {
+			ErrorDialog.showError(null, e, "Error", "\nPlease check if you have created an index using docsearcher.\n" + 
+							" Index name should be '" + defaultIndexName + "'");
+		}
+		catch (Exception e) {
+			ErrorDialog.showError(null, e, "Error");
+		}
+	}
+	
 	public static void main (String[] args) {
-		DoccoMainFrame mainFrame = new DoccoMainFrame();
-		mainFrame.setVisible(true);
+		new Docco();
 	}
 
 }

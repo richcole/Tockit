@@ -5,11 +5,13 @@
  *
  * $Id$
  */
-package query;
+package query.util;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+
+import query.HitReference;
 
 public class HitReferencesSetImplementation implements HitReferencesSet {
 	private HashSet references = new HashSet();
@@ -31,7 +33,8 @@ public class HitReferencesSetImplementation implements HitReferencesSet {
 	}
 
 	public HitReference[] toArray() {
-		return (HitReference[]) references.toArray(new HitReference[0]);
+		int size = this.references.size();
+		return (HitReference[]) references.toArray(new HitReference[size]);
 	}
 
 	public boolean addAll(Collection collection) {

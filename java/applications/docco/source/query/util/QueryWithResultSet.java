@@ -5,23 +5,25 @@
  *
  * $Id$
  */
-package query;
+package query.util;
 
 import java.util.Collection;
 import java.util.Iterator;
 
-public interface HitReferencesSet {
+import query.QueryWithResult;
+
+public interface QueryWithResultSet {
 	public int size();
 	public boolean isEmpty();
 	public Iterator iterator();
 
-	public boolean contains(HitReference ref);
+	public boolean contains(QueryWithResult qwr);
 
-	public HitReference[] toArray();
+	public QueryWithResult[] toArray();
 
-	public boolean add(HitReference ref);
+	public boolean add(QueryWithResult qwr);
 
-	public boolean remove(HitReference ref);
+	public boolean remove(QueryWithResult qwr);
 
 	public boolean addAll(Collection collection);
 	public boolean retainAll(Collection collection);

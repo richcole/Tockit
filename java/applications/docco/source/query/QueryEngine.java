@@ -9,6 +9,8 @@
 package query;
 
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.Set;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
@@ -19,20 +21,38 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
 
+import query.util.*;
+
 public class QueryEngine {
-	Searcher searcher;
-	String defaultQueryField;
-	Analyzer analyzer;
+	private Searcher searcher;
+	private String defaultQueryField;
+	private Analyzer analyzer;
+	private QueryDecomposer queryDecomposer;
 	
-	public QueryEngine (String indexLocation, String defaultQueryField, Analyzer analyzer) throws IOException {
+	public QueryEngine (String indexLocation, String defaultQueryField, 
+								Analyzer analyzer, QueryDecomposer queryDecomposer) 
+								throws IOException {
 		this.searcher = new IndexSearcher(indexLocation);
 		this.defaultQueryField = defaultQueryField;
 		this.analyzer = analyzer;
+		this.queryDecomposer = queryDecomposer;
 	}
 	
 	public QueryWithResult executeQuery (String queryString) throws ParseException, IOException {
 		Query query = QueryParser.parse(queryString, this.defaultQueryField, this.analyzer);
 		return new QueryWithResult(query, executeQuery(query));
+	}
+	
+	public QueryWithResultSet executeQueryUsingDecomposer (String queryString) throws ParseException, IOException {
+		QueryWithResultSet queryResult = new QueryWithResultSetImplementation();
+		Set queryTermsCombinations = this.queryDecomposer.buildQueryTermsCombinations(queryString);
+		Iterator it = queryTermsCombinations.iterator();
+		while (it.hasNext()) {
+			String cur = (String) it.next();
+			QueryWithResult qwr = executeQuery(cur);
+			queryResult.add(qwr);
+		}
+		return queryResult;
 	}
 	
 	private HitReferencesSet executeQuery (Query query) throws ParseException, IOException {

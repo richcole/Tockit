@@ -57,10 +57,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -69,7 +66,6 @@ import org.apache.lucene.queryParser.ParseException;
 import query.QueryDecomposer;
 import query.QueryEngine;
 import query.QueryWithResult;
-import query.SimpleQueryReference;
 
 import docsearcher.DocSearch;
 
@@ -80,48 +76,48 @@ class SearchFiles {
 	private QueryDecomposer queryDecomposer;
 	
 	public SearchFiles()  throws IOException {
-		this.queryEngine = new QueryEngine(this.indexLocation, this.defaultQueryField, new StandardAnalyzer());
 		this.queryDecomposer = new QueryDecomposer(this.defaultQueryField, new StandardAnalyzer());
+		this.queryEngine = new QueryEngine(this.indexLocation, this.defaultQueryField, 
+						new StandardAnalyzer(), this.queryDecomposer);
 	}
 	
 	private void stop() throws IOException {
 		this.queryEngine.finishQueries();
 	}
 
-	private Set buildQueryTermsCombinations (List queryTerms) {
-		Set result = new HashSet();
-		for (int i = 0; i < Math.pow(2,queryTerms.size()); i++) {
-			String objectData = "";
-			List relatedAttributes = new LinkedList();
-			for(int j = 0; j < queryTerms.size(); j++) {
-				SimpleQueryReference queryRef = (SimpleQueryReference) queryTerms.get(j);
-				//System.out.println("i = " + i + ", j = " + j + ", curTerm = " + queryRef.getQuery());
-				// @todo should build BooleanQuery here and be smarter 
-				// about building combinations (don't want ones with 'NOT (term)' or
-				// 'NOT (term1) AND NOT (term2)' 
-				if( j != 0 ) {
-					objectData += " AND ";
-				}
-				if( (i & (1 << j)) == 0 ) {
-					objectData += " NOT ";
-				} else {
-					relatedAttributes.add(queryRef);
-				}
-				objectData += "(" +  queryRef.getQuery() + ")";
-				if (j == queryTerms.size() - 1) {
-					result.add(objectData);
-					//System.out.println("combi = " + objectData);
-				}
-			}
-		}
-		System.out.println("num of combinations: " + result.size());
-		return result;
-	}
+//	private Set buildQueryTermsCombinations (List queryTerms) {
+//		Set result = new HashSet();
+//		for (int i = 0; i < Math.pow(2,queryTerms.size()); i++) {
+//			String objectData = "";
+//			List relatedAttributes = new LinkedList();
+//			for(int j = 0; j < queryTerms.size(); j++) {
+//				SimpleQueryReference queryRef = (SimpleQueryReference) queryTerms.get(j);
+//				//System.out.println("i = " + i + ", j = " + j + ", curTerm = " + queryRef.getQuery());
+//				// @todo should build BooleanQuery here and be smarter 
+//				// about building combinations (don't want ones with 'NOT (term)' )
+//				// @todo should take into account required and prohibited values.
+//				if( j != 0 ) {
+//					objectData += " AND ";
+//				}
+//				if( (i & (1 << j)) == 0 ) {
+//					objectData += " NOT ";
+//				} else {
+//					relatedAttributes.add(queryRef);
+//				}
+//				objectData += "(" +  queryRef.getQuery() + ")";
+//				if (j == queryTerms.size() - 1) {
+//					result.add(objectData);
+//					//System.out.println("combi = " + objectData);
+//				}
+//			}
+//		}
+//		System.out.println("num of combinations: " + result.size());
+//		return result;
+//	}
 
 	
 	public void query(String line) throws ParseException, IOException {
-		List queryTerms = queryDecomposer.breakQueryIntoTerms(line);
-		Set queryTermsCombinations = buildQueryTermsCombinations(queryTerms);
+		Set queryTermsCombinations = queryDecomposer.buildQueryTermsCombinations(line);
 		Iterator it = queryTermsCombinations.iterator();
 		while (it.hasNext()) {
 			String cur = (String) it.next();

@@ -9,6 +9,8 @@ package query;
 
 import org.apache.lucene.search.Query;
 
+import query.util.*;
+
 public class QueryWithResult {
 
 	private Query query;
