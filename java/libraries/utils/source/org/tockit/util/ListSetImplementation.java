@@ -149,6 +149,11 @@ public class ListSetImplementation extends AbstractList implements ListSet {
         this.list = new ArrayList();
     }
     
+    public ListSetImplementation(Collection other) {
+        this.list = new ArrayList();
+        addAll(other);
+    }
+    
     public int size() {
         return this.list.size();
     }
