@@ -29,6 +29,8 @@ public class RelationChooser extends JDialog {
         Collection relationNames = knowledgeBase.getRelationNames();
         listView.setListData(relationNames.toArray());
 
+        final JScrollPane scrollPane = new JScrollPane(listView);
+
         //buttons
         final JButton cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(new ActionListener() {
@@ -67,7 +69,7 @@ public class RelationChooser extends JDialog {
         this.getContentPane().setLayout(gridBagLayout);
         this.getContentPane().add(modeLabel, new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0
                 , GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-        this.getContentPane().add(listView, new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0
+        this.getContentPane().add(scrollPane, new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0
                 , GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
         this.getContentPane().add(buttonPanel, new GridBagConstraints(0, 2, 1, 1, 1.0, 0.0
                 , GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 1, 0));
