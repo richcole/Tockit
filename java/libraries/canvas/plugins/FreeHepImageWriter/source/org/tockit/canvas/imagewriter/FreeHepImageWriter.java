@@ -25,34 +25,19 @@ import org.freehep.graphicsio.pdf.PDFGraphics2D;
 import org.freehep.graphicsio.ps.PSGraphics2D;
 import org.freehep.graphicsio.svg.SVGGraphics2D;
 import org.freehep.graphicsio.swf.SWFGraphics2D;
-import org.freehep.util.UserProperties;
 import org.tockit.canvas.Canvas;
 
 /**
- * This class can be used to save a Canvas to different graphik formats using the FreeHep library.
+ * This class can be used to save a Canvas to different graphic formats using the FreeHep library.
  */
 public class FreeHepImageWriter implements ImageWriter {
-	static protected class GraphicFormatPDF4 extends GraphicFormat {
+	static protected class GraphicFormatPDF extends GraphicFormat {
 		public ImageWriter getWriter() {
 			return singleton;
 		}
 
 		public String getName() {
-			return "Portable Document Format (version 1.3)";
-		}
-
-		public String[] getExtensions() {
-			return new String[]{"pdf"};
-		}
-	}
-	
-	static protected class GraphicFormatPDF5 extends GraphicFormat {
-		public ImageWriter getWriter() {
-			return singleton;
-		}
-
-		public String getName() {
-			return "Portable Document Format (version 1.4)";
+			return "Portable Document Format (via FreeHEP)";
 		}
 
 		public String[] getExtensions() {
@@ -126,7 +111,7 @@ public class FreeHepImageWriter implements ImageWriter {
 		}
 
 		public String[] getExtensions() {
-			return new String[]{"svg", "CVG"};
+			return new String[]{"svg", "SVG"};
 		}
 	}
 	
@@ -147,8 +132,7 @@ public class FreeHepImageWriter implements ImageWriter {
      */
     static public void initialize() {
         singleton = new FreeHepImageWriter();
-		GraphicFormatRegistry.registerType(new GraphicFormatPDF5());
-		GraphicFormatRegistry.registerType(new GraphicFormatPDF4());
+		GraphicFormatRegistry.registerType(new GraphicFormatPDF());
 		GraphicFormatRegistry.registerType(new GraphicFormatPS());
 		GraphicFormatRegistry.registerType(new GraphicFormatEMF());
 		GraphicFormatRegistry.registerType(new GraphicFormatPPM());
@@ -175,17 +159,8 @@ public class FreeHepImageWriter implements ImageWriter {
 		Dimension imageSize = new Dimension(settings.getImageWidth(), settings.getImageHeight());
 		try {
 			VectorGraphics graphics2D;
-			if(graphicFormat instanceof GraphicFormatPDF5) {
+			if(graphicFormat instanceof GraphicFormatPDF) {
 				graphics2D = new PDFGraphics2D(outputFile,imageSize);
-				Properties properties = new UserProperties();
-				properties.setProperty(PDFGraphics2D.PAGE_SIZE,PageConstants.INTERNATIONAL); 
-				graphics2D.setProperties(properties);
-			} else if(graphicFormat instanceof GraphicFormatPDF4) {
-				graphics2D = new PDFGraphics2D(outputFile,imageSize);
-				Properties properties = new UserProperties();
-				properties.setProperty(PDFGraphics2D.VERSION,PDFGraphics2D.VERSION4); 
-				properties.setProperty(PDFGraphics2D.PAGE_SIZE,PageConstants.INTERNATIONAL); 
-				graphics2D.setProperties(properties);
 			} else if(graphicFormat instanceof GraphicFormatEMF) {
 				graphics2D = new EMFGraphics2D(outputFile,imageSize);
 			} else if(graphicFormat instanceof GraphicFormatPS) {
