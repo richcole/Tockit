@@ -18,6 +18,9 @@ public class LinkView extends MovableCanvasItem {
     private Link link = null;
 
     public LinkView(Link link) {
+        if(link == null) {
+            throw new RuntimeException("Link must be non-null for LinkView");
+        }
         this.link = link;
     }
 

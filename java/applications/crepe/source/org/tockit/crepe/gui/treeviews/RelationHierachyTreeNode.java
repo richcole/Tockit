@@ -85,4 +85,8 @@ public class RelationHierachyTreeNode implements TreeNode {
         retVal += ")";
         return retVal;
     }
+
+    public Relation getRelation() {
+        return relation;
+    }
 }

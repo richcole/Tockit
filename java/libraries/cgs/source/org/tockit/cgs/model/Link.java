@@ -17,10 +17,15 @@ public class Link {
     private KnowledgeBase knowledgeBase = null;
 
     public Link(KnowledgeBase knowledgeBase, Relation type, Node[] references) {
+        if (type == null) {
+            throw new RuntimeException("A link has to have a relation type specified.");
+        }
         this.knowledgeBase = knowledgeBase;
         element = new Element("link");
         element.setAttribute("id", knowledgeBase.createNewLinkId());
-        element.setAttribute("relation", type.getName());
+        if(type != Relation.getUniversal(references.length)) {
+            element.setAttribute("relation", type.getName());
+        }
         setReferences(references);
         knowledgeBase.addLink(this);
     }
@@ -56,7 +61,12 @@ public class Link {
     }
 
     public Relation getType() {
-        return this.knowledgeBase.getRelation(this.element.getAttributeValue("relation"));
+        String relationValue = this.element.getAttributeValue("relation");
+        if (relationValue == null) {
+            return Relation.getUniversal(this.getReferences().length);
+        } else {
+            return this.knowledgeBase.getRelation(relationValue);
+        }
     }
 
     public void setType(Relation type) {
@@ -78,7 +88,7 @@ public class Link {
 
     public double getX() {
         String xAtt = this.element.getAttributeValue("x");
-        if(xAtt == null) {
+        if (xAtt == null) {
             return 0;
         }
         return Double.parseDouble(xAtt);
@@ -86,7 +96,7 @@ public class Link {
 
     public double getY() {
         String yAtt = this.element.getAttributeValue("y");
-        if(yAtt == null) {
+        if (yAtt == null) {
             return 0;
         }
         return Double.parseDouble(yAtt);

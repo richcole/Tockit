@@ -146,6 +146,9 @@ public class GraphView extends Canvas implements DropTargetListener {
     public void dragExit(DropTargetEvent dte) {
     }
 
+    /**
+     * @todo refactor, reuse
+     */
     public void drop(DropTargetDropEvent dtde) {
         try {
             Transferable transferable = dtde.getTransferable();
@@ -158,7 +161,43 @@ public class GraphView extends Canvas implements DropTargetListener {
                 newNode.setPosition(canvasPos.getX(), canvasPos.getY());
                 this.graphShown.addNode(newNode);
                 NodeView newView = new NodeView(newNode);
+                nodemap.put(newNode, newView);
                 this.addCanvasItem(newView);
+                repaint();
+                dtde.getDropTargetContext().dropComplete(true);
+            } else if (transferable.isDataFlavorSupported(CGFlavors.RelationFlavor)) {
+                dtde.acceptDrop(DnDConstants.ACTION_COPY);
+                Point screenPos = dtde.getLocation();
+                Point2D canvasPos = this.getCanvasCoordinates(screenPos);
+                double xPos = canvasPos.getX();
+                double yPos = canvasPos.getY();
+                Relation relation = (Relation) transferable.getTransferData(CGFlavors.RelationFlavor);
+                Type[] signature = relation.getSignature();
+                Node[] references = new Node[relation.getArity()];
+                for (int j = 0; j < relation.getArity(); j++) {
+                    Node node = new Node(this.graphShown.getKnowledgeBase(), signature[j], null, null);
+                    references[j] = node;
+                }
+                Link link = new Link(this.graphShown.getKnowledgeBase(), relation, references);
+                LinkView linkView = new LinkView(link);
+                linkView.setPosition(new Point2D.Double(xPos, yPos));
+                linkmap.put(link,linkView);
+                for (int i = 0; i < references.length; i++) {
+                    Node node = references[i];
+                    NodeView nodeView = new NodeView(node);
+                    this.addCanvasItem(new LineView(linkView, nodeView, i + 1));
+                    nodemap.put(node, nodeView);
+                    if (!node.hasPosition()) {
+                        double angle = 2*Math.PI * i / references.length;
+                        double nodeX = xPos + LINK_LAYOUT_RADIUS * Math.sin(angle);
+                        // y gets correction for shapes of vertices (wider than high). Does only work in very special cases, which we have :-)
+                        double nodeY = yPos + LINK_LAYOUT_RADIUS * Math.cos(angle) -
+                                       Math.abs(LINK_LAYOUT_RADIUS * Math.sin(angle) / 3);
+                        nodeView.setPosition(new Point2D.Double(nodeX, nodeY));
+                    }
+                    this.addCanvasItem(nodeView);
+                }
+                this.addCanvasItem(linkView);
                 repaint();
                 dtde.getDropTargetContext().dropComplete(true);
             } else {

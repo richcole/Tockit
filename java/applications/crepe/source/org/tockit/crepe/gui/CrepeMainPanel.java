@@ -249,7 +249,7 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
         JTabbedPane tabPane = new JTabbedPane();
         JTree[] relationHierarchyViews = new JTree[maxArity];
         for (int i = 0; i < maxArity; i++) {
-            relationHierarchyViews[i] = new TypeHierarchyTreeView(
+            relationHierarchyViews[i] = new RelationHierarchyTreeView(
                             new DefaultTreeModel(new RelationHierachyTreeNode(Relation.getUniversal(i + 1), null)));
             relationHierarchyViews[i].setRootVisible(true);
             tabPane.add(getArityName(i + 1), new JScrollPane(relationHierarchyViews[i]));
