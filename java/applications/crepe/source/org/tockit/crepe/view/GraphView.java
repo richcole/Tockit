@@ -26,6 +26,7 @@ public class GraphView extends Canvas {
     private Hashtable linkmap = new Hashtable();
     public static final int LINK_LAYOUT_RADIUS = 100;
     private GraphViewDragHandler dragHandler;
+//    private GridView gridView;
 
     public GraphView(EventBroker eventBroker) {
         super(eventBroker);
@@ -61,6 +62,8 @@ public class GraphView extends Canvas {
         this.linkmap.clear();
         this.graphShown = graph;
         this.dragHandler.setGraph(graph);
+        /*gridView = new GridView(this.getWidth()*3, this.getHeight()*2);
+        gridView.resetGrid();*/
         if(graph == null) {
             return;
         }
@@ -82,6 +85,7 @@ public class GraphView extends Canvas {
         }
 
         Link[] links = graphShown.getLinks();
+
         for (int i = 0; i < links.length; i++) {
             Link link = links[i];
             if (!linkmap.containsKey(link)) {
@@ -91,11 +95,16 @@ public class GraphView extends Canvas {
                 if(!link.hasPosition()) {
                     linkView.setPosition(new Point2D.Double(xPos, yPos));
                 }
+                /*if(!link.hasPosition()) {
+                   linkView.setPosition(gridView.getNextAvailableGridPoint(1));
+                }*/
+
                 linkmap.put(link,linkView);
                 Node[] references = link.getReferences();
                 for (int j = 0; j < references.length; j++) {
                     Node node = references[j];
                     NodeView nodeView = (NodeView) nodemap.get(node);
+
                     if (!node.hasPosition()) {
                         double angle = 2*Math.PI * j / references.length;
                         double nodeX = xPos + LINK_LAYOUT_RADIUS * Math.sin(angle);
@@ -104,6 +113,10 @@ public class GraphView extends Canvas {
                                        Math.abs(LINK_LAYOUT_RADIUS * Math.sin(angle) / 3);
                         nodeView.setPosition(new Point2D.Double(nodeX, nodeY));
                     }
+//                    nodeView.setPosition(gridView.getNextAvailableGridPoint(2));
+
+//              nodeView.setPosition(gridView.getAvailableGridPoint(gridView.getMidGridPosition()));
+
                     newNodeViewsPlaced.add(nodeView);
                     this.addCanvasItem(new LineView(linkView, nodeView, j + 1));
                 }
@@ -113,11 +126,15 @@ public class GraphView extends Canvas {
 
         for (Iterator iterator = nodeViewsToAdd.iterator(); iterator.hasNext();) {
             NodeView nodeView = (NodeView) iterator.next();
+
             if (!newNodeViewsPlaced.contains(nodeView)) {
                 double nodeX = this.getWidth()/2.0;
                 double nodeY = this.getHeight()/2.0;
                 nodeView.setPosition(new Point2D.Double(nodeX, nodeY));
             }
+            /*if (!newNodeViewsPlaced.contains(nodeView)) {
+                nodeView.setPosition(gridView.getNextAvailableGridPoint(2));
+            }*/
             this.addCanvasItem(nodeView);
         }
     }

@@ -14,7 +14,7 @@ import org.tockit.crepe.Crepe;
 import org.tockit.crepe.gui.eventhandlers.*;
 import org.tockit.crepe.gui.treeviews.*;
 import org.tockit.crepe.view.GraphView;
-import org.tockit.crepe.view.GridView;
+//import org.tockit.crepe.view.GridView;
 import org.tockit.cgs.model.*;
 import org.tockit.util.IdPool;
 import org.jdom.Document;
@@ -81,6 +81,7 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
     private Action exportPigAction;
     private Action addNodeAction;
     private Action addLinkAction;
+    private Action clearGraphAction;
     private Action queryPigAction = null;
 
     // menu items list
@@ -282,9 +283,7 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
         div = ConfigurationManager.fetchInt("CrepeMainPanel", "upperRightDivider", 200);
         rightSplitPane.setDividerLocation(div);
 
-        JScrollPane scrollPane = new JScrollPane(graphView, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-        scrollPane.setViewportBorder(BorderFactory.createLineBorder(Color.black));
-        mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollPane, rightSplitPane);
+        mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, graphView, rightSplitPane);
         mainSplitPane.setOneTouchExpandable(true);
         mainSplitPane.setResizeWeight(1);
         div = ConfigurationManager.fetchInt("CrepeMainPanel", "mainDivider", 400);
@@ -362,6 +361,15 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
         this.addLinkAction.putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_L));
         this.addLinkAction.putValue(Action.ACCELERATOR_KEY,
                 KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.CTRL_MASK + ActionEvent.ALT_MASK));
+
+        this.clearGraphAction = new AbstractAction("Clear Graph") {
+            public void actionPerformed(ActionEvent e) {
+                clearGraph();
+            }
+        };
+        this.clearGraphAction.putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_C));
+        this.clearGraphAction.putValue(Action.ACCELERATOR_KEY,
+                KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK + ActionEvent.ALT_MASK));
     }
 
     private void addLink() {
@@ -387,6 +395,11 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
         Node newNode = new Node(knowledgeBase, Type.UNIVERSAL, null, null);
         graph.addNode(newNode);
         this.graphView.updateContents();
+    }
+
+    private void clearGraph() {
+        ConceptualGraph graph = new ConceptualGraph(knowledgeBase);
+        this.graphView.showGraph(graph);
     }
 
     private void createFileActions() {
@@ -587,6 +600,7 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
         graphMenu.setMnemonic(KeyEvent.VK_G);
         graphMenu.add(new JMenuItem(addNodeAction));
         graphMenu.add(new JMenuItem(addLinkAction));
+        graphMenu.add(new JMenuItem(clearGraphAction));
         menubar.add(graphMenu);
     }
 
@@ -741,6 +755,7 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
         toolbar.addSeparator();
         toolbar.add(this.addNodeAction);
         toolbar.add(this.addLinkAction);
+        toolbar.add(this.clearGraphAction);
         if( this.queryPigAction != null ) {
             toolbar.addSeparator();
             toolbar.add(this.queryPigAction);
