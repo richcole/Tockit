@@ -18,6 +18,7 @@ import java.awt.Rectangle;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
@@ -73,6 +74,7 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import net.sourceforge.toscanaj.controller.cernato.NDimNodeMovementEventListener;
+import net.sourceforge.toscanaj.controller.diagram.NodeMovementEventListener;
 import net.sourceforge.toscanaj.controller.fca.ConceptInterpretationContext;
 import net.sourceforge.toscanaj.controller.fca.DiagramHistory;
 import net.sourceforge.toscanaj.controller.fca.DirectConceptInterpreter;
@@ -91,12 +93,14 @@ import net.sourceforge.toscanaj.view.diagram.NodeView;
 import org.apache.lucene.queryParser.ParseException;
 import org.tockit.canvas.CanvasBackground;
 import org.tockit.canvas.CanvasItem;
-import org.tockit.canvas.events.CanvasItemDraggedEvent;
+import org.tockit.canvas.events.CanvasItemEventFilter;
 import org.tockit.canvas.events.CanvasItemSelectedEvent;
 import org.tockit.canvas.imagewriter.DiagramExportSettings;
 import org.tockit.events.Event;
 import org.tockit.events.EventBroker;
 import org.tockit.events.EventBrokerListener;
+import org.tockit.events.filters.EventFilter;
+import org.tockit.events.filters.SubjectTypeFilter;
 import org.tockit.plugin.PluginLoader;
 import org.tockit.swing.preferences.ExtendedPreferences;
 
@@ -952,9 +956,22 @@ public class DoccoMainFrame extends JFrame {
         eventBroker.subscribe(new SelectionEventHandler(),
                                     CanvasItemSelectedEvent.class,
                                     CanvasBackground.class);
-        eventBroker.subscribe(new NDimNodeMovementEventListener(),
-                                    CanvasItemDraggedEvent.class,
-                                    NodeView.class);
+        eventBroker.subscribe(new NDimNodeMovementEventListener(), 
+                new EventFilter[] {
+                        new SubjectTypeFilter(NodeView.class),
+                        new CanvasItemEventFilter(InputEvent.BUTTON1_DOWN_MASK,
+                                                  InputEvent.SHIFT_DOWN_MASK | InputEvent.ALT_DOWN_MASK | 
+                                                  InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_GRAPH_DOWN_MASK |
+                                                  InputEvent.BUTTON2_DOWN_MASK | InputEvent.BUTTON3_DOWN_MASK)
+                });
+        eventBroker.subscribe(new NodeMovementEventListener(), 
+                new EventFilter[] {
+                        new SubjectTypeFilter(NodeView.class),
+                        new CanvasItemEventFilter(InputEvent.SHIFT_DOWN_MASK | InputEvent.BUTTON1_DOWN_MASK,
+                                                  InputEvent.ALT_DOWN_MASK | InputEvent.CTRL_DOWN_MASK | 
+                                                  InputEvent.ALT_GRAPH_DOWN_MASK |
+                                                  InputEvent.BUTTON2_DOWN_MASK | InputEvent.BUTTON3_DOWN_MASK)
+                });
 
 		// create a JTree with some model containing at least two elements. Otherwise the layout
 		// is broken. True even for the JTree(Object[]) constructor. And the default constructor
