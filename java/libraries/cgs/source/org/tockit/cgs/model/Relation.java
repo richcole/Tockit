@@ -18,12 +18,36 @@ public class Relation {
     private static KnowledgeBase defaultKB = null;
 
     private static class UniversalRelation extends Relation {
+        private String name;
+        int arity;
         public UniversalRelation(KnowledgeBase knowledgeBase, String name, int arity) {
-            super(knowledgeBase, name, new Type[arity]);
+            super(knowledgeBase);
+            this.name = name;
+            this.arity = arity;
         }
 
         public Relation[] getDirectSupertypes() {
             return new Relation[0];
+        }
+
+        public String getName() {
+            return this.name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public Type[] getSignature() {
+            Type[] retVal = new Type[arity];
+            for (int i = 0; i < retVal.length; i++) {
+                retVal[i] = Type.UNIVERSAL;
+            }
+            return retVal;
+        }
+
+        public int getArity() {
+            return this.arity;
         }
     }
 
@@ -31,8 +55,12 @@ public class Relation {
         defaultKB = knowledgeBase;
     }
 
-    public Relation(KnowledgeBase knowledgeBase, Element element) {
+    protected Relation(KnowledgeBase knowledgeBase) {
         this.knowledgeBase = knowledgeBase;
+    }
+
+    public Relation(KnowledgeBase knowledgeBase, Element element) {
+        this(knowledgeBase);
         this.element = element;
         this.knowledgeBase.addRelation(this, false);
     }
@@ -41,14 +69,14 @@ public class Relation {
         while(universal.size() < arity) {
             int newArity = universal.size() + 1;
             Relation newUniversal = new UniversalRelation(defaultKB, "[universal(" + String.valueOf(newArity) + ")]", newArity);
-            universal.setSize(arity);
+            universal.setSize(newArity);
             universal.set(newArity - 1, newUniversal);
         }
         return (Relation) universal.get(arity - 1);
     }
 
     public Relation(KnowledgeBase knowledgeBase, String name, Type[] signature) {
-        this.knowledgeBase = knowledgeBase;
+        this(knowledgeBase);
         element = new Element("relation");
         this.element.setAttribute("name", name);
         for (int i = 0; i < signature.length; i++) {
@@ -85,11 +113,14 @@ public class Relation {
 
     public Relation[] getDirectSupertypes() {
         List superrelationChildren = this.element.getChildren("superrelation");
+        if(superrelationChildren.size() == 0) {
+            return new Relation[]{getUniversal(this.getArity())};
+        }
         Relation[] retVal = new Relation[superrelationChildren.size()];
         int pos = 0;
         for (Iterator iterator = superrelationChildren.iterator(); iterator.hasNext();) {
             Element superrelationElem = (Element) iterator.next();
-            Relation type = this.knowledgeBase.getRelation(superrelationElem.getTextNormalize());
+            Relation type = this.knowledgeBase.getRelation(superrelationElem.getAttributeValue("name"));
             retVal[pos] = type;
             pos++;
         }
@@ -98,7 +129,7 @@ public class Relation {
 
     public void addDirectSupertype(Relation other) {
         Element superrelElem = new Element("superrelation");
-        superrelElem.addContent(other.getName());
+        superrelElem.setAttribute("name", other.getName());
         this.element.addContent(superrelElem);
     }
 

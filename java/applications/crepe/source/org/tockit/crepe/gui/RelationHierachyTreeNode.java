@@ -8,6 +8,7 @@
 package org.tockit.crepe.gui;
 
 import org.tockit.cgs.model.Relation;
+import org.tockit.cgs.model.Type;
 
 import javax.swing.tree.*;
 import java.util.Enumeration;
@@ -65,7 +66,23 @@ public class RelationHierachyTreeNode implements TreeNode {
         return new ArrayEnumeration(this.subtypeNodes);
     }
 
+    /// @todo signature might be better as flyout (tooltip)
     public String toString() {
-        return this.relation.getName();
+        String retVal = this.relation.getName() + " (";
+        Type[] signature = this.relation.getSignature();
+        for (int i = 0; i < signature.length; i++) {
+            Type type = signature[i];
+            if(type == Type.UNIVERSAL) {
+                retVal += "U";
+            }
+            else {
+                retVal += type.getName();
+            }
+            if(i < signature.length - 1) {
+                retVal += ",";
+            }
+        }
+        retVal += ")";
+        return retVal;
     }
 }

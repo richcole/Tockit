@@ -8,9 +8,9 @@
 package org.tockit.crepe.gui.eventhandlers;
 
 import org.tockit.events.*;
-import org.tockit.cgs.model.events.NewTypeCreatedEvent;
+import org.tockit.events.Event;
+import org.tockit.cgs.model.events.NewRelationCreatedEvent;
 import org.tockit.cgs.model.*;
-import org.tockit.crepe.gui.TypeHierachyTreeNode;
 import org.tockit.crepe.gui.RelationHierachyTreeNode;
 
 import javax.swing.*;
@@ -23,7 +23,7 @@ public class RelationHierachyUpdateHandler implements EventListener {
     public RelationHierachyUpdateHandler(JTree treeview, int arity, EventBroker eventBroker) {
         this.treeview = treeview;
         this.arity = arity;
-        eventBroker.subscribe(this, NewTypeCreatedEvent.class, KnowledgeBase.class);
+        eventBroker.subscribe(this, NewRelationCreatedEvent.class, KnowledgeBase.class);
     }
 
     public void processEvent(Event e) {

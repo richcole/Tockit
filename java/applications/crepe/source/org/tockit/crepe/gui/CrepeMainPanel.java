@@ -33,6 +33,18 @@ import java.util.List;
 import java.io.*;
 
 /**
+ * Crepe extensions:
+ * @todo allow dragging hierarchy elements into the view to create nodes and links
+ * @todo allow dragging types into the instance view to create new instances
+ * @todo add context menus to the hierarchies to add new types and relations
+ * @todo allow creating infima by selecting two or more types and then calling an item from the context menu
+ * @todo allow modifier keys to drag components by dragging nodes
+ * @todo add undo history
+ * @todo add CGIF export, extend query button to allow CGIF queries
+ * @todo investigate how universal and absurd type shall be handled when exporting PIG/CGIF format
+ * @todo add FCG export ???
+ *
+ * Refactorings:
  * @todo fix ConfigurationManager to use different properties
  */
 public class CrepeMainPanel extends JFrame implements ActionListener {
@@ -47,7 +59,7 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
      */
     static private final int MaxMruFiles = 8;
 
-    public static final int MaxArity = 3;
+    public int maxArity = 3;
 
     /**
      * Our toolbar.
@@ -123,6 +135,9 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
         if (it.hasNext()) {
             this.diagramExportSettings = new DiagramExportSettings((GraphicFormat) it.next(), 0, 0, true);
         }
+
+        maxArity = ConfigurationManager.fetchInt("CrepeMainPanel", "maxArity", 3);
+
         // then build the panel (order is important for checking if we want export options)
         buildPanel();
 
@@ -225,14 +240,18 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
         graphView = new GraphView(eventBroker);
         graphView.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 
-        JTree typeHierarchyView = new JTree(new Object[]{});
+        JTree typeHierarchyView = new JTree(
+                                new DefaultTreeModel(new TypeHierachyTreeNode(Type.getUniversal(), null)));
+        typeHierarchyView.setRootVisible(true);
         new TypeHierachyUpdateHandler(typeHierarchyView, this.eventBroker);
 
         JTabbedPane tabPane = new JTabbedPane();
-        JTree[] relationHierarchyViews = new JTree[MaxArity];
-        for (int i = 0; i < MaxArity; i++) {
-            relationHierarchyViews[i] = new JTree(new Object[]{});
-            tabPane.add(String.valueOf(i + 1) + "-ary", relationHierarchyViews[i]);
+        JTree[] relationHierarchyViews = new JTree[maxArity];
+        for (int i = 0; i < maxArity; i++) {
+            relationHierarchyViews[i] = new JTree(
+                            new DefaultTreeModel(new RelationHierachyTreeNode(Relation.getUniversal(i + 1), null)));
+            relationHierarchyViews[i].setRootVisible(true);
+            tabPane.add(getArityName(i + 1), relationHierarchyViews[i]);
             new RelationHierachyUpdateHandler(relationHierarchyViews[i], i + 1, this.eventBroker);
         }
 
@@ -263,6 +282,19 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
         ConfigurationManager.restorePlacement("CrepeMainPanel", this, new Rectangle(10, 10, 600, 450));
 
         showKnowledgeBase();
+    }
+
+    private String getArityName(int arity) {
+        if(arity == 1) {
+            return "unary";
+        }
+        if(arity == 2) {
+            return "binary";
+        }
+        if(arity == 3) {
+            return "ternary";
+        }
+        return String.valueOf(arity) + "-ary";
     }
 
     private void createActions() {
