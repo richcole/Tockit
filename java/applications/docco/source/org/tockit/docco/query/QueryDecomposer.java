@@ -31,7 +31,10 @@ public class QueryDecomposer {
 		this.defaultQueryField = defaultQueryField;
 		this.analyzer = analyzer;
 	}
-	
+
+	/**
+	 * @todo we probably could remove this if we dorp SearchFiles.java 
+	 */	
 	public Set buildQueryTermsCombinations (String queryString) throws ParseException {
 		List queryTerms = breakQueryIntoTerms(queryString);
 		Set result = new HashSet();
@@ -79,7 +82,7 @@ public class QueryDecomposer {
 			this.querySegments.add(queryRef);
 		}
 		else if (query instanceof BooleanQuery) {
-			processBolleanQuery(queryRef);
+			processBooleanQuery(queryRef);
 		}
 		else if (query instanceof PhraseQuery) {
 			this.querySegments.add(queryRef);
@@ -89,19 +92,17 @@ public class QueryDecomposer {
 		}
 	}
 	
-	private void processBolleanQuery (SimpleQueryReference queryRef) {
+	private void processBooleanQuery (SimpleQueryReference queryRef) {
 		BooleanQuery query = (BooleanQuery) queryRef.getQuery();
 		BooleanClause[] clauses = query.getClauses();
 		for (int i = 0; i < clauses.length; i++) {
 			BooleanClause clause = clauses[i];
-			SimpleQueryReference curQueryRef;
 			if  ( (!clause.required) && (!clause.prohibited) ) {
-				curQueryRef = new SimpleQueryReference(clause.query);	
+				this.querySegments.add(new SimpleQueryReference(clause.query));	
 			}
 			else {
-				curQueryRef = new SimpleQueryReference(clause.query, clause.required, clause.prohibited);
+				this.querySegments.add(new SimpleQueryReference(clause.query, clause.required, clause.prohibited));
 			}
-			breakIntoTerms(curQueryRef);
 		}
 	}
 }

@@ -128,6 +128,7 @@ public class DoccoMainFrame extends JFrame {
 			for (int i = 0; i < concepts.length; i++) {
 				double x = 0;
 				double y = 0;
+				// additive layout on the attributes
 				for (int j = 0; j < baseVectors.length; j++) {
 					int currentBit = 1<<j;
 					if ((i & currentBit) == currentBit) {
@@ -141,6 +142,7 @@ public class DoccoMainFrame extends JFrame {
 				diagram.addNode(nodes[i]);
 			}
 			
+			// we have an edge iff there is a difference of exactly one attribute
 			for (int i = 0; i < concepts.length - 1; i++) {
 				for (int j = 0; j < baseVectors.length; j++) {
 					int currentBit = 1<<j;
@@ -162,7 +164,7 @@ public class DoccoMainFrame extends JFrame {
 			QueryWithResult[] queryResults = queryResultSet.toArray();
 			
 			int n = queryResultSet.size();
-			int numConcepts = 1<<n; // 2 to the power of n
+			int numConcepts = 1<<n; // 2 to the power of n concepts in a Boolean lattice
 			
 			ConceptImplementation[] concepts = new ConceptImplementation[numConcepts];
 			for (int i = 0; i < concepts.length; i++) {
@@ -175,9 +177,13 @@ public class DoccoMainFrame extends JFrame {
 							new HitReferencesSetImplementation(new HashSet(allObjects.toSet()));
 				for (int j = 0; j < n; j++) {
 					int currentBit = 1<<j;
+					// attribute contingent only on the lower neighbours of the top (which have one attribute/bit set)
 					if (i == currentBit) {
 						concept.addAttribute(new Attribute(queryResults[j].getQuery()));
 					}
+					// the contingent is the meet of all the object sets for the attributes in the intent, minus
+					// everything that is in any other object set (the latter objects are in the extent, but not
+					// in the contingent)
 					HitReferencesSet currentHitReferences = queryResults[j].getResultSet();
 					if ((i & currentBit) == currentBit) {
 						objectContingent.retainAll(currentHitReferences);
@@ -189,6 +195,8 @@ public class DoccoMainFrame extends JFrame {
 					HitReference reference = (HitReference) iter.next();
 					concept.addObject(reference);
 				}
+				
+				// to find the upset/downset we do the comparison of the intents as bitvectors
 				for( int j =0; j < numConcepts; j ++) {
 					if((i & j) == i) {
 						concepts[i].addSubConcept(concepts[j]);
