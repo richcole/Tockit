@@ -20,10 +20,21 @@
 	<property name="src.dir" value="source"/>
 	<property name="libs.dir" value="libs"/>
     <property name="docco.class" value="org.tockit.docco.Docco"/>
+	<property name="plugins.dir" value="plugins"/>
+
+	<path id="plugins.libs.path">
+        <fileset dir="${plugins.dir}">
+            <include name="**/libs/*.jar"/>
+        </fileset>
+        <fileset dir="${plugins.dir}">
+            <include name="**/libs/*.zip"/>
+        </fileset>	
+	</path>
 
     <path id="project.dev.class.path">
         <pathelement path="${classpath}"/>
         <pathelement path="${build.dev.dir}"/>
+        <pathelement path="plugins.libs.path"/>
         <fileset dir="${libs.dir}">
             <include name="**/*.jar"/>
         </fileset>
@@ -43,6 +54,7 @@
     <path id="project.release.class.path">
         <pathelement path="${classpath}"/>
         <pathelement path="${build.release.dir}"/>
+        <pathelement path="plugins.libs.path"/>
         <fileset dir="${libs.dir}">
             <include name="**/*.jar"/>
         </fileset>
@@ -117,6 +129,11 @@
 		        <include name="**"/>
             </fileset>
 		</copy>
+		<copy todir="${dist.dir}/${dist.name}/plugins" includeEmptyDirs="no">
+			<fileset dir="${plugins.dir}">
+		        <include name="**"/>
+            </fileset>
+		</copy>
     </target>
 	<target name="dist" depends="makeReleaseJar,copyFiles,zipFile">
 	</target>
@@ -132,4 +149,37 @@
 			<classpath refid="project.release.class.path"/>
 		</java>
 	</target>
+	<!--
+	create plugin jar.
+	For now, we will just hardcode plugin directories.
+	Probably should have a look at using command line arguments, ie
+	<arg path="org/tockit/docco/indexer/documenthandler/pdfbox"/>
+	or use properties.
+	Assumptions:
+	- all plugins should be somewhere in a package structure in 
+		subpackage 'plugins'. Multiple occurences of this subdir
+		should be allowed, i.e. there could be plugins subpackage
+		under documenthandler package and under filefilter package.
+	- each plugin dir contains a folder called 'libs' with all 
+		required jars.
+	- property "plugin.dir.name" refers to a subpackage name 
+		where this plugin is located in relation to property
+		"plugin.pattern.dir"
+	- property "plugin.name" is used as a name of created jar file.
+	-->
+	<!-- 
+	TODO:
+	clean up this - need a better way to define plugins locations
+	and names dynamically. 
+	-->
+	<property name="plugin.pattern.dir" value="org/tockit/docco/**/plugins/"/>    
+	<property name="plugin.dir.name" value="multivalent"/>
+	<property name="plugin.name" value="MultivalentDocumentHandlers"/>
+	<target name="makePluginJar" depends="compileRelease">
+		<mkdir dir="${plugins.dir}/${plugin.dir.name}"/>
+		<jar jarfile="${plugins.dir}/${plugin.dir.name}/${plugin.name}.jar" 
+					basedir="${build.release.dir}" 
+					includes="${plugin.pattern.dir}/${plugin.dir.name}/*.class"/>
+	</target>
+	
 </project>
