@@ -162,6 +162,12 @@ public class FileMappingsEditingDialog extends JDialog {
 			}
 		});
 		
+		addButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				createMapping();
+			}
+		});
+		
 		removeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 					model.removeMappingAt(jlist.getSelectedIndex());
@@ -343,10 +349,15 @@ public class FileMappingsEditingDialog extends JDialog {
 		
 		if (this.jlist.getSelectedIndex() != -1) {
 			DocumentHandlerMapping mapping = (DocumentHandlerMapping) this.jlist.getSelectedValue();
-			this.fileFilterDisplayLabel.setText(mapping.getFileFilter().getFilteringString());
+			this.fileFilterDisplayLabel.setText(mapping.getFileFilter().getDisplayName() 
+										+ ": " + mapping.getFileFilter().getFilteringString());
 			this.docHandlerDisplayLabel.setText(mapping.getHandler().getDisplayName());
 		}
 		
+	}
+	
+	private void createMapping() {
+		new CreateNewFileMappingDialog(this);
 	}
 
 }
