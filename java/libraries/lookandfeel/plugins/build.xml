@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Create Plugins" default="dist" basedir=".">
+	<description>
+		Compile and create distributions for all plugins
+	</description>
+
+	<!-- TODO have to change the way we get mainApp stuff -->
+	<property name="mainApp.libs.dir" value="../../../thirdParty"/>
+	<property name="tockit.jars.dir" value="../../jars"/>
+	<property name="mainApp.classes" value="../build/release"/>
+	
+	<!-- set plugins dist directory, relative to main program's dist directory -->
+	<property name="plugins.dist.dir" value="../../plugins"/>
+
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+	  <classpath>
+	    <pathelement location="${mainApp.libs.dir}/ant-contrib.jar"/>
+	  </classpath>
+	</taskdef>
+
+	<path id="${plugins.paths}">
+        <dirset dir="${basedir}">
+			<patternset>
+				<include name="*"/>
+			</patternset>	        
+        </dirset>
+	</path>	
+
+	<target name="clean">
+	    <foreach target="_cleanPlugin" param="plugin.dir">
+	    	<path refid="${plugins.paths}"/>
+		</foreach>
+	</target>
+	
+	<target name="dist">
+		<mkdir dir="${plugins.dist.dir}"/>
+	    <foreach target="_pluginDist" param="plugin.dir">
+	    	<path refid="${plugins.paths}"/>
+	    </foreach>
+	</target>
+	
+	<target name="_pluginDist">
+		<basename property="plugin.dir.name" file="${plugin.dir}"/>
+		<ant antfile="${basedir}/buildPlugin.xml" dir="${plugin.dir}" target="dist" inheritall="false">
+			<property name="plugin.name" value="${plugin.dir.name}Plugin"/>
+			<property name="plugin.dist.dir.name" value="${plugin.dir.name}"/>
+			<property name="mainApp.classes" value="../${mainApp.classes}"/>
+			<property name="tockit.jars.dir" value="../${tockit.jars.dir}"/>
+			<property name="mainApp.libs.dir" value="../${mainApp.libs.dir}"/>
+		</ant>
+		<copy todir="${plugins.dist.dir}">
+			<fileset dir="${plugin.dir}/dist">
+				<include name="*.zip"/>
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="_cleanPlugin">
+		<ant antfile="${basedir}/buildPlugin.xml" dir="${plugin.dir}" target="clean">
+			<property name="plugin.name" value="${plugin.dir}Plugin"/>
+		</ant>
+	</target>	
+
+</project>
