@@ -9,6 +9,7 @@ package org.tockit.docco.documenthandler;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.tockit.docco.GlobalConstants;
@@ -40,5 +41,15 @@ public class DocumentHandlerRegistry {
 
 	public static List getDefaultMappings() {
 		return Collections.unmodifiableList(defaultMappings);
+	}
+	
+	public static DocumentHandler getDocumentHandlerByName(String className) {
+		for (Iterator iter = docHandlers.iterator(); iter.hasNext();) {
+			DocumentHandler handler = (DocumentHandler) iter.next();
+			if(handler.getClass().getName().equals(className)) {
+				return handler;
+			}
+		}
+		return null;
 	}
 }

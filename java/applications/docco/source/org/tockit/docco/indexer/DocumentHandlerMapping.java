@@ -8,8 +8,10 @@
 package org.tockit.docco.indexer;
 
 import org.tockit.docco.documenthandler.DocumentHandler;
+import org.tockit.docco.documenthandler.DocumentHandlerRegistry;
 import org.tockit.docco.filefilter.DoccoFileFilter;
 import org.tockit.docco.filefilter.FileFilterFactory;
+import org.tockit.docco.filefilter.FileFilterFactoryRegistry;
 
 public class DocumentHandlerMapping {
 	private DoccoFileFilter fileFilter;
@@ -32,10 +34,15 @@ public class DocumentHandlerMapping {
 		int lastColonIndex = serialForm.lastIndexOf(':');
 		String fileFilterClassName = serialForm.substring(0,firstColonIndex);
 		String filterExpression = serialForm.substring(firstColonIndex + 1, lastColonIndex);
-		String docHandlerClassName = serialForm.substring(lastColonIndex + 1);			
-		Class fileFilterFactoryClass = Class.forName(fileFilterClassName);
-		FileFilterFactory fileFilterFactory = (FileFilterFactory) fileFilterFactoryClass.newInstance();
-		this.docHandler = (DocumentHandler) Class.forName(docHandlerClassName).newInstance();
+		String docHandlerClassName = serialForm.substring(lastColonIndex + 1);
+		FileFilterFactory fileFilterFactory = FileFilterFactoryRegistry.getFileFilterFactoryByName(fileFilterClassName);
+		if(fileFilterFactory == null) {
+			throw new ClassNotFoundException("File filter type not available in this installation (plugin missing?)");
+		}
+		this.docHandler = DocumentHandlerRegistry.getDocumentHandlerByName(docHandlerClassName);
+		if(docHandler == null) {
+			throw new ClassNotFoundException("Document handler not available in this installation (plugin missing?)");
+		}
 		this.fileFilter = fileFilterFactory.createNewFilter(filterExpression);
 	}
 	

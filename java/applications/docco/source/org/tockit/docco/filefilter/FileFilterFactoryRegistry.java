@@ -9,6 +9,7 @@ package org.tockit.docco.filefilter;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 public class FileFilterFactoryRegistry {
@@ -32,4 +33,14 @@ public class FileFilterFactoryRegistry {
 	public static List getFileFilters() {
 		return Collections.unmodifiableList(fileFilterFactories);
 	}	
+	
+	public static FileFilterFactory getFileFilterFactoryByName(String className) {
+		for (Iterator iter = fileFilterFactories.iterator(); iter.hasNext();) {
+        	FileFilterFactory factory = (FileFilterFactory) iter.next();
+        	if(factory.getClass().getName().equals(className)) {
+        		return factory;
+        	}
+    	}
+    	return null;
+	}
 }
