@@ -9,6 +9,7 @@ package org.tockit.docco.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -25,6 +26,7 @@ import java.awt.event.WindowEvent;
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -369,7 +371,8 @@ public class DoccoMainFrame extends JFrame {
 		aboutItem.setMnemonic('a');
 		aboutItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(outerThis, "Not yet implemented");
+				URL fileUrl = this.getClass().getClassLoader().getResource("doc/about.html");
+				HtmlDisplayDialog.show(outerThis, "About Docco", fileUrl, new Dimension(600, 400));
 			}
 		});
 		helpMenu.add(aboutItem);
