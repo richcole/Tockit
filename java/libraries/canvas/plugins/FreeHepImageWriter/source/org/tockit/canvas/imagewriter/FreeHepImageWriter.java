@@ -14,13 +14,17 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Properties;
 
 import org.freehep.graphics2d.VectorGraphics;
 import org.freehep.graphicsio.ImageGraphics2D;
+import org.freehep.graphicsio.PageConstants;
 import org.freehep.graphicsio.emf.EMFGraphics2D;
 import org.freehep.graphicsio.pdf.PDFGraphics2D;
 import org.freehep.graphicsio.ps.PSGraphics2D;
+import org.freehep.graphicsio.svg.SVGGraphics2D;
+import org.freehep.graphicsio.swf.SWFGraphics2D;
 import org.freehep.util.UserProperties;
 import org.tockit.canvas.Canvas;
 
@@ -97,6 +101,35 @@ public class FreeHepImageWriter implements ImageWriter {
 			return new String[]{"ppm", "PPM"};
 		}
 	}
+
+	static protected class GraphicFormatSWF extends GraphicFormat {
+		public ImageWriter getWriter() {
+			return singleton;
+		}
+
+		public String getName() {
+			return "Macromedia Flash";
+		}
+
+		public String[] getExtensions() {
+			return new String[]{"swf", "SWF"};
+		}
+	}
+	
+	static protected class GraphicFormatSVG extends GraphicFormat {
+		public ImageWriter getWriter() {
+			return singleton;
+		}
+
+		public String getName() {
+			return "Scalable Vector Graphics (via FreeHEP)";
+		}
+
+		public String[] getExtensions() {
+			return new String[]{"svg", "CVG"};
+		}
+	}
+	
 	
     /**
      * The only instance of this class.
@@ -119,6 +152,8 @@ public class FreeHepImageWriter implements ImageWriter {
 		GraphicFormatRegistry.registerType(new GraphicFormatPS());
 		GraphicFormatRegistry.registerType(new GraphicFormatEMF());
 		GraphicFormatRegistry.registerType(new GraphicFormatPPM());
+		GraphicFormatRegistry.registerType(new GraphicFormatSWF());
+		GraphicFormatRegistry.registerType(new GraphicFormatSVG());
     }
 
     /**
@@ -139,13 +174,13 @@ public class FreeHepImageWriter implements ImageWriter {
 			if(graphicFormat instanceof GraphicFormatPDF5) {
 				graphics2D = new PDFGraphics2D(outputFile,imageSize);
 				Properties properties = new UserProperties();
-				properties.setProperty(PDFGraphics2D.PAGE_SIZE,PDFGraphics2D.PAGE_SIZE_AUTO); 
+				properties.setProperty(PDFGraphics2D.PAGE_SIZE,PageConstants.INTERNATIONAL); 
 				graphics2D.setProperties(properties);
 			} else if(graphicFormat instanceof GraphicFormatPDF4) {
 				graphics2D = new PDFGraphics2D(outputFile,imageSize);
 				Properties properties = new UserProperties();
 				properties.setProperty(PDFGraphics2D.VERSION,PDFGraphics2D.VERSION4); 
-				properties.setProperty(PDFGraphics2D.PAGE_SIZE,PDFGraphics2D.PAGE_SIZE_AUTO); 
+				properties.setProperty(PDFGraphics2D.PAGE_SIZE,PageConstants.INTERNATIONAL); 
 				graphics2D.setProperties(properties);
 			} else if(graphicFormat instanceof GraphicFormatEMF) {
 				graphics2D = new EMFGraphics2D(outputFile,imageSize);
@@ -153,6 +188,10 @@ public class FreeHepImageWriter implements ImageWriter {
 				graphics2D = new PSGraphics2D(outputFile,imageSize);
 			} else if(graphicFormat instanceof GraphicFormatPPM) {
 				graphics2D = new ImageGraphics2D(outputFile,imageSize,"ppm");
+			} else if(graphicFormat instanceof GraphicFormatSWF) {
+				graphics2D = new SWFGraphics2D(outputFile,imageSize);
+			} else if(graphicFormat instanceof GraphicFormatSVG) {
+				graphics2D = new SVGGraphics2D(outputFile,imageSize);
 			} else {
 				throw new RuntimeException("Internal error -- unknown graphic format");
 			}
@@ -179,6 +218,9 @@ public class FreeHepImageWriter implements ImageWriter {
 			canvas.paintCanvas(graphics2D);
 			graphics2D.endExport();
 		} catch (FileNotFoundException e) {
+            throw new ImageGenerationException("Error while generating '" +
+                    outputFile.getPath() + "' - not found ", e);
+		} catch (IOException e) {
             throw new ImageGenerationException("Error while generating '" +
                     outputFile.getPath() + "' - not found ", e);
 		} finally {
