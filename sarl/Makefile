@@ -39,11 +39,14 @@ CLASSES = \
   Relation \
   RelationIterator
 
+PYTHON_SARL_LIB =  python/_sarl.so
+JAVA_SARL_LIB   =  java/libsarl_java.so
+
 export LD_LIBRARY_PATH += $(SARL_ROOT)/lib_d
 
 # Main.
 
-main: python/sarlcmodule.so java/libsarlmodule.so
+main: $(PYTHON_SARL_LIB) $(JAVA_SARL_LIB)
 
 # Tests.
 
@@ -59,12 +62,12 @@ $(TESTS) : $(TESTS:%=%.exe)
 
 libs: lib_d/libsarl.so lib_d/libsarl.so lib/libsarl++.so lib_d/libsarl++.so
 
-python/sarlcmodule.so: lib_d/libsarl.so lib_d/libsarl++.so \
+$(PYTHON_SARL_LIB): lib_d/libsarl.so lib_d/libsarl++.so \
         $(OBJECTS:%=%.o) python/sarl_wrap.o
 	$(CC) $(DEBUG) -shared -o $@ $(OBJECTS:%=%.o) python/sarl_wrap.o \
          -Llib_d -lstdc++ -lsarl++ -lsarl
 
-java/libsarlmodule.so: lib_d/libsarl.so lib_d/libsarl++.so \
+$(JAVA_SARL_LIB): lib_d/libsarl.so lib_d/libsarl++.so \
         $(OBJECTS:%=%.o) java/sarl_wrap.o 
 	$(CC) $(DEBUG) -shared -o $@ $(OBJECTS:%=%.o) java/sarl_wrap.o \
           -Llib_d -lstdc++ -lsarl++ -lsarl
@@ -100,7 +103,7 @@ python/sarl_wrap.o: python/sarl_wrap.c
 python/sarl_wrap.c: $(PUBLIC_HEADERS) sarl.input
 	cd python; $(SWIG) -I.. -o sarl_wrap.c -c++ -shadow -python sarl.input 
 
-test_python: python/sarlcmodule.so
+test_python: $(PYTHON_SARL_LIB)
 	cd python; $(PYTHON) test_sarl.py
 
 java/sarl_wrap.o: java/sarl_wrap.c
@@ -109,25 +112,28 @@ java/sarl_wrap.o: java/sarl_wrap.c
 java/sarl_wrap.c: $(PUBLIC_HEADERS) sarl.input
 	cd java; $(SWIG) -I.. -o sarl_wrap.c -c++ -shadow -java ../sarl.input
 
-java/TestSarl.class: java/TestSarl.java java/libsarlmodule.so java/sarl_wrap.c
+java/TestSarl.class: java/TestSarl.java $(JAVA_SARL_LIB) java/sarl_wrap.c
 	cd java; javac TestSarl.java
 
-test_java: java/TestSarl.class java/libsarlmodule.so 
+test_java: java/TestSarl.class $(JAVA_SARL_LIB)
 	cd java; java -Djava.library.path=. TestSarl
 
 test_cpp: 
 	$(MAKE) -C cpp test
 
-clean: java_clean
-	rm -f python/*.pyc python/sarl_wrap.* python/*.so
-	rm -f java/*.class java/SetIterator.java java/Set.java java/*.so
-	rm -f java/sarl_wrap.*
+clean: java_clean python_clean cpp_clean
 	rm -f *.o *.so *.exe depend.mak.bak
 
 java_clean:
 	rm -f java/sarl_wrap.* 
 	rm -f java/*.class java/sarl.java 
 	rm -f java/*Iterator.java java/Set*.java java/Relation*.java
+
+python_clean:
+	rm -f python/*.pyc python/sarl_wrap.* python/*.so
+
+cpp_clean:
+	cd cpp; make clean
 
 depend:
 	makedepend -Y../ *.cpp -fdepend.mak 

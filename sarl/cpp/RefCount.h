@@ -24,7 +24,7 @@ public:
 
 class RefCount {
 
-	friend RefCountPtrBase;
+	friend class RefCountPtrBase;
 
 protected:
 	RefCount() 

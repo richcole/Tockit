@@ -12,7 +12,7 @@ void GlobalRefCounter::reg_object(RefCount *object)
 void GlobalRefCounter::unreg_object(RefCount *object)
 {
 	if ( s_globalRefCount == 0 ) {
-		std::cerr << __FILE__ << "(" << __LINE__ << "):" << endl;
+		std::cerr << __FILE__ << "(" << __LINE__ << "):" << std::endl;
 		std::cerr << "  Error, object deleted with globalRefCount=";
 		std::cerr << s_globalRefCount << std::endl;
 	}
@@ -24,8 +24,8 @@ void GlobalRefCounter::unreg_object(RefCount *object)
 GlobalRefCounter::~GlobalRefCounter()
 {
 	if ( s_globalRefCount ) {
-		std::cerr << __FILE__ << "(" << __LINE__ << "):" << endl;
-		std::cerr << "  Error, s_globalRefCount=" << endl;
+		std::cerr << __FILE__ << "(" << __LINE__ << "):" << std::endl;
+		std::cerr << "  Error, s_globalRefCount=" << std::endl;
 		std::cerr << s_globalRefCount << std::endl;
 	};
 };

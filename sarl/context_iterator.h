@@ -13,7 +13,7 @@ extern struct Sarl_ContextIterator *
 extern struct Sarl_ContextIterator *
   sarl_context_iterator_copy
 (
-	struct Sarl_SetIterator*      G_it,
+  struct Sarl_SetIterator*      G_it,
   struct Sarl_SetIterator*      M_it,
   struct Sarl_RelationIterator* I_it
 );

@@ -3,7 +3,7 @@ class TestSarl
 {
   static {
     try {
-      System.loadLibrary("sarlmodule");
+      System.loadLibrary("sarl_java");
     } catch (UnsatisfiedLinkError e) {
       System.err.println(
           "Native code library failed to load. See "

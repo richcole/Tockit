@@ -27,7 +27,7 @@ SWIG_INC   = \
   /usr/local/include
 
 SWIG       = \
-  /usr/local/bin/swig
+  /usr/local/bin/swig 
 
 
 
