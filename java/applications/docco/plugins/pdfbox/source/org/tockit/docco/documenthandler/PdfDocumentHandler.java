@@ -57,7 +57,7 @@ public class PdfDocumentHandler implements DocumentHandler, Plugin {
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			OutputStreamWriter writer = new OutputStreamWriter( out );
 			PDFTextStripper stripper = new PDFTextStripper();
-			stripper.writeText( pdfDocument.getDocument(), writer );
+			stripper.writeText( pdfDocument, writer );
 			writer.close();
 
 			byte[] contents = out.toByteArray();
