@@ -55,29 +55,23 @@ public class Indexer extends Thread {
 								      false);
 	}
 
-	public void stopIndexing() throws IOException {
+	synchronized public void stopIndexing() throws IOException {
 		if(this.writer == null) {
 			return; // nothing to stop
 		}
-		showFeedbackMessage("Shutting down...");
-		yield();
-		synchronized (this) {
-			this.writer.optimize();
-			this.writer.close();
-			this.fileQueue.clear();
-			this.writer = null;
-		}
+		this.writer.optimize();
+		this.writer.close();
+		this.fileQueue.clear();
+		this.writer = null;
 	}
 
 	public void run() {
 		while(true) {
 			File file;
-			synchronized(this) {
-				if(!this.fileQueue.isEmpty()) {  
-					file = (File) this.fileQueue.remove(0);
-				} else {
-					file = null;
-				}
+			if(!this.fileQueue.isEmpty()) {  
+				file = (File) this.fileQueue.remove(0);
+			} else {
+				file = null;
 			}
 			if(this.writer != null && file != null) {
 				indexDocs(file);
@@ -96,20 +90,21 @@ public class Indexer extends Thread {
 	private void indexDocs(File file) {
 		showProgress(writer.docCount(), file.getAbsolutePath());
 		try {
-			if (file.isDirectory()) {
-				String[] files = file.list();
-				if(files == null) {
-					// seems to happen if dir access denied
-					return; 
+			synchronized(this) {
+				if (this.writer == null) {
+					return;
 				}
-				for (int i = 0; i < files.length; i++) {
-					synchronized(this) {  
+				if (file.isDirectory()) {
+					String[] files = file.list();
+					if(files == null) {
+						// seems to happen if dir access denied
+						return; 
+					}
+					for (int i = 0; i < files.length; i++) {
 						this.fileQueue.add(new File(file, files[i]));
 					}
 				}
-			}
-			else {
-				synchronized(this) {  
+				else {
 					writer.addDocument(this.docProcessingFactory.processDocument(file));
 				}
 			}

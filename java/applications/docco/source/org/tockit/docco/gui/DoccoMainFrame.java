@@ -321,7 +321,7 @@ public class DoccoMainFrame extends JFrame {
 			}
 		});
 		this.indexThread.start();
-
+		
 		File indexFile = new File(indexLocation);
 		if(!indexFile.canRead()) {
 			createNewIndex();
@@ -330,6 +330,11 @@ public class DoccoMainFrame extends JFrame {
 			}
 		} else {
 			createQueryEngine();
+			try {
+                this.indexThread.startIndexing(indexLocation);
+            } catch (IOException e1) {
+            	ErrorDialog.showError(this, e1, "Couldn't start indexer");
+            }
 		}
 
 		ConfigurationManager.restorePlacement(
