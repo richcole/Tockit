@@ -1,6 +1,6 @@
 <project name="Tockit Events" default="jar" basedir=".">
     <property name="src.dir"   value="${basedir}/source"/>
-    <property name="libTesting.dir"   value="${basedir}/../../thirdParty/unitTesting"/>
+    <property name="libTesting.dir"   value="${basedir}/../thirdParty/unitTesting"/>
     <property name="build.dir"   value="${basedir}/build"/>
     <property name="jars.dir"   value="${basedir}/../jars"/>
 
