@@ -15,7 +15,8 @@ OBJECTS = \
   join_relation_iterator \
   ref_count \
   context \
-  context_iterator
+  context_iterator \
+  context_complement_relation_iterator 
 
 TESTS = \
   test_set \

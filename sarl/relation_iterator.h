@@ -41,6 +41,9 @@ extern struct Sarl_RelationIterator* sarl_relation_iterator_copy(
 extern struct Sarl_RelationIterator* sarl_relation_iterator_inverse(
   struct Sarl_RelationIterator *);
 
+extern struct Sarl_RelationIterator* sarl_relation_iterator_context_complement(
+  struct Sarl_ContextIterator *);
+
 /* iterator constructive operations */
 
 extern struct Sarl_SetIterator *sarl_relation_iterator_domain(

@@ -31,7 +31,7 @@ extern struct Sarl_SetIterator *
 );
 
 extern struct Sarl_RelationIterator *
-sarl_context_incidence
+sarl_context_iterator_incidence
 (
   struct Sarl_ContextIterator *
 ); 						     

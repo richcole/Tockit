@@ -34,6 +34,15 @@ struct Sarl_JoinRelationIterator : Sarl_RelationIterator
   Sarl_RelationIterator* second;
 };
 
+struct Sarl_ContextComplementRelationIterator : Sarl_RelationIterator
+{
+  Sarl_SetIterator*      G;
+  Sarl_SetIterator*      M;
+  Sarl_RelationIterator* I;
+
+	Sarl_SetIterator*      intent;
+};
+
 inline void sarl_relation_iterator_init(
   struct Sarl_RelationIterator *it,
   Sarl_RelationIteratorFunctionTable *ap_funcs)
