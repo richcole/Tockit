@@ -282,7 +282,6 @@ public class DoccoMainFrame extends JFrame {
 		}
 	}
 	
-
 	public DoccoMainFrame(boolean forceIndexAccess) {
 		super("Docco");
 		
@@ -362,9 +361,6 @@ public class DoccoMainFrame extends JFrame {
 			}
 		});
 	}
-
-		
-
 
     private JMenu createHelpMenu() {
 		JMenu helpMenu = new JMenu("Help");
