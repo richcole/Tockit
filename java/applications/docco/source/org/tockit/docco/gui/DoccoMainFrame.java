@@ -560,8 +560,8 @@ public class DoccoMainFrame extends JFrame {
 			IndexReader reader = IndexReader.open(this.indexLocation);
 			knownDocuments = new HashSet(reader.numDocs());
             for(int i = 0; i < reader.maxDoc(); i++) {
-            	Document doc = reader.document(i);
-            	if(doc != null) {
+            	if(!reader.isDeleted(i)) {
+	            	Document doc = reader.document(i);
             		String path = doc.get(GlobalConstants.FIELD_DOC_PATH);
             		knownDocuments.add(path);
             		File file = new File(path);
