@@ -31,6 +31,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -226,6 +227,7 @@ public class FileMappingsEditingDialog extends JDialog {
 		
 		mappingListView = new JList(this.model);
 		mappingListView.setCellRenderer(new MappingsListCellRenderer());
+		mappingListView.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		mappingListView.addListSelectionListener(new ListSelectionListener(){
 			public void valueChanged(ListSelectionEvent e) {
 				setManipulatorButtonsStatus();
