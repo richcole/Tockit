@@ -69,7 +69,6 @@ public class LinkView extends MovableCanvasItem {
     }
 
     public String toString() {
-        Link link = this.getLink();
-        return "LinkView[" + link.getType().getName() + " (" + link.getId() +")]";
+        return "LinkView[" + getLink().getType().getName() + " (" + getLink().getId() +")]";
     }
 }

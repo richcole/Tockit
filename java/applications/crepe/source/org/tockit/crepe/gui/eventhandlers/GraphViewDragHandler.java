@@ -56,12 +56,15 @@ public class GraphViewDragHandler implements DropTargetListener {
     }
 
     public void dragOver(DropTargetDragEvent dtde) {
+    	// nothing to do
     }
 
     public void dropActionChanged(DropTargetDragEvent dtde) {
+    	// nothing to do
     }
 
     public void dragExit(DropTargetEvent dte) {
+    	// nothing to do
     }
 
     /**

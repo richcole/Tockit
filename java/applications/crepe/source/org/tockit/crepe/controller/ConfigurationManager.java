@@ -51,6 +51,7 @@ public class ConfigurationManager {
      * No public instances allowed.
      */
     private ConfigurationManager() {
+    	// should not be called
     }
 
     /**

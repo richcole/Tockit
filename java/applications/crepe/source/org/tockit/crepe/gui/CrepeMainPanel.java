@@ -95,7 +95,7 @@ import org.tockit.util.IdPool;
  * Refactorings:
  * @todo fix ConfigurationManager to use different properties
  */
-public class CrepeMainPanel extends JFrame implements ActionListener {
+public class CrepeMainPanel extends JFrame {
 
     /**
      * The central event broker for the main panel
@@ -823,9 +823,6 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
         ConfigurationManager.saveConfiguration();
 
         System.exit(0);
-    }
-
-    public void actionPerformed(ActionEvent e) {
     }
 
     /**

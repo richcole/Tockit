@@ -52,6 +52,7 @@ public class RelationHierarchyTreeView extends JTree implements DropTargetListen
     }
 
     public void dragEnter(DropTargetDragEvent dtde) {
+    	// nothing to do
     }
 
     public void dragOver(DropTargetDragEvent event) {
@@ -63,9 +64,11 @@ public class RelationHierarchyTreeView extends JTree implements DropTargetListen
     }
 
     public void dropActionChanged(DropTargetDragEvent dtde) {
+    	// nothing to do
     }
 
     public void dragExit(DropTargetEvent dte) {
+    	// nothing to do
     }
 
     public void drop(DropTargetDropEvent event) {
@@ -89,18 +92,23 @@ public class RelationHierarchyTreeView extends JTree implements DropTargetListen
     }
 
     public void dragEnter(DragSourceDragEvent dsde) {
+    	// nothing to do
     }
 
     public void dragOver(DragSourceDragEvent dsde) {
+    	// nothing to do
     }
 
     public void dropActionChanged(DragSourceDragEvent dsde) {
+    	// nothing to do
     }
 
     public void dragExit(DragSourceEvent dse) {
+    	// nothing to do
     }
 
     public void dragDropEnd(DragSourceDropEvent dsde) {
+    	// nothing to do
     }
 
     public void dragGestureRecognized(DragGestureEvent event) {

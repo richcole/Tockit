@@ -87,7 +87,6 @@ public class NodeView extends MovableCanvasItem {
     }
 
     public String toString() {
-        Node node = this.getNode();
-        return "NodeView[" + node.getType().getName() + ":" + node.getReferent() + " (" + node.getId() +")]";
+        return "NodeView[" + getNode().getType().getName() + ":" + getNode().getReferent() + " (" + getNode().getId() +")]";
     }
 }

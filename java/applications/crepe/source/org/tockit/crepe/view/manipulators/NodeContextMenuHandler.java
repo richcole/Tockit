@@ -111,8 +111,8 @@ public class NodeContextMenuHandler implements EventBrokerListener {
                         lineView.setConnectedNodeView(newNodeView);
                         Node[] refs = link.getReferences();
                         for (int i = 0; i < refs.length; i++) {
-                            Node node = refs[i];
-                            if(node == nodeView.getNode()) {
+                            Node refNode = refs[i];
+                            if(refNode == nodeView.getNode()) {
                                 refs[i] = newNode;
                             }
                         }

@@ -22,7 +22,6 @@ import java.util.Iterator;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -88,7 +87,7 @@ public class DiagramExportSettingsDialog extends JDialog implements ActionListen
         while (it.hasNext()) {
             formatSelector.addItem(it.next());
         }
-        formatSelector.setAlignmentX(JComponent.RIGHT_ALIGNMENT);
+        formatSelector.setAlignmentX(Component.RIGHT_ALIGNMENT);
         formatSelector.setSelectedItem(settings.getGraphicFormat());
         formatSelector.setEnabled(!settings.usesAutoMode());
 
@@ -97,7 +96,7 @@ public class DiagramExportSettingsDialog extends JDialog implements ActionListen
         widthField = new JTextField();
         widthField.setText(String.valueOf(settings.getImageWidth()));
         widthField.setEnabled(false);
-        widthField.setAlignmentX(JComponent.RIGHT_ALIGNMENT);
+        widthField.setAlignmentX(Component.RIGHT_ALIGNMENT);
         widthField.setEnabled(!settings.usesAutoMode());
 
         JLabel heightLabel = new JLabel();
@@ -105,7 +104,7 @@ public class DiagramExportSettingsDialog extends JDialog implements ActionListen
         heightField = new JTextField();
         heightField.setText(String.valueOf(settings.getImageHeight()));
         heightField.setEnabled(false);
-        heightField.setAlignmentX(JComponent.RIGHT_ALIGNMENT);
+        heightField.setAlignmentX(Component.RIGHT_ALIGNMENT);
         heightField.setEnabled(!settings.usesAutoMode());
 
         //buttons

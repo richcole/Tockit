@@ -19,5 +19,6 @@ public class CGFlavors {
     public static final DataFlavor InstanceFlavor = new DataFlavor(Instance.class, "Instance");
 
     private CGFlavors() {
+    	// nothing to do
     }
 }
