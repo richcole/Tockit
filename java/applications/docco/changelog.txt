@@ -1,13 +1,13 @@
 Changes since Docco 0.3:
 
 Docco:
-- symlinks are not followed anymore (Linux/UNIX).
-- index locks are detected and can be removed by the user.
+- symlinks are not followed anymore (Linux/UNIX)
+- index locks are detected and can be removed by the user
 - extra information for index (contents, mappings) is stored after the index
   was created, not only on shutdown. This means Docco can access the index
-  even after an unclean exit (it will be locked, though).
+  even after an unclean exit (it will be locked, though)
 - support for the RTF format (some of it)
-- nested diagrams can be created using a new button (still buggy)
+- nested diagrams can be created using a new button
 
 POI-Plugin:
 - support for PowerPoint files

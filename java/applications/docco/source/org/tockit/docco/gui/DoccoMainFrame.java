@@ -86,6 +86,7 @@ import javax.swing.tree.TreeSelectionModel;
 import net.sourceforge.toscanaj.controller.diagram.AttributeAdditiveNodeMovementEventListener;
 import net.sourceforge.toscanaj.controller.diagram.NodeMovementEventListener;
 import net.sourceforge.toscanaj.controller.fca.ConceptInterpretationContext;
+import net.sourceforge.toscanaj.controller.fca.ConceptInterpreter;
 import net.sourceforge.toscanaj.controller.fca.DiagramHistory;
 import net.sourceforge.toscanaj.controller.fca.DirectConceptInterpreter;
 import net.sourceforge.toscanaj.dbviewer.BrowserLauncher;
@@ -95,6 +96,7 @@ import net.sourceforge.toscanaj.model.context.FCAElement;
 import net.sourceforge.toscanaj.model.database.AggregateQuery;
 import net.sourceforge.toscanaj.model.diagram.Diagram2D;
 import net.sourceforge.toscanaj.model.diagram.DiagramNode;
+import net.sourceforge.toscanaj.model.diagram.NestedDiagramNode;
 import net.sourceforge.toscanaj.model.diagram.NestedLineDiagram;
 import net.sourceforge.toscanaj.model.diagram.WriteableDiagram2D;
 import net.sourceforge.toscanaj.model.lattice.Concept;
@@ -173,7 +175,7 @@ public class DoccoMainFrame extends JFrame {
 	private JCheckBoxMenuItem showContingentOnlyCheckBox;
 	private JLabel statusBarMessage;
 	private DiagramView diagramView;
-	private Concept selectedConcept;
+	private Concept[] selectedConcepts;
 	private JSplitPane viewsSplitPane;
     private DiagramExportSettings diagramExportSettings;
     private JMenuItem printMenuItem;
@@ -192,12 +194,12 @@ public class DoccoMainFrame extends JFrame {
 				nodeView = labelView.getNodeView();
 			} else {
 				diagramView.setSelectedConcepts(null);
-				selectedConcept = null;
+				selectedConcepts = null;
                 fillTreeList();
 				return;
 			}
 			DiagramNode node = nodeView.getDiagramNode();
-			selectedConcept = node.getConcept();
+			selectedConcepts = node.getConceptNestingList();
 			diagramView.setSelectedConcepts(node.getConceptNestingList());
 			fillTreeList();
 		}
@@ -205,25 +207,28 @@ public class DoccoMainFrame extends JFrame {
 
     private void fillTreeList() {
         boolean allShown = false;
-		if(this.selectedConcept == null) {
+		if(this.selectedConcepts == null) {
             Diagram2D diagram = this.diagramView.getDiagram();
             if(diagram == null) {
                 this.hitList.setModel(null);
                 return;
             }
-            this.selectedConcept = diagram.getTopConcept();
+            this.selectedConcepts = new Concept[]{diagram.getTopConcept()};
             allShown = true;
 		}
 		Map pathToNodeMap = new Hashtable();
 		DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("");
 		pathToNodeMap.put("",rootNode);
+
+		Concept[] concepts = this.selectedConcepts;
 		
-		Iterator iterator;
-		if(!allShown && this.showContingentOnlyCheckBox.isSelected()) {
-			iterator = this.selectedConcept.getObjectContingentIterator();
-		} else {
-			iterator = this.selectedConcept.getExtentIterator();
+		ConceptInterpretationContext context = createInterpretationContextForConcepts(concepts);
+		if(allShown) {
+		    context.setObjectDisplayMode(ConceptInterpretationContext.CONTINGENT);
 		}
+		
+		ConceptInterpreter interpreter = new DirectConceptInterpreter();
+		Iterator iterator = interpreter.getObjectSetIterator(this.selectedConcepts[0], context);
 
 		while (iterator.hasNext()) {
 			FCAElement object = (FCAElement) iterator.next();
@@ -279,11 +284,30 @@ public class DoccoMainFrame extends JFrame {
 		unfoldTree(treeModel);
         
         if(allShown) {
-            this.selectedConcept = null;
+            this.selectedConcepts = null;
         }
 	}
 
-	private void flattenResults(DefaultMutableTreeNode treeNode) {
+	private ConceptInterpretationContext createInterpretationContextForConcepts(Concept[] concepts) {
+        DiagramHistory diagramHistory = new DiagramHistory();
+		Diagram2D diagram = this.diagramView.getDiagram();
+		
+		ConceptInterpretationContext context = new ConceptInterpretationContext(diagramHistory, new EventBroker());
+		context.setObjectDisplayMode(this.showContingentOnlyCheckBox.isSelected());
+
+		if(concepts.length == 2) {
+		    NestedLineDiagram nestedDiagram = (NestedLineDiagram) diagram;
+		    diagramHistory.addDiagram(nestedDiagram.getInnerDiagram());
+		    diagramHistory.addDiagram(nestedDiagram.getOuterDiagram());
+		    diagramHistory.setNestingLevel(2);
+		    context = context.createNestedContext(concepts[1]);
+		} else {
+		    diagramHistory.addDiagram(diagram);
+		}
+        return context;
+    }
+
+    private void flattenResults(DefaultMutableTreeNode treeNode) {
 		Enumeration childrenEnum;
 		boolean done; 
 		do {
@@ -962,9 +986,18 @@ public class DoccoMainFrame extends JFrame {
 				if(nodeView == null) {
 					return null;
 				}
-				Concept concept = nodeView.getDiagramNode().getConcept();
+                DiagramNode node = nodeView.getDiagramNode();
+				Concept[] concepts;
+                if (node instanceof NestedDiagramNode) {
+                    concepts = new Concept[]{node.getConcept()};
+                } else {
+                    concepts = node.getConceptNestingList();
+                }
+				ConceptInterpretationContext context = createInterpretationContextForConcepts(concepts);
+				ConceptInterpreter interpreter = new DirectConceptInterpreter();
+
 				StringBuffer tooltip = new StringBuffer();
-				Iterator it = concept.getIntentIterator();
+				Iterator it = interpreter.getIntentIterator(node.getConcept(), context);
 				if(!it.hasNext()) {
 					return null;
 				}
@@ -1163,7 +1196,7 @@ public class DoccoMainFrame extends JFrame {
 				ErrorDialog.showError(this, e, "Error querying");
 				this.diagramView.showDiagram(null);
             }
-            this.selectedConcept = null;
+            this.selectedConcepts = null;
             fillTreeList();
 			this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             setMenuStates();
