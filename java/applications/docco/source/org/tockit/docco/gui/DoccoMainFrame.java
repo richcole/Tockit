@@ -459,6 +459,7 @@ public class DoccoMainFrame extends JFrame {
 		if (this.searchButton.isEnabled()) {
 			this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 			this.eventBroker.processEvent(new QueryEvent(this.queryField.getText()));
+			this.hitList.setListData(new Object[0]);
 			this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}
 	}
