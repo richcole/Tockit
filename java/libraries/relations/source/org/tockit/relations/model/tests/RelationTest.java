@@ -41,6 +41,30 @@ public class RelationTest extends TestCase {
         assertEquals("unnamedRelation has wrong arity", 7, unnamedRelation.getArity());
         assertEquals("unnamedRelation has wrong size", 1, unnamedRelation.getSize());
     }
+    
+    public void testAdditions() {
+        try {
+            stringRelation.addTuple(new Tuple(new String[]{"too", "short"}));
+            fail("could add tuple of wrong size (too short)");
+        } catch (IllegalArgumentException e) {
+            // ignore
+        }
+
+        try {
+            stringRelation.addTuple(new Tuple(new String[]{"this", "is", "too", "long"}));
+            fail("could add tuple of wrong size (too long)");
+        } catch (IllegalArgumentException e) {
+            // ignore
+        }
+        
+        assertEquals("Relation size changed due to failed additions", 7, stringRelation.getSize());
+        
+        stringRelation.addTuple(new Tuple(new String[]{"this", "one", "twice"}));
+        assertEquals("failed to add valid tuple", 8, stringRelation.getSize());
+
+        stringRelation.addTuple(new Tuple(new String[]{"this", "one", "twice"}));
+        assertEquals("could add tuple twice", 8, stringRelation.getSize());
+    }
 
     public void setUp() {
         Object o1 = new Object();
