@@ -14,9 +14,6 @@ import org.tockit.docco.GlobalConstants;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * based on lucene demo indexer
@@ -25,7 +22,6 @@ import java.util.List;
  */
 public class Indexer {
 
-	private List errorsList = new LinkedList();
 	private DocumentProcessingFactory docProcessingFactory = new DocumentProcessingFactory();
 	private int docCount = 0;
 	
@@ -59,11 +55,6 @@ public class Indexer {
 									true);
 
 			indexDocs(writer, new File(filesToIndexLocation));
-			Iterator it = errorsList.iterator();
-			while (it.hasNext()) {
-				Exception curErr = (Exception) it.next();
-				System.err.println("Error: " + curErr.getMessage());
-			}
 			
 			writer.optimize();
 			writer.close();
@@ -71,7 +62,6 @@ public class Indexer {
 			Date end = new Date();
 
 			System.out.println("total processed documents: " + this.docCount);
-			System.out.println("skipped documents: " + this.errorsList.size());
 			System.out.print(end.getTime() - start.getTime());
 			System.out.println(" total milliseconds");
 
@@ -102,8 +92,6 @@ public class Indexer {
 			}
 		}
 		catch (DocumentProcessingException e) {
-			//e.printStackTrace();
-			this.errorsList.add(e);
 		}
 		catch (IOException e) {
 			errorExit(e);

@@ -35,7 +35,7 @@ public class DocumentProcessingFactory {
 		this.docRegistry.put(fileExtension, docProcessor);
 	}
 
-	public Document processDocument(File file) throws DocumentProcessingException {
+	public Document processDocument(File file) throws DocumentProcessingException, IOException, FileNotFoundException {
 
 		String fileExtension = getFileExtension(file);
 
@@ -53,10 +53,6 @@ public class DocumentProcessingFactory {
 				doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_SIZE, new Long(file.length()).toString()));
 				//printDebug(doc);
 				return doc;								
-			} catch (FileNotFoundException e) {
-				throw new DocumentProcessingException(e);
-			} catch (IOException e) {
-				throw new DocumentProcessingException(e);
 			}
 			catch (Exception e) {
 				throw new RuntimeException(e);
