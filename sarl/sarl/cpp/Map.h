@@ -45,8 +45,8 @@ class Map {
     sarl_map_insert(mp_mapRef, dom, rng);
   };
 
-  inline void remove(Index dom) {
-    sarl_map_remove(mp_mapRef, dom);
+  inline void remove(Index dom, Index rng) {
+    sarl_map_remove(mp_mapRef, dom, rng);
   };
 
   inline void insert(Pair const& p) {
@@ -54,7 +54,7 @@ class Map {
   };
 
   inline void remove(Pair const& p) {
-    sarl_map_remove(mp_mapRef, p.dom);
+    sarl_map_remove(mp_mapRef, p.dom, p.rng);
   };
 
   inline Sarl_Index image(Index dom) const {

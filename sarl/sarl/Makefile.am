@@ -74,7 +74,9 @@ sarlinclude_HEADERS = \
         transitive_relation.h \
         triadic_relation.h \
         triple.h \
-        write_cxt_context.h 
+        write_cxt_context.h \
+        vector.h \
+        nary_relation.h
 
 #
 # Sources and headers not to be installed
@@ -144,7 +146,12 @@ libsarl_la_SOURCES =           \
         set_minus_set_iterator_impl.h \
         string_impl.h \
         transitive_relation_impl.h \
-        union_set_iterator_impl.h 
+        union_set_iterator_impl.h \
+        vector_impl.h \
+        vector.cpp \
+        nary_relation_impl.h \
+        nary_relation.cpp
+
 
 libsarl_la_LDFLAGS = @VERSION_INFO@
 

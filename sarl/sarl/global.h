@@ -9,6 +9,10 @@
   { fprintf(stderr, "%s:%d: Fatal Error: %s.\n", \
           __FILE__, __LINE__, (x)); };
 
+#define SARL_REPORT_ERROR(x) \
+  { fprintf(stderr, "%s:%d: Error: %s.\n", \
+          __FILE__, __LINE__, (x)); };
+
 #include <limits.h>
 
 #define SARL_INDEX_MIN_VALUE INT_MIN

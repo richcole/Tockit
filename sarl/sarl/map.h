@@ -7,6 +7,8 @@
 struct Sarl_MapIterator;
 struct Sarl_Map;
 
+struct Sarl_SetIterator;
+
 /* construction of map objects */
 extern struct Sarl_Map *sarl_map_create();
 extern struct Sarl_Map *sarl_map_copy(
@@ -19,7 +21,7 @@ extern void sarl_map_insert_pair(
   struct Sarl_Map *, Sarl_Pair);
 
 extern void sarl_map_remove(
-  struct Sarl_Map *, Sarl_Index);
+  struct Sarl_Map *, Sarl_Index, Sarl_Index);
 
 extern void sarl_map_remove_extent(
 	struct Sarl_Map *r, Sarl_Index index);
@@ -30,7 +32,7 @@ extern void sarl_map_remove_intent(
 extern Sarl_Index sarl_map_image(
 	struct Sarl_Map *r, Sarl_Index index);
 
-extern Sarl_Index sarl_map_coimage(
+extern Sarl_SetIterator* sarl_map_coimage(
 	struct Sarl_Map *r, Sarl_Index index);
 
 
