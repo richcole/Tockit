@@ -11,6 +11,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.tockit.docco.documenthandler.DocumentHandler;
 import org.tockit.docco.documenthandler.HtmlDocumentHandler;
+import org.tockit.docco.documenthandler.OpenOfficeDocumentHandler;
 import org.tockit.docco.documenthandler.PlainTextDocumentHandler;
 import org.tockit.docco.documenthandler.XmlDocumentHandler;
 import org.tockit.docco.filefilter.ExtensionFileFilterFactory;
@@ -52,6 +53,8 @@ public class GlobalConstants {
 																   new HtmlDocumentHandler()),
 										new DocumentHandlerMapping(new ExtensionFileFilterFactory().createNewFilter("txt"),
 																   new PlainTextDocumentHandler()),
+										new DocumentHandlerMapping(new ExtensionFileFilterFactory().createNewFilter("sxw;sxc;sxi;sxd"),
+																   new OpenOfficeDocumentHandler()),
 										new DocumentHandlerMapping(new ExtensionFileFilterFactory().createNewFilter("xml"),
 																   new XmlDocumentHandler())
 										};
