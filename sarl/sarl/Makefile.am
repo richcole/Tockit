@@ -152,24 +152,42 @@ libsarl_la_LDFLAGS = @VERSION_INFO@
 # Tests
 #
 check_PROGRAMS = \
-  test_dictionary_001.cpp \
-  test_lattice_001.cpp \
-  test_lectic_001.cpp \
-  test_lectic_002.cpp \
-  test_lectic_003.cpp \
-  test_map_001.cpp \
-  test_read_cxt_context_001.cpp \
-  test_relation_001.cpp \
-  test_relation_002.cpp \
-  test_relation_003.cpp \
-  test_relation_004.cpp \
-  test_relation_005.cpp \
-  test_relation.cpp \
-  test_set.cpp \
-  test_set_iterator_interval_001.cpp \
-  test_set_iterator_meet.cpp \
-  test_set_iterator_set_minus.cpp \
-  test_set_iterator_union.cpp 
+  test_dictionary_001 \
+  test_lattice_001 \
+  test_lectic_001 \
+  test_lectic_002 \
+  test_lectic_003 \
+  test_map_001 \
+  test_read_cxt_context_001 \
+  test_relation_001 \
+  test_relation_002 \
+  test_relation_003 \
+  test_relation_004 \
+  test_relation_005 \
+  test_relation \
+  test_set \
+  test_set_iterator_interval_001 \
+  test_set_iterator_meet \
+  test_set_iterator_set_minus \
+  test_set_iterator_union 
+
+TESTS = \
+  test_dictionary_001 \
+  test_lattice_001 \
+  test_lectic_001 \
+  test_lectic_002 \
+  test_lectic_003 \
+  test_map_001 \
+  test_read_cxt_context_001 \
+  test_relation_001 \
+  test_relation_002 \
+  test_relation_005 \
+  test_relation \
+  test_set \
+  test_set_iterator_interval_001 \
+  test_set_iterator_meet \
+  test_set_iterator_set_minus \
+  test_set_iterator_union 
 
 test_relation_005_SOURCES = test_relation_005.cpp
 test_relation_005_LDADD   = libsarl.la

@@ -1,4 +1,4 @@
-AUTOMAKE_OPTIONS = dist-bzip2 subdir-objects #dejagnu
+AUTOMAKE_OPTIONS = dist-bzip2 subdir-objects # dejagnu
 
 SUBDIRS = sarl testsuite
 
