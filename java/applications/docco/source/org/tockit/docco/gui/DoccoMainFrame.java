@@ -689,6 +689,7 @@ public class DoccoMainFrame extends JFrame {
         } catch (IOException e) {
         	ErrorDialog.showError(this, e, "Index not fully deleted");
         }
+		createQueryEngine();
     }
 
     private void createNewIndex(){
