@@ -39,9 +39,4 @@ public class MatchNameRegExpFileFilterFactory implements FileFilterFactory {
     public DoccoFileFilter createNewFilter(String filterExpression) {
         return new MatchNameRegExpFileFilter(filterExpression);
     }
-	
-	// @todo quick hack to get combo boxes in UI working -- should be done with cell renderer	
-	public String toString() {
-		return getDisplayName();
-	}
 }

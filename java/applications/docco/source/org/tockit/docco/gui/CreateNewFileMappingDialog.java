@@ -131,11 +131,10 @@ public class CreateNewFileMappingDialog extends JDialog {
 		JPanel fileFilterPanel = new JPanel(new GridBagLayout());
 		
 		fileFilterFactoryChooser = new JComboBox(FileFilterFactoryRegistry.registry);
+		fileFilterFactoryChooser.setRenderer(new FileFilterComboBoxCellRenderer());
 		
 		extensionField = new JTextField(5);
 		
-		final JLabel extensionLabel = new JLabel("with filter expression: ");
-
 		fileFilterFactoryChooser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				setOkButtonStatus();
@@ -152,45 +151,6 @@ public class CreateNewFileMappingDialog extends JDialog {
 			}
 		});
 
-		int row = 0;	
-		fileFilterPanel.add(new JLabel("Filter type: "),
-									new GridBagConstraints(0, row, 
-									1, 1, 
-									0, 0,
-									GridBagConstraints.NORTHWEST,
-									GridBagConstraints.NONE,
-									new Insets(5, 5, 5, 5),
-									0, 0
-									));
-		fileFilterPanel.add(fileFilterFactoryChooser,
-									new GridBagConstraints(1, row, 
-									1, 1, 
-									1, 0,
-									GridBagConstraints.NORTHWEST,
-									GridBagConstraints.HORIZONTAL,
-									new Insets(5, 5, 5, 5),
-									0, 0
-									));
-		row++;
-		fileFilterPanel.add(extensionLabel,
-									new GridBagConstraints(0, row, 
-									1, 1, 
-									0, 0,
-									GridBagConstraints.NORTHEAST,
-									GridBagConstraints.NONE,
-									new Insets(5, 5, 1, 5),
-									0, 0
-									));
-		fileFilterPanel.add(extensionField,
-									new GridBagConstraints(1, row, 
-									1, 1, 
-									1, 0,
-									GridBagConstraints.NORTHWEST,
-									GridBagConstraints.HORIZONTAL,
-									new Insets(5, 5, 1, 5),
-									0, 0
-									));
-
 		final JComboBox docHandlersChooser = new JComboBox(this.docHandlerImplementationsModel);
 		docHandlersChooser.setRenderer(new DocHandlerComboBoxCellRenderer());
 		
@@ -201,26 +161,38 @@ public class CreateNewFileMappingDialog extends JDialog {
 			}
 		});
 									
-		row++;
-		fileFilterPanel.add(new JLabel("Use document handler: "),
-									new GridBagConstraints(0, row, 
+		int row = 0;	
+		new GridBagConstraints(0, row, 
 									1, 1, 
 									0, 0,
-									GridBagConstraints.NORTHWEST,
+									GridBagConstraints.WEST,
 									GridBagConstraints.NONE,
 									new Insets(5, 5, 5, 5),
 									0, 0
-									));
-		fileFilterPanel.add(docHandlersChooser,
-									new GridBagConstraints(1, row, 
-									1, 1, 
-									1, 0,
-									GridBagConstraints.NORTHWEST,
-									GridBagConstraints.HORIZONTAL,
-									new Insets(5, 5, 5, 5),
-									0, 0
-									));
-
+									);
+		GridBagConstraints labelConstraint = new GridBagConstraints();
+		labelConstraint.anchor = GridBagConstraints.WEST;
+		labelConstraint.insets = new Insets(5, 5, 5, 5);
+		labelConstraint.gridx = 0;
+		labelConstraint.gridy = GridBagConstraints.RELATIVE;
+		
+		GridBagConstraints dataEntryConstraint = new GridBagConstraints();
+		dataEntryConstraint.fill = GridBagConstraints.HORIZONTAL;
+		dataEntryConstraint.insets = new Insets(5, 5, 5, 5);
+		dataEntryConstraint.gridx = 1;
+		dataEntryConstraint.weightx = 1;
+		labelConstraint.gridy = GridBagConstraints.RELATIVE;
+		
+        fileFilterPanel.add(new JLabel("Filter Type:"),	labelConstraint);
+		fileFilterPanel.add(fileFilterFactoryChooser, dataEntryConstraint);
+		fileFilterPanel.add(new JLabel("Filter Expression:"), labelConstraint);
+		fileFilterPanel.add(extensionField, dataEntryConstraint);
+		fileFilterPanel.add(new JLabel("Document Handler:"), labelConstraint);
+		fileFilterPanel.add(docHandlersChooser, dataEntryConstraint);
+		
+		dataEntryConstraint.weighty = 1;
+		fileFilterPanel.add(new JPanel(), dataEntryConstraint);
+		
 		return fileFilterPanel;
 	}
 

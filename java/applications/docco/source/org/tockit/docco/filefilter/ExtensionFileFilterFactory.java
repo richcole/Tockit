@@ -67,9 +67,4 @@ public class ExtensionFileFilterFactory implements FileFilterFactory {
 	public String getDisplayName() {
 		return "Match file extension";
 	}
-	
-	// @todo quick hack to get combo boxes in UI working -- should be done with cell renderer	
-	public String toString() {
-		return getDisplayName();
-	}
 }
