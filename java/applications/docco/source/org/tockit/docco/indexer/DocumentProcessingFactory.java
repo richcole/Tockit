@@ -10,7 +10,10 @@ package org.tockit.docco.indexer;
 import java.io.File;
 import java.util.Hashtable;
 
+import org.apache.lucene.document.DateField;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.tockit.docco.GlobalConstants;
 
 public class DocumentProcessingFactory {
 
@@ -22,9 +25,6 @@ public class DocumentProcessingFactory {
 	 */
 	private Hashtable docRegistry = new Hashtable();
 
-	public DocumentProcessingFactory () {
-	}
-	
 	public void registerExtension (String fileExtension, DocumentProcessor docProcessor) {
 		this.docRegistry.put(fileExtension, docProcessor);
 	}
@@ -32,14 +32,20 @@ public class DocumentProcessingFactory {
 	public Document processDocument(File file) throws Exception {
 
 		String fileExtension = getFileExtension(file);
-		
+
 		DocumentProcessor docProcessor = (DocumentProcessor) this.docRegistry.get(fileExtension);
-		if (docProcessor == null) {
-			throw new Exception("Don't know how to process document with extension " + fileExtension +
-								" ( file: " + file.getPath() + ")");
+
+		if (docProcessor != null) {
+			Document doc = docProcessor.getDocument(file);
+			doc.add(Field.Text(GlobalConstants.FIELD_DOC_PATH, file.getPath()));
+			doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_DATE,
+					  DateField.timeToString(file.lastModified())));
+			doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_SIZE, new Long(file.length()).toString()));
+			return doc;
 		}
 		else {
-			return docProcessor.getDocument(file);
+			throw new Exception("Don't know how to process document with extension " + fileExtension +
+								" ( file: " + file.getPath() + ")");
 		}
 
 	}

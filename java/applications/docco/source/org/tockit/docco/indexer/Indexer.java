@@ -24,6 +24,7 @@ public class Indexer {
 
 	private List errorsList = new LinkedList();
 	private DocumentProcessingFactory docProcessingFactory = new DocumentProcessingFactory();
+	private int docCount = 0;
 	
 	public Indexer (String filesToIndexLocation) {
 		try {
@@ -54,6 +55,7 @@ public class Indexer {
 
 			Date end = new Date();
 
+			System.out.println("total documents: " + this.docCount);
 			System.out.print(end.getTime() - start.getTime());
 			System.out.println(" total milliseconds");
 
@@ -73,6 +75,8 @@ public class Indexer {
 			}
 			else {
 				writer.addDocument(this.docProcessingFactory.processDocument(file));
+				System.out.print(".");
+				docCount++;
 			}
 		}
 		catch (Exception e) {

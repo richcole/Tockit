@@ -8,10 +8,9 @@
 package org.tockit.docco.indexer;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 
 import org.apache.lucene.document.Document;
 
 public interface DocumentProcessor {
-	public Document getDocument (File file) throws FileNotFoundException;
+	public Document getDocument (File file) throws Exception;
 }

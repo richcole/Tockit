@@ -12,7 +12,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.Reader;
 
-import org.apache.lucene.document.DateField;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.tockit.docco.GlobalConstants;
@@ -22,20 +21,8 @@ public class PlainTextDocumentProcessor implements DocumentProcessor {
 
 	public Document getDocument(File file) throws FileNotFoundException {
 		Document doc = new Document();
-
-		doc.add(Field.Text(GlobalConstants.FIELD_DOC_PATH, file.getPath()));
-
-		doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_DATE,
-				  DateField.timeToString(file.lastModified())));
-
-		//FileInputStream is = new FileInputStream(file);
-		//Reader reader = new BufferedReader(new InputStreamReader(is));
 		Reader reader = new FileReader(file);
 		doc.add(Field.Text(GlobalConstants.FIELD_QUERY_BODY, reader));
-		
-		System.out.println(doc.toString());
-		System.out.println("contents: " + doc.getField(GlobalConstants.FIELD_QUERY_BODY).stringValue());
-
 		return doc;
 	}
 
