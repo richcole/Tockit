@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -24,15 +25,15 @@ import org.tockit.docco.filefilter.NotFoundFileExtensionException;
  */
 public class DocumentProcessingFactory {
 	
-	private DocumentHandlerRegistry docHandlersRegistry;
+	private List documentMappings;
 	
-	public DocumentProcessingFactory(DocumentHandlerRegistry docHandlersRegistry) {
-		this.docHandlersRegistry = docHandlersRegistry;
+	public DocumentProcessingFactory(List documentMappings) {
+		this.documentMappings = documentMappings;
 	}
 
 	public Document processDocument(File file) throws DocumentProcessingException,
 													IOException {
-		Iterator it = this.docHandlersRegistry.getDocumentMappingList().iterator();
+		Iterator it = this.documentMappings.iterator();
 		DocumentSummary docSummary = null;
 		DocumentProcessingException caughtException = null;
 		while (it.hasNext()) {
@@ -136,4 +137,11 @@ public class DocumentProcessingFactory {
 		
 	}
 
+    public List getDocumentMappings() {
+        return this.documentMappings;
+    }
+
+	public void setDocumentMappings(List documentMappings) {
+		this.documentMappings = documentMappings;
+	}
 }

@@ -16,6 +16,13 @@ public class DocumentHandlerMapping {
 	private DocumentHandler docHandler;
 	
 	public DocumentHandlerMapping(DoccoFileFilter fileFilter, DocumentHandler docHandler) {
+		if(fileFilter == null) {
+			throw new IllegalArgumentException("File filter must not be null");
+		}
+		if(docHandler == null) {
+			throw new IllegalArgumentException("Document handler must not be null");
+		}
+
 		this.fileFilter = fileFilter;
 		this.docHandler = docHandler;
 	}
@@ -28,7 +35,8 @@ public class DocumentHandlerMapping {
 		String docHandlerClassName = serialForm.substring(lastColonIndex + 1);			
 		Class fileFilterFactoryClass = Class.forName(fileFilterClassName);
 		FileFilterFactory fileFilterFactory = (FileFilterFactory) fileFilterFactoryClass.newInstance();
-		DocumentHandler docHandler = (DocumentHandler) Class.forName(docHandlerClassName).newInstance();
+		this.docHandler = (DocumentHandler) Class.forName(docHandlerClassName).newInstance();
+		this.fileFilter = fileFilterFactory.createNewFilter(filterExpression);
 	}
 	
 	public String getSerialization() {

@@ -20,6 +20,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -37,7 +38,6 @@ import javax.swing.JTextField;
 import net.sourceforge.toscanaj.gui.dialog.ErrorDialog;
 
 import org.tockit.docco.indexer.DocumentHandlerMapping;
-import org.tockit.docco.indexer.DocumentHandlerRegistry;
 import org.tockit.docco.documenthandler.DocumentHandler;
 import org.tockit.docco.filefilter.FileFilterFactory;
 import org.tockit.docco.filefilter.FileFilterFactoryRegistry;
@@ -47,7 +47,7 @@ import org.tockit.docco.documenthandler.DocumentHandlersRegistry;
 // @todo needs relayouting and code cleanup
 public class CreateNewFileMappingDialog extends JDialog {
 	
-	private DocumentHandlerRegistry docHandlersRegistry;
+	private List documentMappings;
 	private DefaultComboBoxModel docHandlerImplementationsModel;
 	
 	private DocumentHandlerMapping mapping;
@@ -96,10 +96,10 @@ public class CreateNewFileMappingDialog extends JDialog {
 		}
 	}	
 
-	public CreateNewFileMappingDialog(Dialog owner, DocumentHandlerRegistry registry) 
+	public CreateNewFileMappingDialog(Dialog owner, List documentMappings) 
 										throws HeadlessException {
 		super(owner, "Create new mapping", true);
-		this.docHandlersRegistry = registry;
+		this.documentMappings = documentMappings;
 		
 		initAllComboBoxModels();
 		

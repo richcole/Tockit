@@ -29,6 +29,7 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -97,7 +98,6 @@ import org.tockit.docco.GlobalConstants;
 import org.tockit.docco.documenthandler.DocumentHandlersRegistry;
 import org.tockit.docco.fca.DiagramGenerator;
 import org.tockit.docco.index.Index;
-import org.tockit.docco.indexer.DocumentHandlerRegistry;
 import org.tockit.docco.indexer.Indexer;
 import org.tockit.docco.query.HitReference;
 import org.tockit.docco.query.QueryDecomposer;
@@ -410,7 +410,7 @@ public class DoccoMainFrame extends JFrame {
 			try {
                 Index index = Index.openIndex(file.getName(), indexDirectory, callbackRecipient);
                 this.indexes.add(index);
-            } catch (IOException e) {
+            } catch (Exception e) {
             	ErrorDialog.showError(this, e, "Error opening index");
             }
         }
@@ -658,7 +658,10 @@ public class DoccoMainFrame extends JFrame {
 		editFileMappingsItem.setMnemonic('f');
 		editFileMappingsItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				editFileMappings(currentIndex.getDocHandlersRegistry());
+				List result = editDocumentMappings(currentIndex.getDocumentMappings());
+				if(result != null) {
+					currentIndex.setDocumentMappings(result);
+				}
 			}
 		});
 		currentIndexMenu.add(editFileMappingsItem);
@@ -698,14 +701,18 @@ public class DoccoMainFrame extends JFrame {
             fileDialog.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             fileDialog.setMultiSelectionEnabled(false);
             
-            final DocumentHandlerRegistry fileMappings = new DocumentHandlerRegistry();
-            
+			final List documentMappings = new ArrayList(Arrays.asList(GlobalConstants.DEFAULT_MAPPINGS));
+
             JPanel optionsPanel = new JPanel(new GridBagLayout());
             JTextField nameField = new JTextField("Index " + (this.indexes.size() + 1));
             JButton mappingsButton = new JButton("Edit Mappings...");
             mappingsButton.addActionListener(new ActionListener(){
             	public void actionPerformed(ActionEvent e) {
-					editFileMappings(fileMappings);
+                    List result = editDocumentMappings(documentMappings);
+                    if(result != null) {
+                    	documentMappings.clear();
+                    	documentMappings.addAll(result);
+                    }
                 }
             });
             
@@ -752,7 +759,7 @@ public class DoccoMainFrame extends JFrame {
 				}
 			};
 			File indexLocation = getIndexDirectory();
-            this.indexes.add(Index.createIndex(indexName, indexLocation, inputDir, fileMappings, callbackRecipient));
+            this.indexes.add(Index.createIndex(indexName, indexLocation, inputDir, documentMappings, callbackRecipient));
         } catch (IOException e) {
 			ErrorDialog.showError(this, e, "There has been an error creating a new index");
         }
@@ -760,8 +767,9 @@ public class DoccoMainFrame extends JFrame {
 		createQueryEngine();
     }
 
-    private void editFileMappings(DocumentHandlerRegistry docHandlersRegistry) {
-        new FileMappingsEditingDialog(this, docHandlersRegistry);
+    private List editDocumentMappings(List documentMappings) {
+        FileMappingsEditingDialog dialog = new FileMappingsEditingDialog(this, documentMappings);
+        return dialog.getDocumentMappings();
 	}
 
     private void createQueryEngine() {

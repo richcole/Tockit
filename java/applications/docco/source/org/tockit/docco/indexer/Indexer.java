@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 public class Indexer implements Runnable {
@@ -34,12 +35,12 @@ public class Indexer implements Runnable {
     private DocumentProcessingFactory docProcessingFactory;
     private boolean shuttingDown = false;
 	
-	public Indexer(File indexLocation, File baseDirectory, DocumentHandlerRegistry docHandlerRegistry, CallbackRecipient output) {
+	public Indexer(File indexLocation, File baseDirectory, List documentMappings, CallbackRecipient output) {
 		this.indexLocation = indexLocation;
 		this.baseDirectory = baseDirectory;
 		this.callbackRecipient = output;
 		try {
-            this.docProcessingFactory = new DocumentProcessingFactory(docHandlerRegistry);
+            this.docProcessingFactory = new DocumentProcessingFactory(documentMappings);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -156,5 +157,13 @@ public class Indexer implements Runnable {
 		if(this.callbackRecipient != null) {
 			this.callbackRecipient.showFeedbackMessage(string);
 		}
+    }
+
+    public List getDocumentMappings() {
+    	return this.docProcessingFactory.getDocumentMappings();
     }    
+
+	public void setDocumentMappings(List documentMappings) {
+		this.docProcessingFactory.setDocumentMappings(documentMappings);
+	}
 }

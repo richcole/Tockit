@@ -15,13 +15,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.lucene.index.IndexWriter;
 import org.tockit.docco.GlobalConstants;
 import org.tockit.docco.indexer.DocumentHandlerMapping;
-import org.tockit.docco.indexer.DocumentHandlerRegistry;
 import org.tockit.docco.indexer.Indexer;
 import org.tockit.docco.indexer.Indexer.CallbackRecipient;
 
@@ -36,23 +36,27 @@ public class Index {
 	private File baseDirectory;
 	private Indexer indexer;
 	private Thread indexThread;
-	private DocumentHandlerRegistry fileMappings;
 	private int indexingPriority = Thread.MIN_PRIORITY;
 	private CallbackRecipient callbackRecipient;
 	
-    public static Index openIndex(String name, File indexDirectory, Indexer.CallbackRecipient callbackRecipient) throws IOException {
+    public static Index openIndex(String name, File indexDirectory, Indexer.CallbackRecipient callbackRecipient) 
+    				throws FileNotFoundException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 		String[] paths = getLinesOfFile(getContentsFile(indexDirectory, name));
 		try {
 			File baseDirectory = new File(paths[0]); 
 			File mappingsFile = getMappingsFile(indexDirectory, name);
-			DocumentHandlerRegistry fileMappings;
+			Index retVal;
 			if(mappingsFile.exists()) {
-				///@todo move the load/save code into the DocumentHandlerRegistry and give it the file instead
-				fileMappings = new DocumentHandlerRegistry(getLinesOfFile(mappingsFile));
+				List documentMappings = new ArrayList();
+				String[] mappings = getLinesOfFile(mappingsFile);
+				for (int i = 0; i < mappings.length; i++) {
+					documentMappings.add(new DocumentHandlerMapping(mappings[i]));
+				}
+				retVal = new Index(name, indexDirectory, baseDirectory, documentMappings, callbackRecipient);
 			} else {
-				fileMappings = new DocumentHandlerRegistry();
+				retVal = new Index(name, indexDirectory, baseDirectory, Arrays.asList(GlobalConstants.DEFAULT_MAPPINGS), 
+				    			   callbackRecipient);
 			}
-			Index retVal = new Index(name, indexDirectory, baseDirectory, fileMappings, callbackRecipient);
 			retVal.callbackRecipient = callbackRecipient;
 			return retVal;
 		} catch (ArrayIndexOutOfBoundsException e) {
@@ -60,14 +64,14 @@ public class Index {
 		}
 	}
 	
-	public static Index createIndex(String name, File indexDirectory, File baseDirectory, DocumentHandlerRegistry fileMappings, 
+    public static Index createIndex(String name, File indexDirectory, File baseDirectory, List documentMappings, 
 									Indexer.CallbackRecipient callbackRecipient) throws IOException {
 		createDirPath(indexDirectory);
 		IndexWriter writer = new IndexWriter(new File(indexDirectory, name),
 											 GlobalConstants.DEFAULT_ANALYZER,
 											 true);
 		writer.close();
-		Index retVal = new Index(name, indexDirectory, baseDirectory, fileMappings, callbackRecipient);
+		Index retVal = new Index(name, indexDirectory, baseDirectory, documentMappings, callbackRecipient);
 		retVal.callbackRecipient = callbackRecipient;
 		retVal.updateIndex();
 		return retVal;
@@ -91,15 +95,17 @@ public class Index {
 			throw new IllegalArgumentException("Priority argument too high");
 		}
     	this.indexingPriority = priority;
-    	this.indexThread.setPriority(priority);
+    	if(this.indexThread != null) {
+			this.indexThread.setPriority(priority);
+    	}
     }
 
-    private Index(String name, File indexDirectory, File baseDirectory, DocumentHandlerRegistry fileMappings, Indexer.CallbackRecipient callbackRecipient) throws IOException {
+    private Index(String name, File indexDirectory, File baseDirectory, List documentMappings,
+    			  Indexer.CallbackRecipient callbackRecipient) throws IOException {
     	this.name = name;
 		this.indexLocation = new File(indexDirectory, name);
 		this.baseDirectory = baseDirectory;
-		this.fileMappings = fileMappings;
-        this.indexer = new Indexer(this.indexLocation, baseDirectory, this.fileMappings, callbackRecipient);
+        this.indexer = new Indexer(this.indexLocation, baseDirectory, documentMappings, callbackRecipient);
 	}
 
 	private static File getContentsFile(File indexLocation, String indexName) {
@@ -157,8 +163,7 @@ public class Index {
 			out.close();
 			out = new PrintStream(new FileOutputStream(getMappingsFile()));
 			
-            List documentMappingList = this.fileMappings.getDocumentMappingList();
-            Iterator it = documentMappingList.iterator();
+            Iterator it = this.indexer.getDocumentMappings().iterator();
             while (it.hasNext()) {
             	DocumentHandlerMapping cur = (DocumentHandlerMapping) it.next();
             	out.println(cur.getSerialization());
@@ -169,9 +174,13 @@ public class Index {
 		}
 	}
 	
-    public DocumentHandlerRegistry getDocHandlersRegistry() {
-        return fileMappings;
+    public List getDocumentMappings() {
+        return this.indexer.getDocumentMappings();
     }
+
+	public void setDocumentMappings(List documentMappings) {
+		this.indexer.setDocumentMappings(documentMappings);
+	}
 
 	private static void createDirPath(File file) {
 		if (!file.exists()) {
@@ -226,5 +235,5 @@ public class Index {
         }
 
 		this.callbackRecipient.showFeedbackMessage("Index '" + getName() + "' deleted");
-   }
+    }
 }
