@@ -13,6 +13,8 @@ extern "C" {
 
 #include <string>
 
+// #define SARL_TEST_TRACE_OUTPUT
+
 void print_set(std::string const& s, Sarl_SetIterator *curr) 
 {
   fprintf(stdout, s.c_str());
@@ -52,8 +54,10 @@ int main(int num_args, char **args)
   SARL_LATTICE_ITERATOR_FOR(it) {
     A = sarl_lattice_iterator_extent(it);
     B = sarl_lattice_iterator_intent(it);
+#ifdef SARL_TEST_TRACE_OUTPUT
     print_set("Extent: ", A);
     print_set("Intent: ", B);
+#endif
     sarl_set_iterator_decr_ref(A);
     sarl_set_iterator_decr_ref(B);
   };
@@ -62,4 +66,6 @@ int main(int num_args, char **args)
   sarl_relation_iterator_decr_ref(r_it);
   sarl_context_iterator_decr_ref(K);
   sarl_lattice_iterator_decr_ref(it);
+
+  return 0;
 };

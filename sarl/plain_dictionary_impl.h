@@ -1,5 +1,5 @@
-#ifndef SARL_DICTIONARY_IMPL_H
-#define SARL_DICTIONARY_IMPL_H
+#ifndef SARL_PLAIN_DICTIONARY_IMPL_H
+#define SARL_PLAIN_DICTIONARY_IMPL_H
 
 #include "dictionary_impl.h"
 
@@ -8,8 +8,11 @@
 
 struct Sarl_PlainDictionary : Sarl_Dictionary
 {
-	std::map<Sarl_Index,std::string>  label_map;
-	std::map<std::string, Sarl_Index> index_map;
+  typedef std::map<Sarl_Index,std::string> LabelMap;
+  typedef std::map<std::string, Sarl_Index> IndexMap;
+
+  LabelMap label_map;
+  IndexMap index_map;
 };
 
 #endif

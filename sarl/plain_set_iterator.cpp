@@ -1,4 +1,4 @@
-extern "C" {
+ extern "C" {
 
 #include <sarl/set.h>
 #include <sarl/set_iterator.h>

@@ -9,8 +9,19 @@ typedef char Sarl_Char;
 typedef short Sarl_Short;
 
 /* construction of set objects */
+
 extern struct Sarl_String *
   sarl_string_create();
+
+extern struct Sarl_String *
+  sarl_string_create_from_chars(
+    Sarl_Char const* s, Sarl_Index length
+  );
+
+extern struct Sarl_String *
+  sarl_string_create_from_shorts(
+    Sarl_Short const* s, Sarl_Index length
+  );
 
 extern struct Sarl_String *
   sarl_string_copy(
@@ -53,8 +64,8 @@ extern struct Sarl_String *
 
 extern struct Sarl_String *
   sarl_string_release_ownership(
-		struct Sarl_String *s
-	);
+    struct Sarl_String *s
+  );
 
 /* reference counting interface */
 
@@ -65,7 +76,7 @@ extern void
 
 extern void 
   sarl_string_incr_ref(
-		struct Sarl_String *s
-	);
+    struct Sarl_String *s
+  );
 
 #endif

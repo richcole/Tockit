@@ -28,7 +28,10 @@ OBJECTS = \
   transitive_relation \
   lattice \
   cached_lattice_iterator \
-  assert 
+  assert \
+  dictionary \
+  plain_dictionary \
+  dictionary_indexes_set_iterator 
 
 TESTS = \
   test_set \
@@ -43,7 +46,8 @@ TESTS = \
   test_lectic_001 \
   test_lectic_002 \
   test_lectic_003 \
-  test_lattice_001
+  test_lattice_001 \
+  test_dictionary_001
 
 PUBLIC_HEADERS = \
   cpp/Set.h \
@@ -178,14 +182,6 @@ java_test: java/TestSarl.class $(JAVA_SARL_LIB)
 
 cpp_test: libs
 	$(MAKE) -C cpp test
-
-clean: java_clean python_clean cpp_clean lib_clean
-	rm -f *.o
-
-cpp_clean:
-	cd cpp; make clean
-
-python_clean:
 
 # Clean.
 

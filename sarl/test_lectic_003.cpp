@@ -12,6 +12,8 @@ extern "C" {
 #include <sarl/test.h>
 #include "args.cpp"
 
+// #define SARL_TEST_TRACE_OUTPUT
+
 void print_extent(Sarl_SetIterator *curr) 
 {
   fprintf(stdout, "Extent: ");
@@ -61,7 +63,9 @@ int main(int num_args, char **args)
     curr = next;
 
     if ( curr != 0 ) {
+#ifdef SARL_TEST_TRACE_OUTPUT
       print_extent(curr);
+#endif
     }
   } while ( curr != 0 );
 

@@ -21,6 +21,22 @@ struct Sarl_String *
 };
 
 struct Sarl_String *
+  sarl_string_create_from_chars(Sarl_Char const* chars, Sarl_Index length)
+{
+  struct Sarl_String *result = sarl_string_create();
+  sarl_string_set_chars(result, chars, length);
+  return result;
+};
+
+struct Sarl_String *
+  sarl_string_create_from_shorts(Sarl_Short const* shorts, Sarl_Index length)
+{
+  struct Sarl_String *result = sarl_string_create();
+  sarl_string_set_shorts(result, shorts, length);
+  return result;
+};
+
+struct Sarl_String *
   sarl_string_copy(
     struct Sarl_String *s
   )
@@ -76,23 +92,28 @@ void
 
     s->length = length;
     memcpy(s->char_buf, str, length * sizeof(*str));
+    s->char_buf[length] = 0;
     for(i=0;i<length;++i) {
       s->short_buf[i] = s->char_buf[i];
     }
+    s->short_buf[length] = 0;
   }
   else {
-    s->capacity = length;
+    s->capacity = length + 1;
     s->length = length;
     
     if ( s->char_buf != 0 ) {
       delete s->char_buf;
     };
-    s->char_buf = new Sarl_Char[length];
-    s->short_buf = new Sarl_Short[length];
-    memcpy(s->char_buf, str, length * sizeof(str));
+    s->char_buf = new Sarl_Char[s->capacity];
+    s->short_buf = new Sarl_Short[s->capacity];
+    memcpy(s->char_buf, str, length * sizeof(*str));
+    s->char_buf[length] = 0;
+    
     for(i=0;i<length;++i) {
       s->short_buf[i] = s->char_buf[i];
     }
+    s->short_buf[length] = 0;
   }
 };
 
@@ -122,23 +143,27 @@ void
 
     s->length = length;
     memcpy(s->short_buf, str, length * sizeof(*str));
+    s->short_buf[length] = 0;
     for(i=0;i<length;++i) {
       s->char_buf[i] = s->short_buf[i];
     }
+    s->char_buf[length] = 0;
   }
   else {
-    s->capacity = length;
+    s->capacity = length + 1;
     s->length = length;
     
     if ( s->char_buf != 0 ) {
       delete s->char_buf;
     };
-    s->char_buf = new Sarl_Char[length];
-    s->short_buf = new Sarl_Short[length];
-    memcpy(s->short_buf, str, length * sizeof(str));
+    s->char_buf = new Sarl_Char[s->capacity];
+    s->short_buf = new Sarl_Short[s->capacity];
+    memcpy(s->short_buf, str, length * sizeof(*str));
+    s->short_buf[length] = 0;
     for(i=0;i<length;++i) {
       s->char_buf[i] = s->short_buf[i];
     }
+    s->char_buf[length] = 0;
   }
 };
 
@@ -172,10 +197,10 @@ void sarl_string_decr_ref(struct Sarl_String *s)
 {
   if ( sarl_ref_count_decr(&s->ref_count) ) {
     if ( s->char_buf ) {
-      delete s->char_buf;
+      delete[] s->char_buf;
     }
     if ( s->short_buf ) {
-      delete s->short_buf;
+      delete[] s->short_buf;
     }
     delete s;
   };

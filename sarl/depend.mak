@@ -40,7 +40,19 @@ objs/context_iterator.o: ../sarl/ref_count.h ../sarl/iterator_impl.h
 objs/context_iterator.o: ../sarl/ownership.h ../sarl/test.h
 objs/context_iterator.o: ../sarl/context_iterator_impl.h
 objs/dictionary.o: ../sarl/dictionary.h ../sarl/index.h ../sarl/string.h
-objs/dictionary.o: ../sarl/dictionary_impl.h ../sarl/test.h
+objs/dictionary.o: ../sarl/dictionary_impl.h ../sarl/ref_count.h
+objs/dictionary.o: ../sarl/ownership.h ../sarl/test.h
+objs/dictionary_indexes_set_iterator.o: ../sarl/config.h
+objs/dictionary_indexes_set_iterator.o: ../sarl/dictionary_indexes_set_iterator.h
+objs/dictionary_indexes_set_iterator.o: ../sarl/set.h ../sarl/index.h
+objs/dictionary_indexes_set_iterator.o: ../sarl/set_iterator.h ../sarl/ref_count.h
+objs/dictionary_indexes_set_iterator.o: ../sarl/dictionary.h ../sarl/set_impl.h
+objs/dictionary_indexes_set_iterator.o: ../sarl/set_iterator_impl.h
+objs/dictionary_indexes_set_iterator.o: ../sarl/iterator_impl.h
+objs/dictionary_indexes_set_iterator.o: ../sarl/ownership.h ../sarl/test.h
+objs/dictionary_indexes_set_iterator.o: ../sarl/dictionary_impl.h
+objs/dictionary_indexes_set_iterator.o: ../sarl/plain_dictionary_impl.h
+objs/dictionary_indexes_set_iterator.o: dictionary_impl.h
 objs/domain_set_iterator.o: ../sarl/set.h ../sarl/index.h ../sarl/set_iterator.h
 objs/domain_set_iterator.o: ../sarl/ref_count.h ../sarl/set_impl.h
 objs/domain_set_iterator.o: ../sarl/domain_set_iterator_impl.h
@@ -109,9 +121,12 @@ objs/lattice_iterator.o: ../sarl/iterator_impl.h ../sarl/ownership.h
 objs/lattice_iterator.o: ../sarl/test.h ../sarl/lattice_iterator_impl.h
 objs/lectic.o: ../sarl/set.h ../sarl/index.h ../sarl/set_iterator.h
 objs/lectic.o: ../sarl/lectic.h ../sarl/pair.h ../sarl/context_iterator.h
-objs/plain_dictionary.o: ../sarl/dictionary.h ../sarl/index.h ../sarl/string.h
-objs/plain_dictionary.o: ../sarl/ref_count.h ../sarl/dictionary_impl.h
-objs/plain_dictionary.o: ../sarl/test.h
+objs/plain_dictionary.o: ../sarl/config.h ../sarl/dictionary.h ../sarl/index.h
+objs/plain_dictionary.o: ../sarl/string.h ../sarl/ref_count.h
+objs/plain_dictionary.o: ../sarl/dictionary_indexes_set_iterator.h
+objs/plain_dictionary.o: ../sarl/dictionary_impl.h ../sarl/ownership.h
+objs/plain_dictionary.o: ../sarl/test.h ../sarl/plain_dictionary_impl.h
+objs/plain_dictionary.o: dictionary_impl.h
 objs/plain_lattice_iterator.o: ../sarl/config.h ../sarl/concept_iterator.h
 objs/plain_lattice_iterator.o: ../sarl/index.h ../sarl/context_iterator.h
 objs/plain_lattice_iterator.o: ../sarl/pair.h ../sarl/lattice_iterator.h
@@ -158,8 +173,10 @@ objs/set_minus_set_iterator.o: ../sarl/set_impl.h
 objs/set_minus_set_iterator.o: ../sarl/set_minus_set_iterator_impl.h
 objs/set_minus_set_iterator.o: ../sarl/set_iterator_impl.h ../sarl/iterator_impl.h
 objs/set_minus_set_iterator.o: ../sarl/ownership.h ../sarl/test.h
-objs/string.o: ../sarl/string.h ../sarl/ref_count.h string_impl.h
+objs/string.o: ../sarl/string.h ../sarl/index.h ../sarl/ref_count.h string_impl.h
 objs/string.o: ../sarl/ownership.h iterator_impl.h ../sarl/test.h
+objs/test_dictionary_001.o: ../sarl/dictionary.h ../sarl/index.h ../sarl/string.h
+objs/test_dictionary_001.o: ../sarl/test.h ../sarl/set_iterator.h
 objs/test_lattice_001.o: ../sarl/relation.h ../sarl/index.h ../sarl/pair.h
 objs/test_lattice_001.o: ../sarl/relation_iterator.h ../sarl/set_iterator.h
 objs/test_lattice_001.o: ../sarl/set.h ../sarl/context_iterator.h
@@ -254,7 +271,19 @@ objs_d/context_iterator.o: ../sarl/ref_count.h ../sarl/iterator_impl.h
 objs_d/context_iterator.o: ../sarl/ownership.h ../sarl/test.h
 objs_d/context_iterator.o: ../sarl/context_iterator_impl.h
 objs_d/dictionary.o: ../sarl/dictionary.h ../sarl/index.h ../sarl/string.h
-objs_d/dictionary.o: ../sarl/dictionary_impl.h ../sarl/test.h
+objs_d/dictionary.o: ../sarl/dictionary_impl.h ../sarl/ref_count.h
+objs_d/dictionary.o: ../sarl/ownership.h ../sarl/test.h
+objs_d/dictionary_indexes_set_iterator.o: ../sarl/config.h
+objs_d/dictionary_indexes_set_iterator.o: ../sarl/dictionary_indexes_set_iterator.h
+objs_d/dictionary_indexes_set_iterator.o: ../sarl/set.h ../sarl/index.h
+objs_d/dictionary_indexes_set_iterator.o: ../sarl/set_iterator.h ../sarl/ref_count.h
+objs_d/dictionary_indexes_set_iterator.o: ../sarl/dictionary.h ../sarl/set_impl.h
+objs_d/dictionary_indexes_set_iterator.o: ../sarl/set_iterator_impl.h
+objs_d/dictionary_indexes_set_iterator.o: ../sarl/iterator_impl.h
+objs_d/dictionary_indexes_set_iterator.o: ../sarl/ownership.h ../sarl/test.h
+objs_d/dictionary_indexes_set_iterator.o: ../sarl/dictionary_impl.h
+objs_d/dictionary_indexes_set_iterator.o: ../sarl/plain_dictionary_impl.h
+objs_d/dictionary_indexes_set_iterator.o: dictionary_impl.h
 objs_d/domain_set_iterator.o: ../sarl/set.h ../sarl/index.h ../sarl/set_iterator.h
 objs_d/domain_set_iterator.o: ../sarl/ref_count.h ../sarl/set_impl.h
 objs_d/domain_set_iterator.o: ../sarl/domain_set_iterator_impl.h
@@ -323,9 +352,12 @@ objs_d/lattice_iterator.o: ../sarl/iterator_impl.h ../sarl/ownership.h
 objs_d/lattice_iterator.o: ../sarl/test.h ../sarl/lattice_iterator_impl.h
 objs_d/lectic.o: ../sarl/set.h ../sarl/index.h ../sarl/set_iterator.h
 objs_d/lectic.o: ../sarl/lectic.h ../sarl/pair.h ../sarl/context_iterator.h
-objs_d/plain_dictionary.o: ../sarl/dictionary.h ../sarl/index.h ../sarl/string.h
-objs_d/plain_dictionary.o: ../sarl/ref_count.h ../sarl/dictionary_impl.h
-objs_d/plain_dictionary.o: ../sarl/test.h
+objs_d/plain_dictionary.o: ../sarl/config.h ../sarl/dictionary.h ../sarl/index.h
+objs_d/plain_dictionary.o: ../sarl/string.h ../sarl/ref_count.h
+objs_d/plain_dictionary.o: ../sarl/dictionary_indexes_set_iterator.h
+objs_d/plain_dictionary.o: ../sarl/dictionary_impl.h ../sarl/ownership.h
+objs_d/plain_dictionary.o: ../sarl/test.h ../sarl/plain_dictionary_impl.h
+objs_d/plain_dictionary.o: dictionary_impl.h
 objs_d/plain_lattice_iterator.o: ../sarl/config.h ../sarl/concept_iterator.h
 objs_d/plain_lattice_iterator.o: ../sarl/index.h ../sarl/context_iterator.h
 objs_d/plain_lattice_iterator.o: ../sarl/pair.h ../sarl/lattice_iterator.h
@@ -372,8 +404,10 @@ objs_d/set_minus_set_iterator.o: ../sarl/set_impl.h
 objs_d/set_minus_set_iterator.o: ../sarl/set_minus_set_iterator_impl.h
 objs_d/set_minus_set_iterator.o: ../sarl/set_iterator_impl.h ../sarl/iterator_impl.h
 objs_d/set_minus_set_iterator.o: ../sarl/ownership.h ../sarl/test.h
-objs_d/string.o: ../sarl/string.h ../sarl/ref_count.h string_impl.h
+objs_d/string.o: ../sarl/string.h ../sarl/index.h ../sarl/ref_count.h string_impl.h
 objs_d/string.o: ../sarl/ownership.h iterator_impl.h ../sarl/test.h
+objs_d/test_dictionary_001.o: ../sarl/dictionary.h ../sarl/index.h ../sarl/string.h
+objs_d/test_dictionary_001.o: ../sarl/test.h ../sarl/set_iterator.h
 objs_d/test_lattice_001.o: ../sarl/relation.h ../sarl/index.h ../sarl/pair.h
 objs_d/test_lattice_001.o: ../sarl/relation_iterator.h ../sarl/set_iterator.h
 objs_d/test_lattice_001.o: ../sarl/set.h ../sarl/context_iterator.h

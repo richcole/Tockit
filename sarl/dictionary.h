@@ -1,5 +1,5 @@
-#ifndef SARL_STRING_H
-#define SARL_STRING_H
+#ifndef SARL_DICTIONARY_H
+#define SARL_DICTIONARY_H
 
 #include <sarl/index.h>
 
@@ -22,10 +22,20 @@ extern Sarl_Index
 extern Sarl_String*
   sarl_dictionary_get_string(
     struct Sarl_Dictionary *d,
-    struct Sarl_Index index);
+    Sarl_Index index);
 
 extern struct Sarl_SetIterator*
   sarl_dictionary_get_indexes(
+    struct Sarl_Dictionary *d
+  );
+
+extern void
+  sarl_dictionary_incr_ref(
+    struct Sarl_Dictionary *d
+  );
+
+extern void
+  sarl_dictionary_decr_ref(
     struct Sarl_Dictionary *d
   );
 
