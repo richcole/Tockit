@@ -8,6 +8,7 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Rectangle;
@@ -58,14 +59,14 @@ public class DoccoMainFrame extends JFrame {
 	private class QueryFinishedEventHandler implements EventBrokerListener {
 		public void processEvent(Event event) {
 			QueryWithResultSet queryResultSet = (QueryWithResultSet) event.getSubject();
-			String str = "";
+			StringBuffer str = new StringBuffer(1000000);
 			Iterator it = queryResultSet.iterator();
 			while (it.hasNext()) {
 				QueryWithResult cur = (QueryWithResult) it.next();
-				str = str + "Query: " + cur.getQuery() + "\n";
-				str = str + "\t" + cur.getResultSet();
+				str.append("Query: " + cur.getQuery() + "\n");
+				str.append("\t" + cur.getResultSet());
 			}
-			resultArea.setText(str);
+			resultArea.setText(str.toString());
 		}
 	}	
 	
@@ -173,7 +174,9 @@ public class DoccoMainFrame extends JFrame {
 	
 	private void doQuery() {
 		if (this.searchButton.isEnabled()) {
+			this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 			this.eventBroker.processEvent(new QueryEvent(this.queryField.getText(), true));
+			this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}
 	}
 }
