@@ -31,18 +31,8 @@ PUBLIC_HEADERS = \
   relation.h \
   relation_iterator.h 
 
-JAVA_INC   = \
-  /usr/java/j2sdk1.4.0/include \
-  /usr/java/j2sdk1.4.0/include/linux
-
-PYTHON_INC = \
-  /usr/include/python1.5/
-
-SWIG_INC = \
-  /usr/local/include
-
-target: python/sarlcmodule.so java/sarl.so
-libs: lib_d/libsarl.so lib_d/libsarl.so
+target: python/sarlcmodule.so java/libsarl.so
+libs: lib lib_d lib_d/libsarl.so lib/libsarl.so lib_d/libsarl++.so lib/libsarl++.so
 
 test: target test_base test_python test_java test_cpp
 
@@ -51,11 +41,11 @@ test_base: $(TESTS:%=%.exe)
 	for x in $^ ; do echo $$x:; ./$$x || exit -1 ; done
 
 
-python/sarlcmodule.so: $(OBJECTS:%=%.o) python/sarl_wrap.o libs
+python/sarlcmodule.so: libs $(OBJECTS:%=%.o) python/sarl_wrap.o
 	$(CC) $(DEBUG) -shared -o $@ $(OBJECTS:%=%.o) python/sarl_wrap.o \
          -Llib_d -lstdc++ -lsarl++ -lsarl
 
-java/sarl.so: $(OBJECTS:%=%.o) java/sarl_wrap.o libs
+java/libsarl.so: $(OBJECTS:%=%.o) java/sarl_wrap.o libs
 	$(CC) $(DEBUG) -shared -o $@ $(OBJECTS:%=%.o) java/sarl_wrap.o \
           -Llib_d -lstdc++ -lsarl++ -lsarl
 
@@ -101,7 +91,7 @@ java/TestSarl.class: java/TestSarl.java
 	cd java; javac TestSarl.java
 
 test_java: java/TestSarl.class
-	LD_LIBRARY_PATH=`pwd`/lib_d:$$LD_LIBRARY_PATH; \
+	LD_LIBRARY_PATH=.:`pwd`/lib_d:$$LD_LIBRARY_PATH; \
 	cd java; java TestSarl
 
 test_cpp: 
