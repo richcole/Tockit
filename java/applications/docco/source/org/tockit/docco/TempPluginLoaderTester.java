@@ -58,6 +58,7 @@ public class TempPluginLoaderTester {
 			System.out.println("getResource(doc/UQlogo.jpg): " + pluginClassLoader.getResource("doc/UQlogo.jpg"));
 			System.out.println("getResource(test/doc.jar/!/doc/UQlogo.jpg): " + pluginClassLoader.getResource("test/doc.jar/!/doc/UQlogo.jpg"));
 
+			System.out.println("\nloadClass(org.pdfbox.pdfparser.PDFParser): " + pluginClassLoader.loadClass("org.pdfbox.pdfparser.PDFParser"));
 
 				
 //			Class[] classes = pluginClassLoader.findClassesImplementingGivenIterface(DocumentHandler.class);

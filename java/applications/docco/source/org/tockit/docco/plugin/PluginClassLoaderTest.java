@@ -9,7 +9,6 @@ package org.tockit.docco.plugin;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -74,13 +73,8 @@ public class PluginClassLoaderTest extends TestCase {
 
 	public void testFindClassesImplementingGivenIterface() throws Exception {
 		Class[] classes = classLoader.findClassesImplementingGivenIterface(DocumentHandler.class);
-		System.out.println("\n\n");
-		for (int i = 0; i < classes.length; i++) {
-			Class class1 = classes[i];
-			DocumentHandler docHandler = (DocumentHandler) class1.newInstance();
-			System.out.println("instantiated doc handler: " + docHandler.getDisplayName());
-			docHandler.parseDocument(new URL("file:/E:/mumsWork/docco-test-data/papers/input.pdf"));
-		}
-		
+		assertEquals("should be able to find and load some classes implementing given interface ",
+										true, classes.length != 0);
+		/// @todo should we also test if we can instantiate found classes?
 	}
 }

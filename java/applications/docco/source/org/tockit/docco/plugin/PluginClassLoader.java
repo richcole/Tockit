@@ -17,6 +17,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
@@ -35,7 +36,18 @@ import java.util.zip.ZipFile;
  * @see findClass(String name) and findResource(String name)   
  */
 public class PluginClassLoader extends ClassLoader {
+
 	private static final Logger logger = Logger.getLogger(PluginClassLoader.class.getName());
+
+	private File pluginsDirLocation;
+
+	private List foundResources = new ArrayList();
+	
+	/**
+	 * keys - resource.getRelativePath()
+	 * values - corresponding class
+	 */
+	private Hashtable loadedClassesMap = new Hashtable();
 	
 	private interface Resource {
 		public byte[] getData() throws IOException;
@@ -132,8 +144,6 @@ public class PluginClassLoader extends ClassLoader {
 		}
 	}
 	
-	private List foundResources = new ArrayList();
-	private File pluginsDirLocation;
 		
 	/**
 	 * @param file - path where to start looking for classes
@@ -218,7 +228,7 @@ public class PluginClassLoader extends ClassLoader {
 	 */
 	public Class findClass(String name) throws ClassNotFoundException {
 		logger.entering("PluginClassLoader", "findClass", name);
-		Resource resource = findResourceLocation(name.replace('.','/') + ".class");
+		Resource resource = findResourceLocation(name.replace('.','/').replace('\\','/') + ".class");
 		if (resource == null) {
 			throw new ClassNotFoundException ("Couldn't find class with name " + name);
 		}
@@ -226,9 +236,13 @@ public class PluginClassLoader extends ClassLoader {
 	 }
 	 
 	 private Class loadClass (Resource resource) throws ClassNotFoundException {
+	 	if (this.loadedClassesMap.containsKey(resource.getRelativePath())) {
+	 		return (Class) this.loadedClassesMap.get(resource.getRelativePath());
+	 	}	 		
 		try {
 			byte [] b = resource.getData();
 			Class resClass = defineClass(null, b, 0, b.length);
+			this.loadedClassesMap.put(resource.getRelativePath(), resClass);
 			return resClass;	 	
 		} catch (IOException e) {
 			throw new ClassNotFoundException("Couldn't find resource " + resource.getRelativePath(), e);			
