@@ -289,13 +289,11 @@ public class DoccoMainFrame extends JFrame {
 			DiagramNode node = nodeView.getDiagramNode();
 			Concept concept = node.getConcept();
 			resListModel.removeAllElements();
-			System.out.println("\nextent size: " + concept.getExtentSize() + ", obj contingent: " + concept.getObjectContingentSize());
 			Iterator extentIterator = concept.getExtentIterator();
 			while (extentIterator.hasNext()) {
 				HitReference cur = (HitReference) extentIterator.next();
 				resListModel.addElement(cur);
 			}
-			System.out.println("resListModel size: " + resListModel.size());
 			
 			/// @todo add object contingent display
 			
@@ -332,7 +330,6 @@ public class DoccoMainFrame extends JFrame {
 				"<br>Score: " + hitRef.getScore() +
 				"</p>" + "</html>";
 			this.setText(entryText);	
-			System.out.println(entryText + "\n");	
 			
 			setFont(list.getFont());
 			return this;
