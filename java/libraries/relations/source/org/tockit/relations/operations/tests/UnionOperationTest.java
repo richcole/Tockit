@@ -52,11 +52,11 @@ public class UnionOperationTest extends AbstractRelationOperationTest {
 		testRelTwo.addTuple(new String[]{"b","b","c"});
 		testRelTwo.addTuple(new String[]{"a","b","b"});
 
-		one.input = new Relation[]{testRelOne, testRelTwo};
-		one.expectedOutputArity = testRelOne.getArity();
-		one.expectedOutputSize = testRelOne.getSize() + testRelTwo.getSize();
-		one.expectedTuples = new Object[][]{new String[]{"1","6","1"}, new String[]{"b","b","c"}};
+		two.input = new Relation[]{testRelOne, testRelTwo};
+		two.expectedOutputArity = testRelOne.getArity();
+		two.expectedOutputSize = testRelOne.getSize() + testRelTwo.getSize();
+		two.expectedTuples = new Object[][]{new String[]{"1","6","1"}, new String[]{"b","b","c"}};
     	
-        return new RelationTestSetup[]{one};
+        return new RelationTestSetup[]{one, two};
     }
 }
