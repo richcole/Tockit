@@ -20,6 +20,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 
+// @todo it might be nice to have at least the option to index the attribute values, too
 class SaxTextContentParser extends DefaultHandler {
     private StringBuffer elementBuffer;
 	private StringBuffer contentBuffer;
@@ -53,5 +54,6 @@ class SaxTextContentParser extends DefaultHandler {
 
 	public void endElement(String uri, String localName, String qname) throws SAXException	{
 		contentBuffer.append(elementBuffer);
+		contentBuffer.append(" ");
 	}
 }
