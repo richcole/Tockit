@@ -7,11 +7,11 @@
  */
 package org.tockit.docco;
 
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.ColorUIResource;
 
-import net.sourceforge.toscanaj.ToscanaJ;
 import net.sourceforge.toscanaj.gui.dialog.ErrorDialog;
 
 import org.tockit.docco.gui.DoccoMainFrame;
@@ -21,7 +21,7 @@ import com.jgoodies.plaf.plastic.theme.SkyBlue;
 
 public class Docco {
 	public static void main (String[] args) {
-		ToscanaJ.testJavaVersion();
+		testJavaVersion();
 		boolean forceIndexAccess = false;
 		boolean usePlatformLF = false;
 		for (int i = 0; i < args.length; i++) {
@@ -85,4 +85,20 @@ public class Docco {
 			ErrorDialog.showError(null, e, "Error");
 		}
 	}
+
+
+    /**
+     * Tests if we are running at least JRE 1.4.0
+     */
+    public static void testJavaVersion() {
+        String versionString = System.getProperty("java.class.version","44.0");
+        if("48.0".compareTo(versionString) > 0) {
+            JOptionPane.showMessageDialog(null,"This program requires a Java Runtime Environment\n" +
+                "with version number 1.4.0 or above.\n\n" +
+                "Up to date versions of Java can be found at\n" +
+                "http://java.sun.com.",
+                "Java installation too old", JOptionPane.ERROR_MESSAGE);
+            System.exit(1);
+        }
+    }
 }

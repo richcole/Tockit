@@ -68,11 +68,13 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
+import net.sourceforge.toscanaj.controller.cernato.NDimNodeMovementEventListener;
 import net.sourceforge.toscanaj.controller.fca.ConceptInterpretationContext;
 import net.sourceforge.toscanaj.controller.fca.DiagramHistory;
 import net.sourceforge.toscanaj.controller.fca.DirectConceptInterpreter;
 import net.sourceforge.toscanaj.dbviewer.BrowserLauncher;
 import net.sourceforge.toscanaj.gui.dialog.ErrorDialog;
+import net.sourceforge.toscanaj.model.context.FCAElement;
 import net.sourceforge.toscanaj.model.database.AggregateQuery;
 import net.sourceforge.toscanaj.model.diagram.Diagram2D;
 import net.sourceforge.toscanaj.model.diagram.DiagramNode;
@@ -84,6 +86,7 @@ import net.sourceforge.toscanaj.view.diagram.NodeView;
 import org.apache.lucene.queryParser.ParseException;
 import org.tockit.canvas.CanvasBackground;
 import org.tockit.canvas.CanvasItem;
+import org.tockit.canvas.events.CanvasItemDraggedEvent;
 import org.tockit.canvas.events.CanvasItemSelectedEvent;
 import org.tockit.events.Event;
 import org.tockit.events.EventBroker;
@@ -183,7 +186,8 @@ public class DoccoMainFrame extends JFrame {
 		}
 
 		while (iterator.hasNext()) {
-			HitReference reference = (HitReference) iterator.next();
+			FCAElement object = (FCAElement) iterator.next();
+            HitReference reference = (HitReference) (object).getData();
 			String path = reference.getDocument().get(GlobalConstants.FIELD_DOC_PATH);
 			StringTokenizer tokenizer = new StringTokenizer(path, File.separator);
 			StringBuffer curPath = new StringBuffer();
@@ -891,15 +895,19 @@ public class DoccoMainFrame extends JFrame {
 		this.diagramView.setQuery(AggregateQuery.COUNT_QUERY);
 		this.diagramView.setMinimumFontSize(12.0);
 		
-		this.diagramView.getController().getEventBroker().subscribe(new SelectionEventHandler(),
+		EventBroker eventBroker = this.diagramView.getController().getEventBroker();
+        eventBroker.subscribe(new SelectionEventHandler(),
 									CanvasItemSelectedEvent.class,
 									NodeView.class);
-		this.diagramView.getController().getEventBroker().subscribe(new SelectionEventHandler(),
+		eventBroker.subscribe(new SelectionEventHandler(),
 									CanvasItemSelectedEvent.class,
 									LabelView.class);
-		this.diagramView.getController().getEventBroker().subscribe(new SelectionEventHandler(),
-									CanvasItemSelectedEvent.class,
-									CanvasBackground.class);
+        eventBroker.subscribe(new SelectionEventHandler(),
+                                    CanvasItemSelectedEvent.class,
+                                    CanvasBackground.class);
+        eventBroker.subscribe(new NDimNodeMovementEventListener(),
+                                    CanvasItemDraggedEvent.class,
+                                    NodeView.class);
 
 		// create a JTree with some model containing at least two elements. Otherwise the layout
 		// is broken. True even for the JTree(Object[]) constructor. And the default constructor

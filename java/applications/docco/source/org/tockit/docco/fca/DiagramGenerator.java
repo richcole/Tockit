@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 import org.tockit.docco.query.HitReference;
 import org.tockit.docco.query.QueryWithResult;
@@ -21,20 +22,21 @@ import org.tockit.docco.query.util.QueryWithResultSet;
 
 import net.sourceforge.toscanaj.controller.ndimlayout.DefaultDimensionStrategy;
 import net.sourceforge.toscanaj.controller.ndimlayout.NDimLayoutOperations;
-import net.sourceforge.toscanaj.model.context.Attribute;
+import net.sourceforge.toscanaj.model.context.FCAElement;
+import net.sourceforge.toscanaj.model.context.FCAElementImplementation;
 import net.sourceforge.toscanaj.model.diagram.Diagram2D;
-import net.sourceforge.toscanaj.model.diagram.DiagramNode;
 import net.sourceforge.toscanaj.model.diagram.LabelInfo;
-import net.sourceforge.toscanaj.model.diagram.SimpleLineDiagram;
 import net.sourceforge.toscanaj.model.diagram.WriteableDiagram2D;
 import net.sourceforge.toscanaj.model.lattice.Concept;
 import net.sourceforge.toscanaj.model.lattice.ConceptImplementation;
 import net.sourceforge.toscanaj.model.lattice.Lattice;
+import net.sourceforge.toscanaj.model.ndimdiagram.NDimDiagram;
+import net.sourceforge.toscanaj.model.ndimdiagram.NDimDiagramNode;
 
 public class DiagramGenerator {
 	/**
 	 * @todo the code in here implements a more general notion of creating a lattice
-	 * diagramm from a set of attribute/set pairs. This is not specific to Docco and
+	 * diagramm from a set of FCAElement/set pairs. This is not specific to Docco and
 	 * could be reused. In math terms it models the mapping:
 	 * 
 	 *   { (m, m') | m \in M } --> B(G,M,I) with 
@@ -82,11 +84,11 @@ public class DiagramGenerator {
 					continue; // not a subconcept
 				}
 				if(concept.getExtentSize() == subconcept.getExtentSize()) { // not realized
-					// move attribute contingent down. We know there is an infimum on the
+					// move FCAElement contingent down. We know there is an infimum on the
 					// set of concepts with the same extent, so that is ok.
 					Iterator it = concept.getAttributeContingentIterator();
 					while(it.hasNext()) {
-						Attribute attribute = (Attribute) it.next();
+						FCAElement attribute = (FCAElement) it.next();
 						subconcept.addAttribute(attribute);
 					}
 					continue outerLoop;
@@ -127,20 +129,21 @@ public class DiagramGenerator {
 	}
 
 	private static WriteableDiagram2D createDiagram(Concept[] concepts,	Point2D[] baseVectors) {
-		WriteableDiagram2D diagram = new SimpleLineDiagram();
-		DiagramNode[] nodes = new DiagramNode[concepts.length];
+        Vector baseNdim = new Vector();
+        for (int i = 0; i < baseVectors.length; i++) {
+            baseNdim.add(baseVectors[i]);
+        }
+		NDimDiagram diagram = new NDimDiagram(baseNdim);
+        NDimDiagramNode[] nodes = new NDimDiagramNode[concepts.length];
 		for (int i = 0; i < concepts.length; i++) {
-			double x = 0;
-			double y = 0;
+            double[] vector = new double[baseVectors.length];
 			for (int j = 0; j < baseVectors.length; j++) {
 				int currentBit = 1<<j;
 				if ((i & currentBit) == currentBit) {
-					x += baseVectors[j].getX();
-					y += baseVectors[j].getY();
+                    vector[j]=1;
 				}
 			}
-			Point2D pos = new Point2D.Double(x,y);
-			nodes[i] = new DiagramNode(diagram, String.valueOf(i), pos, concepts[i],
+			nodes[i] = new NDimDiagramNode(diagram, String.valueOf(i), vector, concepts[i],
 												new LabelInfo(), new LabelInfo(), null);
 			diagram.addNode(nodes[i]);
 		}
@@ -181,7 +184,7 @@ public class DiagramGenerator {
 			for (int j = 0; j < n; j++) {
 				int currentBit = 1<<j;
 				if (i == currentBit) {
-					concept.addAttribute(new Attribute(queryResults[j].getLabel()));
+					concept.addAttribute(new FCAElementImplementation(queryResults[j].getLabel()));
 				}
 				HitReferencesSet currentHitReferences = queryResults[j].getResultSet();
 				if ((i & currentBit) == currentBit) {
@@ -192,7 +195,7 @@ public class DiagramGenerator {
 			}
 			for (Iterator iter = objectContingent.iterator(); iter.hasNext();) {
 				HitReference reference = (HitReference) iter.next();
-				concept.addObject(reference);
+				concept.addObject(new FCAElementImplementation(reference));
 			}
 			for( int j =0; j < numConcepts; j ++) {
 				if((i & j) == i) {
