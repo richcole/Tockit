@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="Compile Plugins" default="makeJars" basedir=".">
+<project name="Deploy Plugins" default="dist" basedir=".">
+	<description>
+		Compile and deploy all plugins
+	</description>
 
 	<!-- TODO have to change the way we get Docco stuff -->
 	<property name="docco.libs.dir" value="../libs"/>
-	<property name="docco.build.dir" value="../build/dev"/>
-	<property name="plugins.dist.dir" value="../pluginsDist"/>
+	<property name="docco.classes" value="../build/release"/>
+	<property name="docco.dist.dir" value="../dist"/>
+	
+	
+	<property name="plugins.dist.dir" value="${docco.dist.dir}/plugins"/>
 
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 	  <classpath>
@@ -20,58 +26,34 @@
         </dirset>
 	</path>	
 
-
-	<target name="cleanPlugins">
-		<delete dir="${plugins.dist.dir}"/>
-	    <foreach target="cleanPlugin" param="param">
+	<target name="clean">
+	    <foreach target="_cleanPlugin" param="plugin.dir">
 	    	<path refid="${plugins.paths}"/>
 		</foreach>
 	</target>
 	
-	<target name="makePluginsDist">
+	<target name="dist">
 		<mkdir dir="${plugins.dist.dir}"/>
-	    <foreach target="pluginDist" param="param">
+	    <foreach target="_pluginDist" param="plugin.dir">
 	    	<path refid="${plugins.paths}"/>
 	    </foreach>
 	</target>
 	
-	<!-- TODO need to check if docco is compiled so we can refer to its source -->	
-	<target name="makeJars">
-	    <foreach target="makePluginJar" param="param">
-	    	<path refid="${plugins.paths}"/>
-	    </foreach>
-	</target>
-
-	<target name="makePluginJar">
-		<ant antfile="${basedir}/buildPlugin.xml" dir="${param}" target="makeJar" inheritall="false">
-			<property name="plugin.name" value="${param}Plugin"/>
-			<property name="docco.build.dir" value="../${docco.build.dir}"/>
+	<target name="_pluginDist">
+		<basename property="plugin.dir.name" file="${plugin.dir}"/>
+		<ant antfile="${basedir}/buildPlugin.xml" dir="${plugin.dir}" target="dist" inheritall="false">
+			<property name="plugin.name" value="${plugin.dir.name}Plugin"/>
+			<property name="docco.classes" value="../${docco.classes}"/>
 		</ant>
+		<mkdir dir="${plugins.dist.dir}/${plugin.dir.name}"/>
+		<copy todir="${plugins.dist.dir}/${plugin.dir.name}">
+			<fileset dir="${plugin.dir}/dist"/>
+		</copy>
 	</target>
 	
-	<target name="pluginDist">
-		<echo>plugin path: ${param}</echo>
-		<!-- TODO shouldn't hardcode targetos -->
-		<pathconvert targetos="windows" property="relative.plugin.path" >
-			<path >
-				<pathelement location="${param}"/>
-			</path>
-		    <map from="${basedir}/" to=""/>
-		    <map from="${basedir}\" to=""/>
-	    </pathconvert>
-		<echo>rel plugin path: ${relative.plugin.path}</echo>
-		
-		<ant antfile="${basedir}/buildPlugin.xml" dir="${param}" target="makeDist" inheritall="false">
-			<property name="plugin.name" value="${relative.plugin.path}Plugin"/>
-			<property name="docco.build.dir" value="../${docco.build.dir}"/>
-			<property name="plugins.dist.dir" value="${plugins.dist.dir}"/>
-		</ant>
-	</target>
-	
-	<target name="cleanPlugin">
-		<ant antfile="${basedir}/buildPlugin.xml" dir="${param}" target="clean">
-			<property name="plugin.name" value="${param}Plugin"/>
-			<property name="docco.build.dir" value="../${docco.build.dir}"/>		
+	<target name="_cleanPlugin">
+		<ant antfile="${basedir}/buildPlugin.xml" dir="${plugin.dir}" target="clean">
+			<property name="plugin.name" value="${plugin.dir}Plugin"/>
 		</ant>
 	</target>	
 

@@ -23,15 +23,14 @@
 	-->
 	<property name="plugin.name" value="MultivalentDocumentHandlerPlugin"/>
 	<property name="docco.classes" value="../../build/dev"/>
-	<property name="plugins.dist.dir" value="dist"/>
 
 	<!-- Shouldn't need to change anything from now on -->
 	
 	<property name="plugin.build.dir" value="build"/>
 	<property name="plugin.src.dir" value="source"/>
 	<property name="plugin.libs.dir" value="libs"/>
+	<property name="plugin.dist.dir" value="dist"/>
 	<property name="plugin.jar.name" value="${plugin.name}.jar"/>
-	<!--<property name="plugin.dist.dir" value="${plugins.dist.dir}/${plugin.name}"/>-->
 
     <path id="plugin.class.path">
         <pathelement path="${classpath}"/>
@@ -61,20 +60,15 @@
 		</javac>
 	</target>
 	
-	<target name="makeJar" depends="prepare,compile">
-		<jar jarfile="${plugin.jar.name}" basedir="${plugin.build.dir}" />
-		<!--<mapper type="flatten"/>-->
-	</target>
-
-	<target name="makeDist" depends="prepare,compile,makeJar">	
-		<echo>plugins dist dir: ${plugins.dist.dir}</echo>
-		<mkdir dir="${plugins.dist.dir}"/>
-		<copy todir="${plugins.dist.dir}/libs" includeEmptyDirs="no">
-			<fileset dir="${basedir}/libs">
-		        <include name="**"/>
+	<target name="dist" depends="compile">	
+		<mkdir dir="${plugin.dist.dir}"/>
+		<jar jarfile="${plugin.dist.dir}/${plugin.jar.name}" basedir="${plugin.build.dir}" />
+		<copy todir="${plugin.dist.dir}" includeEmptyDirs="no">
+			<fileset dir="${basedir}">
+		        <include name="libs/**"/>
+		        <include name="${plugin.jar.name}"/>
             </fileset>
 		</copy>
-		<copy file="${plugin.jar.name}" todir="${plugin.dist.dir}"/>
 	</target>
 
 </project>

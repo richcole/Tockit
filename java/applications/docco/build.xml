@@ -6,6 +6,7 @@
     		<format property="timestamp" pattern="yyyyMMdd-HHmm"/>
 		</tstamp>
 		<property name="dist.name" value="Docco-CVSbuild-${timestamp}"/>
+		<property name="dist.dir" value="${dist.base.dir}/${dist.name}"/>
   	</target>
   	
   	<!-- IMPORTANT! We assume the source and libs of ToscanaJ in these spots. -->
@@ -16,7 +17,7 @@
 	<property name="app.name" value="Docco"/>
 	<property name="build.dev.dir" value="build/dev"/>
 	<property name="build.release.dir" value="build/release"/>
-	<property name="dist.dir" value="dist"/>
+	<property name="dist.base.dir" value="dist"/>
 	<property name="src.dir" value="source"/>
 	<property name="libs.dir" value="libs"/>
     <property name="docco.class" value="org.tockit.docco.Docco"/>
@@ -60,16 +61,17 @@
             <include name="**/*.zip"/>
         </fileset>
     </path>
-	<target name="prepare" depends="setBuildName">
+	<target name="_prepare" depends="setBuildName">
 		<mkdir dir="${build.dev.dir}"/>
 		<mkdir dir="${build.release.dir}"/>
 	</target>
 	<target name="clean">
 		<delete dir="${build.release.dir}"/>
 		<delete dir="${build.dev.dir}"/>
-		<delete dir="${dist.dir}"/>
+		<delete dir="${dist.base.dir}"/>
+		<ant antfile="build.xml" dir="plugins" target="clean"/>
 	</target>
-	<target name="compile" depends="prepare">
+	<target name="compile" depends="_prepare">
 		<javac srcdir="${toscanaj.src.dir}" destdir="${build.dev.dir}" debug="on" optimize="off" deprecation="on">
 			<classpath refid="project.dev.class.path"/>
 		</javac>
@@ -77,7 +79,7 @@
 			<classpath refid="project.dev.class.path"/>
 		</javac>
 	</target>
-	<target name="compileRelease" depends="prepare">
+	<target name="_compileRelease" depends="_prepare">
 		<javac srcdir="${toscanaj.src.dir}" destdir="${build.release.dir}" debug="off" optimize="on" deprecation="off">
 			<classpath refid="project.release.class.path"/>
 		</javac>
@@ -86,24 +88,24 @@
 		</javac>
 	</target>
     <target name="rebuild" depends="clean,compile"/>
-    <target name="prepareDist">
+    <target name="_prepareDist">
 		<mkdir dir="${dist.dir}"/>
-		<mkdir dir="${dist.dir}/${dist.name}"/>
+		<mkdir dir="${dist.dir}"/>
 	</target>
-	<target name="makeDebugJar" depends="compile,prepareDist">
-		<jar jarfile="${dist.dir}/${dist.name}/${app.name}.jar" basedir="${build.dev.dir}" manifest="manifest.mf"/>
+	<target name="_makeDebugJar" depends="compile,_prepareDist">
+		<jar jarfile="${dist.dir}/${app.name}.jar" basedir="${build.dev.dir}" manifest="manifest.mf"/>
 	</target>
-	<target name="makeReleaseJar" depends="compileRelease,prepareDist">
-		<jar jarfile="${dist.dir}/${dist.name}/${app.name}.jar" basedir="${build.release.dir}" manifest="manifest.mf"/>
+	<target name="_makeReleaseJar" depends="_compileRelease,_prepareDist">
+		<jar jarfile="${dist.dir}/${app.name}.jar" basedir="${build.release.dir}" manifest="manifest.mf"/>
 	</target>
-	<target name="copyFiles">
-		<copy todir="${dist.dir}/${dist.name}/libs" includeEmptyDirs="no">
+	<target name="_copyFiles">
+		<copy todir="${dist.dir}/libs" includeEmptyDirs="no">
 			<fileset dir="${libs.dir}">
 		        <include name="*"/>
             </fileset>
 		</copy>
-		<fixcrlf srcDir="${dist.dir}/${dist.name}/libs" eol="crlf" includes="LICENSE.*"/>
-		<copy todir="${dist.dir}/${dist.name}">
+		<fixcrlf srcDir="${dist.dir}/libs" eol="crlf" includes="LICENSE.*"/>
+		<copy todir="${dist.dir}">
 			<fileset dir=".">
 				<include name="*.txt"/>
 				<include name="*.bat"/>
@@ -111,38 +113,36 @@
 				<include name="docco.prop"/>
 			</fileset>
 		</copy>
-		<fixcrlf srcDir="${dist.dir}/${dist.name}" eol="crlf" includes="*.txt, *.bat, docco.prop"/>
-		<fixcrlf srcDir="${dist.dir}/${dist.name}" eol="lf" includes="*.sh"/>
-		<copy todir="${dist.dir}/${dist.name}/doc" includeEmptyDirs="no">
+		<fixcrlf srcDir="${dist.dir}" eol="crlf" includes="*.txt, *.bat, docco.prop"/>
+		<fixcrlf srcDir="${dist.dir}" eol="lf" includes="*.sh"/>
+		<copy todir="${dist.dir}/doc" includeEmptyDirs="no">
 			<fileset dir="${basedir}/doc">
 		        <include name="**"/>
             </fileset>
 		</copy>
-		<copy todir="${dist.dir}/${dist.name}/plugins" includeEmptyDirs="no">
-			<fileset dir="${plugins.dir}">
-		        <include name="**"/>
-            </fileset>
-		</copy>
     </target>
-	<target name="dist" depends="makeReleaseJar,copyFiles,zipFile">
+	<target name="dist" depends="_makeReleaseJar,_copyFiles,_zipFile">
 	</target>
-	<target name="zipFile">
-		<zip destfile="${dist.dir}/${dist.name}.zip">
-			<fileset dir="${dist.dir}">
+	<target name="fullDist" depends="_makeReleaseJar,_copyFiles,_makePlugins,_zipFile">
+	</target>
+	<target name="_zipFile">
+		<zip destfile="${dist.dir}.zip">
+			<fileset dir="${dist.base.dir}">
 				<include name="${dist.name}/**"/>
 			</fileset>
 		</zip>
 	</target>
-	<target name="run" depends="compileRelease">
+	<target name="run" depends="_compileRelease">
 		<java classname="${docco.class}" fork="true">
 			<classpath refid="project.release.class.path"/>
 		</java>
 	</target>
 
-	<target name="makePluginJars" depends="compileRelease">
-		<ant antfile="build.xml" dir="plugins" target="makeJars">
-			<property name="docco.build.dir" value="${build.release.dir}"/>
-			<property name="plugins.dist.dir" value="${build.release.dir}/plugins"/>
+	<target name="_makePlugins" depends="_compileRelease">
+		<ant antfile="build.xml" dir="plugins" target="dist">
+			<property name="docco.libs.dir" value="../${libs.dir}"/>
+			<property name="docco.classes" value="../${build.release.dir}"/>
+			<property name="docco.dist.dir" value="../${dist.dir}"/>
 		</ant>
 	</target>
 	
