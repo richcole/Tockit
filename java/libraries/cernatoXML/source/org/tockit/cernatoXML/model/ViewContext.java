@@ -31,7 +31,7 @@ public class ViewContext implements Context {
                 return false;
             }
             Criterion criterion = (Criterion) rangeObject;
-            AttributeValue relationValue = context.getRelationship(fcaObject, criterion.getProperty());
+            Value relationValue = context.getRelationship(fcaObject, criterion.getProperty());
             return criterion.getValueGroup().containsValue(relationValue);
         }
     }

@@ -34,7 +34,7 @@ public class TextDumps {
         stream.print("\t");
         for (Iterator iterator = properties.iterator(); iterator.hasNext();) {
             Property property = (Property) iterator.next();
-            AttributeType type = property.getType();
+            PropertyType type = property.getType();
             if (type instanceof TextualType) {
                 stream.print("T\t");
             } else {

@@ -26,7 +26,7 @@ public class TextualValueGroup implements ValueGroup {
         return name;
     }
 
-    public void addValue(AttributeValue value) {
+    public void addValue(Value value) {
         if (value instanceof TextualValue) {
             TextualValue textVal = (TextualValue) value;
             values.add(textVal.getDisplayString());
@@ -35,7 +35,7 @@ public class TextualValueGroup implements ValueGroup {
         throw new RuntimeException("Wrong value type for textual value group");
     }
 
-    public boolean containsValue(AttributeValue value) {
+    public boolean containsValue(Value value) {
         if (value instanceof TextualValue) {
             TextualValue textVal = (TextualValue) value;
             return values.contains(textVal.getDisplayString());

@@ -7,7 +7,7 @@
  */
 package org.tockit.cernatoXML.model;
 
-public class NumericalValue implements AttributeValue {
+public class NumericalValue implements Value {
     private double value;
 
     public NumericalValue(double value) {
@@ -39,7 +39,7 @@ public class NumericalValue implements AttributeValue {
         return (int)(bits ^ (bits >>> 32));
     }
     
-    public boolean isLesserThan(AttributeValue other) {
+    public boolean isLesserThan(Value other) {
     	if(!(other instanceof NumericalValue)) {
     		return false;
     	}
@@ -47,7 +47,7 @@ public class NumericalValue implements AttributeValue {
         return this.value < otherNV.value;
     }
     
-    public boolean isEqual(AttributeValue other) {
+    public boolean isEqual(Value other) {
         return this.equals(other);
     }
 }

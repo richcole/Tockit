@@ -9,7 +9,7 @@ package org.tockit.cernatoXML.model;
 
 public interface ValueGroup {
     String getName();
-    boolean containsValue(AttributeValue value);
+    boolean containsValue(Value value);
     boolean isSuperSetOf(ValueGroup otherColumn);
     boolean isLesserThan(ValueGroup other);
     boolean isEqual(ValueGroup other);

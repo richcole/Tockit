@@ -38,13 +38,13 @@ public class CernatoTable {
         return properties;
     }
 
-    public void setRelationship(CernatoObject object, Property property, AttributeValue value) {
+    public void setRelationship(CernatoObject object, Property property, Value value) {
         Hashtable row = (Hashtable) relation.get(object);
         row.put(property, value);
     }
 
-    public AttributeValue getRelationship(CernatoObject object, Property property) {
+    public Value getRelationship(CernatoObject object, Property property) {
         Hashtable row = (Hashtable) relation.get(object);
-        return (AttributeValue) row.get(property);
+        return (Value) row.get(property);
     }
 }

@@ -7,7 +7,7 @@
  */
 package org.tockit.cernatoXML.model;
 
-public class TextualValue implements AttributeValue {
+public class TextualValue implements Value {
     private String value;
 
     public TextualValue(String value) {
@@ -32,7 +32,7 @@ public class TextualValue implements AttributeValue {
         return this.value.hashCode();
     }
 
-    public boolean isLesserThan(AttributeValue other) {
+    public boolean isLesserThan(Value other) {
         if(!(other instanceof TextualValue)) {
             return false;
         }
@@ -40,7 +40,7 @@ public class TextualValue implements AttributeValue {
         return this.value.compareTo(otherTV.value) < 0;
     }
 
-    public boolean isEqual(AttributeValue other) {
+    public boolean isEqual(Value other) {
         return this.equals(other);
     }
 }

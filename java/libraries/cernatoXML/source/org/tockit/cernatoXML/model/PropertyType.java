@@ -7,8 +7,10 @@
  */
 package org.tockit.cernatoXML.model;
 
-public interface AttributeValue {
-    String getDisplayString();
-    boolean isLesserThan(AttributeValue other);
-    boolean isEqual(AttributeValue other);
+public interface PropertyType {
+    String getName();
+    Value[] getValueRange();
+    void addValueGroup(ValueGroup column, String id);
+    ValueGroup getValueGroup(String id);
+    ValueGroup[] getValueGroups();
 }

@@ -124,7 +124,7 @@ public class CernatoXMLParser {
             String id = propElem.getAttributeValue("id");
             String name = propElem.getChild("name").getText();
             String typeref = propElem.getChild("type_ref").getAttributeValue("type");
-            Property property = new Property((AttributeType) types.get(typeref), name);
+            Property property = new Property((PropertyType) types.get(typeref), name);
             properties.put(id, property);
             model.getContext().add(property);
         }

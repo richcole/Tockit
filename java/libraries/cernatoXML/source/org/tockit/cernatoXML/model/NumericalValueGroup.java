@@ -30,7 +30,7 @@ public class NumericalValueGroup implements ValueGroup {
         return name;
     }
 
-    public boolean containsValue(AttributeValue value) {
+    public boolean containsValue(Value value) {
         if (!(value instanceof NumericalValue)) {
             return false;
         }

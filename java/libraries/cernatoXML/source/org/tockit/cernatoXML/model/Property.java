@@ -8,15 +8,15 @@
 package org.tockit.cernatoXML.model;
 
 public class Property {
-    private AttributeType type;
+    private PropertyType type;
     private String name;
 
-    public Property(AttributeType type, String name) {
+    public Property(PropertyType type, String name) {
         this.type = type;
         this.name = name;
     }
 
-    public AttributeType getType() {
+    public PropertyType getType() {
         return type;
     }
 

@@ -9,7 +9,7 @@ package org.tockit.cernatoXML.model;
 
 import java.util.Hashtable;
 
-public abstract class TypeImplementation implements AttributeType {
+public abstract class TypeImplementation implements PropertyType {
     protected String name;
     protected Hashtable valueGroups = new Hashtable();
 
@@ -21,7 +21,7 @@ public abstract class TypeImplementation implements AttributeType {
         return name;
     }
 
-    public AttributeValue[] getValueRange() {
+    public Value[] getValueRange() {
         return null;
     }
 
