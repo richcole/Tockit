@@ -1,1 +1,3 @@
 org.tockit.canvas.imagewriter.FreeHepImageWriterLoader
+org.tockit.canvas.imagewriter.SVGImageWriterLoader
+org.tockit.canvas.imagewriter.PDFImageWriterLoader

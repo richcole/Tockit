@@ -37,7 +37,7 @@ public class FreeHepImageWriter implements ImageWriter {
 		}
 
 		public String getName() {
-			return "Portable Document Format (via FreeHEP)";
+			return "Portable Document Format";
 		}
 
 		public String[] getExtensions() {
@@ -107,11 +107,11 @@ public class FreeHepImageWriter implements ImageWriter {
 		}
 
 		public String getName() {
-			return "Scalable Vector Graphics (via FreeHEP)";
+			return "Scalable Vector Graphics (compressed)";
 		}
 
 		public String[] getExtensions() {
-			return new String[]{"svg", "SVG"};
+			return new String[]{"svgz", "SVGZ"};
 		}
 	}
 	
@@ -132,16 +132,22 @@ public class FreeHepImageWriter implements ImageWriter {
      */
     static public void initialize() {
         singleton = new FreeHepImageWriter();
-		GraphicFormatRegistry.registerType(new GraphicFormatPDF());
 		GraphicFormatRegistry.registerType(new GraphicFormatPS());
 		GraphicFormatRegistry.registerType(new GraphicFormatEMF());
 		GraphicFormatRegistry.registerType(new GraphicFormatPPM());
 		GraphicFormatRegistry.registerType(new GraphicFormatSWF());
-		GraphicFormatRegistry.registerType(new GraphicFormatSVG());
 		
 		// fix funny default orientation for Postscript in FreeHEP lib (v1.2.2)
 		Properties prop = PSGraphics2D.getDefaultProperties();
 		prop.setProperty(PSGraphics2D.ORIENTATION, PageConstants.PORTRAIT);
+    }
+    
+    static public void addPDF() {
+		GraphicFormatRegistry.registerType(new GraphicFormatPDF());
+    }
+
+    static public void addSVG() {
+		GraphicFormatRegistry.registerType(new GraphicFormatSVG());
     }
 
     /**
