@@ -126,6 +126,17 @@ objs/lattice_iterator.o: ../sarl/iterator_impl.h ../sarl/ownership.h
 objs/lattice_iterator.o: ../sarl/test.h ../sarl/lattice_iterator_impl.h
 objs/lectic.o: ../sarl/set.h ../sarl/index.h ../sarl/set_iterator.h
 objs/lectic.o: ../sarl/lectic.h ../sarl/pair.h ../sarl/context_iterator.h
+objs/map.o: ../sarl/set.h ../sarl/index.h ../sarl/set_iterator.h
+objs/map.o: ../sarl/relation.h ../sarl/pair.h ../sarl/relation_iterator.h
+objs/map.o: ../sarl/map.h ../sarl/map_iterator.h ../sarl/ref_count.h
+objs/map.o: ../sarl/config.h map_impl.h ../sarl/relation_impl.h
+objs/map_iterator.o: ../sarl/map.h ../sarl/index.h ../sarl/pair.h
+objs/map_iterator.o: ../sarl/map_iterator.h ../sarl/ref_count.h ../sarl/config.h
+objs/map_iterator.o: ../sarl/relation_iterator.h ../sarl/set_iterator.h
+objs/map_iterator.o: ../sarl/map_impl.h ../sarl/relation_impl.h
+objs/map_iterator.o: ../sarl/map_iterator_impl.h ../sarl/iterator_impl.h
+objs/map_iterator.o: ../sarl/ownership.h ../sarl/test.h
+objs/map_iterator.o: ../sarl/relation_iterator_impl.h
 objs/output_stream.o: ../sarl/config.h ../sarl/output_stream.h ../sarl/string.h
 objs/output_stream.o: ../sarl/index.h ../sarl/output_stream_impl.h
 objs/output_stream.o: ../sarl/iterator_impl.h ../sarl/ownership.h
@@ -388,6 +399,17 @@ objs_d/lattice_iterator.o: ../sarl/iterator_impl.h ../sarl/ownership.h
 objs_d/lattice_iterator.o: ../sarl/test.h ../sarl/lattice_iterator_impl.h
 objs_d/lectic.o: ../sarl/set.h ../sarl/index.h ../sarl/set_iterator.h
 objs_d/lectic.o: ../sarl/lectic.h ../sarl/pair.h ../sarl/context_iterator.h
+objs_d/map.o: ../sarl/set.h ../sarl/index.h ../sarl/set_iterator.h
+objs_d/map.o: ../sarl/relation.h ../sarl/pair.h ../sarl/relation_iterator.h
+objs_d/map.o: ../sarl/map.h ../sarl/map_iterator.h ../sarl/ref_count.h
+objs_d/map.o: ../sarl/config.h map_impl.h ../sarl/relation_impl.h
+objs_d/map_iterator.o: ../sarl/map.h ../sarl/index.h ../sarl/pair.h
+objs_d/map_iterator.o: ../sarl/map_iterator.h ../sarl/ref_count.h ../sarl/config.h
+objs_d/map_iterator.o: ../sarl/relation_iterator.h ../sarl/set_iterator.h
+objs_d/map_iterator.o: ../sarl/map_impl.h ../sarl/relation_impl.h
+objs_d/map_iterator.o: ../sarl/map_iterator_impl.h ../sarl/iterator_impl.h
+objs_d/map_iterator.o: ../sarl/ownership.h ../sarl/test.h
+objs_d/map_iterator.o: ../sarl/relation_iterator_impl.h
 objs_d/output_stream.o: ../sarl/config.h ../sarl/output_stream.h ../sarl/string.h
 objs_d/output_stream.o: ../sarl/index.h ../sarl/output_stream_impl.h
 objs_d/output_stream.o: ../sarl/iterator_impl.h ../sarl/ownership.h

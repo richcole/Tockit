@@ -157,4 +157,10 @@ struct Sarl_SetIterator *sarl_relation_iterator_aggregate(
     struct Sarl_RelationIterator *
   )
 );
+
+Sarl_Index sarl_relation_iterator_count_remaining(Sarl_RelationIterator* r);
+Sarl_Index sarl_relation_iterator_count(Sarl_RelationIterator* r);
+
+
+
 #endif

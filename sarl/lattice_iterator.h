@@ -20,6 +20,11 @@ extern struct Sarl_LatticeIterator *
     struct Sarl_ContextIterator *
   );
 
+extern struct Sarl_LatticeIterator *
+  sarl_lattice_iterator_create(
+    struct Sarl_Lattice *
+  );
+
 extern void 
   sarl_lattice_iterator_reset(
     struct Sarl_LatticeIterator *

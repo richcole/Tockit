@@ -27,6 +27,12 @@ extern void sarl_map_remove_extent(
 extern void sarl_map_remove_intent(
 	struct Sarl_Map *r, Sarl_Index index);
 
+extern Sarl_Index sarl_map_image(
+	struct Sarl_Map *r, Sarl_Index index);
+
+extern Sarl_Index sarl_map_coimage(
+	struct Sarl_Map *r, Sarl_Index index);
+
 
 /* reference counting interface */
 extern void sarl_map_decr_ref(struct Sarl_Map *);

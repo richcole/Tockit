@@ -101,35 +101,6 @@ struct Sarl_RelationIterator* sarl_relation_iterator_inverse(
   return a_it->funcs->inverse(a_it);
 }
 
-Sarl_Index  sarl_relation_iterator_count(
-  struct Sarl_RelationIterator *a_it)
-{
-  Sarl_RelationIterator *it_copy = sarl_relation_iterator_copy(a_it);
-  Sarl_Index count = 0;
-  
-  SARL_RELATION_ITERATOR_FOR(it_copy) {
-    ++count;
-  }
-  
-  sarl_relation_iterator_decr_ref(it_copy);
-  return count;
-};
-
-Sarl_Index  sarl_relation_iterator_count_remaining(
-  struct Sarl_RelationIterator *a_it)
-{
-  Sarl_RelationIterator *it_copy = sarl_relation_iterator_copy(a_it);
-  Sarl_Index count = 0;
-  
-  while(! sarl_relation_iterator_at_end(it_copy) ) {
-    ++count;
-    sarl_relation_iterator_next(it_copy);
-  }
-  
-  sarl_relation_iterator_decr_ref(it_copy);
-  return count;
-};
-
 struct Sarl_SetIterator *sarl_relation_iterator_range(
   struct Sarl_RelationIterator *it)
 {
@@ -425,8 +396,29 @@ sarl_relation_iterator_is_member(
   return result;
 };
 
+Sarl_Index sarl_relation_iterator_count_remaining(Sarl_RelationIterator* r)
+{
+  Sarl_Index result = 0;
+  r = sarl_relation_iterator_obtain_ownership(r);
+  while ( ! sarl_relation_iterator_at_end(r) ) {
+    ++result;
+    sarl_relation_iterator_next(r);
+  }
+  sarl_relation_iterator_release_ownership(r);
+  sarl_relation_iterator_decr_ref(r);
+  return result;
+};
 
-
-
-
-
+Sarl_Index sarl_relation_iterator_count(Sarl_RelationIterator* r)
+{
+  Sarl_Index result = 0;
+  r = sarl_relation_iterator_obtain_ownership(r);
+  sarl_relation_iterator_reset(r);
+  while ( ! sarl_relation_iterator_at_end(r) ) {
+    ++result;
+    sarl_relation_iterator_next(r);
+  }
+  sarl_relation_iterator_release_ownership(r);
+  sarl_relation_iterator_decr_ref(r);
+  return result;
+};

@@ -1,6 +1,8 @@
 include config.mak
 
 OBJECTS = \
+  map \
+  map_iterator \
   set \
   set_iterator \
   relation \
@@ -35,9 +37,7 @@ OBJECTS = \
   input_stream \
   output_stream \
   read_cxt_context \
-  write_cxt_context \
-  map \
-  map_iterator
+  write_cxt_context 
 
 
 TESTS = \

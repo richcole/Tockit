@@ -3,6 +3,7 @@ extern "C" {
 #include <sarl/set.h>  
 #include <sarl/set_iterator.h>  
 #include <sarl/relation.h>
+#include <sarl/relation_iterator.h>
 #include <sarl/map.h>
 #include <sarl/map_iterator.h>
 #include <sarl/ref_count.h>
@@ -37,11 +38,8 @@ void
     struct Sarl_Map *r, Sarl_Index a, Sarl_Index b
   )
 {
-  Sarl_Pair p = { a, b };
-  Sarl_Pair q = { b, a };
-       
-  r->forward.insert(p);
-  r->reverse.insert(q);
+  sarl_relation_remove_intent(r, a);
+  sarl_relation_insert_pair(r, sarl_pair(a,b));
 }
   
 void 
@@ -89,5 +87,32 @@ void sarl_map_insert_pair(struct Sarl_Map *r, struct Sarl_Pair pair)
   sarl_relation_remove_intent(r, pair.dom);
   sarl_map_insert(r, pair.dom, pair.rng);
 }
+
+Sarl_Index sarl_map_image(struct Sarl_Map *r, Sarl_Index dom)
+{
+  Sarl_Index result = 0;
+  Sarl_RelationIterator* r_it = sarl_relation_iterator_create(r);
+  Sarl_SetIterator *intent = sarl_relation_iterator_intent(r_it, dom);
+  if ( sarl_set_iterator_at_end(intent) == false ) {
+    result = sarl_set_iterator_value(intent);
+  }
+  sarl_relation_iterator_decr_ref(r_it);
+  sarl_set_iterator_decr_ref(intent);
+  return result;
+};
+
+Sarl_Index sarl_map_coimage(struct Sarl_Map *r, Sarl_Index rng)
+{
+  Sarl_Index result = 0;
+  Sarl_RelationIterator* r_it = sarl_relation_iterator_create(r);
+  Sarl_SetIterator *extent = sarl_relation_iterator_extent(r_it, rng);
+  if ( sarl_set_iterator_at_end(extent) == false ) {
+    result = sarl_set_iterator_value(extent);
+  }
+  sarl_relation_iterator_decr_ref(r_it);
+  sarl_set_iterator_decr_ref(extent);
+  return result;
+};
+
 
 

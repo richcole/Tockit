@@ -21,7 +21,7 @@ void print_set(std::string const& s, Sarl_SetIterator *curr)
   SARL_SET_ITERATOR_FOR(curr) {
     fprintf(stdout, "%d ", sarl_set_iterator_value(curr));
   };
-  fprintf(stdout, "\n", sarl_set_iterator_value(curr));
+  fprintf(stdout, "\n");
 };
 
 int main(int num_args, char **args)
