@@ -14,7 +14,7 @@
 
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 	  <classpath>
-	    <pathelement location="${docco.libs.dir}/ant-contrib-0.3.jar"/>
+	    <pathelement location="${docco.libs.dir}/ant-contrib.jar"/>
 	  </classpath>
 	</taskdef>
 
