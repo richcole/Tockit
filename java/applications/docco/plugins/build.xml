@@ -4,17 +4,17 @@
 		Compile and deploy all plugins
 	</description>
 
-	<!-- TODO have to change the way we get Docco stuff -->
-	<property name="docco.libs.dir" value="../libs"/>
-	<property name="docco.classes" value="../build/release"/>
-	<property name="docco.dist.dir" value="../dist"/>
+	<!-- TODO have to change the way we get mainApp stuff -->
+	<property name="mainApp.libs.dir" value="../libs"/>
+	<property name="mainApp.classes" value="../build/release"/>
+	<property name="mainApp.dist.dir" value="../dist"/>
 	
-	
-	<property name="plugins.dist.dir" value="${docco.dist.dir}/plugins"/>
+	<!-- set plugins dist directory, relative to main program's dist directory -->
+	<property name="plugins.dist.dir" value="${mainApp.dist.dir}"/>
 
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 	  <classpath>
-	    <pathelement location="${docco.libs.dir}/ant-contrib.jar"/>
+	    <pathelement location="${mainApp.libs.dir}/ant-contrib.jar"/>
 	  </classpath>
 	</taskdef>
 
@@ -43,11 +43,13 @@
 		<basename property="plugin.dir.name" file="${plugin.dir}"/>
 		<ant antfile="${basedir}/buildPlugin.xml" dir="${plugin.dir}" target="dist" inheritall="false">
 			<property name="plugin.name" value="${plugin.dir.name}Plugin"/>
-			<property name="docco.classes" value="../${docco.classes}"/>
+			<property name="plugin.dist.dir.name" value="${plugin.dir.name}"/>
+			<property name="mainApp.classes" value="../${mainApp.classes}"/>
 		</ant>
-		<mkdir dir="${plugins.dist.dir}/${plugin.dir.name}"/>
-		<copy todir="${plugins.dist.dir}/${plugin.dir.name}">
-			<fileset dir="${plugin.dir}/dist"/>
+		<copy todir="${plugins.dist.dir}">
+			<fileset dir="${plugin.dir}/dist">
+				<include name="*.zip"/>
+			</fileset>
 		</copy>
 	</target>
 	

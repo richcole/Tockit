@@ -90,7 +90,7 @@
     <target name="rebuild" depends="clean,compile"/>
     <target name="_prepareDist">
 		<mkdir dir="${dist.dir}"/>
-		<mkdir dir="${dist.dir}"/>
+		<mkdir dir="${dist.dir}/plugins"/>
 	</target>
 	<target name="_makeDebugJar" depends="compile,_prepareDist">
 		<jar jarfile="${dist.dir}/${app.name}.jar" basedir="${build.dev.dir}" manifest="manifest.mf"/>
@@ -144,7 +144,7 @@
 		<ant antfile="build.xml" dir="plugins" target="dist">
 			<property name="docco.libs.dir" value="../${libs.dir}"/>
 			<property name="docco.classes" value="../${build.release.dir}"/>
-			<property name="docco.dist.dir" value="../${dist.dir}"/>
+			<property name="docco.dist.dir" value="../${dist.base.dir}"/>
 		</ant>
 	</target>
 
@@ -152,7 +152,7 @@
 		<ant antfile="build.xml" dir="plugins" target="dist">
 			<property name="docco.libs.dir" value="../${libs.dir}"/>
 			<property name="docco.classes" value="../${build.dev.dir}"/>
-			<property name="docco.dist.dir" value="../${dist.dir}"/>
+			<property name="docco.dist.dir" value="../${dist.base.dir}"/>
 		</ant>
 	</target>
 	

@@ -21,8 +21,18 @@
 	These properties should be set if this script is run as 
 	standalone
 	-->
+
+	<!-- plugin name a.e. MultivalentPlugin -->
 	<property name="plugin.name" value="MultivalentDocumentHandlerPlugin"/>
-	<property name="docco.classes" value="../../build/dev"/>
+
+	<!-- pluging destination directory name that will appear in plugins
+		directory once plugin is deployed, for example,multivalent
+		plugin will be deployed in plugins/multivalent, so 
+		value here will be 'multivalent' -->
+	<property name="plugin.dist.dir.name" value="multivalent"/>
+	
+	<!-- where to find compiled classes from the main application -->
+	<property name="mainApp.classes" value="../../build/dev"/>
 
 	<!-- Shouldn't need to change anything from now on -->
 	
@@ -36,7 +46,7 @@
     <path id="plugin.class.path">
         <pathelement path="${classpath}"/>
         <pathelement path="${plugin.build.dir}"/>
-        <pathelement path="${docco.classes}"/>
+        <pathelement path="${mainApp.classes}"/>
         <fileset dir="${plugin.libs.dir}">
             <include name="**/*.jar"/>
         </fileset>
@@ -63,14 +73,21 @@
 	
 	<target name="dist" depends="compile">	
 		<mkdir dir="${plugin.dist.dir}"/>
-		<jar jarfile="${plugin.dist.dir}/${plugin.jar.name}" basedir="${plugin.build.dir}" />
-		<copy todir="${plugin.dist.dir}" includeEmptyDirs="no">
+		<property name="plugin.full.dist.dir" value="${plugin.dist.dir}/${plugin.dist.dir.name}"/>
+		<mkdir dir="${plugin.full.dist.dir}"/>
+		<jar jarfile="${plugin.full.dist.dir}/${plugin.jar.name}" basedir="${plugin.build.dir}" />
+		<copy todir="${plugin.full.dist.dir}" includeEmptyDirs="no">
 			<fileset dir="${basedir}">
 		        <include name="libs/**"/>
 		        <include name="${plugin.jar.name}"/>
 	        	<include name="${plugin.description.file}"/>
             </fileset>
 		</copy>
+		<zip destfile="${plugin.dist.dir}/${plugin.name}.zip">
+			<fileset dir="${plugin.dist.dir}">
+				<include name="${plugin.dist.dir.name}/**"/>
+			</fileset>
+		</zip>		
 	</target>
 
 </project>
