@@ -17,19 +17,16 @@ import java.awt.HeadlessException;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Iterator;
 
 import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.event.ListSelectionEvent;
@@ -37,12 +34,12 @@ import javax.swing.event.ListSelectionListener;
 
 import org.tockit.docco.indexer.DocumentHandlerMapping;
 import org.tockit.docco.indexer.DocumentHandlersRegistery;
+import org.tockit.docco.indexer.documenthandler.DocumentHandler;
+import org.tockit.docco.indexer.filefilter.DoccoFileFilter;
 
 public class FileMappingsEditingDialog extends JDialog {
-
-	private DocumentHandlersRegistery docHandlersRegistery;	
 	
-	private DefaultListModel model = new DefaultListModel();
+	private DocHandlersRegisteryListModel model;
 	
 	private JButton upButton = new JButton("Move Up");
 	private JButton downButton = new JButton("Move Down");
@@ -88,22 +85,39 @@ public class FileMappingsEditingDialog extends JDialog {
 		}
 
 		public Object getElementAt(int index) {
-			return null;
+			return registery.getMappingAt(index);
 		}
 		
+		public void moveMapping (int fromIndex, int toIndex) {
+			registery.moveMapping(fromIndex, toIndex);
+			if (fromIndex < toIndex) {
+				fireContentsChanged(registery.getMappingAt(toIndex), fromIndex, toIndex);	
+			}
+			else {
+				fireContentsChanged(registery.getMappingAt(toIndex), toIndex, fromIndex);	
+			}
+		}
+		
+		public void removeMappingAt (int index) {
+			if (index < model.getSize()) {
+				DocumentHandlerMapping mapping = (DocumentHandlerMapping) model.getElementAt(jlist.getSelectedIndex());
+				registery.removeMapping(mapping);
+				fireIntervalRemoved(mapping, 0, getSize());
+			}			
+		}
+		
+		public void addMapping (DoccoFileFilter fileFilter, DocumentHandler docHandler) {
+			registery.register(fileFilter, docHandler);
+			// @todo assumption here is that a new element is always added in the end.
+			fireIntervalAdded(registery.getMappingAt(getSize() - 1), 0, getSize());
+		}
 	}
 
 	
 	public FileMappingsEditingDialog(Frame parent, DocumentHandlersRegistery registery) 
 													throws HeadlessException {
 		super(parent, "Edit File Mappins Configuration", true);
-		this.docHandlersRegistery = registery;
-		
-		Iterator it = this.docHandlersRegistery.getDocumentMappingCollection().iterator();
-		while (it.hasNext()) {
-			DocumentHandlerMapping curMapping = (DocumentHandlerMapping) it.next();
-			this.model.addElement(curMapping);
-		}
+		this.model = new DocHandlersRegisteryListModel(registery);
 		
 		getContentPane().add(createMainPanel(), BorderLayout.CENTER);
 		getContentPane().add(createButtonsPanel(), BorderLayout.SOUTH);
@@ -128,8 +142,29 @@ public class FileMappingsEditingDialog extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				int index = jlist.getSelectedIndex();
 				if (index >= 1) {
-					DocumentHandlerMapping mapping = (DocumentHandlerMapping) model.get(index);
+					model.moveMapping(index, index -1);
+					jlist.setSelectedIndex(index - 1);
+					saveMappings();
 				}
+			}
+		});
+
+
+		downButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int index = jlist.getSelectedIndex();
+				if (index + 1 < model.getSize()) {
+					model.moveMapping(index, index + 1);
+					jlist.setSelectedIndex(index + 1);
+					saveMappings();
+				}
+			}
+		});
+		
+		removeButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+					model.removeMappingAt(jlist.getSelectedIndex());
+					setButtonsStatus();
 			}
 		});
 
@@ -284,8 +319,6 @@ public class FileMappingsEditingDialog extends JDialog {
 	}
 	
 	private void saveMappings () {
-		JOptionPane.showMessageDialog(this, "This action is not implemented yet");
-		
 		// @todo store changed info in config manager?
 
 	}	

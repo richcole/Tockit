@@ -50,6 +50,10 @@ public class DocumentHandlersRegistery {
 		docHandlersList.add(destinationPositionIndex, mapping);
 	}
 	
+	public DocumentHandlerMapping getMappingAt (int index) {
+		return (DocumentHandlerMapping) this.docHandlersList.get(index);
+	}
+	
 	public Collection getDocumentMappingCollection () {
 		return docHandlersList; 	
 	}
