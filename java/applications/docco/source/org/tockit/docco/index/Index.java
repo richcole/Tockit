@@ -39,10 +39,10 @@ public class Index {
 	private CallbackRecipient callbackRecipient;
 	
     public static Index openIndex(String name, File indexDirectory, Indexer.CallbackRecipient callbackRecipient) throws IOException {
-		String[] paths = getLinesOfFile(getContentsFile(new File(indexDirectory,name)));
+		String[] paths = getLinesOfFile(getContentsFile(indexDirectory, name));
 		try {
 			File baseDirectory = new File(paths[0]); 
-			File mappingsFile = getMappingsFile(indexDirectory);
+			File mappingsFile = getMappingsFile(indexDirectory, name);
 			DocumentHandlerRegistry fileMappings;
 			if(mappingsFile.exists()) {
 				///@todo move the load/save code into the DocumentHandlerRegistry and give it the file instead
@@ -54,7 +54,7 @@ public class Index {
 			retVal.callbackRecipient = callbackRecipient;
 			return retVal;
 		} catch (ArrayIndexOutOfBoundsException e) {
-			throw new IOException("No base directory found in '" + getContentsFile(indexDirectory).getPath() + "'");
+			throw new IOException("No base directory found in '" + getContentsFile(indexDirectory,name).getPath() + "'");
 		}
 	}
 	
@@ -100,19 +100,27 @@ public class Index {
         this.indexer = new Indexer(this.indexLocation, baseDirectory, this.fileMappings, callbackRecipient);
 	}
 
-	private static File getContentsFile(File indexLocation) {
-        return new File(cleanPath(indexLocation.getPath()) + ".contents");
+	private static File getContentsFile(File indexLocation, String indexName) {
+        return new File(cleanPath(new File(indexLocation, indexName).getPath()) + ".contents");
+	}
+	
+	private File getContentsFile() {
+		return getContentsFile(this.indexLocation.getParentFile(), this.name);
 	}
 
-    private static String cleanPath(String indexLocation) {
-        if(indexLocation.endsWith(File.separator)) {
-        	indexLocation = indexLocation.substring(0, indexLocation.length() - File.separator.length());
-        }
-        return indexLocation;
-    }
+	private static File getMappingsFile(File indexLocation, String indexName) {
+		return new File(cleanPath(new File(indexLocation, indexName).getPath()) + ".mappings");
+	}
 
-	private static File getMappingsFile(File indexLocation) {
-		return new File(cleanPath(indexLocation.getPath()) + ".mappings");
+	private File getMappingsFile() {
+		return getMappingsFile(this.indexLocation.getParentFile(), this.name);
+	}
+
+	private static String cleanPath(String indexLocation) {
+		if(indexLocation.endsWith(File.separator)) {
+			indexLocation = indexLocation.substring(0, indexLocation.length() - File.separator.length());
+		}
+		return indexLocation;
 	}
 
     private static String[] getLinesOfFile(File inputFile) throws FileNotFoundException, IOException {
@@ -142,10 +150,10 @@ public class Index {
 			}
 		}
 		try {
-			PrintStream out = new PrintStream(new FileOutputStream(getContentsFile(this.indexLocation)));
+			PrintStream out = new PrintStream(new FileOutputStream(getContentsFile()));
 			out.println(this.baseDirectory.getPath());
 			out.close();
-			out = new PrintStream(new FileOutputStream(getMappingsFile(this.indexLocation)));
+			out = new PrintStream(new FileOutputStream(getMappingsFile()));
 			String[] mappings = this.fileMappings.getMappingStringsList();
 			for (int i = 0; i < mappings.length; i++) {
 				out.println(mappings[i]);
@@ -199,8 +207,8 @@ public class Index {
     public void delete() throws IOException {
     	shutdown();
 
-		getContentsFile(this.indexLocation).delete();
-		getMappingsFile(this.indexLocation).delete();
+		getContentsFile().delete();
+		getMappingsFile().delete();
 		File[] indexContents = this.indexLocation.listFiles();
 		for (int i = 0; i < indexContents.length; i++) {
             File file = indexContents[i];

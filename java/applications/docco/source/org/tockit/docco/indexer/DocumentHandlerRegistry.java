@@ -90,17 +90,14 @@ public class DocumentHandlerRegistry {
             String mapping = mappings[i];
         	int firstColonIndex = mapping.indexOf(':');
         	int lastColonIndex = mapping.lastIndexOf(':');
-        	String extension = mapping.substring(0,firstColonIndex);
-        	String fileFilterClassName = mapping.substring(firstColonIndex + 1, lastColonIndex);
+        	String fileFilterClassName = mapping.substring(0,firstColonIndex);
+        	String filterExpression = mapping.substring(firstColonIndex + 1, lastColonIndex);
         	String docHandlerClassName = mapping.substring(lastColonIndex + 1);			
         	try {
         		Class fileFilterFactoryClass = Class.forName(fileFilterClassName);
-        		
         		FileFilterFactory fileFilterFactory = (FileFilterFactory) fileFilterFactoryClass.newInstance();
-        
         		DocumentHandler docHandler = (DocumentHandler) Class.forName(docHandlerClassName).newInstance();
-        
-        		this.register(fileFilterFactory.createNewFilter(extension), docHandler);
+        		this.register(fileFilterFactory.createNewFilter(filterExpression), docHandler);
         	} catch(ClassCastException e) {
         		System.err.println("WARNING: class " + docHandlerClassName + " could not be loaded due to this error:");
         		e.printStackTrace();
