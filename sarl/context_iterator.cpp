@@ -274,18 +274,18 @@ struct Sarl_SetIterator*
       sarl_set_iterator_next(i)
   ) 
   {
-		Sarl_Index i_value = sarl_set_iterator_value(i);
+    Sarl_Index i_value = sarl_set_iterator_value(i);
 
     // curr = curr (+) i
     next = sarl_set_iterator_lectic_next_gte(A, i_value, G);
 
     // until last(curr'') == last(curr)
-		sarl_set_iterator_release_ownership(next);
+    sarl_set_iterator_release_ownership(next);
     next_ii = sarl_context_iterator_intent_extent_set(K, next);
     m = sarl_set_iterator_minus(next_ii, A);
 
-		sarl_set_iterator_next_gte(m, i_value);
-		sarl_set_iterator_next(m);
+    sarl_set_iterator_next_gte(m, i_value);
+    sarl_set_iterator_next(m);
     if ( sarl_set_iterator_at_end(m) ) {
       finished = true;
     }
@@ -293,7 +293,7 @@ struct Sarl_SetIterator*
       sarl_set_iterator_decr_ref(next_ii);
     }
 
-		sarl_set_iterator_decr_ref(next);
+    sarl_set_iterator_decr_ref(next);
     sarl_set_iterator_decr_ref(m);
   };
 

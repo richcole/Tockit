@@ -8,9 +8,13 @@ extern "C" {
   #include <sarl/lectic.h>
   
 }
-
+#include <sys/time.h>
 #include <sarl/test.h>
+#include <iostream>
 #include "args.cpp"
+
+using namespace std;
+
 
 void print_extent(Sarl_SetIterator *curr) 
 {
@@ -39,7 +43,7 @@ int main(int num_args, char **args)
 
   for(i=1;i<=LEN;i++) {
     for(j=1;j<=LEN;j++) {
-      if ( i % j == 0 ) {
+      if ( j % i == 0 ) {
         sarl_relation_insert(r, i, j);
       }
     }
@@ -51,8 +55,10 @@ int main(int num_args, char **args)
 	sarl_set_iterator_release_ownership(M);
   curr = sarl_context_iterator_extent_set(K, M);
 
-	do {
-    print_extent(curr);
+  timeval t1, t2;
+  gettimeofday(&t1, 0);
+  do {
+    //    print_extent(curr);
 
     sarl_set_iterator_release_ownership(curr);
     next = sarl_context_iterator_next_extent(K, curr);
@@ -60,6 +66,10 @@ int main(int num_args, char **args)
     curr = next;
     
   } while ( curr != 0 );
+  gettimeofday(&t2, 0);
+  
+  cerr << "Time: " << (((t2.tv_sec - t1.tv_sec) * 1000.0 * 1000.0)
+    + (t2.tv_usec - t1.tv_usec))/(1000.0*10000.0) << endl;
 
   sarl_relation_decr_ref(r);
   sarl_relation_iterator_decr_ref(r_it);

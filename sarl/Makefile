@@ -83,23 +83,23 @@ $(TESTS) : $(TESTS:%=%.exe)
 
 # Libs.
 
-libs: lib_d/libsarl.so lib_d/libsarl.so lib/libsarl++.so lib_d/libsarl++.so
+libs: lib/libsarl.so lib_d/libsarl.so lib/libsarl++.so lib_d/libsarl++.so
 
 $(PYTHON_SARL_LIB): lib_d/libsarl.so lib_d/libsarl++.so \
-        $(OBJECTS:%=%.o) python/sarl_wrap.o
-	$(CC) $(DEBUG) -shared -o $@ $(OBJECTS:%=%.o) python/sarl_wrap.o \
+        $(OBJECTS:%=objs_d/objs_d/%.o) python/sarl_wrap.o
+	$(CC) $(DEBUG) -shared -o $@ $(OBJECTS:%=objs_d/%.o) python/sarl_wrap.o \
          -Llib_d -lstdc++ -lsarl++ -lsarl
 
 $(JAVA_SARL_LIB): lib_d/libsarl.so lib_d/libsarl++.so \
-        $(OBJECTS:%=%.o) java/sarl_wrap.o 
-	$(CC) $(DEBUG) -shared -o $@ $(OBJECTS:%=%.o) java/sarl_wrap.o \
+        $(OBJECTS:%=objs_d/%.o) java/sarl_wrap.o 
+	$(CC) $(DEBUG) -shared -o $@ $(OBJECTS:%=objs_d/%.o) java/sarl_wrap.o \
           -Llib_d -lstdc++ -lsarl++ -lsarl
 
-lib_d/libsarl.so: $(OBJECTS:%=%.o) lib_d
-	$(CC) $(DEBUG) -shared -o $@ $(OBJECTS:%=%.o) -lstdc++
+lib_d/libsarl.so: $(OBJECTS:%=objs_d/%.o) lib_d
+	$(CC) $(DEBUG) -shared -o $@ $(OBJECTS:%=objs_d/%.o) -lstdc++
 
-lib/libsarl.so: $(OBJECTS:%=%.o) lib
-	$(CC) $(OPTIM) -shared -o $@ $(OBJECTS:%=%.o) -lstdc++
+lib/libsarl.so: $(OBJECTS:%=objs/%.o) lib
+	$(CC) $(OPTIM) -shared -o $@ $(OBJECTS:%=objs_d/%.o) -lstdc++
 
 lib/libsarl++.so: lib
 	$(MAKE) -C cpp ../$@
@@ -109,13 +109,13 @@ lib_d/libsarl++.so: lib_d
 
 # Rules.
 
-%.o: %.cpp
+objs_d/%.o: %.cpp objs_d
 	$(CCC) $(DEBUG) -c -I../ -o $@ $< 
 
-%.o: %.cpp
+objs/%.o: %.cpp objs
 	$(CCC) $(DEBUG) -c -I../ -o $@ $< 
 
-%.exe: %.o
+%.exe: objs_d/%.o
 	$(CCC) $(DEBUG) -I../ -o $@ $^ -lstdc++ -Llib_d -lsarl
 
 java/%.class: java/%.java
@@ -125,8 +125,8 @@ java/%.class: java/%.java
 	$(CPPX) -g "-c -I../" $<
 
 
-$(TESTS:%=%.exe) : $(TESTS:%=%.o) $(OBJECTS:%=%.o)
-	$(CCC) $(DEBUG) -I../ -o $@ -lstdc++ $(@:%.exe=%.o) $(OBJECTS:%=%.o)
+$(TESTS:%=%.exe) : $(TESTS:%=objs_d/%.o) $(OBJECTS:%=objs_d/%.o)
+	$(CCC) $(DEBUG) -I../ -o $@ -lstdc++ $(@:%.exe=objs_d/%.o) $(OBJECTS:%=objs_d/%.o)
 
 
 # CPPX
