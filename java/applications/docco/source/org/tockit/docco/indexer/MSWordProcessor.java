@@ -60,7 +60,6 @@ public class MSWordProcessor implements DocumentProcessor {
 			/// @todo there is more fields that we may want to use
 			SummaryInformation info = summaryListener.getSummary();
 			if (info.getTitle() != null) {
-				System.out.println("Title: " + info.getTitle());
 				doc.add(Field.Text(GlobalConstants.FIELD_DOC_TITLE, info.getTitle()));
 			}		
 			if (info.getAuthor() != null) {
@@ -75,7 +74,6 @@ public class MSWordProcessor implements DocumentProcessor {
 				Writer docTextWriter = new StringWriter();
 				wordDoc.writeAllText(docTextWriter);
 				doc.add(Field.UnStored(GlobalConstants.FIELD_QUERY_BODY, docTextWriter.toString()));
-				System.out.println("DOCUMENT " + file.getPath() + ":\n" + docTextWriter.toString());
 			}
 			catch (ArrayIndexOutOfBoundsException e) {
 				e.printStackTrace();
