@@ -158,7 +158,7 @@ public final class Multivalent {
 			urls.add(f[i].toURL());
 			if (standalone_) System.out.println("\t"+f[i]);
 		}
-	} catch (MalformedURLException canthappen) { System.err.println(canthappen/*f[i]*/); System.err.println("Move to different directory"); System.exit(1); }
+	} catch (MalformedURLException canthappen) { System.err.println(canthappen/*f[i]*/); System.err.println("Move to different directory"); }
 
 	return (URL[])urls.toArray(new URL[0]);
   }
