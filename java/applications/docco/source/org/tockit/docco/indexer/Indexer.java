@@ -12,8 +12,6 @@ import org.apache.lucene.index.IndexWriter;
 import org.tockit.docco.GlobalConstants;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Date;
 
 /**
@@ -51,7 +49,7 @@ public class Indexer {
 			IndexWriter writer = new IndexWriter(
 									indexLocation,
 									GlobalConstants.DEFAULT_ANALYZER,
-									true);
+									false);
 
 			indexDocs(writer, new File(filesToIndexLocation));
 			
@@ -90,37 +88,7 @@ public class Indexer {
 				docCount++;
 			}
 		}
-		catch (NotFoundFileExtensionException e) {
-		}
-		catch (UnknownFileExtensionException e) {
-		}
-		catch (DocumentProcessingException e) {
-			System.err.println("Couldn't process '" + file.getAbsolutePath() + "' - " + e.getMessage());
-		}
-		catch (FileNotFoundException e) {
-			// this most probably means we don't have access rights -- we coudln't figure out
-			// how to know if we have or have not right to read a file and Java considers
-			// "file not found" and "no access right" to be the same problem (except for the
-			// message string, but we don't really want to start parsing that.
-			// The other situation I can think of is that a file was deleted during the indexing,
-			// but then there is no point in indexing it, so it is not really a problem.
-		}
-		catch (InstantiationException e) {
-			errorExit(e);
-		}
-		catch (IllegalAccessException e) {
-			errorExit(e);
-		}
-		catch (IOException e) {
-//			// @todo this a hack: pdf parser throws IO exception when it doesn't
-//			// get expected input, but we don't want to stop then. Perhaps this should be 
-//			// caught and checked earlier
-//			if (e.getMessage().startsWith("expected")) {
-//				System.err.println("Error processing " + file.getAbsolutePath() + ": " + e.getMessage());
-//			}
-//			else {
-//				errorExit(e);
-//			}
+		catch (Exception e) {
 			// sometimes shit happens. E.g. the PDF header might be screwed. Some other things
 			// might be broken. We don't want to stop indexing whenever one document fails to be
 			// read properly, so we just ignore it for now. Of course we should consider

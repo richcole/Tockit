@@ -18,12 +18,11 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.Searcher;
 import org.tockit.docco.query.util.*;
 
 
 public class QueryEngine {
-	private Searcher searcher;
+	private String indexLocation;
 	private String defaultQueryField;
 	private Analyzer analyzer;
 	private QueryDecomposer queryDecomposer;
@@ -31,7 +30,9 @@ public class QueryEngine {
 	public QueryEngine (String indexLocation, String defaultQueryField, 
 								Analyzer analyzer, QueryDecomposer queryDecomposer) 
 								throws IOException {
-		this.searcher = new IndexSearcher(indexLocation);
+		// we store only the location, not the searcher since the searcher has to be
+		// recreated if the index is updated (which happens from the other thread)
+		this.indexLocation = indexLocation;
 		this.defaultQueryField = defaultQueryField;
 		this.analyzer = analyzer;
 		this.queryDecomposer = queryDecomposer;
@@ -50,6 +51,7 @@ public class QueryEngine {
 	}
 	
 	private QueryWithResult executeQuery (Query query, String label) throws IOException {
+		IndexSearcher searcher = new IndexSearcher(indexLocation);
 		HitReferencesSet result = new HitReferencesSetImplementation();
 		Hits hits = searcher.search(query);
 		for (int i = 0; i < hits.length(); i++) {
@@ -57,10 +59,7 @@ public class QueryEngine {
 			HitReference hitRef = new HitReference(doc, hits.score(i));
 			result.add(hitRef);
 		}
+		searcher.close();
 		return new QueryWithResult(query, result, label);
-	}
-	
-	public void finishQueries() throws IOException {
-		this.searcher.close();
 	}
 }

@@ -71,6 +71,7 @@ import net.sourceforge.toscanaj.view.diagram.DiagramView;
 import net.sourceforge.toscanaj.view.diagram.LabelView;
 import net.sourceforge.toscanaj.view.diagram.NodeView;
 
+import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.queryParser.ParseException;
 import org.tockit.canvas.CanvasBackground;
 import org.tockit.canvas.CanvasItem;
@@ -423,13 +424,18 @@ public class DoccoMainFrame extends JFrame {
 				return;
 			}
 			
-			try {
-                this.queryEngine.finishQueries();
-            } catch (IOException e) {
-            	ErrorDialog.showError(this, e, "There has been an error closing the index");
-            }
 			indexFile.delete();
 		}
+		try {
+            IndexWriter writer = new IndexWriter(
+            						indexLocation,
+            						GlobalConstants.DEFAULT_ANALYZER,
+            						true);
+            writer.close();
+        } catch (IOException e) {
+			ErrorDialog.showError(this, e, "There has been an error creating a new index");
+        }
+
 		JFileChooser fileDialog;
 		String lastIndexedDir = ConfigurationManager.fetchString(CONFIGURATION_SECTION_NAME,
 									CONFIGURATION_LAST_INDEX_DIR,
@@ -447,8 +453,15 @@ public class DoccoMainFrame extends JFrame {
 			return;
 		}
 		/// @todo add some better feedback here
-		String dirToIndex = fileDialog.getSelectedFile().getAbsolutePath();
-		new Indexer(dirToIndex, this.indexLocation);
+		final String dirToIndex = fileDialog.getSelectedFile().getAbsolutePath();
+		final String indexTo = new String(indexLocation); 
+		Runnable indexRunner = new Runnable() {
+            public void run() {
+				new Indexer(dirToIndex, indexTo);
+            }
+        };
+        Thread indexThread = new Thread(indexRunner, "indexer");
+        indexThread.start();
 		ConfigurationManager.storeString(CONFIGURATION_SECTION_NAME, CONFIGURATION_LAST_INDEX_DIR,
 									dirToIndex);
 		
