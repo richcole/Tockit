@@ -116,4 +116,38 @@ public class ScalingInfo
     {
         return y * _yScale;
     }
+
+    /**
+     * Projects a point applying the current scaling information in the
+     * opposite direction.
+     *
+     * The offset is not applied.
+     */
+    public Point2D inverseScale( Point2D point )
+    {
+        return new Point2D.Double( inverseScaleX( point.getX() ),
+                                   inverseScaleY( point.getY() ) );
+    }
+
+    /**
+     * Projects an X-coordinate applying the current scaling information in the
+     * opposite direction.
+     *
+     * The offset is not applied.
+     */
+    public double inverseScaleX( double x )
+    {
+        return x / _xScale;
+    }
+
+    /**
+     * Projects an Y-coordinate applying the current scaling information in the
+     * opposite direction.
+     *
+     * The offset is not applied.
+     */
+    public double inverseScaleY( double y )
+    {
+        return y / _yScale;
+    }
 }

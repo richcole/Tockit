@@ -56,7 +56,7 @@ public class MainPanel extends JFrame implements ActionListener {
   /**
    * switches debug mode
    */
-  private boolean debug = false;
+  public static boolean debug = false;
 
       // buttons list
   private JButton newButton      = null;
@@ -135,7 +135,6 @@ public class MainPanel extends JFrame implements ActionListener {
      // constructor used for debuging
     public MainPanel(String schemaFile) {
       super("ToscanaJ 0.1");
-      debug = true;
       buildPanel();
       // parse it
       try {
@@ -728,6 +727,14 @@ public class MainPanel extends JFrame implements ActionListener {
         MainPanel test;
         if(args.length == 1) {
 	  test = new MainPanel(args[0]);
+        } else if(args.length == 2) {
+          if(args[1].equals("-debug")) {
+            test = new MainPanel(args[0]);
+            debug = true;
+          } else {
+            System.err.println("\nCommand line arguments: <schemaFile> <-debug>");
+            return;
+          }
         } else {
           test = new MainPanel();
         }

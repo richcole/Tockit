@@ -12,6 +12,7 @@ import net.sourceforge.tockit.toscanaj.data.Diagram;
 import net.sourceforge.tockit.toscanaj.data.LabelInfo;
 import net.sourceforge.tockit.toscanaj.diagram.LabelView;
 import net.sourceforge.tockit.toscanaj.diagram.ScalingInfo;
+import net.sourceforge.tockit.toscanaj.gui.MainPanel;
 
 /**
  * This class paints a diagram defined by the Diagram class.
@@ -19,6 +20,11 @@ import net.sourceforge.tockit.toscanaj.diagram.ScalingInfo;
 
 public class DiagramView extends JComponent implements MouseListener, MouseMotionListener
 {
+    /**
+     * Holds sacaling info. Is updated on each redraw
+     */
+    ScalingInfo si;
+
     /**
      * The size of a point.
      */
@@ -113,7 +119,7 @@ public class DiagramView extends JComponent implements MouseListener, MouseMotio
         }
 
         // store the scaling information for further use
-        ScalingInfo si = new ScalingInfo(
+        si = new ScalingInfo(
                      new Point2D.Double( xOrigin, yOrigin ), xScale, yScale );
 
         // paint all lines
@@ -152,45 +158,13 @@ public class DiagramView extends JComponent implements MouseListener, MouseMotio
     public void mouseClicked(MouseEvent e){
       //System.out.println("mouseClicked");
     }
-    public void mousePressed(MouseEvent e) {
-      //System.out.println("mousePressed");
-      Point2D p, found = null;
-      Insets insets = getInsets();
-      int x = getX() + insets.left + MARGIN;
-      int y = getY() + insets.top + MARGIN;
-      int h = getHeight() - insets.left - insets.right - 2 * MARGIN;
-      int w = getWidth() - insets.top - insets.bottom - 2 * MARGIN;
-      double min = getDistance(0, 0, w, h);
-      double xOrigin = x + w/2;
-      double yOrigin = y + h/2;
-      double xScale = 1;
-      double yScale = 1;
-      double dist = 0;
-      ScalingInfo si = new ScalingInfo(
-                     new Point2D.Double( xOrigin, yOrigin ), xScale, yScale );
-      for( int i = 0; i < _diagram.getNumberOfPoints(); i++ ) {
-        p = si.project(_diagram.getPoint(i));
-        //System.out.println("p = " + p);
-        dist = getDistance(e.getX(), e.getY(), p.getX(), p.getY());
-        if(dist < min) {
-          min = dist;
-          found = p;
-        }
-      }
-      if(found != null) {
-        System.out.println("Clostest point is " + found);
-      }
-    }
 
-    private double getDistance(double x1, double y1, double x2, double y2){
-      return Math.sqrt(sqr(x1 - x2) + sqr(y1 - y2));
-    }
-
-    private double sqr(double x) {
-      return x * x;
-    }
     public void mouseReleased(MouseEvent e) {
       //System.out.println("mouseReleased");
+      if(labelSelected == true && dragMode == true) {
+        dragMode = false;
+        labelSelected = false;
+      }
     }
     public void mouseEntered(MouseEvent e) {
       //System.out.println("mouseEntered");
@@ -200,13 +174,103 @@ public class DiagramView extends JComponent implements MouseListener, MouseMotio
     }
 
     // Mouse Motion Listener for label drag events
+    LabelInfo li = null;
+    boolean labelSelected = false;
+    boolean dragMode = false;
+    Point2D lastPoint = null;
+    int dragMin = 10;
 
     public void mouseDragged(MouseEvent e) {
-      //System.out.println("mouseDragged");
+      if((getDistance(lastPoint.getX(), lastPoint.getY(), e.getX(), e.getY()) >= dragMin) && labelSelected == true) {
+        li.setOffset(new Point2D.Double(li.getOffset().getX() -
+                        si.inverseScaleX(lastPoint.getX() - e.getX()),
+                        li.getOffset().getY() -
+                        si.inverseScaleY(lastPoint.getY() - e.getY())
+                      ));
+        lastPoint = new Point2D.Double(e.getX(), e.getY());
+        repaint();
+        dragMode = true;
+      }
     }
 
     public void mouseMoved(MouseEvent e) {
       //System.out.println("mouseMoved");
+    }
+    public void mousePressed(MouseEvent e) {
+      int index = 0;
+      double min = getDistance(0, 0, getWidth(), getHeight());
+      double distNode = 0;
+      double x, y;
+      String type = "";
+      Point2D node, found = null;
+      LabelInfo objectLabel, attributeLabel;
+      lastPoint = new Point2D.Double(e.getX(), e.getY());
+      //if (e.getClickCount() == 2){
+        for( int i = 0; i < _diagram.getNumberOfPoints(); i++ ) {
+          node = si.project(_diagram.getPoint(i));
+          distNode = getDistance(e.getX(), e.getY(), node.getX(), node.getY());
+          if(distNode < min) {
+            min = distNode;
+            found = node;
+            index = i;
+            type = "Node";
+          }
+          objectLabel = _diagram.getObjectLabel(i);
+          x = e.getX() - objectLabel.labelX;
+          y = e.getY() - objectLabel.labelY;
+          if(!(x < 0 || y < 0)  && (x <= objectLabel.labelWidth) && (y <= objectLabel.labelHeight)  ) {
+            System.out.println("\nObject label clicked on");
+            for(int o = 0; o < objectLabel.getNumberOfEntries(); o++) {
+              System.out.println("objectLabels " + objectLabel.getEntry(o));
+            }
+            li = objectLabel;
+            labelSelected = true;
+            return;
+          }
+          attributeLabel = _diagram.getAttributeLabel(i);
+          x = e.getX() - attributeLabel.labelX;
+          y = e.getY() - attributeLabel.labelY;
+          if(!(x < 0 || y < 0)  && (x <= attributeLabel.labelWidth) && (y <= attributeLabel.labelHeight)  ) {
+            System.out.println("\nAttribute labelLabel clicked on");
+            for(int a = 0; a < attributeLabel.getNumberOfEntries(); a++) {
+              System.out.println("objectLabels " + attributeLabel.getEntry(a));
+            }
+            li = attributeLabel;
+            labelSelected = true;
+            return;
+          }
+        }
+        labelSelected = false;
+        if(found != null && MainPanel.debug) {
+          System.out.println("\nx y " + e.getX() + " " + e.getY());
+          System.out.println("Clostest point is " + found);
+          System.out.println("Type is " + type);
+          System.out.println("min dist " + min);
+        }
+    }
+
+    private void printLabelInfo(int index) {
+      Point2D p;
+      LabelInfo objectLabel = _diagram.getObjectLabel(index);
+      LabelInfo attributeLabel = _diagram.getAttributeLabel(index);
+      p = si.project(objectLabel.getOffset());
+      System.out.println("objectLabels offsets" + p);
+      for(int o = 0; o < objectLabel.getNumberOfEntries(); o++) {
+        System.out.println("objectLabels " + objectLabel.getEntry(o));
+      }
+      p = si.project(attributeLabel.getOffset());
+      System.out.println("attributeLabel offsets" + p);
+      for(int a = 0; a < attributeLabel.getNumberOfEntries(); a++) {
+        System.out.println("objectLabels " + attributeLabel.getEntry(a));
+      }
+    }
+
+    private double getDistance(double x1, double y1, double x2, double y2){
+      return Math.abs(Math.sqrt(sqr(x2 - x1) + sqr(y2 - y1)));
+    }
+
+    private double sqr(double x) {
+      return x * x;
     }
 
     /**

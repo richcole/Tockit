@@ -10,6 +10,7 @@ import java.util.*;
 
 public class LabelInfo
 {
+    public double labelWidth, labelHeight, labelX, labelY;
     /**
      * The list of entries in the label.
      *

@@ -77,7 +77,10 @@ public class LabelView
         {
             ly = y + scInfo.scaleY( _labelInfo.getOffset().getY() );
         }
-
+        _labelInfo.labelWidth = lw;
+        _labelInfo.labelHeight = lh;
+        _labelInfo.labelX = lx;
+        _labelInfo.labelY = ly;
         // draw a dashed line from the given point to the calculated
         Stroke oldStroke = graphics.getStroke();
         float[] dashstyle = { 4, 4 };
