@@ -172,7 +172,7 @@ public class ListSetImplementation extends AbstractList implements ListSet {
 
     public boolean add(Object o) {
         if(this.list.contains(o)) {
-            throw new IllegalArgumentException("Can not add objects twice");
+            return false;
         }
         this.list.add(o);
         return true;
@@ -184,7 +184,7 @@ public class ListSetImplementation extends AbstractList implements ListSet {
 
     public void add(int index, Object element) {
         if(this.list.contains(element)) {
-            throw new IllegalArgumentException("Can not add objects twice");
+            this.list.remove(element);
         }
         this.list.add(index, element);
     }
