@@ -1,3 +1,10 @@
+/*
+ * Copyright Peter Becker (http://www.peterbecker.de). Please
+ * read licence.txt file provided with the distribution for
+ * licensing information.
+ * 
+ * $ID$
+ */
 package org.tockit.util;
 
 import java.util.HashSet;
@@ -13,7 +20,7 @@ public class IdPool {
         do {
             retVal = String.valueOf(nextNumber);
             nextNumber++;
-        } while (allocatedIds.contains(retVal));
+        } while (idIsReserved(retVal));
         reserveId(retVal);
         return retVal;
     }
@@ -22,7 +29,14 @@ public class IdPool {
         this.allocatedIds.remove(id);
     }
 
-    public void reserveId(String id) {
+    public void reserveId(String id) throws IllegalArgumentException {
+        if (idIsReserved(id)) {
+        	throw new IllegalArgumentException("Id " + id + " is already reserved");
+        }
         this.allocatedIds.add(id);
+    }
+    
+    public boolean idIsReserved (String id) {
+    	return this.allocatedIds.contains(id);
     }
 }

@@ -1,10 +1,10 @@
-<project name="Tockit Swing Related Classes" default="jar" basedir=".">
+<project name="Tockit Utility Classes" default="jar" basedir=".">
     <property name="src.dir"   value="${basedir}/source"/>
     <property name="libTesting.dir"   value="${basedir}/../../thirdParty/unitTesting"/>
     <property name="build.dir"   value="${basedir}/build"/>
     <property name="jars.dir"   value="${basedir}/../jars"/>
 
-    <property name="jar.file"   value="${jars.dir}/tockit-swing.jar"/>
+    <property name="jar.file"   value="${jars.dir}/tockit-utils.jar"/>
 
     <path id="project.class.path">
         <pathelement location="${build.dir}/"/>

@@ -174,11 +174,14 @@ public class ExtendedPreferences extends Preferences {
      * Stores a color in the preferences.
      * 
      * @param nodeName     a string used as name for a node in which the data is stored
-     * @param value        the color to store, must not be null
+     * @param value        the color to store, if null this method does nothing
      * 
      * @see retrieveColor(String, Color)
      */
     public void putColor(String nodeName, Color value) {
+        if(value == null) {
+            return;
+        }
         Preferences colorPrefs = this.javaPreferences.node(nodeName);
         colorPrefs.putInt("red", value.getRed());
         colorPrefs.putInt("green", value.getGreen());
