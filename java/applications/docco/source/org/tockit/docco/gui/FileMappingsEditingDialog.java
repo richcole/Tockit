@@ -109,8 +109,6 @@ public class FileMappingsEditingDialog extends JDialog {
 		
 		public void addMapping (DoccoFileFilter fileFilter, DocumentHandler docHandler) {
 			registery.register(fileFilter, docHandler);
-			System.out.println("adding new doc handler mapping");
-			// @todo assumption here is that a new element is always added in the end.
 			fireIntervalAdded(registery.getMappingAt(getSize() - 1), 0, getSize());
 		}
 	}
@@ -311,8 +309,9 @@ public class FileMappingsEditingDialog extends JDialog {
 	private JPanel createButtonsPanel () {
 		JPanel panel = new JPanel();
 			
-		JButton cancelButton = new JButton("Cancel");
-		cancelButton.addActionListener(new ActionListener() {
+		JButton closeButton = new JButton("Close");
+		closeButton.setToolTipText("All settings are automatically saved");
+		closeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				setVisible(false);
 			}
@@ -321,7 +320,7 @@ public class FileMappingsEditingDialog extends JDialog {
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 		panel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
 		panel.add(Box.createHorizontalGlue());
-		panel.add(cancelButton);
+		panel.add(closeButton);
 		
 		return panel;
 	}

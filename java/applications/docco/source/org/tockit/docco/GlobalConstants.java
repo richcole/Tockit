@@ -51,6 +51,7 @@ public class GlobalConstants {
 	 */
 	public static final String[] DOC_HANDLER_IMPLEMENTATIONS = {
 										"org.tockit.docco.indexer.documenthandler.HtmlDocumentHandler",
+										"org.tockit.docco.indexer.documenthandler.XmlDocumentHandler",
 										"org.tockit.docco.indexer.documenthandler.MSExcelDocHandler",
 										"org.tockit.docco.indexer.documenthandler.MSWordHandler",
 										"org.tockit.docco.indexer.documenthandler.MultivalentDocumentHandler",
