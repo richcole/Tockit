@@ -10,6 +10,10 @@ package org.tockit.docco;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URL;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.tockit.docco.indexer.documenthandler.DocumentHandler;
 import org.tockit.docco.plugin.PluginClassLoader;
@@ -27,6 +31,10 @@ public class TempPluginLoaderTester {
 							+ System.getProperty("file.separator")
 							+ "plugins";
 		try {	
+			Logger logger = Logger.getLogger(PluginClassLoader.class.getName());
+			logger.setLevel(Level.FINE);
+//			logger.addHandler(new FileHandler("%h/log%u.log"));
+
 			PluginClassLoader pluginClassLoader;
 			try {
 				pluginClassLoader = new PluginClassLoader(new File(pluginsDirLoc1));
@@ -34,15 +42,23 @@ public class TempPluginLoaderTester {
 			catch (FileNotFoundException e) {
 				pluginClassLoader = new PluginClassLoader(new File(pluginsDirLoc2));
 			}
+			System.out.println("getResource(libs/PDFBox.jar): " + pluginClassLoader.getResource("libs/PDFBox.jar"));
+			System.out.println("getResource(org/pdfbox/pdfparser/PDFParser.class): " + pluginClassLoader.getResource("org/pdfbox/pdfparser/PDFParser.class"));
+			System.out.println("getResource(org/pdfbox/pdfparser/PDFParser.class): " + pluginClassLoader.getResource("org/pdfbox/pdfparser/PDFParser.class"));
+			System.out.println("getResource(org\\tockit\\docco\\indexer\\documenthandler\\PdfDocumentHandler.class): " + pluginClassLoader.getResource("org\\tockit\\docco\\indexer\\documenthandler\\PdfDocumentHandler.class"));
+			System.out.println("findClass(org.tockit.docco.indexer.documenthandler.PdfDocumentHandler): " + pluginClassLoader.findClass("org.tockit.docco.indexer.documenthandler.PdfDocumentHandler"));
+			//System.out.println("findClass(org/pdfbox/pdfparser/PDFParser.class): " + pluginClassLoader.findClass("org/pdfbox/pdfparser/PDFParser.class"));
 				
-			Class[] classes = pluginClassLoader.findClasses(DocumentHandler.class);
-			System.out.println("\n\n");
-			for (int i = 0; i < classes.length; i++) {
-				Class class1 = classes[i];
-				DocumentHandler docHandler = (DocumentHandler) class1.newInstance();
-				System.out.println("instantiated doc handler: " + docHandler.getDisplayName());
-				docHandler.parseDocument(new URL("file:/C:/nataliya/testData/input.pdf"));
-			}
+//			Class[] classes = pluginClassLoader.findClassesImplementingGivenIterface(DocumentHandler.class);
+//			System.out.println("\n\n");
+//			for (int i = 0; i < classes.length; i++) {
+//				Class class1 = classes[i];
+//				DocumentHandler docHandler = (DocumentHandler) class1.newInstance();
+//				System.out.println("instantiated doc handler: " + docHandler.getDisplayName());
+//				docHandler.parseDocument(new URL("file:/E:/mumsWork/docco-test-data/papers/input.pdf"));
+//			}
+			
+			
 		}
 		catch (Exception e) {
 			e.printStackTrace();
