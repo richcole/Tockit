@@ -1,5 +1,4 @@
-CCC   = g++
-DEBUG = -ggdb 
+include config.mak
 
 OBJECTS = \
   set \

@@ -17,6 +17,10 @@ The current version of sarl has been compiled with:
 
 So far Sarl only appears to be sensitive to the version of swig.
 
+3.0 Resources
+
+The Sarl Wiki ( is a place where you can find up to date information about how to compile and install Sarl.
+
 3.0 Compilation and Testing
 
 Currently only linux is supported, although we intend to also support
