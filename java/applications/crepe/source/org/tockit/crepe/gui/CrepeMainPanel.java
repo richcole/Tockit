@@ -536,7 +536,7 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
         XMLOutputter serializer = new XMLOutputter();
 
         serializer.setIndent("  "); // use two space indent
-        serializer.setNewlines(false);
+        serializer.setNewlines(true);
 
         try {
             FileOutputStream out = new FileOutputStream(this.currentFile);
