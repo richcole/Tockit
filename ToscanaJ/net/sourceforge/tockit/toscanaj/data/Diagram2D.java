@@ -4,7 +4,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 /**
- * This class is an abstraction of all diagram related information.
+ * Interface for getting diagram related information.
  */
 
 public interface Diagram2D

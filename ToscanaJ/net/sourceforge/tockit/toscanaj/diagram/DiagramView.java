@@ -10,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.util.Vector;
 
 import net.sourceforge.tockit.toscanaj.data.Diagram;
+import net.sourceforge.tockit.toscanaj.data.Diagram2D;
 import net.sourceforge.tockit.toscanaj.data.LabelInfo;
 import net.sourceforge.tockit.toscanaj.diagram.LabelView;
 import net.sourceforge.tockit.toscanaj.diagram.ScalingInfo;
@@ -52,7 +53,7 @@ public class DiagramView extends JComponent implements MouseListener, MouseMotio
     /**
      * The diagram to display.
      */
-    Diagram _diagram = null;
+    private Diagram2D _diagram = null;
 
     /**
      * load object and attribute labels on first paint;
@@ -75,12 +76,12 @@ public class DiagramView extends JComponent implements MouseListener, MouseMotio
     /**
      * Distance that label has to be moved to enable dragMode
      */
-    int dragMin = 5;
+    private int dragMin = 5;
     /**
      * Holds the last point that the current label being move
      * was move to
      */
-    Point2D lastPoint = null;
+    private Point2D lastPoint = null;
 
     /**
      * Creates a new vew displaying an empty digram (i.e. nothing at all).
@@ -104,7 +105,7 @@ public class DiagramView extends JComponent implements MouseListener, MouseMotio
     * Method called by LabelView to update all observers
     */
     public void updateAllObservers() {
-      _diagram.emitChangeSignal();
+      ((Diagram)_diagram).emitChangeSignal();
     }
 
     /**
@@ -344,7 +345,7 @@ public class DiagramView extends JComponent implements MouseListener, MouseMotio
     public void showDiagram( Diagram diagram )
     {
         _diagram = diagram;
-        _diagram.addObserver(this);
+        ((Diagram)_diagram).addObserver(this);
         repaint();
     }
 }
