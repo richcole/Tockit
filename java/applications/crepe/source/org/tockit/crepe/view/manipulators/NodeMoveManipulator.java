@@ -10,11 +10,12 @@ package org.tockit.crepe.view.manipulators;
 import org.tockit.canvas.manipulators.ItemMovementManipulator;
 import org.tockit.canvas.*;
 import org.tockit.canvas.Canvas;
+import org.tockit.canvas.MovableCanvasItem;
 import org.tockit.canvas.events.*;
 import org.tockit.events.EventBroker;
-import org.tockit.crepe.view.NodeView;
-import org.tockit.crepe.view.LineView;
+import org.tockit.crepe.view.*;
 import org.tockit.cgs.model.Node;
+import org.tockit.cgs.model.Link;
 
 import java.awt.geom.*;
 import java.awt.*;
@@ -172,6 +173,15 @@ public class NodeMoveManipulator extends ItemMovementManipulator {
             LineView lineView = (LineView) iterator.next();
             if(lineView.getConnectedNodeView() == nodeView) {
                 lineView.setConnectedNodeView(otherNodeView);
+                Link link = lineView.getConnectedLinkView().getLink();
+                Node[] refs = link.getReferences();
+                for (int i = 0; i < refs.length; i++) {
+                    Node node = refs[i];
+                    if(node == nodeView.getNode()) {
+                        refs[i] = otherNodeView.getNode();
+                    }
+                }
+                link.setReferences(refs);
             }
         }
     }

@@ -21,13 +21,18 @@ public class Link {
         element = new Element("link");
         element.setAttribute("id", knowledgeBase.createNewLinkId());
         element.setAttribute("relation", type.getName());
+        setReferences(references);
+        knowledgeBase.addLink(this);
+    }
+
+    public void setReferences(Node[] references) {
+        this.element.removeChildren("reference");
         for (int i = 0; i < references.length; i++) {
             Node reference = references[i];
             Element refElem = new Element("reference");
             refElem.addContent(reference.getId());
             this.element.addContent(refElem);
         }
-        knowledgeBase.addLink(this);
     }
 
     public Link(KnowledgeBase knowledgeBase, Element element) {
