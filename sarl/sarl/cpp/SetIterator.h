@@ -32,15 +32,16 @@ public:
   friend class Lattice;
   friend class MapIterator;
 
-  friend SetIterator meet(SetIterator& a_it, SetIterator& b_it);
-  friend SetIterator join(SetIterator& a_it, SetIterator& b_it);
-  friend SetIterator minus(SetIterator& a_it, SetIterator& b_it);
+  friend SetIterator meet(SetIterator const& a_it, SetIterator const& b_it);
+  friend SetIterator join(SetIterator const& a_it, SetIterator const& b_it);
+  friend SetIterator minus(SetIterator const& a_it, SetIterator const& b_it);
 
 public:
 
   SetIterator(Set const& set);
   SetIterator(SetIterator const& it);
   SetIterator& operator=(SetIterator const& it);
+  SetIterator(Index x);
 
   virtual ~SetIterator() {
     SARL_ASSERT(mp_itRef != 0);
@@ -89,14 +90,14 @@ public:
     return sarl_set_iterator_count(mp_itRef);
   }
 
-  bool subseteq(SetIterator& a_it)
+  bool subseteq(SetIterator const& a_it)
   {
     SARL_ASSERT(mp_itRef != 0);
     return
       sarl_set_iterator_subseteq(mp_itRef, a_it.mp_itRef);
   };
 
-  int lexical_compare(SetIterator& a_it)
+  int lexical_compare(SetIterator const& a_it)
   {
     SARL_ASSERT(mp_itRef != 0);
     return
@@ -139,6 +140,11 @@ public: // nasty hack for SWIG
 
 #include <sarl/cpp/Set.h>
 
+inline SetIterator::SetIterator(Index x) {
+  mp_itRef = sarl_set_iterator_create_from_index(x);
+};
+
+
 inline SetIterator::SetIterator(Set const& set) {
   if ( set.mp_setRef != 0 ) {
     mp_itRef = sarl_set_iterator_create(set.mp_setRef);
@@ -167,7 +173,7 @@ inline SetIterator& SetIterator::operator=(SetIterator const& it)
   return *this;
 };
 
-inline SetIterator meet(SetIterator& a_it, SetIterator& b_it) 
+inline SetIterator meet(SetIterator const& a_it, SetIterator const& b_it) 
 {
   SARL_ASSERT(a_it.mp_itRef != 0 && b_it.mp_itRef != 0);
 
@@ -177,7 +183,7 @@ inline SetIterator meet(SetIterator& a_it, SetIterator& b_it)
     ).retn();
 };
 
-inline SetIterator join(SetIterator& a_it, SetIterator& b_it) 
+inline SetIterator join(SetIterator const& a_it, SetIterator const& b_it) 
 {
   SARL_ASSERT(a_it.mp_itRef != 0 && b_it.mp_itRef != 0);
 
@@ -187,7 +193,7 @@ inline SetIterator join(SetIterator& a_it, SetIterator& b_it)
     ).retn();
 };
 
-inline SetIterator minus(SetIterator& a_it, SetIterator& b_it) 
+inline SetIterator minus(SetIterator const& a_it, SetIterator const& b_it) 
 {
   SARL_ASSERT(a_it.mp_itRef != 0 && b_it.mp_itRef != 0);
 
@@ -200,19 +206,19 @@ inline SetIterator minus(SetIterator& a_it, SetIterator& b_it)
 class SetIteratorFunctions {
 public:
   inline static 
-  SetIterator meet(SetIterator& a_it, SetIterator& b_it) 
+  SetIterator meet(SetIterator const& a_it, SetIterator const& b_it) 
   {
     return ::meet(a_it, b_it).retn();
   }
 
   inline static 
-  SetIterator join(SetIterator& a_it, SetIterator& b_it) 
+  SetIterator join(SetIterator const& a_it, SetIterator const& b_it) 
   {
     return ::join(a_it, b_it).retn();
   }
 
   inline static 
-  SetIterator minus(SetIterator& a_it, SetIterator& b_it) 
+  SetIterator minus(SetIterator const& a_it, SetIterator const& b_it) 
   {
     return ::minus(a_it, b_it).retn();
   }

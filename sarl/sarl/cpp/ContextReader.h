@@ -47,6 +47,27 @@ class ContextReader {
     return result;
   };
 
+  static int read_cxt(
+      InputStream &in, 
+      Context&    K, 
+      String&     title,
+      Dictionary& G, 
+      Dictionary& M,
+      OutputStream& err
+      ) 
+  {
+    int result = sarl_read_cxt_context(
+      G.mp_dictionaryRef, 
+      M.mp_dictionaryRef, 
+      K.mp_contextRef, 
+      title.mp_stringRef, 
+      in.mp_inRef, 
+      err.mp_outRef
+    );
+
+    return result;
+  };
+
   static Lattice read_cxt_lattice_from_file(String& s) 
   {
     InputFileStream in = s;

@@ -22,6 +22,10 @@ public:
     sarl_input_stream_decr_ref(mp_inRef);
   };
 
+  int read_index(Index& value) {
+    return sarl_input_stream_read_index(mp_inRef, &value);
+  };
+
  protected:
   Sarl_InputStream* mp_inRef;
 

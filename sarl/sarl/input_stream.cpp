@@ -85,8 +85,17 @@ int
 sarl_input_stream_read_index(Sarl_InputStream* input, Sarl_Index* index_ptr)
 {
   *index_ptr = 0;
+
+  while( 
+    ! sarl_input_stream_at_end(input) &&
+    isspace(sarl_input_stream_char_value(input)) 
+  ) {
+    sarl_input_stream_next(input);
+  }
+    
   SARL_INPUT_STREAM_FOR(input) {
     Sarl_Char c = sarl_input_stream_char_value(input);
+
     if ( c >= '0' && c <= '9' ) {
       *index_ptr *= 10;
       *index_ptr += c - '0';

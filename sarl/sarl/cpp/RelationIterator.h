@@ -97,6 +97,9 @@ public:
     ).retn();
   }
 
+  inline SetIterator extent(SetIterator const& B) const;
+  inline SetIterator intent(SetIterator const& A) const;
+
   RelationIterator join(RelationIterator& it) {
     return RelationIterator(
       sarl_relation_iterator_join(
@@ -136,5 +139,19 @@ private:
     mp_itRef = ap_itRef;
   }
 };
+
+#include <sarl/cpp/SetIterator.h>
+
+inline SetIterator RelationIterator::extent(SetIterator const& B) const {
+  return SetIterator(
+    sarl_relation_iterator_extent_set(mp_itRef, B.mp_itRef)
+  ).retn();
+}
+
+inline SetIterator RelationIterator::intent(SetIterator const& A) const {
+  return SetIterator(
+    sarl_relation_iterator_intent_set(mp_itRef, A.mp_itRef)
+  ).retn();
+}
 
 #endif

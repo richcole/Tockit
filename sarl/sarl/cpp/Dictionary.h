@@ -23,10 +23,6 @@ public:
     sarl_dictionary_decr_ref(mp_dictionaryRef);
   };
 
-  Dictionary copy() {
-    return Dictionary(*this);
-  };
-
   Index get_index(String const& s) {
     return sarl_dictionary_get_index(mp_dictionaryRef, s.mp_stringRef);
   };
@@ -37,11 +33,13 @@ public:
     );
   };
 
-  SetIterator get_indexes() {
+  SetIterator get_indexes() const {
     return SetIterator(
       sarl_dictionary_get_indexes(mp_dictionaryRef)
     );
   };
+
+  inline Dictionary copy() const;
 
  private:
   Sarl_Dictionary* mp_dictionaryRef;
@@ -57,7 +55,12 @@ inline Dictionary::Dictionary()
 };
 
 inline Dictionary::Dictionary(Dictionary const& s) {
-  mp_dictionaryRef = sarl_dictionary_copy(s.mp_dictionaryRef);
+  sarl_dictionary_incr_ref(s.mp_dictionaryRef);
+  mp_dictionaryRef = s.mp_dictionaryRef;
+};
+
+inline Dictionary Dictionary::copy() const {
+  return Dictionary(sarl_dictionary_copy(mp_dictionaryRef));
 };
 
 inline Dictionary& Dictionary::operator=(Dictionary const& d) {
