@@ -1,0 +1,17 @@
+These are the sources for Toscana/J the Java version of Toscana.
+
+They were created between March, 28 and March, 30 in the year 2001 on 
+the Toscana/J hackfest of the KVO group (http://www.int.gu.edu.au/kvo).
+
+Feel free to do what you want with the program and the sources as
+long as you don't blame us, i.e. USE AT YOUR OWN RISK!
+
+The normal distribution of this source code includes libraries from
+the JDOM project (see http://www.jdom.org) and from the Apache
+Software Foundation (see http://xml.apache.org/xerces-j/index.html).
+They can be found as JAR files in the libs subdirectory, their 
+licences are in the same directory as LICENSE.[jdom|xerces].
+
+More information might still be available on this URL:
+
+	http://meganesia.int.gu.edu.au/projects/ToscanaJ
