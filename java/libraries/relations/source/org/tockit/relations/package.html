@@ -19,6 +19,17 @@ names for the dimensions. The latter means that it is a bit of a mixture of the
 named and unnamed perspective. The idea is to use the unnamed perspective for all
 calculations while allowing to attach names for application-specific purposes.</p>
 
+<p>All objects put into the model are assumed to be values in the sense of:</p>
+<ul>
+<li>their identity is based on Object.equals(Object)</li>
+<li>they don't change</li>
+</ul>
+<p>If any of these two features is broken, the results of the library code are
+undefined. More specifically: if the notion of identity is not fulfilled, you
+might find duplicates where there shouldn't be any and if the values get changed
+after adding them to tuples and relations they might not be retrieved properly,
+most likely you will get misses on containment checks.</p>
+
 <p>This package contains two subpackages: org.tockit.relations.model models the
 data structures while org.tockit.relations.operations models the operations of the
 algebra.</p>
