@@ -9,7 +9,6 @@ package org.tockit.crepe.view;
 
 import org.tockit.canvas.Canvas;
 import org.tockit.events.EventBroker;
-import org.tockit.canvas.manipulators.ItemMovementManipulator;
 import org.tockit.cgs.model.*;
 import org.tockit.crepe.view.manipulators.*;
 
