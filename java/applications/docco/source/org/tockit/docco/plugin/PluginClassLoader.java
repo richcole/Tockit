@@ -158,7 +158,13 @@ public class PluginClassLoader extends ClassLoader {
 		}
 		
 		listAllFiles(file);	
-		logger.exiting("PluginClassLoader", "Constructor", "found num of resources: " + this.foundResources.size());		
+		System.out.println("\nPluginClassLoader: " + this);
+		System.out.println("default class loader: " + this.getClass().getClassLoader());
+		System.out.println("parent class loader: " + this.getParent());
+		System.out.println("system class loader: " + ClassLoader.getSystemClassLoader());
+		
+
+		logger.exiting("PluginClassLoader", "Constructor", "found num of resources: " + this.foundResources.size());
 	}
 	
 	public Class[] findClassesImplementingGivenIterface (Class interfaceClass) 
@@ -231,10 +237,21 @@ public class PluginClassLoader extends ClassLoader {
 		return loadClass(resource);
 	 }
 	 
-	 private Class loadClass (Resource resource) throws ClassNotFoundException, NoClassDefFoundError {
+	 private Class loadClass (Resource resource) 
+	 								throws ClassNotFoundException, 
+	 								NoClassDefFoundError {
 	 	if (this.loadedClassesMap.containsKey(resource.getRelativePath())) {
 	 		return (Class) this.loadedClassesMap.get(resource.getRelativePath());
-	 	}	 		
+	 	}
+//	 	try {
+//	 		String className = resource.getRelativePath().replace('/','.').replaceAll(".class", "");
+//	 		Class resClass = this.getClass().getClassLoader().loadClass(className);
+//	 		System.out.println(className + " - YES");	 
+//	 		return resClass;
+//	 	}
+//	 	catch (ClassNotFoundException e) {
+//			System.out.println(resource.getRelativePath() + " - NO");	 		
+//	 	}
 		try {
 			byte [] b = resource.getData();
 			Class resClass = defineClass(null, b, 0, b.length);
