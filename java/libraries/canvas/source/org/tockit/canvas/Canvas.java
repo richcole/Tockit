@@ -17,6 +17,7 @@ import java.awt.print.Printable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -51,10 +52,27 @@ public class Canvas extends JPanel implements Printable {
     private CanvasBackground background = new CanvasBackground();
 
     /**
-     * A list of all canvas items to draw on top of the background.
+     * A list of all canvas layers to draw on top of the background.
+     * 
+     * A layer itself is a list of items to draw. This list has to be in synch
+     * with the layerNameMapping, but we need both to ensure the proper order of
+     * the layers.
      */
-    protected List canvasItems = new ArrayList();
+    protected List canvasLayers = new ArrayList();
+    
+    /**
+     * Stores the names of the layers as a mapping into the layer objects.
+     */
+    protected Hashtable layerNameMapping = new Hashtable();
 
+	/**
+	 * These items are marked to be raised.
+	 * 
+	 * Raisal is postponed to avoid ConcurrentModificationExceptions. Items are
+	 * raised within their layer, they don't cross layers.
+	 * 
+	 * @todo we need the same for addition
+	 */
     protected List itemsToRaise = new ArrayList();
 
     /**
@@ -98,18 +116,28 @@ public class Canvas extends JPanel implements Printable {
         this.background.draw(graphics);
         raiseMarkedItems();
         // paint all items on canvas
-        Iterator it = this.canvasItems.iterator();
-        while (it.hasNext()) {
-            CanvasItem cur = (CanvasItem) it.next();
-            cur.draw(graphics);
+        Iterator layerIt = this.canvasLayers.iterator();
+        while (layerIt.hasNext()) {
+        	Collection layer = (Collection) layerIt. next();
+        	Iterator itemIt = layer.iterator();
+        	while(itemIt.hasNext()) {
+		        CanvasItem cur = (CanvasItem) itemIt.next();
+		        cur.draw(graphics);
+        	}
         }
     }
 
     private void raiseMarkedItems() {
         for (Iterator iterator = itemsToRaise.iterator(); iterator.hasNext();) {
             CanvasItem canvasItem = (CanvasItem) iterator.next();
-            this.canvasItems.remove(canvasItem);
-            this.canvasItems.add(canvasItem);
+            Iterator layerIt = this.canvasLayers.iterator();
+            while (layerIt.hasNext()) {
+                Collection layer = (Collection) layerIt. next();
+                if(layer.contains(canvasItem)) {
+		            layer.remove(canvasItem);
+		            layer.add(canvasItem);
+                }
+            }
         }
         this.itemsToRaise.clear();
     }
@@ -146,15 +174,22 @@ public class Canvas extends JPanel implements Printable {
      * This is the smallest upright rectangle that contains all canvas items.
      */
     public Rectangle2D getCanvasSize(Graphics2D graphics) {
-        Iterator it = this.canvasItems.iterator();
-        if (!it.hasNext()) {
+    	Rectangle2D retVal = null;
+        Iterator layerIt = this.canvasLayers.iterator();
+		while(layerIt.hasNext()) {
+			Collection layer = (Collection) layerIt.next();
+			Iterator itemIt = layer.iterator();        
+	        while (itemIt.hasNext()) {
+	            CanvasItem cur = (CanvasItem) itemIt.next();
+	            if(retVal == null) {
+	                retVal = cur.getCanvasBounds(graphics);
+	            } else {
+	            	retVal = retVal.createUnion(cur.getCanvasBounds(graphics));
+	            }
+	        }
+		}
+        if (retVal == null) {
             return new Rectangle2D.Double(0, 0, 0, 0);
-        }
-        CanvasItem cur = (CanvasItem) it.next();
-        Rectangle2D retVal = cur.getCanvasBounds(graphics);
-        while (it.hasNext()) {
-            cur = (CanvasItem) it.next();
-            retVal = retVal.createUnion(cur.getCanvasBounds(graphics));
         }
         return retVal;
     }
@@ -235,12 +270,16 @@ public class Canvas extends JPanel implements Printable {
      * If multiple items are overlapping, the highest one will be returned.
      */
     public CanvasItem getCanvasItemAt(Point2D point) {
-        ListIterator it = this.canvasItems.listIterator(this.canvasItems.size());
-        while (it.hasPrevious()) {
-            CanvasItem cur = (CanvasItem) it.previous();
-            if (cur.containsPoint(point)) {
-                return cur;
-            }
+        ListIterator layerIt = this.canvasLayers.listIterator(this.canvasLayers.size());
+        while(layerIt.hasPrevious()) {
+        	List layer = (List) layerIt.previous();
+	        ListIterator itemIt = layer.listIterator(layer.size());
+	        while (itemIt.hasPrevious()) {
+	            CanvasItem cur = (CanvasItem) itemIt.previous();
+	            if (cur.containsPoint(point)) {
+	                return cur;
+	            }
+	        }
         }
         return background;
     }
@@ -250,11 +289,15 @@ public class Canvas extends JPanel implements Printable {
      */
     public Collection getCanvasItemsAt(Point2D point) {
         Collection retVal = new HashSet();
-        ListIterator it = this.canvasItems.listIterator(this.canvasItems.size());
-        while (it.hasPrevious()) {
-            CanvasItem cur = (CanvasItem) it.previous();
-            if (cur.containsPoint(point)) {
-                retVal.add(cur);
+        ListIterator layerIt = this.canvasLayers.listIterator(this.canvasLayers.size());
+        while(layerIt.hasPrevious()) {
+            List layer = (List) layerIt.next();
+            ListIterator itemIt = layer.listIterator(layer.size());
+            while (itemIt.hasPrevious()) {
+                CanvasItem cur = (CanvasItem) itemIt.previous();
+                if (cur.containsPoint(point)) {
+                    retVal.add(cur);
+                }
             }
         }
         return retVal;
@@ -282,34 +325,48 @@ public class Canvas extends JPanel implements Printable {
     }
 
     /**
-     * Removes all canvas items from the canvas (except the background).
+     * Removes all canvas layers and items from the canvas (except the
+     * background).
      */
     public void clearCanvas() {
-        canvasItems.clear();
+        this.canvasLayers.clear();
     }
 
     /**
-     * Adds a canvas item to the canvasItem list.
+     * Adds a canvas item to the canvas.
      *
-     * It will appear on top of all other items. If it is already on the canvas, it will be raised.
+     * It will appear on top of all other items in the highest layer.
      */
     public void addCanvasItem(CanvasItem node) {
-        this.canvasItems.remove(node);
-        this.canvasItems.add(node);
+    	if(this.canvasLayers.isEmpty()) {
+    		List newLayer = new ArrayList();
+    		this.canvasLayers.add(newLayer);
+    		this.layerNameMapping.put("", newLayer);
+    	}
+    	List uppermostLayer = (List) this.canvasLayers.get(this.canvasLayers.size() - 1);
+        uppermostLayer.add(node);
     }
 
     public void removeCanvasItem(CanvasItem item) {
-        this.canvasItems.remove(item);
+        ListIterator layerIt = this.canvasLayers.listIterator(this.canvasLayers.size());
+        while(layerIt.hasPrevious()) {
+            List layer = (List) layerIt.next();
+            layer.remove(item);
+        }
         this.itemsToRaise.remove(item);
     }
 
     public Collection getCanvasItemsByType(Class type) {
         Set retVal = new HashSet();
-        for (Iterator iterator = canvasItems.iterator(); iterator.hasNext();) {
-            CanvasItem canvasItem = (CanvasItem) iterator.next();
-            if( type.isAssignableFrom(canvasItem.getClass()) ) {
-                retVal.add(canvasItem);
-            }
+        Iterator layerIt = this.canvasLayers.iterator();
+        while(layerIt.hasNext()) {
+            List layer = (List) layerIt.next();
+	        for (Iterator iterator = layer.iterator(); iterator.hasNext();) {
+	            CanvasItem canvasItem = (CanvasItem) iterator.next();
+	            if( type.isAssignableFrom(canvasItem.getClass()) ) {
+	                retVal.add(canvasItem);
+	            }
+	        }
         }
         return retVal;
     }
