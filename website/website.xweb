@@ -1,0 +1,144 @@
+<website baseURL="http://tockit.sourceforge.net" sourceDir="content" targetDir="output" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://xweb.sourceforge.net/schema/1_0RC1/xweb.xsd" version="1.0RC1">
+    <structure>
+        <homepage name="Home" sourceFile="index.xhtml" targetFile="index.html" type="xhtml no button" id="homepage"/>
+        <section name="Tockit" sourceDir="tockit" targetDir="tockit" type="normal">
+            <homepage name="Goals" sourceFile="index.xhtml" targetFile="index.html" type="xhtml"/>
+            <entry name="Technologies" sourceFile="technologies.xhtml" targetFile="technologies.html" type="xhtml"/>
+        </section>
+        <section name="Score" sourceDir="score" targetDir="score" type="normal">
+            <homepage name="Overview" sourceFile="index.xhtml" targetFile="index.html" type="xhtml"/>
+        </section>
+        <section name="ToscanaJ" sourceDir="toscanaj" targetDir="toscanaj" type="normal">
+            <homepage name="Overview" sourceFile="index.xhtml" targetFile="index.html" type="xhtml"/>
+        </section>
+        <section name="CGXML" sourceDir="cgxml" targetDir="cgxml" type="normal">
+            <homepage name="Overview" sourceFile="index.xhtml" targetFile="index.html" type="xhtml"/>
+            <entry name="Format" sourceFile="format.xhtml" targetFile="format.html" type="xhtml"/>
+		<!-- the diagrams with the format -->
+            <file sourceFile="graph.png" targetFile="graph.png" type="copy"/>
+            <file sourceFile="module.png" targetFile="module.png" type="copy"/>
+            <entry name="Files" sourceFile="files.xhtml" targetFile="files.html" type="xhtml"/>
+        </section>
+        <directory sourceDir="../framework/graphics" targetDir="images">
+            <file sourceFile="banner1.png" targetFile="banner1.png" type="copy" id="banner1"/>
+            <file sourceFile="banner2.png" targetFile="banner2.png" type="copy" id="banner2"/>
+            <file sourceFile="banner3.png" targetFile="banner3.png" type="copy" id="banner3"/>
+            <file sourceFile="navfill.svg" targetFile="navfill.png" type="svg" id="navfill"/>
+            <file sourceFile="navend.png" targetFile="navend.png" type="copy" id="navend"/>
+            <file sourceFile="bar.png" targetFile="bar.png" type="copy" id="bar"/>
+        </directory>
+    </structure>
+    <layout>
+        <documentStyle type="xhtml">
+            <xsl stylesheet="framework/stylesheets/layout.xsl" navigationElement="html"/>
+            <imageGroup name="normalPage"/>
+        </documentStyle>
+        <documentStyle type="xhtml no button">
+            <xsl stylesheet="framework/stylesheets/layout.xsl" navigationElement="html"/>
+        </documentStyle>
+        <documentStyle type="copy">
+            <copy/>
+        </documentStyle>
+        <documentStyle type="svg">
+            <svg/>
+        </documentStyle>
+        <sectionStyle type="normal">
+            <image type="section"/>
+            <image type="activeSection"/>
+        </sectionStyle>
+        <!-- all images created for a normal page -->
+        <imageGroup name="normalPage">
+            <image type="button"/>
+            <image type="activeButton"/>
+        </imageGroup>
+        <!-- The basic buttons -->
+        <imageStyle width="130" height="30" fileNamePattern="button_%n.png" type="button">
+            <svg xwebid="xweb">
+                <filter id="Shadow" filterUnits="objectBoundingBox" x="-20" y="-20" width="200" height="200">
+                    <feMorphology in="SourceAlpha" result="morphedAlpha" radius="1" operator="dilate"/>
+                    <feGaussianBlur in="morphedAlpha" result="blurredAlpha" stdDeviation="1"/>
+                    <feFlood result="flooded" style="flood-color:rgb(0,0,0);flood-opacity:0.4"/>
+                    <feComposite operator="in" in="flooded" in2="blurredAlpha" result="coloredShadow"/>
+                    <feOffset in="coloredShadow" dx="1" dy="1" result="finalShadow"/>
+                    <feComposite in="SourceGraphic" in2="finalShadow" operator="over"/>
+                </filter>
+                <rect fill="rgb(90,115,156)" x="0" y="0" width="124" height="30"/>
+                <path d="M 123 -1 L 123 30" style="stroke-width:1;stroke-opacity:1;stroke:rgb(75,82,113);fill-opacity:0;fill:rgb(75,82,113);opacity:1"/>
+                <path d="M 124 -1 L 124 30" style="stroke-width:1;stroke-opacity:1;stroke:rgb(0,0,0);fill-opacity:0;fill:rgb(0,0,0);opacity:1"/>
+                <path d="M 125 -1 L 125 30" style="stroke-width:1;stroke-opacity:1;stroke:rgb(74,74,74);fill-opacity:0;fill:rgb(74,74,74);opacity:1"/>
+                <path d="M 126 -1 L 126 30" style="stroke-width:1;stroke-opacity:1;stroke:rgb(129,129,129);fill-opacity:0;fill:rgb(129,129,129);opacity:1"/>
+                <path d="M 127 -1 L 127 30" style="stroke-width:1;stroke-opacity:1;stroke:rgb(194,194,194);fill-opacity:0;fill:rgb(194,194,194);opacity:1"/>
+                <path d="M 128 -1 L 128 30" style="stroke-width:1;stroke-opacity:1;stroke:rgb(228,228,228);fill-opacity:0;fill:rgb(228,228,228);opacity:1"/>
+                <text x="8" y="16" style="filter:url(#Shadow);font-family:Arial;font-size:14;stroke-width:0;stroke-opacity:1;stroke:rgb(255,255,255);fill-opacity:1;fill:rgb(255,255,255);opacity:1" id="xweb">oops</text>
+            </svg>
+        </imageStyle>
+        <imageStyle width="130" height="30" fileNamePattern="button_%n_act.png" type="activeButton">
+            <svg xwebid="xweb">
+                <filter id="Shadow" filterUnits="objectBoundingBox" x="-20" y="-20" width="200" height="200">
+                    <feMorphology in="SourceAlpha" result="morphedAlpha" radius="1" operator="dilate"/>
+                    <feGaussianBlur in="morphedAlpha" result="blurredAlpha" stdDeviation="1"/>
+                    <feFlood result="flooded" style="flood-color:rgb(0,0,0);flood-opacity:0.4"/>
+                    <feComposite operator="in" in="flooded" in2="blurredAlpha" result="coloredShadow"/>
+                    <feOffset in="coloredShadow" dx="1" dy="1" result="finalShadow"/>
+                    <feComposite in="SourceGraphic" in2="finalShadow" operator="over"/>
+                </filter>
+                <rect fill="rgb(90,115,156)" x="0" y="0" width="124" height="30"/>
+                <path d="M 123 -1 L 123 30" style="stroke-width:1;stroke-opacity:1;stroke:rgb(75,82,113);fill-opacity:0;fill:rgb(75,82,113);opacity:1"/>
+                <path d="M 124 -1 L 124 30" style="stroke-width:1;stroke-opacity:1;stroke:rgb(0,0,0);fill-opacity:0;fill:rgb(0,0,0);opacity:1"/>
+                <path d="M 125 -1 L 125 30" style="stroke-width:1;stroke-opacity:1;stroke:rgb(74,74,74);fill-opacity:0;fill:rgb(74,74,74);opacity:1"/>
+                <path d="M 126 -1 L 126 30" style="stroke-width:1;stroke-opacity:1;stroke:rgb(129,129,129);fill-opacity:0;fill:rgb(129,129,129);opacity:1"/>
+                <path d="M 127 -1 L 127 30" style="stroke-width:1;stroke-opacity:1;stroke:rgb(194,194,194);fill-opacity:0;fill:rgb(194,194,194);opacity:1"/>
+                <path d="M 128 -1 L 128 30" style="stroke-width:1;stroke-opacity:1;stroke:rgb(228,228,228);fill-opacity:0;fill:rgb(228,228,228);opacity:1"/>
+                <text x="8" y="16" style="filter:url(#Shadow);font-family:Arial;font-size:14;stroke-width:0;stroke-opacity:1;stroke:rgb(220,220,255);fill-opacity:1;fill:rgb(220,220,255);opacity:1" id="xweb">oops</text>
+            </svg>
+        </imageStyle>
+        <imageStyle width="70" height="84" fileNamePattern="section_%n.png" type="section">
+            <svg xwebid="xweb">
+                <filter id="Shadow" filterUnits="objectBoundingBox" x="-20" y="-20" width="200" height="200">
+                    <feMorphology in="SourceAlpha" result="morphedAlpha" radius="1" operator="dilate"/>
+                    <feGaussianBlur in="morphedAlpha" result="blurredAlpha" stdDeviation="1"/>
+                    <feFlood result="flooded" style="flood-color:rgb(0,0,0);flood-opacity:0.4"/>
+                    <feComposite operator="in" in="flooded" in2="blurredAlpha" result="coloredShadow"/>
+                    <feOffset in="coloredShadow" dx="3" dy="3" result="finalShadow"/>
+                    <feComposite in="SourceGraphic" in2="finalShadow" operator="over"/>
+                </filter>
+                <rect fill="rgb(214,66,74)" x="-1" y="0" width="72" height="22"/>
+                <path d="M-1 22 L 71 22" style="stroke-width:1;stroke-opacity:1;stroke:rgb(21,21,23);fill-opacity:1;fill:rgb(0,0,0);opacity:1"/>
+                <path d="M-1 23 L 71 23" style="stroke-width:1;stroke-opacity:1;stroke:rgb(21,21,23);fill-opacity:1;fill:rgb(0,0,0);opacity:1"/>
+                <path d="M-1 24 L 71 24" style="stroke-width:1;stroke-opacity:1;stroke:rgb(79,79,79);fill-opacity:1;fill:rgb(0,0,0);opacity:1"/>
+                <path d="M-1 25 L 71 25" style="stroke-width:1;stroke-opacity:1;stroke:rgb(125,125,125);fill-opacity:1;fill:rgb(0,0,0);opacity:1"/>
+                <rect fill="rgb(146,146,146)" x="-1" y="26" width="72" height="20"/>
+                <text x="35" y="37" style="filter:url(#Shadow);font-family:Arial;font-size:11;font-weight:bold;stroke-width:0;stroke-opacity:1;stroke:rgb(255,255,150);fill-opacity:1;fill:rgb(255,255,150);opacity:1" text-anchor="middle" id="xweb">oops</text>
+                <path d="M-1 46 L 71 46" style="stroke-width:1;stroke-opacity:1;stroke:rgb(106,106,106);fill-opacity:1;fill:rgb(0,0,0);opacity:1"/>
+                <path d="M-1 47 L 71 47" style="stroke-width:1;stroke-opacity:1;stroke:rgb(0,0,0);fill-opacity:1;fill:rgb(0,0,0);opacity:1"/>
+                <path d="M-1 48 L 71 48" style="stroke-width:1;stroke-opacity:1;stroke:rgb(43,43,43);fill-opacity:1;fill:rgb(0,0,0);opacity:1"/>
+                <path d="M-1 49 L 71 49" style="stroke-width:1;stroke-opacity:1;stroke:rgb(146,146,146);fill-opacity:1;fill:rgb(0,0,0);opacity:1"/>
+                <path d="M-1 50 L 71 50" style="stroke-width:1;stroke-opacity:1;stroke:rgb(217,217,217);fill-opacity:1;fill:rgb(0,0,0);opacity:1"/>
+            </svg>
+        </imageStyle>
+        <imageStyle width="70" height="84" fileNamePattern="section_%n_act.png" type="activeSection">
+            <svg xwebid="xweb">
+                <filter id="Shadow" filterUnits="objectBoundingBox" x="-20" y="-20" width="200" height="200">
+                    <feMorphology in="SourceAlpha" result="morphedAlpha" radius="1" operator="dilate"/>
+                    <feGaussianBlur in="morphedAlpha" result="blurredAlpha" stdDeviation="1"/>
+                    <feFlood result="flooded" style="flood-color:rgb(0,0,0);flood-opacity:0.5"/>
+                    <feComposite operator="in" in="flooded" in2="blurredAlpha" result="coloredShadow"/>
+                    <feOffset in="coloredShadow" dx="3" dy="3" result="finalShadow"/>
+                    <feComposite in="SourceGraphic" in2="finalShadow" operator="over"/>
+                </filter>
+                <rect fill="rgb(214,66,74)" x="-1" y="0" width="72" height="22"/>
+                <path d="M-1 22 L 71 22" style="stroke-width:1;stroke-opacity:1;stroke:rgb(21,21,23);fill-opacity:1;fill:rgb(0,0,0);opacity:1"/>
+                <path d="M-1 23 L 71 23" style="stroke-width:1;stroke-opacity:1;stroke:rgb(21,21,23);fill-opacity:1;fill:rgb(0,0,0);opacity:1"/>
+                <path d="M-1 24 L 71 24" style="stroke-width:1;stroke-opacity:1;stroke:rgb(79,79,79);fill-opacity:1;fill:rgb(0,0,0);opacity:1"/>
+                <path d="M-1 25 L 71 25" style="stroke-width:1;stroke-opacity:1;stroke:rgb(125,125,125);fill-opacity:1;fill:rgb(0,0,0);opacity:1"/>
+                <rect fill="rgb(146,146,146)" x="-1" y="26" width="72" height="20"/>
+                <text x="35" y="37" style="filter:url(#Shadow);font-family:Arial;font-size:11;font-weight:bold;stroke-width:0;stroke-opacity:1;stroke:rgb(255,150,150);fill-opacity:1;fill:rgb(255,150,150);opacity:1" text-anchor="middle" id="xweb">oops</text>
+                <path d="M-1 46 L 71 46" style="stroke-width:1;stroke-opacity:1;stroke:rgb(106,106,106);fill-opacity:1;fill:rgb(0,0,0);opacity:1"/>
+                <path d="M-1 47 L 71 47" style="stroke-width:1;stroke-opacity:1;stroke:rgb(0,0,0);fill-opacity:1;fill:rgb(0,0,0);opacity:1"/>
+                <path d="M-1 48 L 71 48" style="stroke-width:1;stroke-opacity:1;stroke:rgb(43,43,43);fill-opacity:1;fill:rgb(0,0,0);opacity:1"/>
+                <path d="M-1 49 L 71 49" style="stroke-width:1;stroke-opacity:1;stroke:rgb(146,146,146);fill-opacity:1;fill:rgb(0,0,0);opacity:1"/>
+                <path d="M-1 50 L 71 50" style="stroke-width:1;stroke-opacity:1;stroke:rgb(217,217,217);fill-opacity:1;fill:rgb(0,0,0);opacity:1"/>
+            </svg>
+        </imageStyle>
+    </layout>
+</website>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+	<head>
+		<title>Score</title>
+	</head>
+	<body>
+        <h1>Score</h1>
+<p>Score is a system for document retrieval using Formal Concept Analysis (FCA) in a web context. Its basic parts are:</p>
+<dl>
+    <dt>Indexer</dt>
+	<dd>An indexer scans a number of documents and finds attributes to describe them, typically keywords.</dd>
+	<dt>Database</dt>
+	<dd>A relational database stores the references to the documents, the attributes and their relation.</dd>
+	<dt>FCA Module</dt>
+	<dd>An FCA module creates a formal concept lattice from the database and offers a query API.</dd>
+	<dt>Frontend</dt>
+	<dd>A Java Servlet will offer the query features to the user.</dd>
+</dl>
+<p>The different subsystems will use ODBC and CORBA to communicate, the database structure will be simple but extensible, so the code we create should be easily reusable. The usage of ODBC and CORBA ensures interoperability between platforms, programming languages and networks.</p>
+<p>Targeted applications are:</p>
+<dl>
+    <dt>Ontology guided document retrieval</dt>
+	<dd>A set of documents with a specific topic can be indexed using an ontology system and specific documents can be retrieved.</dd>
+	<dt>Mailing list archives</dt>
+	<dd>Mails in a mailing list archive can be queried for keywords that are generated from the header information and using idf (inverse document frequency).</dd>
+</dl>
+<p>There are a number of advantages of this approach compared to classic retrieval systems:</p>
+<ul>
+    <li>We can avoid empty result sets</li>
+	<li>We can offer refinements that are always true refinements (including a ranking for their efficiency)</li>
+	<li>We have implicit document clusters (the formal concepts) with a natural distance relation, thus we can give result sets with documents that match the query not exactly but nearly, including a ranking on them.</li>
+</ul>
+	</body>
+</html>

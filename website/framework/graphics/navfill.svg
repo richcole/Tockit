@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+            <svg width="130" height="30">
+                <rect fill="rgb(90,115,156)" x="0" y="0" width="124" height="30"/>
+                <path d="M 123 -1 L 123 30" style="stroke-width:1;stroke-opacity:1;stroke:rgb(75,82,113);fill-opacity:0;fill:rgb(75,82,113);opacity:1"/>
+                <path d="M 124 -1 L 124 30" style="stroke-width:1;stroke-opacity:1;stroke:rgb(0,0,0);fill-opacity:0;fill:rgb(0,0,0);opacity:1"/>
+                <path d="M 125 -1 L 125 30" style="stroke-width:1;stroke-opacity:1;stroke:rgb(74,74,74);fill-opacity:0;fill:rgb(74,74,74);opacity:1"/>
+                <path d="M 126 -1 L 126 30" style="stroke-width:1;stroke-opacity:1;stroke:rgb(129,129,129);fill-opacity:0;fill:rgb(129,129,129);opacity:1"/>
+                <path d="M 127 -1 L 127 30" style="stroke-width:1;stroke-opacity:1;stroke:rgb(194,194,194);fill-opacity:0;fill:rgb(194,194,194);opacity:1"/>
+                <path d="M 128 -1 L 128 30" style="stroke-width:1;stroke-opacity:1;stroke:rgb(228,228,228);fill-opacity:0;fill:rgb(228,228,228);opacity:1"/>
+            </svg>
