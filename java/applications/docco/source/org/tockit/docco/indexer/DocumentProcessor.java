@@ -118,6 +118,8 @@ public class DocumentProcessor {
 			doc.add(Field.Text(GlobalConstants.FIELD_DOC_EXTENSION, fileExtension));
 			String fileNameWithoutExtension = file.getName().substring(0,file.getName().length() - fileExtension.length() - 1);
 			doc.add(Field.Text(GlobalConstants.FIELD_DOC_NAME,fileNameWithoutExtension));
+		} else {
+			doc.add(Field.Text(GlobalConstants.FIELD_DOC_NAME,fileName));
 		}
 		if (doc.get(GlobalConstants.FIELD_DOC_MODIFICATION_DATE) == null) {
 			doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_MODIFICATION_DATE,new Date(file.lastModified())));
