@@ -700,7 +700,7 @@ public class DoccoMainFrame extends JFrame {
             fileDialog.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             fileDialog.setMultiSelectionEnabled(false);
             
-			final List documentMappings = DocumentHandlerRegistry.getDefaultMappings();
+			final List documentMappings = new ArrayList(DocumentHandlerRegistry.getDefaultMappings());
 
             JPanel optionsPanel = new JPanel(new GridBagLayout());
             JTextField nameField = new JTextField("Index " + (this.indexes.size() + 1));
