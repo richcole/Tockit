@@ -8,10 +8,9 @@
 package org.tockit.docco.indexer.filefilter;
 
 import java.io.File;
-import java.io.FileFilter;
 
 
-public class ExtensionFileFilter implements FileFilter {
+public class ExtensionFileFilter implements DoccoFileFilter {
 	String extensionString;
 
 	public ExtensionFileFilter (String extensionString) {
@@ -29,6 +28,11 @@ public class ExtensionFileFilter implements FileFilter {
 			return false;
 		}
 		return false;
+	}
+	
+	public String getDisplayString () {
+		String str = this.extensionString;
+		return str;
 	}
 	
 	public String toString() {
