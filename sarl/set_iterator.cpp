@@ -236,6 +236,7 @@ bool sarl_set_iterator_is_member(
   result = 
     ( ! sarl_set_iterator_at_end(it) ) && sarl_set_iterator_value(it) == v;
   sarl_set_iterator_release_ownership(it);
+  sarl_set_iterator_decr_ref(it);
   return result;
 };
 

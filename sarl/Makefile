@@ -32,8 +32,10 @@ OBJECTS = \
   dictionary \
   plain_dictionary \
   dictionary_indexes_set_iterator \
-  input_stream 
-#  read_cxt_context
+  input_stream \
+  output_stream \
+  read_cxt_context \
+  write_cxt_context
 
 TESTS = \
   test_set \
@@ -49,7 +51,8 @@ TESTS = \
   test_lectic_002 \
   test_lectic_003 \
   test_lattice_001 \
-  test_dictionary_001
+  test_dictionary_001 \
+  test_read_cxt_context_001
 
 PUBLIC_HEADERS = \
   cpp/Set.h \

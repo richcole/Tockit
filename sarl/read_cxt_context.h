@@ -9,7 +9,7 @@ struct Sarl_OutputStream;
 
 /*! Return zero unless there is a syntax error, in which case -1 is returned
  *  and G, M, I and title have undefined values. */
-int sarl_read_cxt_format(
+int sarl_read_cxt_context(
   Sarl_Dictionary*  G, 
   Sarl_Dictionary*  M, 
   Sarl_Context*     I, 

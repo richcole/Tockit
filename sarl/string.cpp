@@ -1,5 +1,6 @@
 extern "C" {
 
+#include <sarl/config.h>
 #include <sarl/string.h>
 #include <sarl/ref_count.h>
   
@@ -78,10 +79,10 @@ void
 
   if ( length == 0 ) {
     if ( s->char_buf != 0 ) {
-      delete s->char_buf;
+      delete[] s->char_buf;
     };
     if ( s->short_buf != 0 ) {
-      delete s->short_buf;
+      delete[] s->short_buf;
     }
     s->char_buf = 0;
     s->short_buf = 0;
@@ -103,7 +104,10 @@ void
     s->length = length;
     
     if ( s->char_buf != 0 ) {
-      delete s->char_buf;
+      delete[] s->char_buf;
+    };
+    if ( s->short_buf != 0 ) {
+      delete[] s->short_buf;
     };
     s->char_buf = new Sarl_Char[s->capacity];
     s->short_buf = new Sarl_Short[s->capacity];
@@ -129,10 +133,10 @@ void
 
   if ( length == 0 ) {
     if ( s->char_buf != 0 ) {
-      delete s->char_buf;
+      delete[] s->char_buf;
     };
     if ( s->short_buf != 0 ) {
-      delete s->short_buf;
+      delete[] s->short_buf;
     }
     s->char_buf = 0;
     s->short_buf = 0;
@@ -154,7 +158,10 @@ void
     s->length = length;
     
     if ( s->char_buf != 0 ) {
-      delete s->char_buf;
+      delete[] s->char_buf;
+    };
+    if ( s->short_buf != 0 ) {
+      delete[] s->short_buf;
     };
     s->char_buf = new Sarl_Char[s->capacity];
     s->short_buf = new Sarl_Short[s->capacity];
@@ -227,3 +234,121 @@ struct Sarl_String *
   return sarl_iterator_release_ownership(it);
 };
 
+void
+  sarl_string_append(
+    struct Sarl_String *s,
+    struct Sarl_String *t
+  )
+{
+  size_t t_len = sarl_string_length(t);
+
+  Sarl_Char*  dest_char_buf  = 0;
+  Sarl_Short* dest_short_buf = 0;
+  Sarl_Index  new_capacity;
+
+  if ( s->length + t_len + 1 > s->capacity ) {
+    new_capacity = s->length + t_len + 1;
+    dest_char_buf = new Sarl_Char[new_capacity];
+    dest_short_buf = new Sarl_Short[new_capacity];
+    memcpy(dest_char_buf, s->char_buf, s->length * sizeof(Sarl_Char));
+    memcpy(dest_short_buf, s->short_buf, s->length * sizeof(Sarl_Short));
+    if ( s->char_buf != 0 ) {
+      delete[] s->char_buf;
+    }
+    if ( s->short_buf != 0 ) {
+      delete[] s->short_buf;
+    }
+    s->char_buf = dest_char_buf;
+    s->short_buf = dest_short_buf;
+    s->capacity = new_capacity;
+  }
+    
+  memcpy(
+    s->char_buf + s->length, 
+    sarl_string_get_chars(t), 
+    t_len * sizeof(Sarl_Char)
+  );
+
+  memcpy(
+    s->short_buf + s->length, 
+    sarl_string_get_shorts(t), 
+    t_len * sizeof(Sarl_Short)
+  );
+
+  s->char_buf[t_len] = 0;
+  s->short_buf[t_len] = 0;
+  s->length = s->length + t_len;
+};
+
+
+void
+  sarl_string_append_chars(
+    struct Sarl_String *s,
+    Sarl_Char   *t
+  )
+{
+  size_t t_len = strlen(t);
+
+  Sarl_Char*  dest_char_buf  = 0;
+  Sarl_Short* dest_short_buf = 0;
+  Sarl_Index  new_capacity;
+
+  if ( s->length + t_len + 1 > s->capacity ) {
+    new_capacity = s->length + t_len + 1;
+    dest_char_buf = new Sarl_Char[new_capacity];
+    dest_short_buf = new Sarl_Short[new_capacity];
+    memcpy(dest_char_buf, s->char_buf, s->length * sizeof(Sarl_Char));
+    memcpy(dest_short_buf, s->short_buf, s->length * sizeof(Sarl_Short));
+    if ( s->char_buf != 0 ) {
+      delete[] s->char_buf;
+    }
+    if ( s->short_buf != 0 ) {
+      delete[] s->short_buf;
+    }
+    s->char_buf = dest_char_buf;
+    s->short_buf = dest_short_buf;
+    s->capacity = new_capacity;
+  }
+    
+  memcpy(s->char_buf + s->length, t, t_len * sizeof(Sarl_Char));
+  memcpy(s->short_buf + s->length, t, t_len * sizeof(Sarl_Short));
+  s->char_buf[t_len] = 0;
+  s->short_buf[t_len] = 0;
+  s->length = s->length + t_len;
+};
+
+void
+  sarl_string_append_char(
+    struct Sarl_String *s,
+    Sarl_Char   t
+  )
+{
+  Sarl_Char*  dest_char_buf  = 0;
+  Sarl_Short* dest_short_buf = 0;
+  Sarl_Index  new_capacity;
+
+  if ( s->length + 1 + 1 > s->capacity ) {
+    new_capacity = s->capacity * 2;
+    dest_char_buf = new Sarl_Char[new_capacity];
+    dest_short_buf = new Sarl_Short[new_capacity];
+    memcpy(dest_char_buf, s->char_buf, s->length * sizeof(Sarl_Char));
+    memcpy(dest_short_buf, s->short_buf, s->length * sizeof(Sarl_Short));
+    if ( s->char_buf != 0 ) {
+      delete[] s->char_buf;
+    }
+    if ( s->short_buf != 0 ) {
+      delete[] s->short_buf;
+    }
+    s->char_buf = dest_char_buf;
+    s->short_buf = dest_short_buf;
+    s->capacity = new_capacity;
+  }
+  
+  s->char_buf[s->length] = t;
+  s->short_buf[s->length] = t; 
+  s->char_buf[s->length + 1] = 0;
+  s->short_buf[s->length + 1] = 0;
+  s->length = s->length + 1;
+};
+ 
+ 

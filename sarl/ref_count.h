@@ -4,6 +4,8 @@
 #include <stdio.h>  // fprintf()
 #include <stdlib.h> // exit()
 
+#include <sarl/config.h>
+
 #define SARL_ASSIGN(x,y) \
   if ( (x) != 0 ) sarl_ref_count_decr((x)->ref_count); \
   (x) = (y); \
@@ -49,6 +51,12 @@ inline void sarl_ref_count_incr(struct Sarl_RefCount* ref_count)
 
 inline bool sarl_ref_count_decr(struct Sarl_RefCount* ref_count)
 {
+  if ( ref_count->count == 0 ) {
+    SARL_FATAL_ERROR(
+      "sarl_ref_count_decr called when ref count is already zero."
+    );
+  };
+
   --ref_count->count;
   --s_refCounter.count;
 

@@ -57,10 +57,28 @@ extern Sarl_Index
     struct Sarl_String *s
   );
 
+extern void
+  sarl_string_append(
+    struct Sarl_String *s,
+    struct Sarl_String *t
+  );
+
+extern void
+  sarl_string_append_chars(
+    struct Sarl_String *s,
+    Sarl_Char   *t
+  );
+
+extern void
+  sarl_string_append_char(
+    struct Sarl_String *s,
+    Sarl_Char   t
+  );
+
 extern struct Sarl_String *
   sarl_string_obtain_ownership(
     struct Sarl_String *s
-	);
+  );
 
 extern struct Sarl_String *
   sarl_string_release_ownership(
