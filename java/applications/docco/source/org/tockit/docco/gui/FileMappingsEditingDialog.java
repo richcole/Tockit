@@ -109,6 +109,7 @@ public class FileMappingsEditingDialog extends JDialog {
 		
 		public void addMapping (DoccoFileFilter fileFilter, DocumentHandler docHandler) {
 			registery.register(fileFilter, docHandler);
+			System.out.println("adding new doc handler mapping");
 			// @todo assumption here is that a new element is always added in the end.
 			fireIntervalAdded(registery.getMappingAt(getSize() - 1), 0, getSize());
 		}
@@ -357,7 +358,11 @@ public class FileMappingsEditingDialog extends JDialog {
 	}
 	
 	private void createMapping() {
-		new CreateNewFileMappingDialog(this);
+		CreateNewFileMappingDialog dialog = new CreateNewFileMappingDialog(this, model.registery);
+		DocumentHandlerMapping mapping = dialog.getCreatedMapping();
+		if (mapping != null) {
+			model.addMapping(mapping.getFileFilter(), mapping.getHandler());
+		}
 	}
 
 }

@@ -8,37 +8,242 @@
 package org.tockit.docco.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dialog;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.HeadlessException;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.lang.reflect.Constructor;
+import java.util.Iterator;
 
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
+import net.sourceforge.toscanaj.gui.dialog.ErrorDialog;
+
+import org.tockit.docco.GlobalConstants;
+import org.tockit.docco.indexer.DocumentHandlerMapping;
+import org.tockit.docco.indexer.DocumentHandlersRegistery;
+import org.tockit.docco.indexer.documenthandler.DocumentHandler;
+import org.tockit.docco.indexer.filefilter.DoccoFileFilter;
+
 
 public class CreateNewFileMappingDialog extends JDialog {
+	
+	private DocumentHandlersRegistery docHandlersRegistery;
+	private DefaultComboBoxModel instantiatedFileFiltersModel;
+	private DefaultComboBoxModel fileFilterImplementationsModel;
+	private DefaultComboBoxModel docHandlerImplementationsModel;
+	
+	private DoccoFileFilter fileFilter;
+	private DocumentHandler docHandler;
+	private String fileFilterName;
+	private String fileFilterExtension;
+	
+	private DocumentHandlerMapping mapping;
+	
+	private JButton okButton;
+	
+	
+	private class FileFilterComboBoxCellRenderer extends DefaultListCellRenderer {
+		public Component getListCellRendererComponent(JList list, Object value, 
+												int index, boolean isSelected, 
+												boolean cellHasFocus) {
+			
+			super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+			if ( (value instanceof String) && ( ((String) value).startsWith("<")) ) {
+				setText((String) value);
+			}
+			else {
+				DoccoFileFilter fileFilter = (DoccoFileFilter) value;
+				String text = fileFilter.getDisplayName() + 
+									" (" + fileFilter.getFilteringString() + ") ";
+			
+				setText(text);			
+			}
+			
+			return this;
+		}
+	}	
 
-	public CreateNewFileMappingDialog(Dialog owner) throws HeadlessException {
+	private class DocHandlerComboBoxCellRenderer extends DefaultListCellRenderer {
+		public Component getListCellRendererComponent(JList list, Object value, 
+												int index, boolean isSelected, 
+												boolean cellHasFocus) {
+			
+			super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+			if ( (value instanceof String) && ( ((String) value).startsWith("<")) ) {
+				setText((String) value);
+				return this;
+			}
+			else {
+				DocumentHandler handler = (DocumentHandler) value;
+				setText(handler.getDisplayName());
+				setToolTipText(handler.getClass().toString());			
+			}
+			
+			return this;
+		}
+	}	
+
+	public CreateNewFileMappingDialog(Dialog owner, DocumentHandlersRegistery registery) 
+										throws HeadlessException {
 		super(owner, "Create new mapping", true);
+		this.docHandlersRegistery = registery;
 		
-		JPanel mainPanel = new JPanel(new GridBagLayout());
+		initAllComboBoxModels();
 		
-		JRadioButton useAvailableFF = new JRadioButton();
-		JRadioButton createNewFF = new JRadioButton();
-		ButtonGroup buttonGroup = new ButtonGroup();
-		buttonGroup.add(useAvailableFF);
-		buttonGroup.add(createNewFF);
+		JPanel mainPanel = new JPanel(new BorderLayout());
 
-		int row = 0;
+		mainPanel.add(createFileFilterPanel(), BorderLayout.CENTER);
+		mainPanel.add(createDocHandlersPanel(), BorderLayout.SOUTH);
+		mainPanel.setBorder(BorderFactory.createEmptyBorder());
 		
-		mainPanel.add(useAvailableFF,
+		getContentPane().setLayout(new BorderLayout());
+		getContentPane().add(mainPanel, BorderLayout.CENTER);
+		getContentPane().add(createButtonsPanel(), BorderLayout.SOUTH);
+		
+		pack();
+		setLocationRelativeTo(owner);
+		setVisible(true);
+	}
+
+
+	private void initAllComboBoxModels() {
+		
+		this.instantiatedFileFiltersModel = new DefaultComboBoxModel();
+		this.instantiatedFileFiltersModel.addElement("<Choose File Filter>");
+		Iterator it = docHandlersRegistery.getDocumentMappingCollection().iterator();
+		while (it.hasNext()) {
+			DocumentHandlerMapping curMapping = (DocumentHandlerMapping) it.next();
+			this.instantiatedFileFiltersModel.addElement(curMapping.getFileFilter());
+		}
+		
+		
+		this.docHandlerImplementationsModel = new DefaultComboBoxModel();
+		this.docHandlerImplementationsModel.addElement("<Choose Document Handler>");
+		String[] docHandlers = GlobalConstants.DOC_HANDLER_IMPLEMENTATIONS;
+		for (int i = 0; i < docHandlers.length; i++) {
+			String curString = docHandlers[i];
+			try {
+				DocumentHandler curInstance = (DocumentHandler) Class.forName(curString).newInstance();
+				this.docHandlerImplementationsModel.addElement(curInstance);
+			}
+			catch (ClassNotFoundException e) {
+				// @todo deal with exception
+				e.printStackTrace();
+			}
+			catch (IllegalAccessException e) {
+				// @todo deal with exception
+				e.printStackTrace();
+			}
+			catch (InstantiationException e) {
+				// @todo deal with exception
+				e.printStackTrace();
+			}
+		}
+		
+		this.fileFilterImplementationsModel = new DefaultComboBoxModel();
+		this.fileFilterImplementationsModel.addElement("<Choose File Filter Implementation>");
+		String[] fileFilters = GlobalConstants.FILE_FILTER_IMPLEMENTAIONS;
+		for (int i = 0; i < fileFilters.length; i++) {
+			String curString = fileFilters[i];
+			this.fileFilterImplementationsModel.addElement(curString);
+		}
+	}
+
+	private JPanel createFileFilterPanel () {
+		JPanel fileFilterPanel = new JPanel(new GridBagLayout());
+		
+		final JRadioButton useAvailableFileFilter = new JRadioButton();
+		final JRadioButton createNewFileFilter = new JRadioButton();
+
+		ButtonGroup buttonGroup = new ButtonGroup();
+		buttonGroup.add(useAvailableFileFilter);
+		buttonGroup.add(createNewFileFilter);
+		useAvailableFileFilter.setSelected(true);
+
+		
+		final JComboBox fileFilterImplementationsChooser = new JComboBox(this.fileFilterImplementationsModel);
+		
+		final JTextField extensionField = new JTextField(5);
+		extensionField.setEnabled(false);
+		
+		final JLabel extensionLabel = new JLabel("and extension: ");
+		extensionLabel.setEnabled(false);
+
+
+		final JComboBox fileFiltersChooser = new JComboBox(this.instantiatedFileFiltersModel);
+		fileFiltersChooser.setRenderer(new FileFilterComboBoxCellRenderer());
+
+		useAvailableFileFilter.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				extensionField.setEnabled(false);
+				extensionLabel.setEnabled(false);
+			}
+		});
+		
+		fileFiltersChooser.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Object selectedItem = fileFiltersChooser.getSelectedItem();
+				if ((selectedItem instanceof String) && ((String) selectedItem).startsWith("<")) {
+					fileFilter = null;
+				}
+				else {
+					useAvailableFileFilter.setSelected(true);
+					fileFilter = (DoccoFileFilter) selectedItem;
+				}
+				extensionField.setEnabled(false);
+				extensionLabel.setEnabled(false);
+				setOkButtonStatus();
+			}
+		});
+		
+		fileFilterImplementationsChooser.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Object selectedItem = fileFilterImplementationsChooser.getSelectedItem();
+				if ((selectedItem instanceof String) && ((String) selectedItem).startsWith("<")) {
+					extensionField.setEnabled(false);
+					extensionLabel.setEnabled(false);
+				}
+				else {
+					createNewFileFilter.setSelected(true);
+					extensionField.setEnabled(true);
+					extensionLabel.setEnabled(true);
+				}
+				setOkButtonStatus();
+			}
+		});
+		
+		extensionField.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (extensionField.getText().length() > 0) {
+					fileFilterName = (String) fileFilterImplementationsChooser.getSelectedItem();
+					fileFilterExtension = (String) extensionField.getText();
+					setOkButtonStatus();
+				}
+			}
+		});
+
+		int row = 0;	
+		fileFilterPanel.add(useAvailableFileFilter,
 								new GridBagConstraints(0, row, 	// gridx, gridy
 								1, 1, 							// gridwidth, gridheight
 								0, 0,  						// weightx, weighty
@@ -47,7 +252,7 @@ public class CreateNewFileMappingDialog extends JDialog {
 								new Insets(5, 5, 5, 5),		// insets
 								0, 0						// ipadx, ipady
 								)); 
-		mainPanel.add(new JLabel("Use available file filter: "),
+		fileFilterPanel.add(new JLabel("Use available file filter: "),
 									new GridBagConstraints(1, row, 
 									1, 1, 
 									0, 0,
@@ -57,7 +262,7 @@ public class CreateNewFileMappingDialog extends JDialog {
 									0, 0
 									));
 									 
-		mainPanel.add(new JComboBox(),
+		fileFilterPanel.add(fileFiltersChooser,
 									new GridBagConstraints(2, row, 
 									1, 1, 
 									0, 0,
@@ -68,7 +273,7 @@ public class CreateNewFileMappingDialog extends JDialog {
 									));
 		
 		row++;
-		mainPanel.add(createNewFF,
+		fileFilterPanel.add(createNewFileFilter,
 									new GridBagConstraints(0, row, 
 									1, 1, 
 									0, 0,
@@ -77,7 +282,7 @@ public class CreateNewFileMappingDialog extends JDialog {
 									new Insets(5, 5, 5, 5),
 									0, 0
 									));
-		mainPanel.add(new JLabel("Create new file filter with following settings: "),
+		fileFilterPanel.add(new JLabel("Create new file filter with following settings: "),
 									new GridBagConstraints(1, row, 
 									1, 1, 
 									0, 0,
@@ -86,7 +291,7 @@ public class CreateNewFileMappingDialog extends JDialog {
 									new Insets(5, 5, 5, 5),
 									0, 0
 									));
-		mainPanel.add(new JComboBox(),
+		fileFilterPanel.add(fileFilterImplementationsChooser,
 									new GridBagConstraints(2, row, 
 									1, 1, 
 									0.3, 0.1,
@@ -96,16 +301,16 @@ public class CreateNewFileMappingDialog extends JDialog {
 									0, 0
 									));
 		row++;
-		mainPanel.add(new JLabel("and extension: "),
+		fileFilterPanel.add(extensionLabel,
 									new GridBagConstraints(1, row, 
 									1, 1, 
 									0, 0,
-									GridBagConstraints.NORTHWEST,
+									GridBagConstraints.NORTHEAST,
 									GridBagConstraints.NONE,
-									new Insets(5, 5, 5, 5),
+									new Insets(5, 5, 1, 5),
 									0, 0
 									));
-		mainPanel.add(new JTextField(5),
+		fileFilterPanel.add(extensionField,
 									new GridBagConstraints(2, row, 
 									1, 1, 
 									0, 0,
@@ -114,8 +319,33 @@ public class CreateNewFileMappingDialog extends JDialog {
 									new Insets(5, 5, 1, 5),
 									0, 0
 									));
-		row++;
-		mainPanel.add(new JLabel("Use the above file filter with document handler: "),
+									
+		fileFilterPanel.setBorder(BorderFactory.createTitledBorder(
+									BorderFactory.createEtchedBorder(),
+									"Choose or create file filter"));									
+		return fileFilterPanel;		
+	}
+
+	private JPanel createDocHandlersPanel() {
+		final JComboBox docHandlersChooser = new JComboBox(this.docHandlerImplementationsModel);
+		docHandlersChooser.setRenderer(new DocHandlerComboBoxCellRenderer());
+		
+		docHandlersChooser.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Object selectedItem = docHandlersChooser.getSelectedItem();
+				if ((selectedItem instanceof String) && ((String) selectedItem).startsWith("<")) {
+					docHandler = null;
+				}
+				else {
+					docHandler = (DocumentHandler) docHandlersChooser.getSelectedItem();
+				}
+				setOkButtonStatus();
+			}
+		});
+									
+		JPanel docHandlerPanel = new JPanel();									
+		int row = 0;
+		docHandlerPanel.add(new JLabel("Use the above file filter with document handler: "),
 									new GridBagConstraints(0, row, 
 									2, 1, 
 									0, 0,
@@ -124,7 +354,7 @@ public class CreateNewFileMappingDialog extends JDialog {
 									new Insets(5, 5, 5, 5),
 									0, 0
 									));
-		mainPanel.add(new JComboBox(),
+		docHandlerPanel.add(docHandlersChooser,
 									new GridBagConstraints(2, row, 
 									1, 1, 
 									0.3, 0.1,
@@ -133,13 +363,87 @@ public class CreateNewFileMappingDialog extends JDialog {
 									new Insets(5, 5, 5, 5),
 									0, 0
 									));
+		docHandlerPanel.setBorder(BorderFactory.createTitledBorder(
+									BorderFactory.createEtchedBorder(),
+									"Choose document handler"));
+		
+		return docHandlerPanel;
+	}
+
+	
+	private JPanel createButtonsPanel () {
+		JPanel panel = new JPanel();
+
+		okButton = new JButton("Create mapping");
+		okButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (createMapping()) { 
+					setVisible(false);
+				}
+			}
+		});
+		setOkButtonStatus();
+			
+		JButton cancelButton = new JButton("Cancel");
+		cancelButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+			}
+		});
 		
 		
-		getContentPane().add(mainPanel, BorderLayout.CENTER);
+		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+		panel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
+		panel.add(Box.createHorizontalGlue());
+		panel.add(okButton);
+		panel.add(Box.createRigidArea(new Dimension(10, 0)));
+		panel.add(cancelButton);
 		
-		pack();
-		setLocationRelativeTo(owner);
-		setVisible(true);
+		return panel;
+	}
+	
+	private void setOkButtonStatus () {
+		if (docHandler != null) {
+			if (fileFilter != null) {
+				okButton.setEnabled(true);
+			}
+			else if ((fileFilterName != null) && (fileFilterExtension != null) ) {
+				okButton.setEnabled(true);
+			}
+			return;
+		}
+		okButton.setEnabled(false);
+	}
+	
+	private boolean createMapping() {
+		if (docHandler != null) {
+			if (fileFilter != null) {
+				mapping = new DocumentHandlerMapping(fileFilter, docHandler);
+				return true;
+			}
+			else if ((fileFilterName != null) && (fileFilterExtension != null) ) {
+				try {
+					Class fileFilterClass = Class.forName(fileFilterName);
+				
+					Class[] parameterTypes = { String.class };
+					Constructor constructor = fileFilterClass.getConstructor(parameterTypes);
+				
+					Object[] args = { fileFilterExtension };
+					DoccoFileFilter ff = (DoccoFileFilter) constructor.newInstance(args);
+					
+					mapping = new DocumentHandlerMapping(ff, docHandler);
+					return true;
+				}
+				catch (Exception exception) {
+					ErrorDialog.showError(this, exception, "Error creating mapping");
+				}
+			}
+		}
+		return false;
+	}
+	
+	public DocumentHandlerMapping getCreatedMapping() {
+		return this.mapping;
 	}
 
 
