@@ -22,9 +22,10 @@ import org.tockit.canvas.events.CanvasItemClickedEvent;
 import org.tockit.canvas.events.CanvasItemContextMenuRequestEvent;
 import org.tockit.canvas.events.CanvasItemDraggedEvent;
 import org.tockit.canvas.events.CanvasItemDroppedEvent;
+import org.tockit.canvas.events.CanvasItemMouseExitEvent;
 import org.tockit.canvas.events.CanvasItemMouseMovementEvent;
 import org.tockit.canvas.events.CanvasItemPickupEvent;
-import org.tockit.canvas.events.CanvasItemPointedEvent;
+import org.tockit.canvas.events.CanvasItemMouseEnterEvent;
 import org.tockit.events.EventBroker;
 
 public class CanvasController implements MouseListener, MouseMotionListener {
@@ -222,9 +223,14 @@ public class CanvasController implements MouseListener, MouseMotionListener {
                                             pointedItem, e.getModifiers(),
                                             canvasPos, mousePos));
         if (this.pointedCanvasItem != pointedItem) {
-            this.eventBroker.processEvent(new CanvasItemPointedEvent(
-                                                pointedItem, e.getModifiers(),
-                                                canvasPos, mousePos));
+			this.eventBroker.processEvent(new CanvasItemMouseEnterEvent(
+												pointedItem, e.getModifiers(),
+												canvasPos, mousePos));
+			if(this.pointedCanvasItem != null) {
+				this.eventBroker.processEvent(new CanvasItemMouseExitEvent(
+													this.pointedCanvasItem, e.getModifiers(),
+													canvasPos, mousePos));
+			}
             this.pointedCanvasItem = pointedItem;
         }
     }
@@ -260,5 +266,19 @@ public class CanvasController implements MouseListener, MouseMotionListener {
     
 	public EventBroker getEventBroker() {
 		return eventBroker;
+	}
+
+	public void hideMouseFromItems(boolean hide) {
+		if(this.pointedCanvasItem != null) {
+			if(hide) {
+				this.eventBroker.processEvent(new CanvasItemMouseExitEvent(
+													this.pointedCanvasItem, 0,
+													null, null));
+			} else {
+				this.eventBroker.processEvent(new CanvasItemMouseEnterEvent(
+													this.pointedCanvasItem, 0,
+													null, null));
+			}
+		}
 	}
 }

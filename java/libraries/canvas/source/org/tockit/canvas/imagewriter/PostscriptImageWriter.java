@@ -71,6 +71,8 @@ public class PostscriptImageWriter implements ImageWriter {
      */
     public void exportGraphic(Canvas canvas, DiagramExportSettings settings, File outputFile, Properties metadata)
             throws ImageGenerationException {
+		canvas.getController().hideMouseFromItems(true);
+		
         if (settings.usesAutoMode()) {
             // update information
             settings.setImageSize(canvas.getWidth(), canvas.getHeight());
@@ -91,6 +93,8 @@ public class PostscriptImageWriter implements ImageWriter {
         } catch (Exception e) {
             throw new ImageGenerationException("Error while generating '" +
                     outputFile.getPath() + "' - writing EPS error: " + e.getMessage(), e);
+		} finally {
+			canvas.getController().hideMouseFromItems(false);
         }
     }
 }

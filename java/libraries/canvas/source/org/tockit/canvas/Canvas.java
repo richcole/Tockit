@@ -253,6 +253,7 @@ public class Canvas extends JPanel implements Printable {
      */
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) {
         if (pageIndex == 0) {
+        	this.controller.hideMouseFromItems(true);
             Graphics2D graphics2D = (Graphics2D) graphics;
 
             Rectangle2D bounds = new Rectangle2D.Double(
@@ -264,6 +265,7 @@ public class Canvas extends JPanel implements Printable {
             graphics2D.transform(transform);
             // paint all items on canvas
             paintCanvas(graphics2D);
+			this.controller.hideMouseFromItems(false);
 
             return PAGE_EXISTS;
         } else {

@@ -11,8 +11,8 @@ import java.awt.geom.Point2D;
 
 import org.tockit.canvas.CanvasItem;
 
-public class CanvasItemPointedEvent extends CanvasItemMouseMovementEvent {
-    public CanvasItemPointedEvent(CanvasItem item, int modifiers,
+public class CanvasItemMouseEnterEvent extends CanvasItemMouseMovementEvent {
+    public CanvasItemMouseEnterEvent(CanvasItem item, int modifiers,
                                    Point2D canvasPosition, Point2D awtPosition) {
         super(item, modifiers, canvasPosition, awtPosition);
     }

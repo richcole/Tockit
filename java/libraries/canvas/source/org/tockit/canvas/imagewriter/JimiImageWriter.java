@@ -110,6 +110,8 @@ public class JimiImageWriter implements ImageWriter {
      */
     public void exportGraphic(Canvas canvas, DiagramExportSettings settings, File outputFile, Properties metadata)
             throws ImageGenerationException {
+		canvas.getController().hideMouseFromItems(true);
+		
         if (settings.usesAutoMode()) {
             // update information
             settings.setImageSize(canvas.getWidth(), canvas.getHeight());
@@ -150,6 +152,8 @@ public class JimiImageWriter implements ImageWriter {
         } catch (IOException e) {
             throw new ImageGenerationException("Error while generating '" +
                     outputFile.getPath() + "' - IO problem ", e);
+        } finally {
+			canvas.getController().hideMouseFromItems(false);
         }
     }
 }

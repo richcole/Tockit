@@ -17,6 +17,8 @@ import org.tockit.canvas.Canvas;
  *
  * To add an image writer you should do these things:
  * - implement this interface by writing your encoding code
+ * - turn off the mouse-over effects by calling 
+ *   CanvasController.hideMouseFromItems(boolean)
  * - use the singleton approach to get one static instance
  * - add at least one static inner class extending GraphicFormat that defines
  *   what your image writer can handle, pointing getWriter() to your singleton
@@ -31,6 +33,9 @@ import org.tockit.canvas.Canvas;
 public interface ImageWriter {
     /**
      * Saves the canvas using the settings to the file.
+     * 
+     * Important: when implementing the method CanvasController.hideMouseFromItems(boolean)
+     * has to be called to turn of potential mouse over effects.
      */
     void exportGraphic(Canvas canvas, DiagramExportSettings settings, File outputFile, Properties metadata)
             throws ImageGenerationException;
