@@ -37,9 +37,9 @@ public class ExtendedPreferences extends Preferences {
     private static final String WINDOW_PLACEMENT_CHILD_NODE_NAME = "org.tockit.swing.SessionManagement.windowPlacement";
 
     /**
-     * Public construction only through static methods.
+     * Creates a new ExtendedPreferences object wrapping the given Preferences.
      */
-    private ExtendedPreferences(Preferences preferences) {
+    public ExtendedPreferences(Preferences preferences) {
         this.javaPreferences = preferences;
     }
     
@@ -72,7 +72,7 @@ public class ExtendedPreferences extends Preferences {
         String name = getUnqualifiedClassName(cl);
         return new ExtendedPreferences(Preferences.systemNodeForPackage(cl).node(name));
     }
-    
+        
     /**
      * Stores the placement of a window in the preferences.
      * 
