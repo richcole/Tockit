@@ -377,7 +377,7 @@ public class DoccoMainFrame extends JFrame {
 				}
 				JOptionPane.showMessageDialog(this, "There were errors loading plugins: \n" + errorMsg,
 											"Error loading plugins", 
-											JOptionPane.ERROR_MESSAGE);
+											JOptionPane.WARNING_MESSAGE);
 			}
 		}
 		catch (PluginLoaderException e) {
