@@ -617,6 +617,12 @@ public class DoccoMainFrame extends JFrame {
 					GlobalConstants.FIELD_QUERY_BODY,
 					GlobalConstants.DEFAULT_ANALYZER,
 					queryDecomposer);
+		
+			if(this.queryEventHandler != null) {
+				this.eventBroker.removeSubscriptions(this.queryEventHandler);
+			}
+			this.queryEventHandler = new QueryEventHandler(eventBroker, queryEngine);
+			this.eventBroker.subscribe(this.queryEventHandler, QueryEvent.class, Object.class);
 		} catch (IOException e1) {
 			ErrorDialog.showError(this, e1, "Index not found");
 			String[] options = new String[]{"Recreate Index", "Exit Program"};
@@ -628,12 +634,6 @@ public class DoccoMainFrame extends JFrame {
 			}
 			createNewIndex();
 		}
-		
-		if(this.queryEventHandler != null) {
-			this.eventBroker.removeSubscriptions(this.queryEventHandler);
-		}
-		this.queryEventHandler = new QueryEventHandler(eventBroker, queryEngine);
-		this.eventBroker.subscribe(this.queryEventHandler, QueryEvent.class, Object.class);
 	}
 	
 	private JComponent buildQueryViewComponent() {
