@@ -12,7 +12,7 @@ import java.util.*;
  * This class is an abstraction of all diagram related information.
  */
 
-public class Diagram implements DiagramObservable
+public class Diagram implements DiagramObservable, Diagram2D
 {
 
   private Vector diagramObserver = null;
