@@ -98,8 +98,6 @@ import org.tockit.docco.query.QueryDecomposer;
 import org.tockit.docco.query.QueryEngine;
 import org.tockit.docco.query.util.QueryWithResultSet;
 
-
-
 public class DoccoMainFrame extends JFrame {
 	private JLabel statusBarMessage;
     private static final int VISIBLE_TREE_DEPTH = 2;
