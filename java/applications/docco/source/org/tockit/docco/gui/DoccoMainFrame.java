@@ -93,6 +93,7 @@ public class DoccoMainFrame extends JFrame {
     private JTextField queryField = new JTextField(20);
 	private JButton searchButton = new JButton("Submit");
 	private JCheckBox showPhantomNodesCheckBox = new JCheckBox("Show phantom nodes");
+	private JCheckBox showContingentOnlyCheckBox = new JCheckBox("Show matches only once");
 
 	private DiagramView diagramView;
 	
@@ -101,6 +102,7 @@ public class DoccoMainFrame extends JFrame {
 	int width = 900;
 	int height = 700;
 
+	private Concept selectedConcept;
 	/**
 	 * @todo the code in here implements a more general notion of creating a lattice
 	 * diagramm from a set of attribute/set pairs. This is not specific to Docco and
@@ -289,30 +291,39 @@ public class DoccoMainFrame extends JFrame {
 				nodeView = labelView.getNodeView();
 			} else {
 				diagramView.setSelectedConcepts(null);
+				selectedConcept = null;
 				hitList.setModel(null);
 				return;
 			}
 			DiagramNode node = nodeView.getDiagramNode();
-			Concept concept = node.getConcept();
-			diagramView.setSelectedConcepts(new Concept[]{concept});
+			selectedConcept = node.getConcept();
+			diagramView.setSelectedConcepts(new Concept[]{selectedConcept});
 			
-			fillTreeList(concept);
+			fillTreeList();
 		}
 	}
 
-	private void fillTreeList(Concept concept) {
+	private void fillTreeList() {
+		if(this.selectedConcept == null) {
+			this.hitList.setModel(null);
+			return;
+		}
 		Map pathToNodeMap = new Hashtable();
 		DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("root");
 		pathToNodeMap.put("",rootNode);
 		
 		String separator = File.separator;
 		
-		Iterator extentIterator = concept.getExtentIterator();
+		Iterator iterator;
+		if(this.showContingentOnlyCheckBox.isSelected()) {
+			iterator = this.selectedConcept.getObjectContingentIterator();
+		} else {
+			iterator = this.selectedConcept.getExtentIterator();
+		}
 		int i = 0;
-		while (extentIterator.hasNext()) {
-			HitReference reference = (HitReference) extentIterator.next();
+		while (iterator.hasNext()) {
+			HitReference reference = (HitReference) iterator.next();
 			String path = reference.getDocument().get(GlobalConstants.FIELD_DOC_PATH);
-			System.out.println(path);
 			StringTokenizer tokenizer = new StringTokenizer(path, separator);
 			StringBuffer curPath = new StringBuffer();
 			DefaultMutableTreeNode lastNode = rootNode;
@@ -435,11 +446,22 @@ public class DoccoMainFrame extends JFrame {
 		});
 		
 		this.showPhantomNodesCheckBox.setSelected(true);
+		this.showContingentOnlyCheckBox.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				if(showContingentOnlyCheckBox.isSelected()) {
+					diagramView.setDisplayType(ConceptInterpretationContext.CONTINGENT);
+				} else {
+					diagramView.setDisplayType(ConceptInterpretationContext.EXTENT);
+				}
+				fillTreeList();
+			}
+		});
 		
-		queryPanel.add(new JLabel("Search: "));
+		queryPanel.add(new JLabel("Search:"));
 		queryPanel.add(this.queryField);
 		queryPanel.add(this.searchButton);
 		queryPanel.add(this.showPhantomNodesCheckBox);
+		queryPanel.add(this.showContingentOnlyCheckBox);
 		return queryPanel;
 	}
 	
@@ -476,8 +498,7 @@ public class DoccoMainFrame extends JFrame {
 		};
 		this.diagramView.setToolTipText("dummy to enable tooltips");
 		this.diagramView.setConceptInterpreter(new DirectConceptInterpreter());
-		ConceptInterpretationContext conceptInterpretationContext = 
-					new ConceptInterpretationContext(new DiagramHistory(),new EventBroker());
+		ConceptInterpretationContext conceptInterpretationContext = new ConceptInterpretationContext(new DiagramHistory(),new EventBroker());
 		conceptInterpretationContext.setObjectDisplayMode(ConceptInterpretationContext.EXTENT);
 		this.diagramView.setConceptInterpretationContext(
 									conceptInterpretationContext);
