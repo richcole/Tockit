@@ -83,16 +83,6 @@ java/TestSarl.class: java/TestSarl.java
 test_java: java/TestSarl.class
 	cd java; java TestSarl
 
-java/sarl_wrap.c: index.h set.h set_iterator.h sarl.input
-	swig -o $@ -java sarl.input
-	mv sarl.java java
-
-java/test_sarl.class: java/test_sarl.java
-	javac -sourcepath ./java java/test_sarl.java
-
-test_java: java/test_sarl.class
-	cd java; java test_sarl
-
 clean: 
 	rm -f python/*.pyc python/sarl_wrap.* python/*.so
 	rm -f java/*.class java/SetIterator.java java/Set.java java/*.so
