@@ -1,5 +1,6 @@
 <project name="Tockit Model and Parser for Cernato XML Files" default="jar" basedir=".">
     <property name="src.dir"   value="${basedir}/source"/>
+    <property name="lib3rdParty.dir"   value="${basedir}/../../thirdParty"/>
     <property name="libTesting.dir"   value="${basedir}/../../thirdParty/unitTesting"/>
     <property name="build.dir"   value="${basedir}/build"/>
     <property name="jars.dir"   value="${basedir}/../jars"/>
@@ -8,6 +9,9 @@
 
     <path id="project.class.path">
         <pathelement location="${build.dir}/"/>
+        <fileset dir="${lib3rdParty.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
         <fileset dir="${libTesting.dir}">
             <include name="**/*.jar"/>
         </fileset>
