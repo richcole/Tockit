@@ -6,8 +6,7 @@ extern "C" {
 #include <sarl/relation_iterator.h>
 }
 
-typedef unsigned int Index;
-// #include <sarl/cpp/Index.h>
+#include <sarl/cpp/Index.h>
 #include <sarl/cpp/Pair.h>
 
 class RelationIterator;

@@ -5,7 +5,7 @@ extern "C" {
 #include <sarl/set_iterator.h>
 }
 
-// #include <sarl/cpp/Index.h>
+#include <sarl/cpp/Index.h>
 #include <sarl/cpp/Set.h>
 
 class RelationIterator;

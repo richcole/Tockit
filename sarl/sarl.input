@@ -1,12 +1,16 @@
 %module sarl
 %{
-#include <sarl/index.h>
-#include <sarl/pair.h>
+#include <sarl/cpp/Index.h>
 #include <sarl/cpp/Set.h>
 #include <sarl/cpp/SetIterator.h>
+#include <sarl/cpp/Relation.h>
+#include <sarl/cpp/RelationIterator.h>
 %}
 
-%include "index.h"
-%include "pair.h"
+%include "cpp/Index.h"
 %include "cpp/Set.h"
 %include "cpp/SetIterator.h"
+%include "cpp/Relation.h"
+%include "cpp/RelationIterator.h"
+
+

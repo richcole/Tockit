@@ -6,8 +6,7 @@ extern "C" {
 #include <sarl/set_iterator.h>
 }
 
-typedef unsigned int Index;
-// #include <sarl/cpp/Index.h>
+#include <sarl/cpp/Index.h>
 
 class SetIterator;
 
