@@ -5,10 +5,63 @@
     </head>
     <body>
         <h1>Technologies to be used in the Tockit project</h1>
-        <p>One basic aspect is that the development should be <strong>object-oriented</strong>, <strong>component-based</strong> and <strong>iterative</strong>. The code should be the result of a software engineering process and not a simple hack, documentation is very important to us (really <tt>:-)</tt>)</p>
-        <p>The main programming language of our choice is <strong>Java</strong>. This is mainly due to the fact of its broad support and its ease of use in comparision to C++. One of the main advantages is the large number of standardized libraries.</p>
-        <p>The file formats should be build using <strong>XML</strong>. Again it is mainly the availabilty of tools and documentation that makes XML a technology of our choice. The interoperability of our framework with other tools should be easier with XML based files formats, esp. writing export filters will often be just a writing a simple XSL file.</p>
-        <p>The framework should offer the option to use three-tier architectures like using a <strong>relational database</strong> as backend, a <strong>Java Servlet server</strong> for application control and a <strong>web browser</strong> as frontend. The database might even need a separate abstraction layer if an application needs to operate on existing databases.</p>
-        <p>The details of the implementation are of course still not discussed -- this will be done in the design phase of the projects first iteration.</p>
+        
+        <p>One basic aspect is that the development should be <strong>object-oriented</strong>, <strong>component-based</strong> 
+        and <strong>iterative</strong> -- with a strong touch of <a href="http://www.mcs.vuw.ac.nz/comp/Publications/CS-TR-02-9.abs.html">
+        postmodernism</a>. The code should be the result of a software engineering process and not a simple hack, 
+       	designed for reuse and documented.</p>
+       	
+        <p>The main programming language of our choice is <strong>Java</strong>. This is mainly due to the fact of its 
+        broad support and its ease of use in comparision to C++. One of the main advantages is the large number of 
+        standardized libraries, there are many Open Source libraries out there helping us a lot.</p>
+        
+        <p>The file formats should be build using <strong>XML</strong>. Again it is mainly the availabilty of tools and 
+        documentation that makes XML a technology of our choice. The interoperability of our framework with other tools 
+        should be easier with XML based files formats, esp. writing export filters will often be just a writing a simple 
+        XSL file.</p>
+        
+        <p>The framework should offer the option to use three-tier architectures like using a 
+        <strong>relational database</strong> as backend, a <strong>Java Servlet server</strong> for application control and a 
+        <strong>web browser</strong> as frontend. The database might even need a separate abstraction layer if an application 
+        needs to operate on existing databases. On the other hand we will support simpler systems which store their
+        data in memory.</p>
+        
+        <p>Here is a list of Java Open Source projects we have used in some of our projects and that we really appreciate
+        -- no particular order:</p>
+
+		<h2>Libraries and embedded tools</h2>        
+        <dl>
+        	<dt>hsqldb</dt>
+        	<dd>The <a href="http://hsqldb.sourceforge.net/">HSQL Database Engine</a> is a neat little RDBMS which we use
+        	as embedded database for ToscanaJ. It is small in size, but quite powerful.</dd>
+        	<dt>FreeHEP</dt>
+        	<dd>We don't do any High Energy Physics, but some of the library code of the <a href="http://java.freehep.org">
+        	FreeHEP</a> project is still useful for us. At the moment this is mostly graphic export (PDF, EPS, EMF, PPM),
+        	but we might extent that one day.</dd>
+        	<dt>Batik</dt>
+        	<dd><a href="http://xml.apache.org/batik">Batik</a> allows us to export nice SVG graphics. We might start using 
+        	the SVG canvas one day, having a unified rendering platform would be interesting, esp. since there are libraries 
+        	offering SVG rendering for other platforms.</dd>
+        	<dt>Lucene</dt>
+        	<dd><a href="http://jakarta.apache.org/lucene/">Lucene</a> is a nice indexing engine storing an inverted file 
+        	index and having support for rather complex queries, while keeping the simple things simple. Used as backend for 
+        	<a href="!Docco">Docco</a>.</dd>
+        </dl>
+        
+        <h2>Development tools</h2>
+        <p>First of all two non-Java tools: Sourceforge and CVS are probably the most helpful tools we use. The Java ones
+        are:</p>
+        <dl>
+        	<dt>Eclipse</dt>
+        	<dd>Our most used IDE is <a href="http://www.eclipse.org">Eclipse</a>. Not as good in guessing what you
+        	want as <a href="http://www.intellij.com">IntelliJ's IDEA</a>, but it is for free and has some other
+        	advantages. We are still thinking about doing an FCA-based software analysis plugin one day.</dd>
+        	<dt>Ant</dt>
+        	<dd>We love using Apache's <a href="http://ant.apache.org/">Ant</a> for building our releases.
+        	At any time one click is enough to have a complete deployment version of any of our tools.</dd>
+        	<dt>JUnit</dt>
+        	<dd>We should probably do some more unit testing with <a href="http://www.junit.org/">JUnit</a>, but 
+        	the bit we do is already quite handy. <tt>:-)</tt></dd>
+        </dl>
     </body>
 </html>
