@@ -64,11 +64,11 @@ public class PluginLoader {
 				break; 
 			}
 		}
-		logger.fine("STARTING to load plugins. Found " + pluginDirs.length + " plugins");
 		
 		if (pluginDirs == null) {
 			throw new PluginLoaderException("Didn't find any plugins in specified plugins directories: " + pluginDirs);
 		}
+		logger.fine("STARTING to load plugins. Found " + pluginDirs.length + " plugins");
 
 		for (int i = 0; i < pluginDirs.length; i++) {
 			File curPluginDir = pluginDirs[i];

@@ -355,13 +355,7 @@ public class DoccoMainFrame extends JFrame {
 
 		String pluginsBaseDir = System.getProperty("user.dir") + File.separator;
 		
-		File pluginsDirFile1 = new File(pluginsBaseDir + pluginsDirName);
-		File pluginsDirFile2 = new File(pluginsBaseDir +
-										"docco" +
-										File.separator + 
-										pluginsDirName);
-		
-		File[] pluginsBaseFiles = { pluginsDirFile1, pluginsDirFile2	};
+		File[] pluginsBaseFiles = { new File(pluginsBaseDir + pluginsDirName)	};
 		
 		try {
 			PluginLoader.Error[] errors = PluginLoader.loadPlugins(pluginsBaseFiles);
@@ -381,7 +375,7 @@ public class DoccoMainFrame extends JFrame {
 			}
 		}
 		catch (PluginLoaderException e) {
-			ErrorDialog.showError(this, e, "Error loading plugins");
+			//ErrorDialog.showError(this, e, "Error loading plugins");
 		}
 	}
 	
