@@ -8,10 +8,10 @@
 package org.tockit.docco.indexer.documenthandler;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
@@ -98,8 +98,8 @@ public class HtmlDocumentHandler implements DocumentHandler {
 		
 	}
 	
-	public DocumentSummary parseDocument(File file) throws IOException, DocumentHandlerException {
-		Reader reader = new FileReader(file);		
+	public DocumentSummary parseDocument(URL url) throws IOException, DocumentHandlerException {
+		Reader reader = new InputStreamReader(url.openStream());
 
 		BufferedReader br = new BufferedReader(reader);
 		CallbackHandler handler = new CallbackHandler();

@@ -7,11 +7,11 @@
  */
 package org.tockit.docco.indexer.documenthandler;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -42,19 +42,21 @@ public class MSWordHandler implements DocumentHandler {
 		}
 	}
 
-	public DocumentSummary parseDocument(File file) throws IOException, DocumentHandlerException {
+	public DocumentSummary parseDocument(URL url) throws IOException, DocumentHandlerException {
 		try {		
+			InputStream inputStream = url.openStream();
+			
 			POIFSReader poiReader = new POIFSReader();
 			DocSummaryPOIFSReaderListener summaryListener = new DocSummaryPOIFSReaderListener();
 			poiReader.registerListener(summaryListener, "\005SummaryInformation");
-			poiReader.read(new FileInputStream(file));	
+			poiReader.read(inputStream);	
 	
 			/// @todo there is more fields that we may want to use
 			SummaryInformation info = summaryListener.getSummary();
 			
 			DocumentSummary docSummary = new DocumentSummary();
 			docSummary.authors = getAuthors(info);
-			docSummary.content = getDocumentContent(file);
+			docSummary.content = getDocumentContent(inputStream);
 			docSummary.creationDate = info.getCreateDateTime();
 			docSummary.keywords = info.getKeywords();
 			docSummary.modificationDate = info.getEditTime();
@@ -71,8 +73,8 @@ public class MSWordHandler implements DocumentHandler {
 		}
 	}
 	
-	private DocumentContent getDocumentContent(File file) throws IOException, DocumentHandlerException {
-		WordDocument wordDoc = new WordDocument(file.getAbsolutePath());
+	private DocumentContent getDocumentContent(InputStream inputStream) throws IOException, DocumentHandlerException {
+		WordDocument wordDoc = new WordDocument(inputStream);
 		Writer docTextWriter = new StringWriter();
 		wordDoc.writeAllText(docTextWriter);
 		return new DocumentContent(docTextWriter.toString());

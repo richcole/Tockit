@@ -11,6 +11,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -64,8 +66,9 @@ import multivalent.node.LeafText;
  */
 public class MultivalentDocumentHandler implements DocumentHandler {
 	
-	public DocumentSummary parseDocument(File file) throws IOException, DocumentHandlerException {
-		URI uri = file.getCanonicalFile().toURI();	
+	public DocumentSummary parseDocument(URL url) throws IOException, DocumentHandlerException {
+		InputStream inputStream = url.openStream();
+		
 		
 		DocumentSummary result = new DocumentSummary();
 		
@@ -74,17 +77,28 @@ public class MultivalentDocumentHandler implements DocumentHandler {
 		
 		Document doc = new Document("top", null, null);
 		Cache cache = Multivalent.getInstance().getCache();
-		String genre = cache.getGenre(mimeType, uri.toString(), null);
+		String genre = cache.getGenre(mimeType, url.toString(), null);
 		if ("RawImage".equals(genre) || genre == "ASCII"/*null*/) return null;  // defaulted to intern()'ed ASCII
 
 		// media adaptors are obligated to perform outside of a browser context too
 		MediaAdaptor mediaAdapter = (MediaAdaptor)Behavior.getInstance(genre, genre, null, null, null);
-		File infile = "file".equals(uri.getScheme())? new File(uri.getPath()): null;
-		InputStream is = new CachedInputStream(uri.toURL().openStream(), infile, null);
+		
+		File infile = null;
+		try {
+			// @todo do we really need uri? 
+			URI uri = new URI(url.toString());
+			if (uri.getScheme().equals("file")) {
+				infile = new File(uri);
+			}
+			mediaAdapter.docURI = uri;
+		}
+		catch (URISyntaxException e) {
+		}
+
+		InputStream is = new CachedInputStream(url.openStream(), infile, null);
 		mediaAdapter.setInputStream(is);
 		mediaAdapter.setHints(MediaAdaptor.HINT_NO_IMAGE | MediaAdaptor.HINT_NO_SHAPE | MediaAdaptor.HINT_EXACT | MediaAdaptor.HINT_NO_TRANSCLUSIONS);    // only want text
 
-		mediaAdapter.docURI = uri;
 		
 		try {
 			mediaAdapter.parse(doc);

@@ -7,13 +7,13 @@
  */
 package org.tockit.docco.indexer.documenthandler;
 
-import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 import org.tockit.docco.indexer.DocumentSummary;
 
 public interface DocumentHandler {
-	public DocumentSummary parseDocument(File file) throws IOException, DocumentHandlerException;
+	public DocumentSummary parseDocument(URL url) throws IOException, DocumentHandlerException;
 	/**
 	 * return name of this handler suitable for displaying in UI.
 	 */

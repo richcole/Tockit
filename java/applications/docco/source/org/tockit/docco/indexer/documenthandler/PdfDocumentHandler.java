@@ -7,10 +7,9 @@
  */
 package org.tockit.docco.indexer.documenthandler;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.net.URL;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
@@ -26,17 +25,15 @@ import org.tockit.docco.indexer.DocumentSummary;
 
 public class PdfDocumentHandler implements DocumentHandler {
 	
-	private File file;
 
-	public DocumentSummary parseDocument(File file) throws IOException, DocumentHandlerException {
-		this.file = file;
+	public DocumentSummary parseDocument(URL url) throws IOException, DocumentHandlerException {
 		
-		PDFParser pdfParser = new PDFParser(new FileInputStream (file));
+		PDFParser pdfParser = new PDFParser(url.openStream());
 		pdfParser.parse();
 		PDDocument pdfDoc = pdfParser.getPDDocument();
 		if (pdfDoc.isEncrypted()) {
 			/// @todo handle exception better here?
-			throw new DocumentHandlerException("Couldn't read document " + file.getPath() 
+			throw new DocumentHandlerException("Couldn't read document " + url.getPath() 
 							+ " because it is encrypted");
 		}
 		PDDocumentInformation info = pdfDoc.getDocumentInformation();
@@ -44,7 +41,7 @@ public class PdfDocumentHandler implements DocumentHandler {
 		DocumentSummary docSummary =  new DocumentSummary();
 		
 		docSummary.authors = getAuthors(info);
-		docSummary.content = getDocumentContent(pdfParser);
+		docSummary.content = getDocumentContent(pdfParser, url);
 		docSummary.creationDate = getDate(info.getCreationDate());
 		docSummary.keywords = info.getKeywords();
 		docSummary.modificationDate = getDate(info.getModificationDate());
@@ -53,7 +50,8 @@ public class PdfDocumentHandler implements DocumentHandler {
 		return docSummary;
 	}
 
-	private DocumentContent getDocumentContent(PDFParser pdfParser) throws IOException {
+	private DocumentContent getDocumentContent(PDFParser pdfParser, URL url) 
+										throws IOException, DocumentHandlerException {
 		PDFTextStripper pdfToText = new PDFTextStripper();
 		StringWriter writer = new StringWriter();
 		COSDocument cosDoc = pdfParser.getDocument();
@@ -62,9 +60,8 @@ public class PdfDocumentHandler implements DocumentHandler {
 			return new DocumentContent(writer.toString());
 		} catch (NullPointerException e) {
 			/// @todo something seems to be dodgy with the PDFBox tool -- I get NPEs on some files (OOo?)
-			System.err.println("Caught null pointer exception in PDF reader for document " + file.getAbsolutePath());
+			throw new DocumentHandlerException("Caught null pointer exception in PDF reader for document " + url, e);
 		}
-		return null;
 	}
 
 	private List getAuthors(PDDocumentInformation info) {

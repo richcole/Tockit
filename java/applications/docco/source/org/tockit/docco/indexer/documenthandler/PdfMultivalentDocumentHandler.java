@@ -10,6 +10,7 @@ package org.tockit.docco.indexer.documenthandler;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URL;
 import java.text.DateFormat;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,11 +25,14 @@ import multivalent.std.adaptor.pdf.PDFReader;
 
 public class PdfMultivalentDocumentHandler implements DocumentHandler {
 
-	public DocumentSummary parseDocument(File file) throws IOException, DocumentHandlerException {
+	public DocumentSummary parseDocument(URL url) throws IOException, DocumentHandlerException {
 		try {
+			
+			URI uri = new URI(url.toString());
+			File file = new File(uri);
+			
 			PDFReader reader = new PDFReader(file);
 			Map infoMap = reader.getInfo();
-			URI uri = file.getCanonicalFile().toURI();	
 
 			String text = ExtractText.extract(uri, null, null, false);
 			

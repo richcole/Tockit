@@ -39,7 +39,7 @@ public class DocumentProcessingFactory {
 			DocumentHandlerMapping cur = (DocumentHandlerMapping) it.next();
 			if (cur.getFileFilter().accept(file)) {
 				try {
-					docSummary = cur.getHandler().parseDocument(file);
+					docSummary = cur.getHandler().parseDocument(file.toURL());
 				}
 				catch (DocumentProcessingException e) {
 					caughtException = e;

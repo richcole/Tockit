@@ -7,9 +7,8 @@
  */
 package org.tockit.docco.indexer.documenthandler;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Iterator;
 
 import org.apache.poi.hssf.record.RecordFormatException;
@@ -23,9 +22,9 @@ import org.tockit.docco.indexer.DocumentSummary;
 
 public class MSExcelDocHandler implements DocumentHandler {
 
-	public DocumentSummary parseDocument(File file) throws IOException, DocumentHandlerException {
+	public DocumentSummary parseDocument(URL url) throws IOException, DocumentHandlerException {
 		try {
-			HSSFWorkbook workbook = new HSSFWorkbook(new FileInputStream(file));	
+			HSSFWorkbook workbook = new HSSFWorkbook(url.openStream());	
 			
 			DocumentSummary docSummary = new DocumentSummary();
 			docSummary.content = getDocumentContent(workbook);
@@ -33,7 +32,7 @@ public class MSExcelDocHandler implements DocumentHandler {
 			return docSummary;	
 		}
 		catch (RecordFormatException e) {
-			throw new DocumentHandlerException("Caught RecordFormatException while processing " + file.getAbsolutePath(), e);
+			throw new DocumentHandlerException("Caught RecordFormatException while processing " + url.toString(), e);
 		}		
 	}
 
