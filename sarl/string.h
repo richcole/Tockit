@@ -48,7 +48,7 @@ extern Sarl_Index
   );
 
 /* reference counting interface */
-extern void sarl_string_decr_ref(struct Sarl_Set *);
-extern void sarl_string_incr_ref(struct Sarl_Set *);
+extern void sarl_string_decr_ref(struct Sarl_String *);
+extern void sarl_string_incr_ref(struct Sarl_String *);
 
 #endif
