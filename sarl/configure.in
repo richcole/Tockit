@@ -1,4 +1,4 @@
-AC_PREREQ(2.53)
+AC_PREREQ(2.13)
 # file that is always there, sanity check
 AC_INIT(sarl/set.h)
 
