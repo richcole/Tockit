@@ -16,6 +16,11 @@ import org.tockit.relations.operations.util.AbstractBinaryRelationOperation;
 
 
 public class UnionOperation extends AbstractBinaryRelationOperation {
+	public static Relation unite(Relation left, Relation right) {
+		UnionOperation op = new UnionOperation();
+		return op.apply(left, right);
+	}
+	
     public Relation apply(Relation leftHandInput, Relation rightHandInput) {
     	if(leftHandInput.getArity() != rightHandInput.getArity()) {
     		throw new IllegalArgumentException("Relation arities don't match for union");

@@ -22,6 +22,11 @@ import org.tockit.relations.operations.util.AbstractUnaryRelationOperation;
  * from the input relation. Any order is possible, repetitions are allowed. 
  */
 public class PickColumnsOperation extends AbstractUnaryRelationOperation {
+	public static Relation pickColumns(Relation input, int[] columnsToPick) {
+		PickColumnsOperation op = new PickColumnsOperation(columnsToPick);
+		return op.apply(input);
+	}
+	
 	private int[] columnsToPick;
 	private String name;
 	

@@ -16,6 +16,11 @@ import org.tockit.relations.operations.util.AbstractBinaryRelationOperation;
 
 
 public class IntersectionOperation extends AbstractBinaryRelationOperation {
+	public static Relation intersect(Relation left, Relation right) {
+		IntersectionOperation op = new IntersectionOperation();
+		return op.apply(left, right);
+	}
+	
     public Relation apply(Relation leftHandInput, Relation rightHandInput) {
     	if(leftHandInput.getArity() != rightHandInput.getArity()) {
     		throw new IllegalArgumentException("Relation arities don't match for intersection");

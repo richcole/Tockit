@@ -16,6 +16,26 @@ import org.tockit.relations.operations.util.AbstractBinaryRelationOperation;
 
 
 public class JoinOperation extends AbstractBinaryRelationOperation {
+	public static Relation join(Relation left, int[] leftColumns, Relation right, int[] rightColumns) {
+		JoinOperation op = new JoinOperation(leftColumns, false, rightColumns, true);
+		return op.apply(left, right);
+	}
+	
+	public static Relation join(Relation left, int leftColumn, Relation right, int rightColumn) {
+		JoinOperation op = new JoinOperation(new int[]{leftColumn}, false, new int[]{rightColumn}, true);
+		return op.apply(left, right);
+	}
+	
+	public static Relation join(Relation left, int[] leftColumns, Relation right, int[] rightColumns, boolean dropColumns) {
+		JoinOperation op = new JoinOperation(leftColumns, dropColumns, rightColumns, true);
+		return op.apply(left, right);
+	}
+	
+	public static Relation join(Relation left, int leftColumn, Relation right, int rightColumn, boolean dropColumn) {
+		JoinOperation op = new JoinOperation(new int[]{leftColumn}, dropColumn, new int[]{rightColumn}, true);
+		return op.apply(left, right);
+	}
+	
     private int[] leftHandColumns;
 	private boolean dropLeftHandColumns;
 	private int[] rightHandColumns;

@@ -15,13 +15,17 @@ import org.tockit.relations.model.Tuple;
 import org.tockit.relations.operations.util.AbstractUnaryRelationOperation;
 
 
-/**
- * This class does combine permutations and projections.
- * 
- * The operation takes an int[] as defining parameter, which denotes the columns to drop
- * from the input relation. Order is unimportant. 
- */
 public class PermutationOperation extends AbstractUnaryRelationOperation {
+	public static Relation permute(Relation input, int[] columnsToPermute) {
+		PermutationOperation op = new PermutationOperation(columnsToPermute);
+		return op.apply(input);
+	}
+	
+	public static Relation exchange(Relation input, int column1, int column2) {
+		PermutationOperation op = new PermutationOperation(new int[]{column1, column2});
+		return op.apply(input);
+	}
+	
 	private int[] columnsToPermute;
 	private String name;
 

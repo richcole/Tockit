@@ -16,6 +16,11 @@ import org.tockit.relations.operations.util.AbstractBinaryRelationOperation;
 
 
 public class CrossproductOperation extends AbstractBinaryRelationOperation {
+	public static Relation crossproduct(Relation left, Relation right) {
+		CrossproductOperation op = new CrossproductOperation();
+		return op.apply(left, right);
+	}
+	
     public Relation apply(Relation leftHandInput, Relation rightHandInput) {
 		int arity = leftHandInput.getArity() + rightHandInput.getArity();
         String[] dimensionNames = getDimensionNames(leftHandInput, rightHandInput, arity);

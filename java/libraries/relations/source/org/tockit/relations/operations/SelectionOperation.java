@@ -15,13 +15,22 @@ import org.tockit.relations.model.Tuple;
 import org.tockit.relations.operations.util.AbstractUnaryRelationOperation;
 
 
-/**
- * This class does combine permutations and projections.
- * 
- * The operation takes an int[] as defining parameter, which denotes the columns to pick
- * from the input relation. Any order is possible, repetitions are allowed. 
- */
 public class SelectionOperation extends AbstractUnaryRelationOperation {
+	public static Relation selectByValue(Relation input, int column, Object value) {
+		SelectionOperation op = getValueSelect(column, value);
+		return op.apply(input);
+	}
+	
+	public static Relation selectByColumnEquality(Relation input, int firstColumn, int secondColumn) {
+		SelectionOperation op = getColumnEqualitySelect(firstColumn, secondColumn);
+		return op.apply(input);
+	}
+	
+	public static Relation select(Relation input, TuplePredicate predicate) {
+		SelectionOperation op = new SelectionOperation(predicate);
+		return op.apply(input);
+	}
+	
 	public static interface TuplePredicate {
 		boolean test(Tuple tuple);
 	}

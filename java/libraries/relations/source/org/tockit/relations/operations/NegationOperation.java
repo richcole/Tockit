@@ -18,6 +18,11 @@ import org.tockit.relations.operations.util.AbstractUnaryRelationOperation;
 
 
 public class NegationOperation extends AbstractUnaryRelationOperation {
+	public static Relation negate(Relation input, Set[] domains) {
+		NegationOperation op = new NegationOperation(domains);
+		return op.apply(input);
+	}
+	
 	private Set[] domains;
 	private String name;
 	
