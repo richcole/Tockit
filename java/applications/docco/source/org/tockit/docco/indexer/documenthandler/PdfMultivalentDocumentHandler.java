@@ -32,41 +32,42 @@ public class PdfMultivalentDocumentHandler implements DocumentHandler {
 		try {
 			PDFReader reader = new PDFReader(file);
 			Map infoMap = reader.getInfo();
-			try {
-				URI uri = file.getCanonicalFile().toURI();	
+			URI uri = file.getCanonicalFile().toURI();	
 
-				String text = ExtractText.extract(uri, null, null, false);
-				
-				// @todo there maybe some other fields.
-				DocumentSummary docSummary = new DocumentSummary();
-				
-				docSummary.authors = getAuthors(infoMap);
-				docSummary.content = new DocumentContent(text);
+			String text = ExtractText.extract(uri, null, null, false);
+			
+			// @todo there maybe some other fields.
+			DocumentSummary docSummary = new DocumentSummary();
+			
+			docSummary.authors = getAuthors(infoMap);
+			docSummary.content = new DocumentContent(text);
 
-				if (infoMap.get("Title") != null) {
-					docSummary.title = infoMap.get("Title").toString();
+			if (infoMap.get("Title") != null) {
+				docSummary.title = infoMap.get("Title").toString();
+			}
+
+			if (infoMap.get("ModDate") != null) {
+				String modDateStr = infoMap.get("ModDate").toString();
+				DateFormat df = DateFormat.getDateInstance();
+				try {
+					docSummary.modificationDate = df.parse(modDateStr);
 				}
-
-				if (infoMap.get("ModDate") != null) {
-					String modDateStr = infoMap.get("ModDate").toString();
-					DateFormat df = DateFormat.getDateInstance();
-					try {
-						docSummary.modificationDate = df.parse(modDateStr);
-					}
-					catch (java.text.ParseException e) {
-					}
+				catch (java.text.ParseException e) {
 				}
-				
-				return docSummary;
 			}
-			catch (URISyntaxException e) {
-				throw new DocumentHandlerException(e);
-			}
-			catch (Exception e) {
-				throw new DocumentHandlerException(e);
-			}
+			
+			return docSummary;
+		}
+		catch (URISyntaxException e) {
+			throw new DocumentHandlerException(e);
 		}
 		catch (ParseException e) {
+			throw new DocumentHandlerException(e);
+		}
+		catch (NullPointerException e) {
+			throw new DocumentHandlerException(e);
+		}
+		catch (Exception e) {
 			throw new DocumentHandlerException(e);
 		}
 	}
