@@ -125,6 +125,8 @@ public class Node {
     }
 
     public boolean mergePossible(Node otherNode) {
+        System.out.println("our type: " + this.getType().getName());
+        System.out.println("other type: " + otherNode.getType().getName());
         Instance ourReferent = this.getReferent();
         Instance otherReferent = otherNode.getReferent();
         if(ourReferent != null) {

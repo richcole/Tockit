@@ -84,7 +84,7 @@ public class Type {
         int pos = 0;
         for (Iterator iterator = supertypeChildren.iterator(); iterator.hasNext();) {
             Element supertypeElem = (Element) iterator.next();
-            Type type = this.knowledgeBase.getType(supertypeElem.getTextNormalize());
+            Type type = this.knowledgeBase.getType(supertypeElem.getAttributeValue("name"));
             retVal[pos] = type;
             pos++;
         }
@@ -92,9 +92,11 @@ public class Type {
     }
 
     public void addDirectSupertype(Type other) {
-        Element supertypeElem = new Element("supertype");
-        supertypeElem.addContent(other.getName());
-        this.element.addContent(supertypeElem);
+        if( (other != null) && (other != Type.UNIVERSAL) ) {
+            Element supertypeElem = new Element("supertype");
+            supertypeElem.setAttribute("name",other.getName());
+            this.element.addContent(supertypeElem);
+        }
     }
 
     public Element getElement() {
