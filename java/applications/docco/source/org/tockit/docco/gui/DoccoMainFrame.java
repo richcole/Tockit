@@ -432,10 +432,14 @@ public class DoccoMainFrame extends JFrame {
     }
 
     private File getIndexDirectory() {
-        String indexDirectory = ConfigurationManager.fetchString(CONFIGURATION_SECTION_NAME,
+        String indexDirectoryLocation = ConfigurationManager.fetchString(CONFIGURATION_SECTION_NAME,
         														CONFIGURATION_INDEX_LOCATION,
 																DEFAULT_INDEX_DIR);
-        return new File(indexDirectory);
+		File indexDirectory = new File(indexDirectoryLocation);
+		if (!indexDirectory.exists()) {
+			indexDirectory.mkdir();
+		}
+        return indexDirectory;
     }
 
     private JMenu createHelpMenu() {
