@@ -229,4 +229,8 @@ public class CanvasController implements MouseListener, MouseMotionListener {
         this.eventBroker.processEvent(new CanvasItemContextMenuRequestEvent(
                 this.selectedCanvasItem, modifiers, canvasPos, screenPos));
     }
+    
+	public EventBroker getEventBroker() {
+		return eventBroker;
+	}
 }
