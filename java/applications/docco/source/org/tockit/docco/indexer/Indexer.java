@@ -45,6 +45,8 @@ public class Indexer {
 
 			this.docProcessingFactory.registerExtension("pdf", new PdfDocumentProcessor());
 
+			this.docProcessingFactory.registerExtension("doc", new MSWordProcessor());
+
 
 			File f = new File(GlobalConstants.DEFAULT_INDEX_LOCATION);
 			createDirPath(f);

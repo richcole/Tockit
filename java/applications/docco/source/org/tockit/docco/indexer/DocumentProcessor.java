@@ -14,5 +14,5 @@ import java.io.IOException;
 import org.apache.lucene.document.Document;
 
 public interface DocumentProcessor {
-	public Document getDocument (File file) throws FileNotFoundException, IOException;
+	public Document getDocument (File file) throws FileNotFoundException, IOException, DocumentProcessingException;
 }
