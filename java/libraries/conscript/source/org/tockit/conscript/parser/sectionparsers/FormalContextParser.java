@@ -28,8 +28,9 @@ class FormalContextParser extends CSCFileSectionParser {
 		String contextId = tokenizer.popCurrentToken();
         FormalContext context = getFormalContext(file, contextId);
 
+        tokenizer.consumeToken("=");
         parseTitleRemarkSpecials(tokenizer, context);
-        
+
 		tokenizer.consumeToken("OBJECTS");
 
 		while (!tokenizer.getCurrentToken().equals("ATTRIBUTES")) {
