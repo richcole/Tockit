@@ -111,9 +111,8 @@ $(TESTS) : $(TESTS:%=%.exe)
 
 libs: lib/libsarl.so lib_d/libsarl.so lib/libsarl++.so lib_d/libsarl++.so
 
-$(PYTHON_SARL_LIB): lib_d/libsarl.so lib_d/libsarl++.so \
-        $(OBJECTS:%=objs_d/%.o) python/sarl_wrap.o
-	$(CC) $(DEBUG) -shared -o $@ $(OBJECTS:%=objs_d/%.o) python/sarl_wrap.o \
+$(PYTHON_SARL_LIB): lib_d/libsarl.so lib_d/libsarl++.so python/sarl_wrap.o
+	$(CC) $(DEBUG) -shared -o $@ python/sarl_wrap.o \
          -Llib_d -lstdc++ -lsarl++ -lsarl
 
 $(JAVA_SARL_LIB): lib_d/libsarl.so lib_d/libsarl++.so \

@@ -22,10 +22,10 @@ JAVA_INC   = \
 # Python
 
 PYTHON_INC = \
-  /usr/include/python2.2/
+  /usr/include/python1.5/
 
 PYTHON     = \
-  /usr/bin/python
+  /usr/bin/python1.5
 
 # Swig
 

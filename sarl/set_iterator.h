@@ -17,6 +17,9 @@ struct Sarl_Set;
 /* copy operations */
 
 extern struct Sarl_SetIterator *
+sarl_set_iterator_create_from_index(Sarl_Index g);
+
+extern struct Sarl_SetIterator *
   sarl_set_iterator_copy(struct Sarl_SetIterator *);
 
 /*! the function will return either _it_, or _it->copy()_. 

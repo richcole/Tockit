@@ -256,5 +256,40 @@ struct Sarl_SetIterator *
   return result;
 };
 
+struct Sarl_SetIterator *
+sarl_set_iterator_create_from_index(Sarl_Index g)
+{
+  Sarl_Set *s;
+  Sarl_SetIterator *result;
+
+  s = sarl_set_create(g);
+  sarl_set_insert(s, g);
+  result = sarl_set_iterator_create(s);
+  sarl_set_decr_ref(s);
+  return result;
+};
+
+
+int
+sarl_set_iterator_eq(Sarl_SetIterator *a, Sarl_SetIterator *b)
+{
+  a = sarl_set_iterator_obtain_ownership(a);
+  b = sarl_set_iterator_obtain_ownership(b);
+  int result;
+
+  while ( 
+    ! sarl_set_iterator_at_end(a) && 
+    ! sarl_set_iterator_at_end(b) 
+  ) {
+    if ( sarl_set_iterator_value(a) != sarl_set_iterator_value(b) ) {
+      break;
+    }
+    
+  };
+
+  result = sarl_set_iterator_at_end(a) && sarl_set_iterator_at_end(b);
+  sarl_set_iterator_decr_ref(a);
+  sarl_set_iterator_decr_ref(b);
+};
 
   
