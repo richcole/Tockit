@@ -5,7 +5,14 @@
 
 struct Sarl_LatticeIterator : Sarl_Iterator {
   struct Sarl_ContextIterator*   context;
-  struct Sarl_ConceptIterator*   concept;
+  struct Sarl_SetIterator*       A; /* objects    */
+  struct Sarl_SetIterator*       B; /* attributes */
 };
+
+inline void sarl_lattice_iterator_init(
+  struct Sarl_LatticeIterator *it)
+{
+  sarl_iterator_init(it);
+}
 
 #endif

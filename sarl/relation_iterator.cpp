@@ -283,34 +283,20 @@ struct Sarl_SetIterator *sarl_relation_iterator_intent_extent_set(
   return intent_extent;
 };
 
-extern struct Sarl_RelationIterator *
+struct Sarl_RelationIterator *
   sarl_relation_iterator_obtain_ownership(
     struct Sarl_RelationIterator *it
   )
 {
-  Sarl_RelationIterator *result;
-  
-  if ( it->ownership == SARL_HAS_NO_OWNER ) {
-    result = it;
-    sarl_relation_iterator_incr_ref(it);
-  }
-  else {
-    result = sarl_relation_iterator_copy(it);
-    sarl_relation_iterator_release_ownership(result);
-  };
-  
-  SARL_TEST_ASSERT_EQ(result->ownership, SARL_HAS_NO_OWNER);
-  result->ownership = SARL_HAS_OWNER;
-  return result;
+  return sarl_iterator_obtain_ownership(it, sarl_relation_iterator_copy);
 };
 
-void
+struct Sarl_RelationIterator *
   sarl_relation_iterator_release_ownership(
     struct Sarl_RelationIterator *it
   )
 {
-  SARL_TEST_ASSERT_EQ(it->ownership, SARL_HAS_OWNER);
-  it->ownership = SARL_HAS_NO_OWNER;
+  return sarl_iterator_release_ownership(it);
 };
 
 

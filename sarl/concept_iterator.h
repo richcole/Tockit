@@ -32,12 +32,12 @@ extern void
     struct Sarl_ConceptIterator *
   );
 
-extern struct Sarl_SetIterator*
+extern struct Sarl_ConceptIterator*
   sarl_concept_iterator_obtain_ownership(
     struct Sarl_ConceptIterator *
   );
 
-extern void
+extern struct Sarl_ConceptIterator*
   sarl_concept_iterator_release_ownership(
     struct Sarl_ConceptIterator *
   );

@@ -31,7 +31,7 @@ struct Sarl_ConceptIterator*
     struct Sarl_SetIterator *intent
   )
 {
-  Sarl_ConceptIterator const* it = new Sarl_ConceptIterator();
+  Sarl_ConceptIterator* it = new Sarl_ConceptIterator();
   sarl_concept_iterator_init(it);
   
   it->extent = sarl_set_iterator_obtain_ownership(extent);
@@ -40,36 +40,51 @@ struct Sarl_ConceptIterator*
   return it;
 };
 
+struct Sarl_ConceptIterator*
+  sarl_concept_iterator_copy(
+    struct Sarl_ConceptIterator *it)
+{
+  Sarl_ConceptIterator* result = new Sarl_ConceptIterator();
+  sarl_concept_iterator_init(result);
+  
+  result->extent = sarl_set_iterator_copy(it->extent);
+  result->intent = sarl_set_iterator_copy(it->intent);
+
+  return result;
+};
+
 
 int
   sarl_concept_iterator_decr_ref(
-    struct Sarl_ConceptIterator *
-  )
+    struct Sarl_ConceptIterator *it)
 {
-  /* not implemented */
+  if ( sarl_ref_count_decr(&it->ref_count) ) {
+    sarl_set_iterator_decr_ref(it->intent);
+    sarl_set_iterator_decr_ref(it->extent);
+    delete it;
+  }
 };
-
 
 void
   sarl_concept_iterator_incr_ref(
-    struct Sarl_ConceptIterator *
-  )
+    struct Sarl_ConceptIterator *it)
 {
+  sarl_iterator_incr_ref(it);
 };
 
 
-struct Sarl_SetIterator*
+struct Sarl_ConceptIterator*
   sarl_concept_iterator_obtain_ownership(
-    struct Sarl_ConceptIterator *
-  )
+    struct Sarl_ConceptIterator *it)
 {
+  return sarl_iterator_obtain_ownership(it, sarl_concept_iterator_copy);
 };
 
 
-void
+struct Sarl_ConceptIterator*
   sarl_concept_iterator_release_ownership(
-    struct Sarl_ConceptIterator *
-  )
+    struct Sarl_ConceptIterator *it)
 {
+  return sarl_iterator_release_ownership(it);
 };
 

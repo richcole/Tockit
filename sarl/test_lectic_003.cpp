@@ -56,7 +56,7 @@ int main(int num_args, char **args)
 
   do {
     sarl_set_iterator_release_ownership(curr);
-    next = sarl_context_iterator_next_extent_superseteq(curr, parent_it, K);
+    next = sarl_context_iterator_next_extent_superseteq(K, curr, parent_it);
     sarl_set_iterator_decr_ref(curr);
     curr = next;
 

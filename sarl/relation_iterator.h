@@ -46,7 +46,7 @@ extern struct Sarl_RelationIterator*
     struct Sarl_RelationIterator *
   );
 
-void
+extern struct Sarl_RelationIterator*
   sarl_relation_iterator_release_ownership(
     struct Sarl_RelationIterator *
   );

@@ -252,8 +252,8 @@ struct Sarl_SetIterator *
 
 struct Sarl_SetIterator* 
   sarl_context_iterator_next_extent(
-    Sarl_SetIterator     *A, 
-    Sarl_ContextIterator *K)
+    Sarl_ContextIterator *K,
+    Sarl_SetIterator     *A)
 {
   struct Sarl_SetIterator *G;
   struct Sarl_SetIterator *i;
@@ -308,9 +308,9 @@ struct Sarl_SetIterator*
 
 struct Sarl_SetIterator* 
   sarl_context_iterator_next_extent_superseteq(
+    Sarl_ContextIterator *K,
     Sarl_SetIterator     *A, 
-    Sarl_SetIterator     *parent_extent, 
-    Sarl_ContextIterator *K)
+    Sarl_SetIterator     *parent_extent)
 {
   struct Sarl_SetIterator *G;
   struct Sarl_SetIterator *i;
@@ -398,4 +398,22 @@ void sarl_context_iterator_incr_ref(struct Sarl_ContextIterator *it)
 {
   sarl_ref_count_incr(&it->ref_count);
 };
+
+struct Sarl_ContextIterator *
+  sarl_context_iterator_obtain_ownership(
+    struct Sarl_ContextIterator* it
+  )
+{
+  return sarl_iterator_obtain_ownership(it, sarl_context_iterator_copy);
+};
+
+struct Sarl_ContextIterator *
+  sarl_context_iterator_release_ownership(
+    struct Sarl_ContextIterator* it
+  )
+{
+  return sarl_iterator_release_ownership(it);
+};
+
+  
 

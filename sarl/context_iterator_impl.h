@@ -3,12 +3,10 @@
 
 #include <sarl/ref_count.h>
 
-struct Sarl_ContextIterator {
-  Sarl_RefCount ref_count;
-
-  struct Sarl_SetIterator * G;
-  struct Sarl_SetIterator * M;
-  struct Sarl_RelationIterator * I;
+struct Sarl_ContextIterator : Sarl_Iterator {
+  struct Sarl_SetIterator*       G;
+  struct Sarl_SetIterator*       M;
+  struct Sarl_RelationIterator*  I;
 };
 
 inline void sarl_context_iterator_init(struct Sarl_ContextIterator* p_it)

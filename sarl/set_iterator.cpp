@@ -108,18 +108,13 @@ int sarl_set_iterator_lexical_compare(
   struct Sarl_SetIterator *x, struct Sarl_SetIterator *y
 )
 {
-  Sarl_SetIterator *u, *v, *w;
-  Sarl_SetIterator *a, *b, *c;
+  Sarl_SetIterator *w;
+  Sarl_SetIterator *c;
   int ret_val;
 
-  w = sarl_set_iterator_minus(
-    u = sarl_set_iterator_copy(x),
-    v = sarl_set_iterator_copy(y));
-
-  c = sarl_set_iterator_minus(
-    a = sarl_set_iterator_copy(y),
-    b = sarl_set_iterator_copy(x));
-
+  w = sarl_set_iterator_minus(x, y);
+  c = sarl_set_iterator_minus(y, x);
+  
   sarl_set_iterator_reset(c);
   sarl_set_iterator_reset(w);
   
@@ -141,12 +136,7 @@ int sarl_set_iterator_lexical_compare(
     }
   }
 
-  sarl_set_iterator_decr_ref(u);
-  sarl_set_iterator_decr_ref(v);
   sarl_set_iterator_decr_ref(w);
-
-  sarl_set_iterator_decr_ref(a);
-  sarl_set_iterator_decr_ref(b);
   sarl_set_iterator_decr_ref(c);
 
   return ret_val;
@@ -182,31 +172,15 @@ struct Sarl_SetIterator *
     struct Sarl_SetIterator *it
   )
 {
-  Sarl_SetIterator *result;
-  
-  if ( it->ownership == SARL_HAS_NO_OWNER ) {
-    result = it;
-    sarl_set_iterator_incr_ref(it);
-  }
-  else {
-    result = sarl_set_iterator_copy(it);
-    sarl_set_iterator_release_ownership(result);
-  };
-  
-  SARL_TEST_ASSERT_EQ(result->ownership, SARL_HAS_NO_OWNER);
-  result->ownership = SARL_HAS_OWNER;
-  return result;
+  return sarl_iterator_obtain_ownership(it, sarl_set_iterator_copy);
 };
-
 
 struct Sarl_SetIterator *
   sarl_set_iterator_release_ownership(
     struct Sarl_SetIterator *it
   )
 {
-  SARL_TEST_ASSERT_EQ(it->ownership, SARL_HAS_OWNER);
-  it->ownership = SARL_HAS_NO_OWNER;
-  return it;
+  return sarl_iterator_release_ownership(it);
 };
 
 Sarl_Index sarl_set_iterator_last(struct Sarl_SetIterator *A)

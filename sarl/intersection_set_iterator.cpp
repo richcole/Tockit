@@ -139,6 +139,8 @@ void sarl_set_iterator_intersection_decr_ref(struct Sarl_SetIterator *a_it)
   Sarl_IntersectionSetIterator *it = 
     static_cast<Sarl_IntersectionSetIterator*>(a_it);
   if ( sarl_ref_count_decr(&it->ref_count) ) {
+    sarl_set_iterator_release_ownership(it->first);
+    sarl_set_iterator_release_ownership(it->second);
     sarl_set_iterator_decr_ref(it->first);
     sarl_set_iterator_decr_ref(it->second);
     delete it;

@@ -19,7 +19,9 @@ OBJECTS = \
   context \
   context_iterator \
   context_complement_relation_iterator \
-  lectic
+  lectic \
+  concept_iterator \
+  lattice_iterator
 
 TESTS = \
   test_set \
@@ -33,7 +35,8 @@ TESTS = \
   test_set_iterator_interval_001 \
   test_lectic_001 \
   test_lectic_002 \
-  test_lectic_003
+  test_lectic_003 \
+  test_lattice_001
 
 PUBLIC_HEADERS = \
   cpp/Set.h \
