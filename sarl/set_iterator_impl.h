@@ -34,6 +34,13 @@ struct Sarl_IntentSetIterator : Sarl_SetIterator
   Sarl_Index object;
 };
 
+struct Sarl_IntervalSetIterator : Sarl_SetIterator
+{
+    Sarl_Index lower;
+    Sarl_Index upper;
+    Sarl_Index curr;
+};
+
 inline void sarl_set_iterator_init(
   struct Sarl_SetIterator *it,
   Sarl_SetIteratorFunctionTable *ap_funcs)

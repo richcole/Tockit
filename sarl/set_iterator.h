@@ -35,16 +35,25 @@ extern struct Sarl_SetIterator *
 /* constructive operations */
 
 extern struct Sarl_SetIterator *
-  sarl_set_iterator_create(struct Sarl_Set *);
+  sarl_set_iterator_create(
+    struct Sarl_Set *
+  );
+
+extern struct Sarl_SetIterator *
+  sarl_set_iterator_interval(
+      Sarl_Index a_lower,
+      Sarl_Index a_upper);
 
 extern struct Sarl_SetIterator *
   sarl_set_iterator_meet(
-    struct Sarl_SetIterator *, struct Sarl_SetIterator *
+    struct Sarl_SetIterator *A, 
+    struct Sarl_SetIterator *B
   );
 
 extern struct Sarl_SetIterator *
   sarl_set_iterator_union(
-    struct Sarl_SetIterator *, struct Sarl_SetIterator *
+    struct Sarl_SetIterator *A, 
+    struct Sarl_SetIterator *B
   );
 
 extern struct Sarl_SetIterator *

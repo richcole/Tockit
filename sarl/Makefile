@@ -8,6 +8,8 @@ OBJECTS = \
   inverse_relation_iterator \
   plain_relation_iterator \
   domain_set_iterator \
+  plain_set_iterator \
+  interval_set_iterator \
   intersection_set_iterator \
   intent_set_iterator \
   union_set_iterator \
@@ -16,7 +18,8 @@ OBJECTS = \
   ref_count \
   context \
   context_iterator \
-  context_complement_relation_iterator 
+  context_complement_relation_iterator \
+  lectic
 
 TESTS = \
   test_set \
@@ -26,7 +29,9 @@ TESTS = \
   test_relation_001 \
   test_relation_002 \
   test_relation_003 \
-  test_relation_004 
+  test_relation_004 \
+  test_set_iterator_interval_001 \
+  test_lectic_001
 
 PUBLIC_HEADERS = \
   cpp/Set.h \
