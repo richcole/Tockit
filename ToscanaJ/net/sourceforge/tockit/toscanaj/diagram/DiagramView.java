@@ -17,6 +17,7 @@ import net.sourceforge.tockit.toscanaj.canvas.CanvasItem;
 import net.sourceforge.tockit.toscanaj.canvas.DrawingCanvas;
 import net.sourceforge.tockit.toscanaj.data.DiagramNode;
 import net.sourceforge.tockit.toscanaj.data.Diagram;
+import net.sourceforge.tockit.toscanaj.data.DiagramLine;
 import net.sourceforge.tockit.toscanaj.data.Diagram2D;
 import net.sourceforge.tockit.toscanaj.data.LabelInfo;
 import net.sourceforge.tockit.toscanaj.diagram.LabelView;
@@ -175,7 +176,8 @@ public class DiagramView extends DrawingCanvas implements MouseListener, MouseMo
          newCanvasItemsList();
         // add all lines to the canvas
         for( int i = 0; i < _diagram.getNumberOfLines(); i++ ) {
-            addCanvasItem( new DiagramLine( _diagram.getFromPoint( i ), _diagram.getToPoint( i )) );
+            DiagramLine dl = new DiagramLine( _diagram.getFromPoint( i ), _diagram.getToPoint( i ));
+            addCanvasItem( new LineView(dl) );
         }
         // add all points and labels to the canvas
         for( int i = 0; i < _diagram.getNumberOfNodes(); i++ ) {

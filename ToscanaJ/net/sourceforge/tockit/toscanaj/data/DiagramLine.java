@@ -1,7 +1,4 @@
-package net.sourceforge.tockit.toscanaj.diagram;
-
-import net.sourceforge.tockit.toscanaj.canvas.CanvasItem;
-import net.sourceforge.tockit.toscanaj.gui.ToscanajGraphics2D;
+package net.sourceforge.tockit.toscanaj.data;
 
 import java.awt.geom.Point2D;
 
@@ -11,7 +8,7 @@ import java.awt.geom.Point2D;
 
 import java.awt.Graphics2D;
 
-public class DiagramLine extends CanvasItem {
+public class DiagramLine {
 
   /**
    * Holds the coordinants of the first node in a Diagram
@@ -96,15 +93,4 @@ public class DiagramLine extends CanvasItem {
   public double getSecondPointY() {
     return this.toPoint.getY();
   }
-
-  public void draw(ToscanajGraphics2D g) {
-    g.drawLine(this.fromPoint, this.toPoint);
-  }
-
-    /**
-     * Returns always false since we assume the line to have no width.
-     */
-    public boolean containsPoint(Point2D point) {
-        return false;
-    }
 }
