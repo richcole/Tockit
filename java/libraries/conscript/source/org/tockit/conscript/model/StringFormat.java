@@ -1,8 +1,3 @@
-package org.tockit.conscript.model;
-
-import java.awt.Rectangle;
-import java.awt.geom.Point2D;
-
 /*
  * Copyright DSTC Pty.Ltd. (http://www.dstc.com), Technische Universitaet Darmstadt
  * (http://www.tu-darmstadt.de) and the University of Queensland (http://www.uq.edu.au).
@@ -10,6 +5,11 @@ import java.awt.geom.Point2D;
  *
  * $Id$
  */
+package org.tockit.conscript.model;
+
+import java.awt.Rectangle;
+import java.awt.geom.Point2D;
+
 public class StringFormat {
 
 	public static final class HorizontalAlign {
@@ -62,130 +62,66 @@ public class StringFormat {
 	public StringFormat(){
 	}
 
-	/**
-	 * Returns the clipbox.
-	 * @return Rectangle
-	 */
 	public Rectangle getClipbox() {
 		return clipbox;
 	}
 
-	/**
-	 * Returns the colorName.
-	 * @return String
-	 */
 	public String getColorName() {
 		return colorName;
 	}
 
-	/**
-	 * Returns the fontFamily.
-	 * @return String
-	 */
 	public String getFontFamily() {
 		return fontFamily;
 	}
 
-	/**
-	 * Returns the fontSize.
-	 * @return TypedSize
-	 */
 	public TypedSize getFontSize() {
 		return fontSize;
 	}
 
-	/**
-	 * Returns the fontStyle.
-	 * @return FontStyle
-	 */
 	public FontStyle getFontStyle() {
 		return fontStyle;
 	}
 
-	/**
-	 * Returns the horizontalAlign.
-	 * @return HorizontalAlign
-	 */
 	public HorizontalAlign getHorizontalAlign() {
 		return horizontalAlign;
 	}
 
-	/**
-	 * Returns the offset.
-	 * @return Point2D
-	 */
 	public Point2D getOffset() {
 		return offset;
 	}
 
-	/**
-	 * Returns the verticalAlign.
-	 * @return VerticalAlign
-	 */
 	public VerticalAlign getVerticalAlign() {
 		return verticalAlign;
 	}
 
-	/**
-	 * Sets the clipbox.
-	 * @param clipbox The clipbox to set
-	 */
 	public void setClipbox(Rectangle clipbox) {
 		this.clipbox = clipbox;
 	}
 
-	/**
-	 * Sets the colorName.
-	 * @param colorName The colorName to set
-	 */
 	public void setColorName(String colorName) {
 		this.colorName = colorName;
 	}
 
-	/**
-	 * Sets the fontFamily.
-	 * @param fontFamily The fontFamily to set
-	 */
 	public void setFontFamily(String fontFamily) {
 		this.fontFamily = fontFamily;
 	}
 
-	/**
-	 * Sets the fontSize.
-	 * @param fontSize The fontSize to set
-	 */
 	public void setFontSize(TypedSize fontSize) {
 		this.fontSize = fontSize;
 	}
 
-	/**
-	 * Sets the fontStyle.
-	 * @param fontStyle The fontStyle to set
-	 */
 	public void setFontStyle(FontStyle fontStyle) {
 		this.fontStyle = fontStyle;
 	}
 
-	/**
-	 * Sets the horizontalAlign.
-	 * @param horizontalAlign The horizontalAlign to set
-	 */
 	public void setHorizontalAlign(HorizontalAlign horizontalAlign) {
 		this.horizontalAlign = horizontalAlign;
 	}
 
-	/**
-	 * Sets the offset.
-	 * @param offset The offset to set
-	 */
 	public void setOffset(Point2D offset) {
 		this.offset = offset;
 	}
 
-	/**
-	 * Sets the verticalAlign.
-	 * @param verticalAlign The verticalAlign to set
-	 */
 	public void setVerticalAlign(VerticalAlign verticalAlign) {
 		this.verticalAlign = verticalAlign;
 	}

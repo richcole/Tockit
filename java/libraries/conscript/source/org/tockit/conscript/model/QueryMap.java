@@ -1,8 +1,3 @@
-package org.tockit.conscript.model;
-
-import java.net.URL;
-import java.util.Hashtable;
-
 /*
  * Copyright DSTC Pty.Ltd. (http://www.dstc.com), Technische Universitaet Darmstadt
  * (http://www.tu-darmstadt.de) and the University of Queensland (http://www.uq.edu.au).
@@ -10,6 +5,11 @@ import java.util.Hashtable;
  *
  * $Id$
  */
+package org.tockit.conscript.model;
+
+import java.net.URL;
+import java.util.Hashtable;
+
 public class QueryMap extends SchemaPart{
 	private URL file;
 	private String identifier;
@@ -79,4 +79,3 @@ public class QueryMap extends SchemaPart{
 		this.title = title;
 	}
 }
-

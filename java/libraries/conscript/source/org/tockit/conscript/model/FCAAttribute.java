@@ -1,5 +1,3 @@
-package org.tockit.conscript.model;
-
 /*
  * Copyright DSTC Pty.Ltd. (http://www.dstc.com), Technische Universitaet Darmstadt
  * (http://www.tu-darmstadt.de) and the University of Queensland (http://www.uq.edu.au).
@@ -7,6 +5,8 @@ package org.tockit.conscript.model;
  *
  * $Id$
  */
+package org.tockit.conscript.model;
+
 public class FCAAttribute {
 	private long number;
 	private String identifier;
@@ -17,53 +17,28 @@ public class FCAAttribute {
 		this.identifier = identifier;
 		this.description = description;
 	}
-	
-	/**
-	 * Returns the description.
-	 * @return FormattedString
-	 */
+
 	public FormattedString getDescription() {
 		return description;
 	}
 
-	/**
-	 * Returns the identifier.
-	 * @return String
-	 */
 	public String getIdentifier() {
 		return identifier;
 	}
 
-	/**
-	 * Returns the number.
-	 * @return long
-	 */
 	public long getNumber() {
 		return number;
 	}
 
-	/**
-	 * Sets the description.
-	 * @param description The description to set
-	 */
 	public void setDescription(FormattedString description) {
 		this.description = description;
 	}
 
-	/**
-	 * Sets the identifier.
-	 * @param identifier The identifier to set
-	 */
 	public void setIdentifier(String identifier) {
 		this.identifier = identifier;
 	}
 
-	/**
-	 * Sets the number.
-	 * @param number The number to set
-	 */
 	public void setNumber(long number) {
 		this.number = number;
 	}
-
 }

@@ -1,5 +1,3 @@
-package org.tockit.conscript.model;
-
 /*
  * Copyright DSTC Pty.Ltd. (http://www.dstc.com), Technische Universitaet Darmstadt
  * (http://www.tu-darmstadt.de) and the University of Queensland (http://www.uq.edu.au).
@@ -7,6 +5,8 @@ package org.tockit.conscript.model;
  *
  * $Id$
  */
+package org.tockit.conscript.model;
+
 public class PointFormat {
 	
 	public static final class FillStyle{
@@ -29,67 +29,35 @@ public class PointFormat {
 		this.fillStyle = fillStyle;
 		this.fillColorName = fillColorName;
 	}
-	
-	/**
-	 * Returns the fillColorName.
-	 * @return String
-	 */
+
 	public String getFillColorName() {
 		return fillColorName;
 	}
 
-	/**
-	 * Returns the fillStyle.
-	 * @return FillStyle
-	 */
 	public FillStyle getFillStyle() {
 		return fillStyle;
 	}
 
-	/**
-	 * Returns the outlineFormat.
-	 * @return LineFormat
-	 */
 	public LineFormat getOutlineFormat() {
 		return outlineFormat;
 	}
 
-	/**
-	 * Returns the radius.
-	 * @return TypedSize
-	 */
 	public TypedSize getRadius() {
 		return radius;
 	}
 
-	/**
-	 * Sets the fillColorName.
-	 * @param fillColorName The fillColorName to set
-	 */
 	public void setFillColorName(String fillColorName) {
 		this.fillColorName = fillColorName;
 	}
 
-	/**
-	 * Sets the fillStyle.
-	 * @param fillStyle The fillStyle to set
-	 */
 	public void setFillStyle(FillStyle fillStyle) {
 		this.fillStyle = fillStyle;
 	}
 
-	/**
-	 * Sets the outlineFormat.
-	 * @param outlineFormat The outlineFormat to set
-	 */
 	public void setOutlineFormat(LineFormat outlineFormat) {
 		this.outlineFormat = outlineFormat;
 	}
 
-	/**
-	 * Sets the radius.
-	 * @param radius The radius to set
-	 */
 	public void setRadius(TypedSize radius) {
 		this.radius = radius;
 	}
