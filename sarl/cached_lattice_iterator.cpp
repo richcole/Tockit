@@ -186,7 +186,7 @@ struct Sarl_LatticeIterator *
     struct Sarl_SetIterator *filter)
 {
   SARL_NOT_IMPLEMENTED;
-  return 0;
+  return SARL_ERROR;
 };
 
 struct Sarl_LatticeIterator *
@@ -195,7 +195,7 @@ struct Sarl_LatticeIterator *
     struct Sarl_ConceptIterator *c)
 {
   SARL_NOT_IMPLEMENTED;
-  return 0;
+  return SARL_ERROR;
 };
 
 
@@ -205,7 +205,7 @@ struct Sarl_LatticeIterator *
     struct Sarl_LatticeIterator *c)
 {
   SARL_NOT_IMPLEMENTED;
-  return 0;
+  return SARL_ERROR;
 };
 
 struct Sarl_SetIterator *

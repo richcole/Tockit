@@ -54,6 +54,7 @@ struct Sarl_LatticeIterator *
 {
   SARL_NOT_IMPLEMENTED;
   //  it->funcs->filter(it, c);
+  return SARL_ERROR;
 };
 
 
@@ -64,6 +65,7 @@ struct Sarl_LatticeIterator *
 {
   SARL_NOT_IMPLEMENTED;
   //  it->funcs->ideal(it, c);
+  return SARL_ERROR;
 };
 
 struct Sarl_SetIterator *

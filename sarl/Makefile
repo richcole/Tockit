@@ -31,7 +31,8 @@ OBJECTS = \
   assert \
   dictionary \
   plain_dictionary \
-  dictionary_indexes_set_iterator 
+  dictionary_indexes_set_iterator \
+  input_stream
 
 TESTS = \
   test_set \
