@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.Hits;
@@ -27,18 +26,13 @@ import org.tockit.docco.query.util.*;
 
 public class QueryEngine {
     private Index[] indexes;
-	private String defaultQueryField;
-	private Analyzer analyzer;
 	private QueryDecomposer queryDecomposer;
 	
-	public QueryEngine (Index[] indexes, String defaultQueryField, 
-								Analyzer analyzer, QueryDecomposer queryDecomposer) 
+	public QueryEngine (Index[] indexes, QueryDecomposer queryDecomposer) 
 								throws IOException {
 		// we store only the locations, not the searcher since the searcher has to be
 		// recreated if the index is updated (which happens from the other thread)
 		this.indexes = indexes;
-		this.defaultQueryField = defaultQueryField;
-		this.analyzer = analyzer;
 		this.queryDecomposer = queryDecomposer;
 	}
 	

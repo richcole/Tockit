@@ -373,7 +373,7 @@ public class FileMappingsEditingDialog extends JDialog {
 	}
 	
 	private void createMapping() {
-		CreateNewFileMappingDialog dialog = new CreateNewFileMappingDialog(this, documentMappings);
+		CreateNewFileMappingDialog dialog = new CreateNewFileMappingDialog(this);
 		DocumentHandlerMapping mapping = dialog.getCreatedMapping();
 		if (mapping != null) {
 			model.addElement(mapping);

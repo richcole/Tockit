@@ -772,8 +772,7 @@ public class DoccoMainFrame extends JFrame {
     private void createQueryEngine() {
 		try {
 			QueryDecomposer queryDecomposer = new QueryDecomposer(
-													GlobalConstants.FIELD_QUERY_BODY, 
-													GlobalConstants.DEFAULT_ANALYZER);
+													GlobalConstants.FIELD_QUERY_BODY);
 			List activeIndexesList = new ArrayList();
 			for (Iterator iter = this.indexes.iterator(); iter.hasNext();) {
                 Index currentIndex = (Index) iter.next();
@@ -782,8 +781,6 @@ public class DoccoMainFrame extends JFrame {
                 }
             }
             this.queryEngine =	new QueryEngine(((Index[]) activeIndexesList.toArray(new Index[activeIndexesList.size()])),
-												GlobalConstants.FIELD_QUERY_BODY,
-												GlobalConstants.DEFAULT_ANALYZER,
 												queryDecomposer);
 			this.diagramView.showDiagram(null);
 			this.hitList.setModel(null);

@@ -46,7 +46,6 @@ public class IntersectionOperationTest extends AbstractRelationOperationTest {
 		one.expectedTuples = new Object[][]{new String[]{"1","6","1"}};
 		one.unexpectedTuples = new Object[][]{new String[]{"1","6","6"}};
     	
-		RelationTestSetup two = new RelationTestSetup();
 		Relation testRelTwo = new RelationImplementation(3);
 		testRelTwo.addTuple(new String[]{"1","6","1"});
 		testRelTwo.addTuple(new String[]{"b","b","c"});

@@ -21,7 +21,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -48,7 +47,6 @@ import org.tockit.docco.documenthandler.DocumentHandlerRegistry;
 // @todo needs relayouting and code cleanup
 public class CreateNewFileMappingDialog extends JDialog {
 	
-	private List documentMappings;
 	private DefaultComboBoxModel docHandlerImplementationsModel;
 	
 	private DocumentHandlerMapping mapping;
@@ -97,10 +95,9 @@ public class CreateNewFileMappingDialog extends JDialog {
 		}
 	}	
 
-	public CreateNewFileMappingDialog(Dialog owner, List documentMappings) 
+	public CreateNewFileMappingDialog(Dialog owner) 
 										throws HeadlessException {
 		super(owner, "Create new mapping", true);
-		this.documentMappings = documentMappings;
 		
 		initAllComboBoxModels();
 		

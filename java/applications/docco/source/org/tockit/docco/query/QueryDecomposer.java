@@ -12,7 +12,6 @@ import java.util.List;
 
 import net.sourceforge.toscanaj.gui.dialog.ErrorDialog;
 
-import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
@@ -38,11 +37,9 @@ public class QueryDecomposer {
 	}
 	
 	private String defaultQueryField;
-	private Analyzer analyzer;
 	
-	public QueryDecomposer (String defaultQueryField, Analyzer analyzer) {
+	public QueryDecomposer (String defaultQueryField) {
 		this.defaultQueryField = defaultQueryField;
-		this.analyzer = analyzer;
 	}
 
 	public List breakQueryIntoTerms (String queryString) throws ParseException {
