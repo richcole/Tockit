@@ -110,8 +110,7 @@ public class MSWordProcessor implements DocumentProcessor {
 	}
 
 	public Date getModificationDate() {
-		//return info.getEditTime();
-		return null;
+		return info.getEditTime();
 	}
 
 	public String getKeywords() {

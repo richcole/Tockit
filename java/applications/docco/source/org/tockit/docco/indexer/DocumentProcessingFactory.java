@@ -81,7 +81,20 @@ public class DocumentProcessingFactory {
 			}
 			
 			if (docProcessor.getModificationDate() != null) {
-				doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_MODIFICATION_DATE, docProcessor.getModificationDate()));
+				try {
+					doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_MODIFICATION_DATE, docProcessor.getModificationDate()));
+				}
+				catch (RuntimeException e) {
+					/// @todo another nasty hack
+					if (e.getMessage().startsWith("time too early")) {
+						System.err.println("Caught exception \"time too early\" for time " + 
+												docProcessor.getModificationDate().toString() + 
+												", in document " + file.getAbsolutePath());
+					}
+					else {
+						throw e;
+					}
+				}
 			}
 			
 			if (docProcessor.getKeywords() != null) {
