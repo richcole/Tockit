@@ -29,4 +29,12 @@ public interface UnaryRelationOperation extends RelationOperation {
 	 * @throws NullPointerException iff other is null
 	 */
 	UnaryRelationOperation concatenate(UnaryRelationOperation other);
+
+	/**
+	 * Creates a new operator applying this one to the result of the other.
+	 * 
+	 * @param other another binary relation operation, not null
+	 * @throws NullPointerException iff other is null
+	 */
+	BinaryRelationOperation concatenate(BinaryRelationOperation other);
 }

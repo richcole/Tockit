@@ -8,6 +8,7 @@
 package org.tockit.relations.operations.util;
 
 import org.tockit.relations.model.Relation;
+import org.tockit.relations.operations.BinaryRelationOperation;
 import org.tockit.relations.operations.UnaryRelationOperation;
 
 public abstract class AbstractUnaryRelationOperation implements UnaryRelationOperation {
@@ -40,6 +41,13 @@ public abstract class AbstractUnaryRelationOperation implements UnaryRelationOpe
 	 **/
 	public UnaryRelationOperation concatenate(UnaryRelationOperation other) {
 		return new ConcatenatedUnaryRelationOperation(other, this);
+	}
+	
+	/**
+	 * Implements UnaryRelationOperation.concatenate(BinaryRelationOperation).
+	 **/
+	public BinaryRelationOperation concatenate(BinaryRelationOperation other) {
+		return new ConcatenatedUnaryAfterBinaryRelationOperation(other, this);
 	}
 	
 	public String toString() {
