@@ -7,7 +7,9 @@
  */
 package org.tockit.canvas.imagewriter;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Paint;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
@@ -120,9 +122,14 @@ public class ImageIOImageWriter implements ImageWriter {
 
         Rectangle2D bounds = new Rectangle2D.Double(
                 0, 0, settings.getImageWidth(), settings.getImageHeight());
-
-        graphics2D.setPaint(canvas.getBackground());
-        graphics2D.fill(bounds);
+		if(graphicFormat instanceof GraphicFormatJPG) {
+			Paint paint = canvas.getBackgroundItem().getPaint();
+			if(paint == null) {
+				paint = Color.WHITE;
+			}
+			graphics2D.setPaint(paint);
+			graphics2D.fill(bounds);
+		}
 
         AffineTransform transform = canvas.scaleToFit(graphics2D, bounds);
         graphics2D.transform(transform);

@@ -131,9 +131,6 @@ public class JimiImageWriter implements ImageWriter {
         Rectangle2D bounds = new Rectangle2D.Double(
                 0, 0, settings.getImageWidth(), settings.getImageHeight());
 
-        graphics2D.setPaint(canvas.getBackground());
-        graphics2D.fill(bounds);
-
         AffineTransform transform = canvas.scaleToFit(graphics2D, bounds);
         graphics2D.transform(transform);
         // paint all items on canvas

@@ -52,11 +52,13 @@ public class CanvasBackground extends CanvasItem {
 	 */
     public void draw(Graphics2D g) {
         Rectangle clipBounds = g.getClipBounds();
+		Paint oldPaint = g.getPaint();
         if (paint != null && clipBounds != null) {
-            Paint oldPaint = g.getPaint();
             g.setPaint(paint);
             g.fill(clipBounds);
-
+        }
+        
+		if (gridPaint != null && clipBounds != null) {
             g.setPaint(this.gridPaint);
             if( this.canvas.hasGridEnabled() ) {
                 double cellWidth = this.canvas.getGridCellWidth();
@@ -74,8 +76,8 @@ public class CanvasBackground extends CanvasItem {
                     g.draw(new Line2D.Double(clipBounds.getMinX(), yPos,clipBounds.getMaxX(),yPos));
                 }
             }
-            g.setPaint(oldPaint);
         }
+		g.setPaint(oldPaint);
     }
 
     /**
