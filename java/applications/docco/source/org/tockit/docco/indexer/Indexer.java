@@ -85,8 +85,12 @@ public class Indexer {
 	private void indexDocs(IndexWriter writer, File file) {
 		try {
 			if (file.isDirectory()) {
-				System.out.print("\n");
+				System.out.print("\ndir: " + file.getAbsolutePath());
 				String[] files = file.list();
+				if(files == null) {
+					// seems to happen if dir access denied
+					return; 
+				}
 				for (int i = 0; i < files.length; i++) {
 					indexDocs(writer, new File(file, files[i]));
 				}
