@@ -105,4 +105,8 @@ public class MSWordHandler implements DocumentHandler {
 		return null;
 	}
 
+	public String getDisplayName() {
+		return "Microsoft Word Document";
+	}
+
 }

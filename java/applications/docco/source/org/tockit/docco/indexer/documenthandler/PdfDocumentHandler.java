@@ -84,4 +84,8 @@ public class PdfDocumentHandler implements DocumentHandler {
 		}
 		return null;
 	}
+
+	public String getDisplayName() {
+		return "PDF using pdfbox";
+	}
 }

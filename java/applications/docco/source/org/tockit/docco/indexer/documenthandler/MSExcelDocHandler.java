@@ -78,4 +78,8 @@ public class MSExcelDocHandler implements DocumentHandler {
 		return new DocumentContent(content.toString());
 	}
 
+	public String getDisplayName() {
+		return "Microsoft Excel";
+	}
+
 }

@@ -128,4 +128,8 @@ public class HtmlDocumentHandler implements DocumentHandler {
 		return summary;
 	}
 
+	public String getDisplayName() {
+		return "HTML";
+	}
+
 }

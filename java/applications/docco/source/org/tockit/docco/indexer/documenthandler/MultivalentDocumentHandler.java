@@ -162,6 +162,11 @@ public class MultivalentDocumentHandler implements DocumentHandler {
 	  if (n.breakAfter() || n instanceof FixedI) sb.append("\n");
 	}
 
+	public String getDisplayName() {
+		return "Handler based on Multivalent tool, capable of parsing " + 
+			"HTML, PDF, scanned paper, UNIX manual pages, TeX DVI";
+	}
+
 	
 
 }

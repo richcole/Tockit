@@ -14,4 +14,8 @@ import org.tockit.docco.indexer.DocumentSummary;
 
 public interface DocumentHandler {
 	public DocumentSummary parseDocument(File file) throws IOException, DocumentHandlerException;
+	/**
+	 * return name of this handler suitable for displaying in UI.
+	 */
+	public String getDisplayName ();
 }

@@ -24,5 +24,9 @@ public class PlainTextDocumentHandler implements DocumentHandler {
 		return docSummary;
 	}
 
+	public String getDisplayName() {
+		return "Plain Text";
+	}
+
 
 }

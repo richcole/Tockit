@@ -79,4 +79,8 @@ public class PdfMultivalentDocumentHandler implements DocumentHandler {
 		}
 		return null;
 	}
+
+	public String getDisplayName() {
+		return "PDF using Multivalent tool";
+	}
 }
