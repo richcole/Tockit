@@ -46,6 +46,10 @@ public class GraphViewDragHandler implements DropTargetListener {
     public void dragEnter(DropTargetDragEvent dtde) {
         if (dtde.isDataFlavorSupported(CGFlavors.TypeFlavor)) {
             dtde.acceptDrag(DnDConstants.ACTION_COPY);
+        } else if (dtde.isDataFlavorSupported(CGFlavors.RelationFlavor)) {
+            dtde.acceptDrag(DnDConstants.ACTION_COPY);
+        } else if (dtde.isDataFlavorSupported(CGFlavors.InstanceFlavor)) {
+            dtde.acceptDrag(DnDConstants.ACTION_COPY);
         } else {
             dtde.rejectDrag();
         }
