@@ -19,10 +19,7 @@ import org.tockit.docco.indexer.filefilter.DoccoFileFilter;
 public class DocumentHandlerRegistry {
 	public static final String[] DEFAULT_MAPPINGS = new String[]{
 		"html?:org.tockit.docco.indexer.filefilter.RegularExpresionExtensionFileFilter:org.tockit.docco.indexer.documenthandler.HtmlDocumentHandler",
-		"pdf:org.tockit.docco.indexer.filefilter.ExtensionFileFilter:org.tockit.docco.indexer.documenthandler.PdfDocumentHandler",
-		"doc:org.tockit.docco.indexer.filefilter.ExtensionFileFilter:org.tockit.docco.indexer.documenthandler.MSWordHandler",
 		"txt:org.tockit.docco.indexer.filefilter.ExtensionFileFilter:org.tockit.docco.indexer.documenthandler.PlainTextDocumentHandler",
-		"xls:org.tockit.docco.indexer.filefilter.ExtensionFileFilter:org.tockit.docco.indexer.documenthandler.MSExcelDocHandler"
 	};
 	
 	List docHandlersList = new LinkedList();
