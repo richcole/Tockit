@@ -94,32 +94,40 @@ class SearchFiles {
 			String objectData = "";
 			List relatedAttributes = new LinkedList();
 			for(int j = 0; j < queryTerms.size(); j++) {
+				SimpleQueryReference queryRef = (SimpleQueryReference) queryTerms.get(j);
+				//System.out.println("i = " + i + ", j = " + j + ", curTerm = " + queryRef.getQuery());
+				// @todo should build BooleanQuery here and be smarter 
+				// about building combinations (don't want ones with 'NOT (term)' or
+				// 'NOT (term1) AND NOT (term2)' 
 				if( j != 0 ) {
 					objectData += " AND ";
 				}
 				if( (i & (1 << j)) == 0 ) {
 					objectData += " NOT ";
 				} else {
-					relatedAttributes.add(queryTerms.get(j));
+					relatedAttributes.add(queryRef);
 				}
-				SimpleQueryReference q = (SimpleQueryReference) queryTerms.get(j);
-				objectData += "(" +  q.getQuery() + ")";
-				result.add(objectData);
+				objectData += "(" +  queryRef.getQuery() + ")";
+				if (j == queryTerms.size() - 1) {
+					result.add(objectData);
+					//System.out.println("combi = " + objectData);
+				}
 			}
 		}
 		System.out.println("num of combinations: " + result.size());
 		return result;
 	}
+
 	
 	public void query(String line) throws ParseException, IOException {
 		List queryTerms = queryDecomposer.breakQueryIntoTerms(line);
 		Set queryTermsCombinations = buildQueryTermsCombinations(queryTerms);
-		Iterator it = queryTermsCombinations.iterator();
-		while (it.hasNext()) {
-			String cur = (String) it.next();
-			QueryWithResult qwr = queryEngine.executeQuery(cur);
-			System.out.println(qwr);
-		}
+//		Iterator it = queryTermsCombinations.iterator();
+//		while (it.hasNext()) {
+//			String cur = (String) it.next();
+//			QueryWithResult qwr = queryEngine.executeQuery(cur);
+//			System.out.println(qwr);
+//		}
 	}
 
 	public void repetativeQuery () throws IOException, ParseException {

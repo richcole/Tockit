@@ -35,6 +35,24 @@ public class SimpleQueryReference {
 	public Boolean isProhibited() {
 		return this.prohibited;
 	}
+	
+	public String getStringQueryRepresentation () {
+		String res = "";
+		if (this.required != null) {
+			if (this.required.booleanValue()) {
+				res = "+";
+			}
+		}
+		if (this.prohibited != null) {
+			if (this.prohibited.booleanValue()) {
+				res = "-";
+			}
+		}
+		res = res + query.toString();
+			
+		return res;
+	}
+	
 
 	public String toString() {
 		String str = "Query: " + this.query;
