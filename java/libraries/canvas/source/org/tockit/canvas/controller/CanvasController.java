@@ -138,7 +138,7 @@ public class CanvasController implements MouseListener, MouseMotionListener {
         Point2D lastMousePosTr = canvas.getCanvasCoordinates(lastMousePos);
         this.eventBroker.processEvent(new CanvasItemDroppedEvent(
                 this.selectedCanvasItem,
-                e.getModifiers(),
+                e.getModifiersEx(),
                 lastMousePosTr, lastMousePos,
                 mousePosTr, mousePos));
     }
@@ -173,13 +173,13 @@ public class CanvasController implements MouseListener, MouseMotionListener {
             if (newDrag) {
                 this.eventBroker.processEvent(new CanvasItemPickupEvent(
                         this.selectedCanvasItem,
-                        e.getModifiers(),
+                        e.getModifiersEx(),
                         lastMousePosTr, lastMousePos,
                         mousePosTr, mousePos));
             } else {
                 this.eventBroker.processEvent(new CanvasItemDraggedEvent(
                         this.selectedCanvasItem,
-                        e.getModifiers(),
+                        e.getModifiersEx(),
                         lastMousePosTr, lastMousePos,
                         mousePosTr, mousePos));
             }
