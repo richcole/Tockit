@@ -126,7 +126,8 @@ public class EventBroker implements EventBrokerListener {
 	 * Removes the given listener from getting events of the specified type.
 	 * 
 	 * If a subscription of this listener for the given eventType/subjectType is
-	 * found it will be removed.
+	 * found it will be removed. This does not check for subclasses or
+	 * implemented interfaces, only exact matches will be removed.
 	 */
 	public void removeSubscription(EventBrokerListener listener, Class eventType, Class subjectType) {
 		for (Iterator iterator = subscriptions.iterator(); iterator.hasNext();) {
