@@ -7,15 +7,7 @@
  */
 package org.tockit.plugin;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -86,7 +78,6 @@ public class PluginLoader {
 		public File getPluginLocation() {
 			return file;
 		}
-
 	}
 	
 	/**
@@ -106,19 +97,7 @@ public class PluginLoader {
 	public static PluginLoader.Error[] loadPlugins (File[] pluginsBaseFiles) throws PluginLoaderException {
 		logger.setLevel(Level.FINER);
 
-		File[] pluginDirs = null;
-		for (int i = 0; i < pluginsBaseFiles.length; i++) {
-			File file = pluginsBaseFiles[i];
-			if (file.exists()) {
-				pluginDirs = file.listFiles( new FileFilter () {
-					public boolean accept(File pathname) {
-						return pathname.isDirectory();
-					}
-				});
-				break; 
-			}
-		}
-		
+		File[] pluginDirs = LoaderUtil.listBaseDirs(pluginsBaseFiles);
 		if (pluginDirs == null) {
 			throw new PluginLoaderException("Didn't find any plugins in specified plugins directories: " + pluginDirs);
 		}
@@ -128,21 +107,8 @@ public class PluginLoader {
 			File curPluginDir = pluginDirs[i];
 			try {
 				logger.fine("Loading class loader for " + curPluginDir);
-
-				PluginClassLoader classLoader = new PluginClassLoader(curPluginDir);
-				
-				List descriptorClasses = 
-						loadPluginDescriptorSpecifedClasses(curPluginDir, classLoader);
-				Class[] foundPlugins = null;
-				if (descriptorClasses.size() > 0) {
-					foundPlugins = (Class[]) descriptorClasses.toArray(new Class[descriptorClasses.size()]);
-				}
-				else {
-					foundPlugins = classLoader.findClassesImplementingGivenIterface(Plugin.class);
-				}
-
+				Class[] foundPlugins = LoaderUtil.findClassesInDir(curPluginDir, pluginDescriptorFileName, Plugin.class, logger);
 				loadPluginClasses(foundPlugins);
-
 				logger.fine("Finished loading plugins in " + curPluginDir);
 			}
 			catch (ClassCastException e) {
@@ -161,30 +127,6 @@ public class PluginLoader {
 		return res;
 	}
 
-	private static List loadPluginDescriptorSpecifedClasses(
-									File curPluginDir,
-									PluginClassLoader classLoader)
-									throws FileNotFoundException, 
-									IOException, ClassNotFoundException {
-
-		File pluginDescriptorFile = new File(curPluginDir, pluginDescriptorFileName);
-		List descriptorClasses = new ArrayList();
-		if (pluginDescriptorFile.exists()) {
-			logger.finer("Found plugin descriptor file");
-			InputStream fileInStream = new FileInputStream(pluginDescriptorFile);
-			Reader reader = new InputStreamReader(fileInStream);
-			BufferedReader br = new BufferedReader(reader);
-			String line;
-			while ( (line = br.readLine()) != null ) {
-				logger.finer("Looking for plugin with name: '" + line + "'");
-				Class pluginClass = classLoader.findClass(line.trim());
-				descriptorClasses.add(pluginClass);
-			}
-		}
-		return descriptorClasses;
-	}
-	
-	
 	private static void loadPluginClasses (Class[] plugins) throws InstantiationException,
 											IllegalAccessException {
 		for (int i = 0; i < plugins.length; i++) {
