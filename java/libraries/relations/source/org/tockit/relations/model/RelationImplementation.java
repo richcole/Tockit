@@ -129,4 +129,14 @@ public class RelationImplementation implements Relation {
 		}
         return retVal;
     }
+    
+    public String toString() {
+        StringBuffer buffer = new StringBuffer();
+        for (Iterator iter = this.tuples.iterator(); iter.hasNext();) {
+            Tuple tuple = (Tuple) iter.next();
+            buffer.append(tuple);
+            buffer.append("\n");
+        }
+        return buffer.toString();
+    }
 }
