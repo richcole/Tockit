@@ -76,17 +76,21 @@ public class Index {
 	}
 	
 	public void addFilesToIndex(File[] files) {
+		/// @todo we probably want absolute paths here
 		List newFileList = new ArrayList(); 
 		newFileList.addAll(Arrays.asList(this.filesIndexed));
 		newFileList.addAll(Arrays.asList(files));
 		this.filesIndexed = (File[]) newFileList.toArray(new File[newFileList.size()]);
-		for (int i = 0; i < files.length; i++) {
-			this.indexThread.enqueue(files[i]);
-		}
+		this.indexThread.enqueue(files);
 	}
 	
 	public File[] getFilesIndexed() {
 		return this.filesIndexed;
+	}
+	
+	public void setFilesToIndex(File[] files) {
+		this.filesIndexed = files;
+		this.indexThread.enqueue(files);
 	}
 	
 	public void updateIndex() throws IOException {
@@ -113,11 +117,36 @@ public class Index {
 			}
 		}
 		reader.close();
+
+		// then search for new files
+		for (int i = 0; i < this.filesIndexed.length; i++) {
+            File file = this.filesIndexed[i];
+            updateFile(file, knownDocuments);
+        }
+
+		// and off we go...
 		this.indexThread.startIndexing(this.indexLocation);
-		// then add new ones -- @todo we need to store the base directory for this
 	}
 
-	public void start() throws IOException {
+	private void updateFile(File file, Set knownDocuments) {
+		if (file.isDirectory()) {
+			String[] files = file.list();
+			if(files == null) {
+				// seems to happen if dir access denied
+				return; 
+			}
+			for (int i = 0; i < files.length; i++) {
+				updateFile(new File(file, files[i]), knownDocuments);
+			}
+		}
+		else {
+			if(!knownDocuments.contains(file.getPath())) {
+				this.indexThread.enqueue(file);
+			}
+		}
+    }
+
+    public void start() throws IOException {
 		this.indexThread.startIndexing(this.indexLocation);
 	}
 	

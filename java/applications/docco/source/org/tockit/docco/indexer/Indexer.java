@@ -98,6 +98,12 @@ public class Indexer extends Thread {
 			this.fileQueue.add(file);
 		}
 	}
+
+	public void enqueue(File[] files) {	
+		for (int i = 0; i < files.length; i++) {
+			enqueue(files[i]);
+		}
+	}
 	
 	private void indexDocs(File file) {
 		showProgress(writer.docCount(), this.filesSeen, file.getAbsolutePath());

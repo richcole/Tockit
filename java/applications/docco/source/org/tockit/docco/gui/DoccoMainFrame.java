@@ -499,6 +499,7 @@ public class DoccoMainFrame extends JFrame {
             						true);
             writer.close();
             
+            this.index.setFilesToIndex(new File[0]);
 			this.index.start();
         } catch (IOException e) {
 			ErrorDialog.showError(this, e, "There has been an error creating a new index");
