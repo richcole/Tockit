@@ -4,7 +4,7 @@
 
 using namespace std;
 
-void main()
+int main()
 {
   Relation s;
 
@@ -28,6 +28,8 @@ void main()
     Sarl_Pair p = it.value();
     cerr << p.dom << "," << p.rng << endl;
   }
+
+	return 0;
 };
 
 

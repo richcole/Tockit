@@ -5,7 +5,7 @@
 using namespace std;
 
 
-void main()
+int main()
 {
   Relation s;
   int i, j, LEN=100;
@@ -13,7 +13,7 @@ void main()
   for(i=1;i<=LEN;i++) {
     for(j=1;j<=LEN;j++) {
       if ( i % j == 0 ) {
-	s.insert(i, j);
+				s.insert(i, j);
       }
     }
   }
@@ -23,6 +23,7 @@ void main()
   if ( it.count_remaining() != LEN ) {
     cerr << "Error, expected count_remaining=" << LEN/6 << ", but got ";
     cerr << it.count_remaining() << endl;
+		return -1;
   }
 
   int val = RelationIterator(s).range().count_remaining();
@@ -30,8 +31,10 @@ void main()
   if ( val != LEN ) {
     cerr << "Error, expected count_remaining=" << LEN << ", but got ";
     cerr << val << endl;
+		return -1;
   };
-    
+
+	return 0;
 };
 
 
