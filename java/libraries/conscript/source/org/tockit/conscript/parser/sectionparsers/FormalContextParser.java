@@ -13,13 +13,13 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.tockit.conscript.model.BinaryRelationImplementation;
-import org.tockit.conscript.model.ConceptualFile;
+import org.tockit.conscript.model.CSCFile;
 import org.tockit.conscript.model.FormalContext;
 import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
 class FormalContextParser extends CSCFileSectionParser {
-	public void parse(CSCTokenizer tokenizer, ConceptualFile targetFile)
+	public void parse(CSCTokenizer tokenizer, CSCFile targetFile)
 		throws IOException, DataFormatException {
 		List objects = new ArrayList();
 		List attributes = new ArrayList();
@@ -56,14 +56,14 @@ class FormalContextParser extends CSCFileSectionParser {
         if(height != objects.size()) {
             throw new DataFormatException("Relation height does not match number of objects in context '" +
                                           contextId + "', line " + tokenizer.getCurrentLine() + ", file '" +
-                                          targetFile.getFile() + "'");
+                                          targetFile.getLocation() + "'");
         }
         tokenizer.consumeToken(",", targetFile);
         int width = Integer.parseInt(tokenizer.popCurrentToken());
         if(width != attributes.size()) {
             throw new DataFormatException("Relation width does not match number of attributes in context '" +
                                           contextId + "', line " + tokenizer.getCurrentLine() + ", file '" +
-                                          targetFile.getFile() + "'");
+                                          targetFile.getLocation() + "'");
         }
 
 		// create relation

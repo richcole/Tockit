@@ -11,7 +11,7 @@ public class RealisedScale extends SchemaPart{
     private ConcreteScale concreteScale;
 	private IdentifierMap identifierMap;
 	
-	public RealisedScale(ConceptualFile file, String identifier) {
+	public RealisedScale(CSCFile file, String identifier) {
         super(file, identifier);
     }
 

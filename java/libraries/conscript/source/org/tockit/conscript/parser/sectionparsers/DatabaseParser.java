@@ -9,9 +9,8 @@ package org.tockit.conscript.parser.sectionparsers;
 
 import java.io.IOException;
 
-import org.tockit.conscript.model.ConceptualFile;
+import org.tockit.conscript.model.CSCFile;
 import org.tockit.conscript.model.DatabaseDefinition;
-import org.tockit.conscript.model.DatabaseDefinitions;
 import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
@@ -20,29 +19,23 @@ class DatabaseParser extends CSCFileSectionParser {
 		return "DATABASE";
 	}
 
-	public void parse(CSCTokenizer tokenizer, ConceptualFile targetFile) throws IOException, DataFormatException {
-        String identifier = tokenizer.popCurrentToken();
-        DatabaseDefinitions dbDefinitions = new DatabaseDefinitions(targetFile, identifier);
-        
-        tokenizer.consumeToken("=", targetFile);
-        
-        // ignore specials for now
-        // @todo add specials
-        while(!tokenizer.getCurrentToken().equals("(")) {
-            tokenizer.advance();
-        }
-        tokenizer.consumeToken("(", targetFile);
+	public void parse(CSCTokenizer tokenizer, CSCFile file) throws IOException, DataFormatException {
         String name = tokenizer.popCurrentToken();
-        tokenizer.consumeToken(",", targetFile);
-        String table = tokenizer.popCurrentToken();
-        tokenizer.consumeToken(",", targetFile);
-        String primaryKey = tokenizer.popCurrentToken();
-        tokenizer.consumeToken(")", targetFile);
+        tokenizer.consumeToken("=", file);
 
-        DatabaseDefinition dbDefinition = new DatabaseDefinition(identifier, name, table, primaryKey);
-        dbDefinitions.setDatabases(new DatabaseDefinition[] {dbDefinition});
-        targetFile.setDatabaseDefinitions(dbDefinitions);
+        DatabaseDefinition dbDefinition = new DatabaseDefinition(file, name);
+        parseTitleRemarkSpecials(tokenizer, dbDefinition);
         
-        tokenizer.consumeToken(";", targetFile);
+        tokenizer.consumeToken("(", file);
+        dbDefinition.setDatabaseName(tokenizer.popCurrentToken());
+        tokenizer.consumeToken(",", file);
+        dbDefinition.setTable(tokenizer.popCurrentToken());
+        tokenizer.consumeToken(",", file);
+        dbDefinition.setPrimaryKey(tokenizer.popCurrentToken());
+        tokenizer.consumeToken(")", file);
+
+        file.add(dbDefinition);
+        
+        tokenizer.consumeToken(";", file);
 	}
 }

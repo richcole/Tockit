@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.logging.Level;
 
-import org.tockit.conscript.model.ConceptualFile;
+import org.tockit.conscript.model.CSCFile;
 
 public class CSCTokenizer {
     private BufferedReader inputReader;
@@ -124,10 +124,10 @@ public class CSCTokenizer {
     	return this.newLineStarted;
     }
 
-    public void consumeToken(String token, ConceptualFile file) throws IOException, DataFormatException{
+    public void consumeToken(String token, CSCFile file) throws IOException, DataFormatException{
         if(!this.currentToken.equals(token)) {
             throw new DataFormatException("Expected token '" + token + "' but found '" + this.currentToken + 
-                                          "' in line " + getCurrentLine() + " of file " + file.getFile());
+                                          "' in line " + getCurrentLine() + " of file " + file.getLocation());
         }
         if(!done()) {
             advance();

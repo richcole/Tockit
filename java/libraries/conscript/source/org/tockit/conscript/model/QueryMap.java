@@ -14,7 +14,7 @@ import java.util.Map;
 public class QueryMap extends SchemaPart{
     private Map map = new Hashtable();;
 		
-	public QueryMap(ConceptualFile file, String identifier) {
+	public QueryMap(CSCFile file, String identifier) {
         super(file, identifier);
     }
 

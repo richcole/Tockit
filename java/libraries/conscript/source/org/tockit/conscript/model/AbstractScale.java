@@ -7,26 +7,30 @@
  */
 package org.tockit.conscript.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class AbstractScale extends SchemaPart{
 	private FormalContext context;
-	private LineDiagram[] lineDiagrams;
+	private List lineDiagrams = new ArrayList();
 	
-	public AbstractScale(ConceptualFile file, String name) {
+	public AbstractScale(CSCFile file, String name) {
         super(file, name);
 	}
 		
 	public FormalContext getContext() {
 		return context;
 	}
-	public LineDiagram[] getLineDiagrams() {
-		return lineDiagrams;
+	public List getLineDiagrams() {
+		return Collections.unmodifiableList(lineDiagrams);
 	}
 
 	public void setContext(FormalContext context) {
 		this.context = context;
 	}
 
-	public void setLineDiagrams(LineDiagram[] lineDiagrams) {
-		this.lineDiagrams = lineDiagrams;
+	public void addLineDiagram(LineDiagram lineDiagram) {
+		this.lineDiagrams.add(lineDiagram);
 	}
 }

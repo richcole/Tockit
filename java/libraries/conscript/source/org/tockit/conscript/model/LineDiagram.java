@@ -15,7 +15,7 @@ public class LineDiagram extends SchemaPart{
 	private FCAAttribute[] attributes;
 	private Concept[] concepts;
 	
-	public LineDiagram(ConceptualFile file, String identifier) {
+	public LineDiagram(CSCFile file, String identifier) {
         super(file, identifier);
 	}
 

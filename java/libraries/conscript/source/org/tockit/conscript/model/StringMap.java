@@ -14,7 +14,7 @@ import java.util.Map;
 public class StringMap extends SchemaPart{
 	private Map map = new Hashtable();;
 		
-	public StringMap(ConceptualFile file, String identifier) {
+	public StringMap(CSCFile file, String identifier) {
         super(file, identifier);
 	}
 

@@ -9,7 +9,7 @@ package org.tockit.conscript.parser.sectionparsers;
 
 import java.io.IOException;
 
-import org.tockit.conscript.model.ConceptualFile;
+import org.tockit.conscript.model.CSCFile;
 import org.tockit.conscript.model.FormattedString;
 import org.tockit.conscript.model.SchemaPart;
 import org.tockit.conscript.parser.CSCTokenizer;
@@ -36,7 +36,7 @@ public abstract class CSCFileSectionParser {
 
 	abstract public String getStartToken();
 	
-	abstract public void parse(CSCTokenizer tokenizer, ConceptualFile targetFile) throws IOException, DataFormatException;
+	abstract public void parse(CSCTokenizer tokenizer, CSCFile targetFile) throws IOException, DataFormatException;
 	
 	public static CSCFileSectionParser[] getParsers() {
 		return CSC_FILE_SECTIONS_PARSERS;
@@ -55,6 +55,7 @@ public abstract class CSCFileSectionParser {
             schemaPart.setRemark(remark);
         }
         if(tokenizer.getCurrentToken().equals("SPECIAL")) {
+            tokenizer.advance();
             do {
                 String special = tokenizer.popCurrentToken();
                 int colonPos = special.indexOf(':');
@@ -67,5 +68,11 @@ public abstract class CSCFileSectionParser {
                 schemaPart.addSpecial(specialId, specialValue);
             } while (tokenizer.currentTokenIsString());
         }
+    }
+
+    protected void throwFailedReferenceException(CSCTokenizer tokenizer, CSCFile file, String type, String reference) throws DataFormatException {
+        throw new DataFormatException("Can not resolve reference to " + 
+                                      type + " '" + reference + "' referenced in file '" +
+                                      file.getLocation() + "', line " + tokenizer.getCurrentLine() +".");
     }
 }

@@ -9,7 +9,7 @@ package org.tockit.conscript.parser.sectionparsers;
 
 import java.io.IOException;
 
-import org.tockit.conscript.model.ConceptualFile;
+import org.tockit.conscript.model.CSCFile;
 import org.tockit.conscript.model.QueryMap;
 import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
@@ -19,7 +19,7 @@ class QueryMapParser extends CSCFileSectionParser {
         return "QUERY_MAP";
     }
 
-    public void parse(CSCTokenizer tokenizer, ConceptualFile targetFile)
+    public void parse(CSCTokenizer tokenizer, CSCFile targetFile)
         throws IOException, DataFormatException {
         String queryMapId = tokenizer.popCurrentToken();
         QueryMap queryMap = new QueryMap(targetFile, queryMapId);

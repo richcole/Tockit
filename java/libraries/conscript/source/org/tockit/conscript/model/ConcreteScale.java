@@ -14,7 +14,7 @@ public class ConcreteScale extends SchemaPart{
 	private QueryMap queryMap;
 	private StringMap attributeMap;
 	
-	public ConcreteScale(ConceptualFile file, String name) {
+	public ConcreteScale(CSCFile file, String name) {
 		super(file, name);
 	}
 

@@ -12,7 +12,7 @@ public class FormalContext extends SchemaPart{
 	private FCAAttribute[] attributes;
 	private BinaryRelation relation;
 
-	public FormalContext(ConceptualFile file, String identifier) {
+	public FormalContext(CSCFile file, String identifier) {
         super(file, identifier);
     }
 

@@ -8,11 +8,11 @@
 package org.tockit.conscript.parser.sectionparsers;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.tockit.conscript.model.AbstractScale;
-import org.tockit.conscript.model.ConceptualFile;
+import org.tockit.conscript.model.CSCFile;
+import org.tockit.conscript.model.FormalContext;
+import org.tockit.conscript.model.LineDiagram;
 import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
@@ -21,7 +21,7 @@ class AbstractScaleParser extends CSCFileSectionParser {
 		return "ABSTRACT_SCALE";
 	}
 
-	public void parse(CSCTokenizer tokenizer, ConceptualFile file) throws IOException, DataFormatException {
+	public void parse(CSCTokenizer tokenizer, CSCFile file) throws IOException, DataFormatException {
         String name = tokenizer.popCurrentToken();
         AbstractScale scale = new AbstractScale(file, name);
         
@@ -33,15 +33,24 @@ class AbstractScaleParser extends CSCFileSectionParser {
         String contextId = tokenizer.popCurrentToken();
         tokenizer.consumeToken(",", file);
         
-        String latticeId = null;
+        FormalContext context = file.findFormalContext(contextId);
+        if(context == null) {
+            throwFailedReferenceException(tokenizer, file, "formal context", contextId);
+        }
+        scale.setContext(context);
+        
         if(!tokenizer.getCurrentToken().equals(",")) {
-            latticeId = tokenizer.popCurrentToken();
+            tokenizer.advance(); // ignore lattice id
         }
         
-        List diagramIds = new ArrayList();
         do {
             tokenizer.consumeToken(",", file);
             String diagramId = tokenizer.popCurrentToken();
+            LineDiagram diagram = file.findLineDiagram(diagramId);
+            if(diagram == null) {
+                throwFailedReferenceException(tokenizer, file, "line diagram", diagramId);
+            }
+            scale.addLineDiagram(diagram);
         } while(!tokenizer.getCurrentToken().equals(")"));
         
         tokenizer.consumeToken(")", file);

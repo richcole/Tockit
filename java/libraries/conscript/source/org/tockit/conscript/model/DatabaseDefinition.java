@@ -7,23 +7,19 @@
  */
 package org.tockit.conscript.model;
 
-public class DatabaseDefinition {
-    private String identifier;
-	private String name;
+public class DatabaseDefinition extends SchemaPart {
+    private String databaseName;
 	private String table;
 	private String primaryKey;
 	
-	public DatabaseDefinition(String identifier, String name, String table, String primaryKey) {
-        this.identifier = identifier;
-		this.name = name;
-		this.table = table;
-		this.primaryKey = primaryKey;
+	public DatabaseDefinition(CSCFile file, String name) {
+        super(file, name);
 	}
 
-	public String getName() {
-		return name;
-	}
-
+    public String getDatabaseName() {
+        return this.databaseName;
+    }
+    
 	public String getPrimaryKey() {
 		return primaryKey;
 	}
@@ -31,24 +27,16 @@ public class DatabaseDefinition {
 	public String getTable() {
 		return table;
 	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public void setPrimaryKey(String primaryKey) {
-		this.primaryKey = primaryKey;
-	}
-
-	public void setTable(String table) {
-		this.table = table;
-	}
     
-    public String getIdentifier() {
-        return this.identifier;
+    public void setDatabaseName(String databaseName) {
+        this.databaseName = databaseName;
     }
     
-    public void setIdentifier(String identifier) {
-        this.identifier = identifier;
+    public void setPrimaryKey(String primaryKey) {
+        this.primaryKey = primaryKey;
+    }
+    
+    public void setTable(String table) {
+        this.table = table;
     }
 }

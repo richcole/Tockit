@@ -12,7 +12,7 @@ import java.util.Map;
 public class IdentifierMap extends SchemaPart{
     private Map map;
     
-	public IdentifierMap(ConceptualFile file, String identifier) {
+	public IdentifierMap(CSCFile file, String identifier) {
         super(file, identifier);
     }
 		

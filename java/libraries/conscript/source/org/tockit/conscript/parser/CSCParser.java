@@ -21,10 +21,9 @@ import org.tockit.conscript.parser.sectionparsers.*;
 public class CSCParser {
     public static final Logger logger = Logger.getLogger(CSCParser.class.getName());
 	
-    public static ConceptualFile importCSCFile(URL mainInput) throws FileNotFoundException, DataFormatException {
+    public static CSCFile importCSCFile(URL mainInput, CSCFile parent) throws FileNotFoundException, DataFormatException {
         try {
-        	ConceptualFile mainFile = new ConceptualFile(mainInput,"mainFile", new FormattedString("",new StringFormat()),
-        												 mainInput.toString());
+        	CSCFile mainFile = new CSCFile(mainInput, parent);
             CSCTokenizer tokenizer = new CSCTokenizer(new InputStreamReader(mainInput.openStream()));
             
             CSCFileSectionParser currentSectionParser = null;
@@ -37,18 +36,7 @@ public class CSCParser {
 					// first round and we don't grok it
 					throw new DataFormatException("The specified file is not a CSC file.");
 				}
-            	try {
-            		currentSectionParser.parse(tokenizer, mainFile);
-            	} catch (SectionTypeNotSupportedException e) {
-            		System.err.println(e.getMessage());
-            		// eat a whole section
-            		while(!tokenizer.getCurrentToken().equals(";")) {
-            			tokenizer.advance();
-            		}
-                    if(!tokenizer.done()) {
-                        tokenizer.advance();
-                    }
-            	}
+          		currentSectionParser.parse(tokenizer, mainFile);
             }
         
 			return mainFile;
@@ -77,6 +65,6 @@ public class CSCParser {
     public static void main(String[] args) throws FileNotFoundException, MalformedURLException, DataFormatException {
 //		logger.setLevel(java.util.logging.Level.ALL);
 		File inputFile = new File(args[0]);
-		importCSCFile(inputFile.toURL());    	
+		importCSCFile(inputFile.toURL(), null);    	
     }
 }

@@ -12,7 +12,7 @@ public class ConceptualSchema extends SchemaPart{
 	private DatabaseDefinition database;
 	private ConcreteScale[] concreteScales;
 	
-	public ConceptualSchema(ConceptualFile file, String identifier) {
+	public ConceptualSchema(CSCFile file, String identifier) {
         super(file, identifier);
 	}
 

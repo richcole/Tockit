@@ -12,18 +12,18 @@ import java.util.Hashtable;
 import java.util.Map;
 
 public abstract class SchemaPart {
-    private ConceptualFile file;
+    private CSCFile file;
     private String name;
     private FormattedString title = null;;
     private String remark = null;;
     private Map specials = new Hashtable();;
 
-    public SchemaPart(ConceptualFile file, String name) {
+    public SchemaPart(CSCFile file, String name) {
         this.file = file;
         this.name = name;
     }
     
-    public ConceptualFile getFile() {
+    public CSCFile getFile() {
     	return file;
     }
 

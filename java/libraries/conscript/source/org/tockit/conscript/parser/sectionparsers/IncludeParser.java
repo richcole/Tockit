@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.logging.Level;
 
-import org.tockit.conscript.model.ConceptualFile;
+import org.tockit.conscript.model.CSCFile;
 import org.tockit.conscript.parser.CSCParser;
 import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
@@ -24,20 +24,20 @@ class IncludeParser extends CSCFileSectionParser {
 		return "#INCLUDE";
 	}
 
-	public void parse(CSCTokenizer tokenizer, ConceptualFile targetFile) throws IOException, DataFormatException {
+	public void parse(CSCTokenizer tokenizer, CSCFile file) throws IOException, DataFormatException {
         String includeLocation = tokenizer.popCurrentToken();
-        tokenizer.consumeToken(";", targetFile);
-        URL includeURL = new URL(targetFile.getFile(), includeLocation);
+        tokenizer.consumeToken(";", file);
+        URL includeURL = new URL(file.getLocation(), includeLocation);
         CSCParser.logger.log(Level.FINER, "Including URL: '" + includeURL + "'");
-		ConceptualFile includeFile = null;
+		CSCFile includeFile = null;
         try {
-            includeFile = CSCParser.importCSCFile(includeURL);
+            includeFile = CSCParser.importCSCFile(includeURL, file);
         } catch (FileNotFoundException e) {
             for (int i = 0; i < INCLUDE_DIRS.length; i++) {
                 String dir = INCLUDE_DIRS[i];
-                includeURL = new URL(targetFile.getFile(), dir + "/" + includeLocation);
+                includeURL = new URL(file.getLocation(), dir + "/" + includeLocation);
                 try {
-                    includeFile = CSCParser.importCSCFile(includeURL);
+                    includeFile = CSCParser.importCSCFile(includeURL, file);
                     break;
                 } catch (FileNotFoundException e2) {
                     // ignore. next
@@ -46,13 +46,13 @@ class IncludeParser extends CSCFileSectionParser {
         }
         if(includeFile == null) {
             throw new DataFormatException("Can not find include file '" + includeLocation +
-                                          "' referenced from file '" + targetFile.getFile() +"'");
+                                          "' referenced from file '" + file.getLocation() +"'");
         }
-        merge(targetFile, includeFile);
+        merge(file, includeFile);
 	}
 
-    private void merge(ConceptualFile targetFile, ConceptualFile includeFile) {
+    private void merge(CSCFile targetFile, CSCFile includeFile) {
         // @todo should merge here
-        System.out.println("to merge:\n" + includeFile.getFile());
+        System.out.println("to merge:\n" + includeFile.getLocation());
     }
 }
