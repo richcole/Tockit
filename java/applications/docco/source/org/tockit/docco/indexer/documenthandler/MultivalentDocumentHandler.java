@@ -149,8 +149,10 @@ public class MultivalentDocumentHandler implements DocumentHandler {
 		  }
 
 	  } else { 
-	  	  //assert 
-	  	  n.isStruct();
+		  //assert(n.isStruct());
+	  	  if (! n.isStruct()) {
+	  	  	throw new RuntimeException("Assertion failure");
+	  	  }
 		  INode p = (INode)n;
 		  for (int i=0,imax=p.size(); i<imax; i++) {
 			  extractBody(p.childAt(i), sb);
