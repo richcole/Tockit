@@ -1,2 +1,1 @@
 org.tockit.docco.documenthandler.MultivalentDocumentHandler
-org.tockit.docco.documenthandler.PdfMultivalentDocumentHandler
