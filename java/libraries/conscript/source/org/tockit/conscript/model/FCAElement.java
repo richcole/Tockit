@@ -29,4 +29,9 @@ public abstract class FCAElement {
     public FormattedString getDescription() {
         return this.label;
     }
+    
+    public String toString() {
+        return "" + this.point.getNumber() + " " + 
+               this.identifier + " " + this.label;
+    }
 }

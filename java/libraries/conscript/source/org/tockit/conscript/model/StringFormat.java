@@ -15,7 +15,6 @@ import java.util.logging.Level;
 import org.tockit.conscript.parser.CSCParser;
 
 public class StringFormat {
-
 	public static final class HorizontalAlign {
 		protected HorizontalAlign() {}
         public static HorizontalAlign getAlign(char id) {
@@ -105,7 +104,9 @@ public class StringFormat {
 
         nextSplit = extractFormattingStringSegment(formattingString);
         String fontSizeString = nextSplit[0];
-        this.fontSize = new TypedSize(fontSizeString);
+        if(fontSizeString.length() != 0) {
+            this.fontSize = new TypedSize(fontSizeString);
+        }
         formattingString = nextSplit[1];
 
         nextSplit = extractFormattingStringSegment(formattingString);
@@ -251,7 +252,7 @@ public class StringFormat {
 	}
 	
     public String toString() {
-        StringBuffer retVal = new StringBuffer();
+        StringBuffer retVal = new StringBuffer("\"");
         if(this.fontFamily != null) {
             retVal.append(this.fontFamily);
         }
@@ -306,6 +307,7 @@ public class StringFormat {
         if(this.clipbox != null) {
             retVal.append("(" + this.clipbox.getWidth() + "," + this.clipbox.getHeight() + ")");
         }
+        retVal.append("\"");
         return retVal.toString();
     }
 }

@@ -10,6 +10,7 @@ package org.tockit.conscript.model;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 public class LineDiagram extends ConscriptStructure{
@@ -74,9 +75,35 @@ public class LineDiagram extends ConscriptStructure{
 
     public void printCSC(PrintStream stream) {
         printTitleRemarkSpecials(stream);
-        stream.println("\t\tTODO");
-        stream.println("\t\tTODO");
-        stream.println("\t\tTODO");
+        if(this.unitLength != null) {
+            stream.println("\t\tUNITLENGTH " + this.unitLength);
+        }
+        stream.println("\t\tPOINTS");
+        for (Iterator iter = this.points.iterator(); iter.hasNext();) {
+            Point point = (Point) iter.next();
+            stream.println("\t\t\t" + point.toString());
+        }
+        stream.println("\t\tLINES");
+        for (Iterator iter = this.lines.iterator(); iter.hasNext();) {
+            Line line = (Line) iter.next();
+            stream.println("\t\t\t" + line.toString());
+        }
+        stream.println("\t\tOBJECTS");
+        for (Iterator iter = this.objects.iterator(); iter.hasNext();) {
+            FCAObject object = (FCAObject) iter.next();
+            stream.println("\t\t\t" + object.toString());
+        }
+        stream.println("\t\tATTRIBUTES");
+        for (Iterator iter = this.attributes.iterator(); iter.hasNext();) {
+            FCAAttribute attribute = (FCAAttribute) iter.next();
+            stream.println("\t\t\t" + attribute.toString());
+        }
+        stream.println("\t\tCONCEPTS");
+        for (Iterator iter = this.concepts.iterator(); iter.hasNext();) {
+            Concept concept = (Concept) iter.next();
+            stream.println("\t\t\t" + concept.toString());
+        }
+        stream.println("\t\t;");
     }
 
 }

@@ -37,4 +37,7 @@ public class TypedSize {
 		this.value = value;
 	}
 
+    public String toString() {
+        return "" + this.value + " " + this.type;
+    }
 }

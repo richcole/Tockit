@@ -33,7 +33,7 @@ public class FormattedString {
 	}
 
     public String toString() {
-        String retVal = "\"" + this.content + "\"";
+        String retVal = "\"" + this.content + "\" ";
         if(this.format != null) {
             retVal += this.format.toString();
         }
