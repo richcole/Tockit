@@ -496,8 +496,7 @@ public class DoccoMainFrame extends JFrame {
     
     private void createNewIndex(){
 		try {
-			File indexFile = new File(this.indexLocation);
-			if(indexFile.canRead()) {
+			if(IndexReader.indexExists(this.indexLocation)) {
 				int result = JOptionPane.showConfirmDialog(this, "This will delete the existing index. Continue?", "Delete Index?",
 				                                           JOptionPane.OK_CANCEL_OPTION);
 				if(result != JOptionPane.OK_OPTION) {
@@ -505,7 +504,6 @@ public class DoccoMainFrame extends JFrame {
 				}
 				
 				this.indexThread.stopIndexing();
-				indexFile.delete();
 			}
 			
 			this.indexThread.stopIndexing();
@@ -524,6 +522,8 @@ public class DoccoMainFrame extends JFrame {
 		createQueryEngine();
 		
 		addFilesIntoIndex();
+		
+		this.diagramView.showDiagram(null);
     }
 
     private void addFilesIntoIndex() {
