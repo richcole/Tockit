@@ -3,13 +3,15 @@ class TestSarl
 {
   static {
     try {
-      System.loadLibrary("sarl");
+      System.loadLibrary("sarlmodule");
     } catch (UnsatisfiedLinkError e) {
       System.err.println(
           "Native code library failed to load. See "
           + "the chapter on Dynamic Linking Problems "
           + "in the SWIG Java documentation for help.\n" + e
       );
+      System.err.println("java.library.path=" 
+         + System.getProperty("java.library.path"));
       System.exit(1);
     }
   }

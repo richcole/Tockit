@@ -15,7 +15,7 @@ struct Sarl_Pair_less
 
 struct Sarl_Relation
 {
-  RefCount m_ref_count;
+  Sarl_RefCount m_ref_count;
 
   typedef std::set<Sarl_Pair,Sarl_Pair_less> Sarl_RelationImpl;
 

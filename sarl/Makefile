@@ -13,7 +13,7 @@ OBJECTS = \
   union_set_iterator \
   set_minus_set_iterator \
   join_relation_iterator \
-  ref_count
+  ref_count 
 
 TESTS = \
   test_set \
@@ -31,8 +31,24 @@ PUBLIC_HEADERS = \
   relation.h \
   relation_iterator.h 
 
-target: python/sarlcmodule.so java/libsarl.so
-libs: lib lib_d lib_d/libsarl.so lib/libsarl.so lib_d/libsarl++.so lib/libsarl++.so
+JAVA_INC   = \
+  /usr/java/j2sdk1.4.0/include \
+  /usr/java/j2sdk1.4.0/include/linux
+
+PYTHON_INC = \
+  /usr/include/python1.5/
+
+SWIG_INC = \
+  /usr/local/include
+
+CLASSES = \
+  Set \
+  SetIterator \
+  Relation \
+  RelationIterator
+
+target: python/sarlcmodule.so java/libsarlmodule.so
+libs: lib_d/libsarl.so lib_d/libsarl.so
 
 test: target test_base test_python test_java test_cpp
 
@@ -45,7 +61,7 @@ python/sarlcmodule.so: libs $(OBJECTS:%=%.o) python/sarl_wrap.o
 	$(CC) $(DEBUG) -shared -o $@ $(OBJECTS:%=%.o) python/sarl_wrap.o \
          -Llib_d -lstdc++ -lsarl++ -lsarl
 
-java/libsarl.so: $(OBJECTS:%=%.o) java/sarl_wrap.o libs
+java/libsarlmodule.so: $(OBJECTS:%=%.o) java/sarl_wrap.o libs
 	$(CC) $(DEBUG) -shared -o $@ $(OBJECTS:%=%.o) java/sarl_wrap.o \
           -Llib_d -lstdc++ -lsarl++ -lsarl
 
@@ -70,6 +86,9 @@ lib_d/libsarl++.so: lib_d
 %.exe: %.o
 	$(CCC) $(DEBUG) -I../ -o $@ $^ -lstdc++ -Llib_d -lsarl
 
+java/%.class: java/%.java
+	cd java; $(JAVAC) ../$<
+
 python/sarl_wrap.o: python/sarl_wrap.c
 	$(CCC) -c -I../ -DSARL_NATIVE $(SWIG_INC:%=-I%) $(PYTHON_INC:%=-I%) \
           -o $@ $^
@@ -90,21 +109,23 @@ java/sarl_wrap.c: $(PUBLIC_HEADERS) sarl.input
 java/TestSarl.class: java/TestSarl.java
 	cd java; javac TestSarl.java
 
-test_java: java/TestSarl.class
+test_java: java/TestSarl.class $(CLASSES:%=java/%.class)
 	LD_LIBRARY_PATH=.:`pwd`/lib_d:$$LD_LIBRARY_PATH; \
 	cd java; java TestSarl
 
 test_cpp: 
 	cd cpp; make test
 
-clean: 
+clean: java_clean
 	rm -f python/*.pyc python/sarl_wrap.* python/*.so
 	rm -f java/*.class java/SetIterator.java java/Set.java java/*.so
 	rm -f java/sarl_wrap.*
 	rm -f *.o *.so *.exe depend.mak.bak
 
 java_clean:
-	rm -f java/*.class java/sarl.java java/*Iterator.java java/Set*.java
+	rm -f java/sarl_wrap.* 
+	rm -f java/*.class java/sarl.java 
+	rm -f java/*Iterator.java java/Set*.java java/Relation*.java
 
 depend:
 	makedepend -Y../ *.cpp -fdepend.mak 

@@ -16,7 +16,7 @@ struct Sarl_RelationIteratorFunctionTable {
 
 struct Sarl_RelationIterator
 {
-  RefCount m_ref_count;
+  Sarl_RefCount m_ref_count;
   Sarl_RelationIteratorFunctionTable *mp_funcs;
 };
 

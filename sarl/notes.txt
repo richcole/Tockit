@@ -27,3 +27,14 @@ The current design doesn't well accomodate either (i) forming an
 intent that changes when the set A from which it was formed changes,
 or (ii) constructing a vector like construct, i.e. one whose elements
 are addressible via integers.
+
+Higher Order Relations
+----------------------
+
+The sarl library should not attempt to represent relations of arity
+greater than 3. The reason is that the number of permutations given
+arity n is n! which is 6 for n=3, 2 for n=2, and 24 for n = 4.
+
+Most of formal concept analysis is defined with repsect to binary
+relations, although triadic contexts have been defined and use to some
+extent. The PIG graphs also makes use of a single triadic relation. 

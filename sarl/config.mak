@@ -1,4 +1,5 @@
 CCC   = g++
+JAVAC = javac
 DEBUG = -ggdb 
 
 JAVA_INC   = \

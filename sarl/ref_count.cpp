@@ -1,3 +1,3 @@
 #include <sarl/ref_count.h>
 
-struct RefCounter s_refCounter;
+struct Sarl_RefCounter s_refCounter;

@@ -15,7 +15,7 @@ struct Sarl_SetIteratorFunctionTable {
 
 struct Sarl_SetIterator
 {
-  RefCount m_ref_count;
+  Sarl_RefCount m_ref_count;
   Sarl_SetIteratorFunctionTable *mp_funcs;
 };
 

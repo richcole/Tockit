@@ -4,13 +4,13 @@
 #include <stdio.h>  // fprintf()
 #include <stdlib.h> // exit()
 
-struct RefCount {
+struct Sarl_RefCount {
   size_t count;
 };
 
-struct RefCounter {
-  RefCounter() { this->count = 0; };
-  ~RefCounter() { 
+struct Sarl_RefCounter {
+  Sarl_RefCounter() { this->count = 0; };
+  ~Sarl_RefCounter() { 
     if ( this->count != 0 ) {
 			fprintf(stderr, __FILE__ "(%d):\n", __LINE__);
       fprintf(stderr, "  Error, Reference Count=%d\n", this->count);
@@ -20,9 +20,9 @@ struct RefCounter {
   int count;
 };
 
-extern struct RefCounter s_refCounter;
+extern struct Sarl_RefCounter s_refCounter;
 
-inline void sarl_ref_count_init(struct RefCount* ref_count)
+inline void sarl_ref_count_init(struct Sarl_RefCount* ref_count)
 {
   ref_count->count = 1;
   s_refCounter.count++;
@@ -32,7 +32,7 @@ inline void sarl_ref_count_init(struct RefCount* ref_count)
 #endif
 }
 
-inline void sarl_ref_count_incr(struct RefCount* ref_count)
+inline void sarl_ref_count_incr(struct Sarl_RefCount* ref_count)
 {
   ref_count->count++;
   s_refCounter.count++;
@@ -42,7 +42,7 @@ inline void sarl_ref_count_incr(struct RefCount* ref_count)
 #endif
 }
 
-inline bool sarl_ref_count_decr(struct RefCount* ref_count)
+inline bool sarl_ref_count_decr(struct Sarl_RefCount* ref_count)
 {
   --ref_count->count;
   --s_refCounter.count;
