@@ -18,8 +18,8 @@ import java.util.List;
 
 import org.tockit.docco.indexer.DocumentContent;
 import org.tockit.docco.indexer.DocumentSummary;
-import org.tockit.docco.indexer.documenthandler.DocumentHandler;
-import org.tockit.docco.indexer.documenthandler.DocumentHandlerException;
+import org.tockit.docco.documenthandler.DocumentHandler;
+import org.tockit.docco.documenthandler.DocumentHandlerException;
 
 import phelps.lang.Integers;
 import phelps.net.CachedInputStream;
