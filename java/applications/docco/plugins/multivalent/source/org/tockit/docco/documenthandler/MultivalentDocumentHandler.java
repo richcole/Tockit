@@ -21,8 +21,6 @@ import java.util.List;
 import org.tockit.docco.filefilter.DoccoFileFilter;
 import org.tockit.docco.filefilter.ExtensionFileFilterFactory;
 import org.tockit.docco.indexer.DocumentSummary;
-import org.tockit.docco.documenthandler.DocumentHandler;
-import org.tockit.docco.documenthandler.DocumentHandlerException;
 import org.tockit.plugin.Plugin;
 
 import phelps.lang.Integers;
@@ -79,31 +77,30 @@ public class MultivalentDocumentHandler implements DocumentHandler, Plugin {
 		String mimeType = null;
 		
 		Document doc = new Document("top", null, null);
-		Cache cache = Multivalent.getInstance().getCache();
-		String genre = cache.getGenre(mimeType, url.toString(), null);
-		if ("RawImage".equals(genre) || genre == "ASCII"/*null*/) return null;  // defaulted to intern()'ed ASCII
-
-		// media adaptors are obligated to perform outside of a browser context too
-		MediaAdaptor mediaAdapter = (MediaAdaptor)Behavior.getInstance(genre, genre, null, null, null);
-		
-		File infile = null;
 		try {
-			// @todo do we really need uri? 
-			URI uri = new URI(url.toString());
-			if (uri.getScheme().equals("file")) {
-				infile = new File(uri);
+			Cache cache = Multivalent.getInstance().getCache();
+			String genre = cache.getGenre(mimeType, url.toString(), null);
+			if ("RawImage".equals(genre) || genre == "ASCII"/*null*/) return null;  // defaulted to intern()'ed ASCII
+	
+			// media adaptors are obligated to perform outside of a browser context too
+			MediaAdaptor mediaAdapter = (MediaAdaptor)Behavior.getInstance(genre, genre, null, null, null);
+			
+			File infile = null;
+			try {
+				// @todo do we really need uri? 
+				URI uri = new URI(url.toString());
+				if (uri.getScheme().equals("file")) {
+					infile = new File(uri);
+				}
+				mediaAdapter.docURI = uri;
 			}
-			mediaAdapter.docURI = uri;
-		}
-		catch (URISyntaxException e) {
-		}
+			catch (URISyntaxException e) {
+			}
+	
+			InputStream is = new CachedInputStream(url.openStream(), infile, null);
+			mediaAdapter.setInputStream(is);
+			mediaAdapter.setHints(MediaAdaptor.HINT_NO_IMAGE | MediaAdaptor.HINT_NO_SHAPE | MediaAdaptor.HINT_EXACT | MediaAdaptor.HINT_NO_TRANSCLUSIONS);    // only want text
 
-		InputStream is = new CachedInputStream(url.openStream(), infile, null);
-		mediaAdapter.setInputStream(is);
-		mediaAdapter.setHints(MediaAdaptor.HINT_NO_IMAGE | MediaAdaptor.HINT_NO_SHAPE | MediaAdaptor.HINT_EXACT | MediaAdaptor.HINT_NO_TRANSCLUSIONS);    // only want text
-
-		
-		try {
 			mediaAdapter.parse(doc);
 
 			if (doc.getAttr("author") != null) {
@@ -187,6 +184,7 @@ public class MultivalentDocumentHandler implements DocumentHandler, Plugin {
 	
 	public void load() {
 		DocumentHandlerRegistry.registerDocumentHandler(this);
+		Multivalent.getInstance(this.getClass().getClassLoader());
 	}
 
 	public DoccoFileFilter getDefaultFilter() {
