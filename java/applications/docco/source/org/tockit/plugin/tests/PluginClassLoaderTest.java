@@ -5,7 +5,7 @@
  *
  * $Id$
  */
-package org.tockit.plugin;
+package org.tockit.plugin.tests;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.tockit.docco.indexer.documenthandler.DocumentHandler;
+import org.tockit.plugin.PluginClassLoader;
 
 import junit.framework.TestCase;
 
@@ -22,6 +23,10 @@ public class PluginClassLoaderTest extends TestCase {
 
 	private PluginClassLoader classLoader;
 	
+	/**
+	 * @todo all tests rely on hardcoded values. Change to something
+	 * more dynamic. 
+	 */
 	public PluginClassLoaderTest(String name) {
 		super(name);
 		String pluginsDirLoc1 = System.getProperty("user.dir") 
