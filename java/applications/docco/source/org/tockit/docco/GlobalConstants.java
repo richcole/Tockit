@@ -15,9 +15,6 @@ public class GlobalConstants {
 										System.getProperty("file.separator") + 
 										".doccoIndex" + 
 										System.getProperty("file.separator");	
-//	private static final String DEFAULT_INDEX_NAME = "default";
-//
-//	public static final String DEFAULT_INDEX_LOCATION = INDEX_DIR + System.getProperty("file.separator") + DEFAULT_INDEX_NAME;
 	public static final Analyzer DEFAULT_ANALYZER = new StandardAnalyzer();
 	
 	public static final String FIELD_QUERY_BODY = "body";
@@ -40,4 +37,25 @@ public class GlobalConstants {
 	 * help too much since they are not allowed at the beginning.
 	 */
 	public static final String FIELD_DOC_PATH_WORDS = "path_words";
+	
+	/**
+	 * @todo
+	 * Not sure where these settings should be kept... It would be good to load them 
+	 * dynamically somehow (check for implementators of DoccoFileFilter?).
+	 */
+	public static final String[] FILE_FILTER_IMPLEMENTAIONS = {
+										"org.tockit.docco.indexer.filefilter.FileExtensionFileFilter",
+										"org.tockit.docco.indexer.filefilter.RegularExpressionExtensionFileFilter"}; 
+	/**
+	 * @todo see todo above, the same applies to document handler implementations
+	 */
+	public static final String[] DOC_HANDLER_IMPLEMENTATIONS = {
+										"org.tockit.docco.indexer.documenthandler.HtmlDocumentHandler",
+										"org.tockit.docco.indexer.documenthandler.MSExcelDocHandler",
+										"org.tockit.docco.indexer.documenthandler.MSWordHandler",
+										"org.tockit.docco.indexer.documenthandler.MultivalentDocumentHandler",
+										"org.tockit.docco.indexer.documenthandler.PdfDocumentHandler",
+										"org.tockit.docco.indexer.documenthandler.PdfMultivalentDocumentHandler",
+										"org.tockit.docco.indexer.documenthandler.PlainTextDocumentHandler"
+										};
 }
