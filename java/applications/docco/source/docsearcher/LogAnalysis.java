@@ -330,7 +330,7 @@ public class LogAnalysis
             else
             {
                 // show the results 
-                String analysisFile = Utils.addFolder(ds.workingDir, "search_log_analysis.txt");
+                String analysisFile = Utils.addFolder(DocSearch.workingDir, "search_log_analysis.txt");
                 ds.saveFile(analysisFile, outputBuf);
                 ds.curPage = "report";
                 ds.doExternal(analysisFile);

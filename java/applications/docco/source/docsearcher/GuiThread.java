@@ -1,6 +1,5 @@
 package docsearcher;
 
-import java.io.*;
 
 public class GuiThread implements Runnable {
 String actionString="";

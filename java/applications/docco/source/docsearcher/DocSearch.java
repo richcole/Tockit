@@ -41,7 +41,8 @@ public class DocSearch
     final static String[] fileTypesToGet =
     { "htm", "sxc sxd sxi sxp sxw", "doc xls", "rtf", "pdf", "txt", "java" };
     final static String fileString = "file:///";
-    final static String userHome = System.getProperty("user.home");
+    //final static String userHome = System.getProperty("user.home");
+	final static String userHome = System.getProperty("user.dir");
     final public static String pathSep = System.getProperty("file.separator");
     final static String searchTips = Messages.getString("DocSearch.searchTips");
     final static String aboutString =
@@ -70,9 +71,9 @@ public class DocSearch
     String currentIndex = "";
     String defaultSaveFolder = "";
     String[] startA = { "" };
-    public String workingDir = Utils.addFolder(userHome, ".docSearcher");
+    public static String workingDir = Utils.addFolder(userHome, ".docSearcher");
     String indexFile = Utils.addFolder(workingDir, "index_list.htm");
-    String indexDir = Utils.addFolder(workingDir, "indexes");
+    public static String indexDir = Utils.addFolder(workingDir, "indexes");
     String iconsDir = Utils.addFolder(userHome, "icons");
     String bookmarksFile = Utils.addFolder(workingDir, "bookmarks.htm");
     String blankFile = "";
@@ -95,7 +96,7 @@ public class DocSearch
         Utils.addFolder(workingDir, "temp_oo_meta_file.xml");
     public String ooTextOnlyFile =
         Utils.addFolder(workingDir, "temp_oo_text_file.txt");
-    public String archiveDir = Utils.addFolder(workingDir, "archives");
+    private String archiveDir = Utils.addFolder(workingDir, "archives");
     public String contentDir = Utils.addFolder(startDir, "content");
 
     // GUI items

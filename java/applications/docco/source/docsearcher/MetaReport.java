@@ -93,7 +93,7 @@ public class MetaReport
 
             // initialize our filewriter, printwriter, and stagingfile
             String stagingFileName =
-                Utils.addFolder(ds.workingDir, "meta_data_staging_file.htm");
+                Utils.addFolder(DocSearch.workingDir, "meta_data_staging_file.htm");
             File stageingFile = new File(stagingFileName);
             FileWriter filewriter = new FileWriter(stageingFile);
             PrintWriter pw = new PrintWriter(filewriter);
@@ -249,7 +249,7 @@ public class MetaReport
 
             // now write the summary
             String headerFileName =
-                Utils.addFolder(ds.workingDir, "meta_data_header.htm");
+                Utils.addFolder(DocSearch.workingDir, "meta_data_header.htm");
             File headerFile = new File(headerFileName);
             FileWriter hwriter = new FileWriter(headerFile);
             PrintWriter hw = new PrintWriter(hwriter);
@@ -301,7 +301,7 @@ public class MetaReport
 
                 //  temporary storage
                 String tempFile =
-                    Utils.addFolder(ds.workingDir, "temp_copy.txt");
+                    Utils.addFolder(DocSearch.workingDir, "temp_copy.txt");
                 File tempFi = new File(tempFile);
                 FileOutputStream fo = new FileOutputStream(tempFi);
 

@@ -239,7 +239,7 @@ public class MetaDialog
             setLocation(newX, newY);
         }
 
-        reportField.setText(Utils.addFolder(monitor.workingDir,
+        reportField.setText(Utils.addFolder(DocSearch.workingDir,
                                             "meta_rpt_file.htm"));
         authField.setText(System.getProperty("user.name"));
         dateField.setText("730");

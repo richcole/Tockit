@@ -55,70 +55,122 @@
  */
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Iterator;
 
-import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.search.Searcher;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.Hits;
-import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.queryParser.ParseException;
+
+import query.HitReference;
+import query.HitReferencesSet;
+import query.QueryEngine;
+
+import docsearcher.DocSearch;
 
 class SearchFiles {
-  public static void main(String[] args) {
-    try {
-      Searcher searcher = new IndexSearcher("index1");
-//	  Searcher searcher = new IndexSearcher("file://c:/Documents and Settings/nataliya/.docSearcher/indexes/docSearchTest");
-      Analyzer analyzer = new StandardAnalyzer();
-
-      BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-      while (true) {
-	System.out.print("Query: ");
-	String line = in.readLine();
-
-	if (line.length() == -1)
-	  break;
-
-	Query query = QueryParser.parse(line, "contents", analyzer);
-	System.out.println("Searching for: " + query.toString("contents"));
-
-	Hits hits = searcher.search(query);
-	System.out.println(hits.length() + " total matching documents");
-
-	final int HITS_PER_PAGE = 10;
-	for (int start = 0; start < hits.length(); start += HITS_PER_PAGE) {
-	  int end = Math.min(hits.length(), start + HITS_PER_PAGE);
-	  for (int i = start; i < end; i++) {
-	    Document doc = hits.doc(i);
-	    String path = doc.get("path");
-	    if (path != null) {
-              System.out.println(i + ". " + path);
-	    } else {
-              String url = doc.get("url");
-	      if (url != null) {
-		System.out.println(i + ". " + url);
-		System.out.println("   - " + doc.get("title"));
-	      } else {
-		System.out.println(i + ". " + "No path nor URL for this document");
-	      }
-	    }
-	  }
-
-	  if (hits.length() > end) {
-	    System.out.print("more (y/n) ? ");
-	    line = in.readLine();
-	    if (line.length() == 0 || line.charAt(0) == 'n')
-	      break;
-	  }
+	private String indexLocation = DocSearch.indexDir + "/test";
+	private String defaultQueryField = "body";
+	private QueryEngine queryEngine;
+	
+	public SearchFiles()  throws IOException {
+		this.queryEngine = new QueryEngine(this.indexLocation, this.defaultQueryField, new StandardAnalyzer());
 	}
-      }
-      searcher.close();
+	
+	public HitReferencesSet query (String queryString) throws IOException, ParseException{
+		return queryEngine.executeQuery(queryString);
+	}
+	
+	public void stop() throws IOException {
+		this.queryEngine.finishQueries();
+	}
+	
+  
+	public static void printResults(HitReferencesSet hits) throws IOException {
+		System.out.println(hits.size() + " total matching documents");
+		
+		Iterator it = hits.iterator();
+		int count = 1;
+		while (it.hasNext()) {
+			HitReference hitRef = (HitReference) it.next();
+			String path = hitRef.getDocument().get("path");
+			if (path != null) {
+				  System.out.println(count + ". " + path);
+			} else {
+			  String url = hitRef.getDocument().get("url");
+			  if (url != null) {
+				System.out.println(count + ". " + url);
+				System.out.println("   - " + hitRef.getDocument().get("title"));
+			  } else {
+				System.out.println(count + ". " + "No path nor URL for this document");
+			  }
+			}
+			System.out.println("\tscore: " + hitRef.getScore());
+			count++;	
+		}	
+	}
+	
+	public void repetativeQuery () throws IOException, ParseException {
+		BufferedReader in =
+			new BufferedReader(new InputStreamReader(System.in));
+		
+		while (true) {
+			System.out.print("Query: ");
+			String line = in.readLine();
+				
+			if (line.length() == -1)
+				break;
+	
+			queryEngine.breakQueryIntoTerms(line);
+			
+			//HitReferencesSet hits =	query(line);
+			//printResults(hits);
+		}
+		stop();
+	}
+	
+	public void singleQuery ()  throws IOException, ParseException {
+		BufferedReader in =
+			new BufferedReader(new InputStreamReader(System.in));
+		
+		System.out.print("Query: ");
+		String line = in.readLine();
+			
+		if (line.length() == -1)
+			return;
 
-    } catch (Exception e) {
-      System.out.println(" caught a " + e.getClass() +
-			 "\n with message: " + e.getMessage());
-    }
-  }
+		HitReferencesSet hits =	query(line);
+		//printResults(hits);
+
+		stop();
+	}
+
+	public static void main (String[] args) {
+		boolean repeatQuery = false;
+		if (args.length > 0) {
+			if (args[0].equals("repeatQuery")) {
+				repeatQuery = true;
+			}
+			if ((args[0].equals("help")) || (args[0].equals("?")) ) {
+				System.out.println("SearchFiles [repeatQuery | help | ? ]");
+				System.exit(0);
+			}
+		}
+
+		try {
+			SearchFiles sf = new SearchFiles();
+			if (repeatQuery) {
+				sf.repetativeQuery();
+			}
+			else {
+				sf.singleQuery();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(
+				" caught a " + e.getClass() + "\n with message: " + e.getMessage());
+		}
+	}
+
 }
