@@ -7,6 +7,7 @@
  */
 package org.tockit.cgs.model;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -84,22 +85,32 @@ public class ConceptualGraph {
 
     public void remove(Node node) {
         List nodeChildren = this.element.getChildren("node");
+        List toRemove = new ArrayList();
         for (Iterator iterator = nodeChildren.iterator(); iterator.hasNext();) {
             Element element = (Element) iterator.next();
             if(element.getAttributeValue("id").equals(node.getId())) {
-                element.detach();
+                toRemove.add(element);
             }
+        }
+        for (Iterator it = toRemove.iterator(); it.hasNext();) {
+            Element element = (Element) it.next();
+            element.detach();
         }
         ///@todo recurse into descriptors
     }
 
     public void remove(Link link) {
         List linkChildren = this.element.getChildren("link");
+        List toRemove = new ArrayList();
         for (Iterator iterator = linkChildren.iterator(); iterator.hasNext();) {
             Element element = (Element) iterator.next();
             if(element.getAttributeValue("id").equals(link.getId())) {
-                element.detach();
+                toRemove.add(element);
             }
+        }
+        for (Iterator it = toRemove.iterator(); it.hasNext();) {
+            Element element = (Element) it.next();
+            element.detach();
         }
         ///@todo recurse into descriptors
     }
