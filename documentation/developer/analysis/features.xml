@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features>
+
+	<section name="Data Sources">
+	        <description>
+	                Features that impact the way the main data (without scales etc.) can be accessed.
+	        </description>
+		<feature name="ODBC connection">
+			<implementation app="Toscana2"/>
+			<implementation app="Toscana3"/>
+			<description>
+				Connect to databases using ODBC.
+			</description>
+		</feature>
+		<feature name="JDBC connection">
+		        <description>
+		                Connect to databases using JDBC.
+		        </description>
+		</feature>
+		<feature name="Proprietary relational database">
+		        <description>
+		                Data is accessed using a proprietary API for relational DBs.
+		        </description>
+		</feature>
+		<feature name="Proprietary OODB">
+		        <description>
+		                Data is accessed using an object oriented database.
+		        </description>
+		</feature>
+		<feature name="Internal data storage">
+		        <implementation app="Cernato"/>
+		        <description>
+		                Data is stored in memory.
+		        </description>
+		</feature>
+		<feature name="Flat binary format">
+		        <implementation app="Cernato"/>
+		        <description>
+		                Data is saved as single binary file.
+		        </description>
+		</feature>
+		<feature name="Text file format (non-XML)">
+		        <implementation app="Anaconda"/>
+		        <description>
+                                Data is stored as set of files.		
+		        </description>
+		</feature>
+		<feature name="XML">
+		        <implementation app="Cernato"/>
+		        <description>
+		                Data is stored as XML file.
+		        </description>
+		</feature>
+	</section>
+	
+	<section name="Analysis data storage">
+	        <description>
+	                How is data for scaling purposes etc. stored?
+	        </description>
+		<feature name="ODBC connection">
+		        <description>
+		                Analysis data is stored in an ODBC database.
+		        </description>
+		</feature>
+		<feature name="JDBC connection">
+		        <description>
+		                Analysis data is stored in a JDBC database.
+		        </description>
+		</feature>
+		<feature name="Proprietary relational database">
+		        <description>
+		                Analysis data is stored using a proprietary database API for a RDBMS.
+		        </description>
+		</feature>
+		<feature name="Proprietary OODB">
+		        <description>
+		                Analysis data is stored using a proprietary database API for a OODBMS.
+		        </description>
+		</feature>
+		<feature name="Internal data storage">
+		        <implementation app="Cernato"/>
+		        <description>
+		                Analysis data is stored in memory.
+		        </description>
+		</feature>
+		<feature name="Flat binary format">
+		        <implementation app="Cernato"/>
+		        <description>
+		                Analysis data is saved as single binary file.
+		        </description>
+		</feature>
+		<feature name="Text file format (non-XML)">
+		        <implementation app="Anaconda"/>
+		        <description>
+                                Analysis data is stored as set of files.		
+		        </description>
+		</feature>
+		<feature name="XML">
+		        <implementation app="Cernato"/>
+		        <description>
+		                Analysis data is stored as XML file.
+		        </description>
+		</feature>
+		<feature name="Analysis data separated from main data">
+		        <implementation app="Toscana2"/>
+		        <implementation app="Toscana3"/>
+		        <description>
+		                The analysis data can be stored in different files/DBs than the main data.
+		        </description>
+		</feature>
+		<feature name="Analysis data combined with main data">
+		        <implementation app="Cernato"/>
+		        <description>
+		                The analysis data is stored in the same files/DBs as the main data.
+		        </description>
+		</feature>
+	</section>
+	
+	<section name="Diagram drawing">
+                <description>
+                        Layout algorithms and techniques.
+                </description>
+	</section>
+	
+	<section name="Diagram editing">
+                <description>
+                        How can a diagram be changes in the program.
+                </description>
+	</section>
+	
+	<section name="Analysis data editing">
+                <description>
+                        In which way can scales etc. be changed and created?
+                </description>
+	</section>
+	
+	<section name="Main data editing">
+                <description>
+                        In which way can the original data (the context(s)) be edited?
+                </description>
+	</section>
+
+        <section name="Help system">
+                <description>
+                        Which ways exist to help the user while using the program?
+                </description>
+        </section>
+		
+        <section name="Connections to external programs">
+                <description>
+                        Which external programs can be called/integrated and how?
+                </description>
+        </section>
+		
+        <section name="Import/Export">
+                <description>
+                        Which ways exist to import/export data to other systems?
+                </description>
+        </section>
+</features>
+		
+<!-- copy & paste templates
+
+        <section name="">
+                <description>
+                </description>
+        </section>
+		
+		<feature name="">
+		        <implementation app=""/>
+		        <description>
+		        </description>
+		</feature>
+		
+-->
