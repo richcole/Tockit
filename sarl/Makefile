@@ -37,16 +37,25 @@ CLASSES = \
   Relation \
   RelationIterator
 
-LD_LIBRARY_PATH = $(SARL_ROOT)/lib_d
+export LD_LIBRARY_PATH += $(SARL_ROOT)/lib_d
 
-target: python/sarlcmodule.so java/libsarlmodule.so
-libs: lib_d/libsarl.so lib_d/libsarl.so
+# Main.
 
-test: target test_base test_python test_java test_cpp
+main: python/sarlcmodule.so java/libsarlmodule.so
 
-test_base: $(TESTS:%=%.exe) 
-  export LD_LIBRARY_PATH=$(LD_LIBRARY_PATH); \
-	for x in $^ ; do echo $$x:; ./$$x || exit -1 ; done
+# Tests.
+
+test: test_base test_python test_java test_cpp
+
+test_base: $(TESTS) 
+.PHONY: test test_base test_java test_cpp
+.PHONY: $(TESTS)
+$(TESTS) : 
+	./$@.exe
+
+# Libs.
+
+libs: lib_d/libsarl.so lib_d/libsarl.so lib/libsarl++.so lib_d/libsarl++.so
 
 python/sarlcmodule.so: lib_d/libsarl.so lib_d/libsarl++.so \
         $(OBJECTS:%=%.o) python/sarl_wrap.o
@@ -65,10 +74,10 @@ lib/libsarl.so: $(OBJECTS:%=%.o) lib
 	$(CC) $(OPTIM) -shared -o $@ $(OBJECTS:%=%.o) -lstdc++
 
 lib/libsarl++.so: lib
-	cd cpp; make ../$@
+	$(MAKE) -C cpp ../$@
 
 lib_d/libsarl++.so: lib_d
-	cd cpp; make ../$@
+	$(MAKE) -C cpp ../$@
 
 %.o: %.cpp
 	$(CC) $(DEBUG) -c -I../ -o $@ $< 
@@ -90,7 +99,6 @@ python/sarl_wrap.c: $(PUBLIC_HEADERS) sarl.input
 	cd python; $(SWIG) -I.. -o sarl_wrap.c -c++ -shadow -python sarl.input 
 
 test_python: java/TestSarl.class
-  set LD_LIBRARY_PATH=$(LD_LIBRARY_PATH) ; \
 	cd python; $(PYTHON) test_sarl.py
 
 java/sarl_wrap.o: java/sarl_wrap.c
@@ -102,12 +110,11 @@ java/sarl_wrap.c: $(PUBLIC_HEADERS) sarl.input
 java/TestSarl.class: java/TestSarl.java
 	cd java; javac TestSarl.java
 
-test_java: java/TestSarl.class $(CLASSES:%=java/%.class)
-  set LD_LIBRARY_PATH=$(LD_LIBRARY_PATH) \
-	cd java; java TestSarl
+test_java: java/TestSarl.class $(CLASSES:%=java/%.class) java/libsarlmodule.so
+	cd java; java -Djava.library.path=. TestSarl
 
 test_cpp: 
-	cd cpp; make test
+	$(MAKE) -C cpp test
 
 clean: java_clean
 	rm -f python/*.pyc python/sarl_wrap.* python/*.so
