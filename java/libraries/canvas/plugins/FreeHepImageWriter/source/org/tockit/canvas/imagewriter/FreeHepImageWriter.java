@@ -154,6 +154,10 @@ public class FreeHepImageWriter implements ImageWriter {
 		GraphicFormatRegistry.registerType(new GraphicFormatPPM());
 		GraphicFormatRegistry.registerType(new GraphicFormatSWF());
 		GraphicFormatRegistry.registerType(new GraphicFormatSVG());
+		
+		// fix funny default orientation for Postscript in FreeHEP lib (v1.2.2)
+		Properties prop = PSGraphics2D.getDefaultProperties();
+		prop.setProperty(PSGraphics2D.ORIENTATION, PageConstants.PORTRAIT);
     }
 
     /**
