@@ -23,9 +23,7 @@ import java.awt.event.WindowEvent;
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -63,24 +61,17 @@ import javax.swing.tree.TreeSelectionModel;
 import net.sourceforge.toscanaj.controller.fca.ConceptInterpretationContext;
 import net.sourceforge.toscanaj.controller.fca.DiagramHistory;
 import net.sourceforge.toscanaj.controller.fca.DirectConceptInterpreter;
-import net.sourceforge.toscanaj.controller.ndimlayout.DefaultDimensionStrategy;
-import net.sourceforge.toscanaj.controller.ndimlayout.NDimLayoutOperations;
 import net.sourceforge.toscanaj.dbviewer.BrowserLauncher;
 import net.sourceforge.toscanaj.gui.dialog.ErrorDialog;
-import net.sourceforge.toscanaj.model.context.Attribute;
 import net.sourceforge.toscanaj.model.database.AggregateQuery;
 import net.sourceforge.toscanaj.model.diagram.Diagram2D;
 import net.sourceforge.toscanaj.model.diagram.DiagramNode;
-import net.sourceforge.toscanaj.model.diagram.LabelInfo;
-import net.sourceforge.toscanaj.model.diagram.SimpleLineDiagram;
-import net.sourceforge.toscanaj.model.diagram.WriteableDiagram2D;
 import net.sourceforge.toscanaj.model.lattice.Concept;
-import net.sourceforge.toscanaj.model.lattice.ConceptImplementation;
-import net.sourceforge.toscanaj.model.lattice.Lattice;
 import net.sourceforge.toscanaj.view.diagram.DiagramView;
 import net.sourceforge.toscanaj.view.diagram.LabelView;
 import net.sourceforge.toscanaj.view.diagram.NodeView;
 
+import org.apache.lucene.queryParser.ParseException;
 import org.tockit.canvas.CanvasBackground;
 import org.tockit.canvas.CanvasItem;
 import org.tockit.canvas.events.CanvasItemSelectedEvent;
@@ -90,22 +81,17 @@ import org.tockit.events.EventBrokerListener;
 
 
 import org.tockit.docco.GlobalConstants;
-import org.tockit.docco.events.QueryEvent;
-import org.tockit.docco.events.QueryFinishedEvent;
-import org.tockit.docco.handlers.QueryEventHandler;
+import org.tockit.docco.fca.DiagramGenerator;
 import org.tockit.docco.indexer.Indexer;
 import org.tockit.docco.query.HitReference;
 import org.tockit.docco.query.QueryDecomposer;
 import org.tockit.docco.query.QueryEngine;
-import org.tockit.docco.query.QueryWithResult;
-import org.tockit.docco.query.util.HitReferencesSet;
-import org.tockit.docco.query.util.HitReferencesSetImplementation;
 import org.tockit.docco.query.util.QueryWithResultSet;
 
 
 
 public class DoccoMainFrame extends JFrame {
-	private QueryEventHandler queryEventHandler;
+	private QueryEngine queryEngine;
     private static final int VISIBLE_TREE_DEPTH = 2;
     private DocumentDisplayPane documentDisplayPane;
     private JTree hitList;
@@ -116,188 +102,10 @@ public class DoccoMainFrame extends JFrame {
 
 	private DiagramView diagramView;
 	
-	private EventBroker eventBroker;
-	
 	int width = 900;
 	int height = 700;
 
 	private Concept selectedConcept;
-	/**
-	 * @todo the code in here implements a more general notion of creating a lattice
-	 * diagramm from a set of attribute/set pairs. This is not specific to Docco and
-	 * could be reused. In math terms it models the mapping:
-	 * 
-	 *   { (m, m') | m \in M } --> B(G,M,I) with 
-	 *                                G = \bigcup_{m \in M} m'
-	 *                                I = { (g,m) | g \in m' }
-	 */	
-	private class QueryFinishedEventHandler implements EventBrokerListener {
-		public void processEvent(Event event) {
-			QueryWithResultSet queryResultSet = (QueryWithResultSet) event.getSubject();
-			
-			Concept[] concepts = createConcepts(queryResultSet);
-
-			Diagram2D diagram;
-			if(showPhantomNodesCheckBox.isSelected()) {
-				Point2D[] baseVectors = createBase(queryResultSet);
-				diagram = createDiagram(concepts, baseVectors);
-			} else {
-				final Concept[] finalConcepts = reduceConceptsToRealizedOnes(concepts);
-				Lattice lattice = new Lattice(){
-					public Concept[] getConcepts() {
-	                    return finalConcepts;
-	                }
-	                public Concept getBottom() {
-                        return finalConcepts[finalConcepts.length-1];
-                    }
-					public Concept getTop() {
-                        return finalConcepts[0];
-                    }
-				};
-				diagram = NDimLayoutOperations.createDiagram(lattice,"Query results",new DefaultDimensionStrategy());
-			}
-			
-			diagramView.showDiagram(diagram);
-		}
-
-		/**
-		 * Note: this method has the side effect of changing the upsets and downsets
-		 * of the concepts involved. Not suited for reuse unless this is fixed.
-		 */
-        private Concept[] reduceConceptsToRealizedOnes(Concept[] concepts) {
-			List realizedConcepts = new ArrayList();
-
-			outerLoop: for (int i = 0; i < concepts.length; i++) {
-				Concept concept = concepts[i];
-				// we still assume the binary encoding of the intent in the concept numbering
-				for (int j = i + 1; j < concepts.length; j++) {
-					ConceptImplementation subconcept = (ConceptImplementation) concepts[j];
-					if( (i & j) != i ){
-						continue; // not a subconcept
-					}
-					if(concept.getExtentSize() == subconcept.getExtentSize()) { // not realized
-						// move attribute contingent down. We know there is an infimum on the
-						// set of concepts with the same extent, so that is ok.
-						Iterator it = concept.getAttributeContingentIterator();
-						while(it.hasNext()) {
-							Attribute attribute = (Attribute) it.next();
-							subconcept.addAttribute(attribute);
-						}
-						continue outerLoop;
-					}
-				}
-				realizedConcepts.add(concept);
-			}
-
-			for (Iterator it = realizedConcepts.iterator();it.hasNext();) {
-                ConceptImplementation concept = (ConceptImplementation) it.next();
-				concept.getUpset().retainAll(realizedConcepts);
-				concept.getDownset().retainAll(realizedConcepts);
-            }
-            
-            return (Concept[]) realizedConcepts.toArray(new Concept[realizedConcepts.size()]);
-        }
-
-        /**
-		 * Creates base vectors as described in Frank Vogt's book on page 61.
-		 * 
-		 * $w_m:=(2^i-2^{n-i-1},-2^i-2^{n-i-1})$ 
-		 * 
-		 * Slight changes: we use the CS coordinate system (i.e. inverted Y) and
-		 * we scale things a bit.
-		 */
-		public Point2D[] createBase(QueryWithResultSet queryResultSet) {
-			final double scalex = 30;
-			final double scaley = 15;
-			
-			int n = queryResultSet.size();
-			Point2D[] baseVectors = new Point2D[n];
-			for (int i = 0; i < baseVectors.length; i++) {
-				double x = (1<<i) - (1<<(n-i-1));
-				double y = (1<<i) + (1<<(n-i-1));
-				baseVectors[i] = new Point2D.Double(scalex * x, scaley * y);
-			}
-			return baseVectors;
-		}
-
-		public WriteableDiagram2D createDiagram(Concept[] concepts,	Point2D[] baseVectors) {
-			WriteableDiagram2D diagram = new SimpleLineDiagram();
-			DiagramNode[] nodes = new DiagramNode[concepts.length];
-			for (int i = 0; i < concepts.length; i++) {
-				double x = 0;
-				double y = 0;
-				for (int j = 0; j < baseVectors.length; j++) {
-					int currentBit = 1<<j;
-					if ((i & currentBit) == currentBit) {
-						x += baseVectors[j].getX();
-						y += baseVectors[j].getY();
-					}
-				}
-				Point2D pos = new Point2D.Double(x,y);
-				nodes[i] = new DiagramNode(diagram, String.valueOf(i), pos, concepts[i],
-													new LabelInfo(), new LabelInfo(), null);
-				diagram.addNode(nodes[i]);
-			}
-			
-			for (int i = 0; i < concepts.length - 1; i++) {
-				for (int j = 0; j < baseVectors.length; j++) {
-					int currentBit = 1<<j;
-					if( (i | currentBit ) != i ) {
-						diagram.addLine(nodes[i], nodes[i | currentBit]);
-					}
-				}
-			}
-			
-			return diagram;
-		}
-
-		public Concept[] createConcepts(QueryWithResultSet queryResultSet) {
-			HitReferencesSet allObjects = new HitReferencesSetImplementation();
-			for (Iterator iter = queryResultSet.iterator(); iter.hasNext();) {
-				QueryWithResult queryWithResult = (QueryWithResult) iter.next();
-				allObjects.addAll(queryWithResult.getResultSet());
-			}
-			
-			QueryWithResult[] queryResults = queryResultSet.toArray();
-			
-			int n = queryResultSet.size();
-			int numConcepts = 1<<n; // 2 to the power of n
-			
-			ConceptImplementation[] concepts = new ConceptImplementation[numConcepts];
-			for (int i = 0; i < concepts.length; i++) {
-				concepts[i] = new ConceptImplementation();
-			}
-			
-			for (int i = 0; i < concepts.length; i++) {
-				ConceptImplementation concept = concepts[i];
-				HitReferencesSet objectContingent = 
-							new HitReferencesSetImplementation(new HashSet(allObjects.toSet()));
-				for (int j = 0; j < n; j++) {
-					int currentBit = 1<<j;
-					if (i == currentBit) {
-						concept.addAttribute(new Attribute(queryResults[j].getLabel()));
-					}
-					HitReferencesSet currentHitReferences = queryResults[j].getResultSet();
-					if ((i & currentBit) == currentBit) {
-						objectContingent.retainAll(currentHitReferences);
-					} else {
-						objectContingent.removeAll(currentHitReferences);
-					}
-				}
-				for (Iterator iter = objectContingent.iterator(); iter.hasNext();) {
-					HitReference reference = (HitReference) iter.next();
-					concept.addObject(reference);
-				}
-				for( int j =0; j < numConcepts; j ++) {
-					if((i & j) == i) {
-						concepts[i].addSubConcept(concepts[j]);
-						concepts[j].addSuperConcept(concepts[i]);
-					}
-				}
-			}
-			return concepts;
-		}
-	}	
 	
 	private class SelectionEventHandler implements EventBrokerListener {
 		public void processEvent(Event event) {
@@ -453,12 +261,7 @@ public class DoccoMainFrame extends JFrame {
 
 	public DoccoMainFrame() {
 		super("Docco");
-		this.eventBroker = new EventBroker();
 		
-		this.eventBroker.subscribe(new QueryFinishedEventHandler(), 
-									QueryFinishedEvent.class, 
-									QueryWithResultSet.class);
-									
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.add(createFileMenu());
 		menuBar.add(createViewMenu());
@@ -587,8 +390,11 @@ public class DoccoMainFrame extends JFrame {
 				return;
 			}
 			
-			this.eventBroker.removeSubscriptions(this.queryEventHandler);
-			this.queryEventHandler = null;
+			try {
+                this.queryEngine.finishQueries();
+            } catch (IOException e) {
+            	ErrorDialog.showError(this, e, "There has been an error closing the index");
+            }
 			indexFile.delete();
 		}
 		JFileChooser fileDialog = new JFileChooser();
@@ -605,24 +411,15 @@ public class DoccoMainFrame extends JFrame {
     }
 
 	private void createQueryEngine() {
-		QueryDecomposer queryDecomposer = new QueryDecomposer(
-												GlobalConstants.FIELD_QUERY_BODY, 
-												GlobalConstants.DEFAULT_ANALYZER);
-			
-		QueryEngine queryEngine = null;
 		try {
-			queryEngine =
-				new QueryEngine(
-					GlobalConstants.DEFAULT_INDEX_LOCATION,
-					GlobalConstants.FIELD_QUERY_BODY,
-					GlobalConstants.DEFAULT_ANALYZER,
-					queryDecomposer);
-		
-			if(this.queryEventHandler != null) {
-				this.eventBroker.removeSubscriptions(this.queryEventHandler);
-			}
-			this.queryEventHandler = new QueryEventHandler(eventBroker, queryEngine);
-			this.eventBroker.subscribe(this.queryEventHandler, QueryEvent.class, Object.class);
+			QueryDecomposer queryDecomposer = new QueryDecomposer(
+													GlobalConstants.FIELD_QUERY_BODY, 
+													GlobalConstants.DEFAULT_ANALYZER);
+			this.queryEngine =	new QueryEngine(
+												GlobalConstants.DEFAULT_INDEX_LOCATION,
+												GlobalConstants.FIELD_QUERY_BODY,
+												GlobalConstants.DEFAULT_ANALYZER,
+												queryDecomposer);
 		} catch (IOException e1) {
 			ErrorDialog.showError(this, e1, "Index not found");
 			String[] options = new String[]{"Recreate Index", "Exit Program"};
@@ -803,7 +600,18 @@ public class DoccoMainFrame extends JFrame {
 	private void doQuery() {
 		if (this.searchButton.isEnabled()) {
 			this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-			this.eventBroker.processEvent(new QueryEvent(this.queryField.getText()));
+			QueryWithResultSet results;
+            try {
+                results = this.queryEngine.executeQueryUsingDecomposer(this.queryField.getText());
+				Diagram2D diagram = DiagramGenerator.createDiagram(results, this.showPhantomNodesCheckBox.isSelected());
+				this.diagramView.showDiagram(diagram);
+            } catch (ParseException e) {
+            	ErrorDialog.showError(this, e, "Couldn't parse query");
+            	this.diagramView.showDiagram(null);
+            } catch (IOException e) {
+				ErrorDialog.showError(this, e, "Error querying");
+				this.diagramView.showDiagram(null);
+            }
 			this.hitList.setModel(null);
 			this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}
