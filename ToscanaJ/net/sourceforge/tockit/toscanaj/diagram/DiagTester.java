@@ -103,10 +103,10 @@ public class DiagTester extends JFrame {
     {
         Diagram diagram = new Diagram();
 
-        diagram.addPoint( new Point2D.Double( 0, 0 ) );
-        diagram.addPoint( new Point2D.Double( -1, -1 ) );
-        diagram.addPoint( new Point2D.Double( 1, -1 ) );
-        diagram.addPoint( new Point2D.Double( 0, -2 ) );
+        diagram.addNode( new Point2D.Double( 0, 0 ) );
+        diagram.addNode( new Point2D.Double( -1, -1 ) );
+        diagram.addNode( new Point2D.Double( 1, -1 ) );
+        diagram.addNode( new Point2D.Double( 0, -2 ) );
 
         diagram.addLine( 0, 1 );
         diagram.addLine( 0, 2 );
@@ -146,14 +146,14 @@ public class DiagTester extends JFrame {
     {
         Diagram diagram = new Diagram();
 
-        diagram.addPoint( new Point2D.Double( 0, 0 ) );
-        diagram.addPoint( new Point2D.Double( -2, 1 ) );
-        diagram.addPoint( new Point2D.Double( 1,  1) );
-        diagram.addPoint( new Point2D.Double( -3, 2 ) );
-        diagram.addPoint( new Point2D.Double( -1, 2 ) );
-        diagram.addPoint( new Point2D.Double( -2, 3 ) );
-        diagram.addPoint( new Point2D.Double( 1, 3 ) );
-        diagram.addPoint( new Point2D.Double( 0, 4 ) );
+        diagram.addNode( new Point2D.Double( 0, 0 ) );
+        diagram.addNode( new Point2D.Double( -2, 1 ) );
+        diagram.addNode( new Point2D.Double( 1,  1) );
+        diagram.addNode( new Point2D.Double( -3, 2 ) );
+        diagram.addNode( new Point2D.Double( -1, 2 ) );
+        diagram.addNode( new Point2D.Double( -2, 3 ) );
+        diagram.addNode( new Point2D.Double( 1, 3 ) );
+        diagram.addNode( new Point2D.Double( 0, 4 ) );
 
         diagram.addLine( 0, 1 );
         diagram.addLine( 0, 2 );
@@ -175,8 +175,8 @@ public class DiagTester extends JFrame {
     {
         Diagram diagram = new Diagram();
 
-        diagram.addPoint( new Point2D.Double( 1.3247, -.234 ) );
-        diagram.addPoint( new Point2D.Double( 1.3247, 2.3465 ) );
+        diagram.addNode( new Point2D.Double( 1.3247, -.234 ) );
+        diagram.addNode( new Point2D.Double( 1.3247, 2.3465 ) );
 
         diagram.addLine( 0, 1 );
 

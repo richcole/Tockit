@@ -6,8 +6,10 @@ import net.sourceforge.tockit.toscanaj.gui.MainPanel;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.util.Enumeration;
-import java.util.*;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.LinkedList;
 
 /**
  * This class is an abstraction of all diagram related information.
@@ -18,73 +20,72 @@ public class Diagram implements DiagramObservable, Diagram2D
     /**
      * vector holds all observers
      */
-    private Vector diagramObserver = null;
+    private List diagramObserver = null;
 
     /**
      * The title used for this diagram.
      */
-    private String _title;
+    private String title;
 
     /**
-     * The list of points in the diagram.
+     * The list of nodes in the diagram.
      */
-    private Vector _points;
+    private List nodes;
 
     /**
      * The list of object labels.
      *
-     * The order has to be the same as in _points.
+     * The order has to be the same as in nodes.
      */
-    private Vector _objectLabels;
+    private List objectLabels;
 
     /**
      * The list of attribute labels.
      *
-     * The order has to be the same as in _points.
+     * The order has to be the same as in nodes.
      */
-    private Vector _attributeLabels;
+    private List attributeLabels;
 
     /**
      * The list of starting points of lines in the diagram.
      *
-     * This has to be of the same size as _lineEndPoints and has to refer to
-     * ints matching the numbers used in the _points vector.
+     * This has to be of the same size as lineEndPoints and has to refer to
+     * ints matching the numbers used in the nodes list.
      */
-    private Vector _lineStartPoints;
+    private List lineStartPoints;
 
     /**
      * The list of ending points of lines in the diagram.
      *
-     * This has to be of the same size as _lineSatrtPoints and has to refer to
-     * ints matching the numbers used in the _points vector.
+     * This has to be of the same size as lineStartPoints and has to refer to
+     * ints matching the numbers used in the nodes vector.
      */
-    private Vector _lineEndPoints;
+    private List lineEndPoints;
 
     /**
      * The default constructor creates a diagram with just nothing in it at all.
      */
-    public Diagram()
-    {
-        _title = "";
-        _points = new Vector();
-        _attributeLabels = new Vector();
-        _objectLabels = new Vector();
-        _lineStartPoints = new Vector();
-        _lineEndPoints = new Vector();
-        diagramObserver = new Vector();
+    public Diagram() {
+        title = "";
+        nodes = new LinkedList();
+        attributeLabels = new LinkedList();
+        objectLabels = new LinkedList();
+        lineStartPoints = new LinkedList();
+        lineEndPoints = new LinkedList();
+        diagramObserver = new LinkedList();
     }
 
     /**
      * Method to add observer
      */
-    public void addObserver(DiagramObserver observer){
-        this.diagramObserver.addElement(observer);
+    public void addObserver(DiagramObserver observer) {
+        this.diagramObserver.add(observer);
     }
 
     /**
      * Send to all obvservers that a change has been made
      */
-    public void emitChangeSignal(){
+    public void emitChangeSignal() {
         Iterator iterator = diagramObserver.iterator();
         while(iterator.hasNext()){
             ((DiagramObserver)iterator.next()).diagramChanged();
@@ -94,65 +95,55 @@ public class Diagram implements DiagramObservable, Diagram2D
     /**
      * Returns the title of the diagram.
      */
-    public String getTitle()
-    {
-        return _title;
+    public String getTitle() {
+        return this.title;
     }
 
     /**
      * Change the title of the diagram.
      */
-    public void setTitle( String title )
-    {
-        _title = title;
+    public void setTitle( String title ) {
+        this.title = title;
     }
 
     /**
-     * Returns the number of points in the diagram.
+     * Returns the number of nodes in the diagram.
      */
-    public int getNumberOfPoints()
-    {
-        return _points.size();
+    public int getNumberOfNodes() {
+        return this.nodes.size();
     }
 
     /**
      * Returns the number of lines in the diagram.
      */
-    public int getNumberOfLines()
-    {
-        return _lineStartPoints.size();
+    public int getNumberOfLines() {
+        return this.lineStartPoints.size();
     }
 
     /**
      * Calculates a rectangle that includes all points.
      */
-    public Rectangle2D getBounds()
-    {
+    public Rectangle2D getBounds() {
         double minX = Double.MAX_VALUE;
         double maxX = Double.MIN_VALUE;
         double minY = Double.MAX_VALUE;
         double maxY = Double.MIN_VALUE;
 
-        for( int i = 0; i < _points.size(); i++ )
-        {
-            Point2D p = (Point2D) _points.get( i );
+        for( int i = 0; i < this.nodes.size(); i++ ) {
+            Point2D p = (Point2D)this.nodes.get( i );
             double x = p.getX();
             double y = p.getY();
 
-            if( x < minX )
-            {
+            if( x < minX ) {
                 minX = x;
             }
-            if( x > maxX )
-            {
+            if( x > maxX ) {
                 maxX = x;
             }
-            if( y < minY )
-            {
+            if( y < minY ) {
                 minY = y;
             }
-            if( y > maxY )
-            {
+            if( y > maxY ) {
                 maxY = y;
             }
         }
@@ -160,23 +151,21 @@ public class Diagram implements DiagramObservable, Diagram2D
     }
 
     /**
-     * Returns the coordinates of one point.
+     * Returns the coordinates of a node.
      *
      * Numbers start with zero.
      */
-    public Point2D getPoint( int pointNumber )
-    {
-        return (Point2D)_points.get( pointNumber );
+    public Point2D getNodePosition( int nodeNumber ) {
+        return (Point2D)this.nodes.get( nodeNumber );
     }
 
     /**
      * Adds a point to the diagram (at the end of the list).
      */
-    public void addPoint( Point2D point )
-    {
-        _points.add(point);
-        _objectLabels.add( new LabelInfo() );
-        _attributeLabels.add( new LabelInfo() );
+    public void addNode( Point2D position ) {
+        this.nodes.add(position);
+        this.objectLabels.add( new LabelInfo() );
+        this.attributeLabels.add( new LabelInfo() );
     }
 
     /**
@@ -184,10 +173,9 @@ public class Diagram implements DiagramObservable, Diagram2D
      *
      * Numbers start with zero.
      */
-    public Point2D getFromPoint( int lineNumber )
-    {
-        Integer num = (Integer)_lineStartPoints.get( lineNumber );
-        return (Point2D)_points.get( num.intValue() );
+    public Point2D getFromPoint( int lineNumber ) {
+        Integer num = (Integer)this.lineStartPoints.get( lineNumber );
+        return (Point2D)this.nodes.get( num.intValue() );
     }
 
     /**
@@ -195,10 +183,9 @@ public class Diagram implements DiagramObservable, Diagram2D
      *
      * Numbers start with zero.
      */
-    public Point2D getToPoint( int lineNumber )
-    {
-        Integer num = (Integer)_lineEndPoints.get( lineNumber );
-        return (Point2D)_points.get( num.intValue() );
+    public Point2D getToPoint( int lineNumber ) {
+        Integer num = (Integer)this.lineEndPoints.get( lineNumber );
+        return (Point2D)this.nodes.get( num.intValue() );
     }
 
     /**
@@ -207,25 +194,22 @@ public class Diagram implements DiagramObservable, Diagram2D
      * The from and to parameters are assumed to refer to some points already
      * existing in the points list (not checked yet).
      */
-    public void addLine( int from, int to )
-    {
-        _lineStartPoints.add( new Integer(from) );
-        _lineEndPoints.add( new Integer(to) );
+    public void addLine( int from, int to ) {
+        this.lineStartPoints.add( new Integer(from) );
+        this.lineEndPoints.add( new Integer(to) );
     }
 
     /**
      * Returns the information on the object label of the diagram.
      */
-    public LabelInfo getObjectLabel( int pointNumber )
-    {
-        return (LabelInfo)_objectLabels.get( pointNumber );
+    public LabelInfo getObjectLabel( int pointNumber ) {
+        return (LabelInfo)this.objectLabels.get( pointNumber );
     }
 
     /**
      * Returns the information on the attribute label of the diagram.
      */
-    public LabelInfo getAttributeLabel( int pointNumber )
-    {
-        return (LabelInfo)_attributeLabels.get( pointNumber );
+    public LabelInfo getAttributeLabel( int pointNumber ) {
+        return (LabelInfo)this.attributeLabels.get( pointNumber );
     }
 }

@@ -17,9 +17,9 @@ public interface Diagram2D
     public String getTitle();
 
     /**
-     * Returns the number of points in the diagram.
+     * Returns the number of nodes in the diagram.
      */
-    public int getNumberOfPoints();
+    public int getNumberOfNodes();
 
     /**
      * Returns the number of lines in the diagram.
@@ -32,11 +32,11 @@ public interface Diagram2D
     public Rectangle2D getBounds();
 
     /**
-     * Returns the coordinates of one point.
+     * Returns the coordinates of a node.
      *
      * Numbers start with zero.
      */
-    public Point2D getPoint( int pointNumber );
+    public Point2D getNodePosition( int nodeNumber );
 
     /**
      * Returns the coordinates of a starting point of a line.

@@ -138,7 +138,7 @@ public class ConceptualSchema {
             if( diag == null ) {
                 throw new NoSuchElementException("Invalid diagram number");
             }
-            if( conceptNumber > diag.getNumberOfPoints() - 1 ) {
+            if( conceptNumber > diag.getNumberOfNodes() - 1 ) {
                 throw new NoSuchElementException("Invalid concept number");
             }
             return new MemoryMappedConcept( diag.getAttributeLabel(conceptNumber),

@@ -141,8 +141,8 @@ public class DiagramView extends JComponent implements MouseListener, MouseMotio
         // in combination with absolute Y coordinates like e.g. the predefined
         // RADIUS of the points
         int invY = 1;
-        if( _diagram.getNumberOfPoints() > 0 ) {
-            if( diagBounds.getY() < _diagram.getPoint(0).getY() ) {
+        if( _diagram.getNumberOfNodes() > 0 ) {
+            if( diagBounds.getY() < _diagram.getNodePosition(0).getY() ) {
                 invY = -1;
             }
         }
@@ -165,10 +165,10 @@ public class DiagramView extends JComponent implements MouseListener, MouseMotio
             xScale = w / diagBounds.getWidth();
             xOrigin = x - diagBounds.getX() * xScale;
         }
-        if( diagBounds.getHeight() != 0 && _diagram.getNumberOfPoints() != 0 )
+        if( diagBounds.getHeight() != 0 && _diagram.getNumberOfNodes() != 0 )
         {
             yScale = h / diagBounds.getHeight() * invY;
-            yOrigin = y - _diagram.getPoint(0).getY() * yScale;
+            yOrigin = y - _diagram.getNodePosition(0).getY() * yScale;
         }
         //store updated ToscanajGraphics2D
         graphics = new ToscanajGraphics2D(g2d, new Point2D.Double( xOrigin, yOrigin ), xScale, yScale );
@@ -282,9 +282,9 @@ public class DiagramView extends JComponent implements MouseListener, MouseMotio
             this.canvasItems.add( new DiagramLine( _diagram.getFromPoint( i ), _diagram.getToPoint( i )) );
         }
         // add all points and labels to the canvas
-        for( int i = 0; i < _diagram.getNumberOfPoints(); i++ )
+        for( int i = 0; i < _diagram.getNumberOfNodes(); i++ )
         {
-            DiagramNode node = new DiagramNode(_diagram.getPoint(i));
+            DiagramNode node = new DiagramNode(_diagram.getNodePosition(i));
             this.canvasItems.add( node );
             this.canvasItems.add( new LabelView( this, node, LabelView.ABOVE, _diagram.getAttributeLabel( i ) ) );
             this.canvasItems.add( new LabelView( this, node, LabelView.BELOW, _diagram.getObjectLabel( i ) ) );

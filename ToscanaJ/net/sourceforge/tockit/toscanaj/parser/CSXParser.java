@@ -175,7 +175,7 @@ public class CSXParser
                 Element point = concept.getChild( "position" );
                 try
                 {
-                    diagram.addPoint( new Point2D.Double(
+                    diagram.addNode( new Point2D.Double(
                                 point.getAttribute( "x" ).getDoubleValue(),
                                 point.getAttribute( "y" ).getDoubleValue() ) );
                 }
