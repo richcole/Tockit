@@ -12,7 +12,6 @@ import net.sourceforge.toscanaj.gui.dialog.ErrorDialog;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.tockit.events.EventBroker;
 
-import docsearcher.DocSearch;
 import events.QueryEvent;
 
 import query.QueryDecomposer;
@@ -22,19 +21,15 @@ import gui.DoccoMainFrame;
 import handlers.QueryEventHandler;
 
 public class Docco {
-	private static final String DEFAULT_INDEX_NAME = "test";
-	
-	private String indexLocation = DocSearch.indexDir + "/" + DEFAULT_INDEX_NAME;
-	private String defaultQueryField = "body";
 	
 	
 	private EventBroker eventBroker = new EventBroker();
 	
 	public Docco () {
 		try {
-			QueryDecomposer queryDecomposer = new QueryDecomposer(this.defaultQueryField, new StandardAnalyzer());
-			QueryEngine queryEngine = new QueryEngine(this.indexLocation, 
-													this.defaultQueryField, 
+			QueryDecomposer queryDecomposer = new QueryDecomposer(GlobalVars.FIELD_QUERY_BODY, new StandardAnalyzer());
+			QueryEngine queryEngine = new QueryEngine(GlobalVars.DEFAULT_INDEX_LOCATION, 
+													GlobalVars.FIELD_QUERY_BODY, 
 													new StandardAnalyzer(),
 													queryDecomposer);
 
@@ -45,7 +40,7 @@ public class Docco {
 		}
 		catch (IOException e) {
 			ErrorDialog.showError(null, e, "Error", "\nPlease check if you have created an index using docsearcher.\n" + 
-							" Index name should be '" + DEFAULT_INDEX_NAME + "'");
+							" Index name should be '" + GlobalVars.DEFAULT_INDEX_NAME + "'");
 		}
 		catch (Exception e) {
 			ErrorDialog.showError(null, e, "Error");

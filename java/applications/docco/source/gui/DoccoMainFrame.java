@@ -8,6 +8,7 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -35,7 +36,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.ListModel;
+import javax.swing.ListCellRenderer;
 
 import net.sourceforge.toscanaj.controller.fca.ConceptInterpretationContext;
 import net.sourceforge.toscanaj.controller.fca.DiagramHistory;
@@ -51,10 +52,15 @@ import net.sourceforge.toscanaj.model.lattice.ConceptImplementation;
 import net.sourceforge.toscanaj.view.diagram.DiagramView;
 import net.sourceforge.toscanaj.view.diagram.NodeView;
 
+import org.apache.lucene.document.Document;
 import org.tockit.canvas.CanvasItem;
+import org.tockit.canvas.events.CanvasItemSelectedEvent;
 import org.tockit.events.Event;
 import org.tockit.events.EventBroker;
 import org.tockit.events.EventBrokerListener;
+
+
+import GlobalVars;
 
 import query.HitReference;
 import query.QueryWithResult;
@@ -70,7 +76,7 @@ public class DoccoMainFrame extends JFrame {
 	private JButton searchButton = new JButton("Submit");
 	private JTextArea resultArea = new JTextArea(40, 80);
 	
-	private ListModel resListModel = new DefaultListModel();
+	private DefaultListModel resListModel = new DefaultListModel();
 	
 	private DiagramView diagramView;
 	
@@ -193,11 +199,54 @@ public class DoccoMainFrame extends JFrame {
 		}
 	}	
 	
+	private class NodeSelectedEventHandler implements EventBrokerListener {
+		public void processEvent(Event event) {
+			NodeView nodeView = (NodeView) event.getSubject();
+			DiagramNode node = nodeView.getDiagramNode();
+			Concept concept = node.getConcept();
+			resListModel.removeAllElements();
+			Iterator extentIterator = concept.getExtentIterator();
+			while (extentIterator.hasNext()) {
+				HitReference cur = (HitReference) extentIterator.next();
+				resListModel.addElement(cur);
+			}
+			
+		}
+		
+	}
+	
+	private class ResultsListRenderer extends JLabel implements ListCellRenderer {
+		public Component getListCellRendererComponent(JList list, Object value, 
+											int index, boolean isSelected, 
+											boolean cellHasFocus) {
+			HitReference hitRef = (HitReference) value;
+
+			if (isSelected) {
+				setBackground(list.getSelectionBackground());
+				setForeground(list.getSelectionForeground());
+			} else {
+				setBackground(list.getBackground());
+				setForeground(list.getForeground());
+			}
+			
+			Document doc = hitRef.getDocument();
+			String text = doc.getField(GlobalVars.FIELD_DOC_PATH).stringValue();
+			//text += "\n";
+			//text += "\tscore: " + hitRef.getScore(); 		
+			setText(text);
+			setFont(list.getFont());
+			return this;
+		}
+		
+	}
+	
 	public DoccoMainFrame (EventBroker eventBroker) {
 		super("Docco");
 		this.eventBroker = eventBroker;
 		
-		this.eventBroker.subscribe(new QueryFinishedEventHandler(), QueryFinishedEvent.class, QueryWithResultSet.class);
+		this.eventBroker.subscribe(new QueryFinishedEventHandler(), 
+									QueryFinishedEvent.class, 
+									QueryWithResultSet.class);
 		
 		JComponent queryViewComponent = buildQueryViewComponent();
 		queryViewComponent.setBorder(BorderFactory.createRaisedBevelBorder());
@@ -290,8 +339,13 @@ public class DoccoMainFrame extends JFrame {
 									conceptInterpretationContext);
 		this.diagramView.setQuery(AggregateQuery.COUNT_QUERY);
 		this.diagramView.setMinimumFontSize(12.0);
+		
+		this.diagramView.getController().getEventBroker().subscribe(new NodeSelectedEventHandler(),
+									CanvasItemSelectedEvent.class,
+									NodeView.class);
 
 		JList resList = new JList(this.resListModel);
+		resList.setCellRenderer(new ResultsListRenderer());
 		JScrollPane scrollPane = new JScrollPane(resList);
 		
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
