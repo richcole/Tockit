@@ -7,8 +7,13 @@
  */
 package org.tockit.plugin;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -18,8 +23,10 @@ import java.util.logging.Logger;
 public class PluginLoader {
 
 	private static final Logger logger = Logger.getLogger(PluginLoader.class.getName());
+	private static final String pluginDescriptorFileName = "plugin.txt";
 	
 	private static List errors = new ArrayList();
+	
 	
 	public static class Error {
 		private File file;
@@ -62,17 +69,39 @@ public class PluginLoader {
 		}
 
 		for (int i = 0; i < pluginDirs.length; i++) {
+			File curPluginDir = pluginDirs[i];
 			try {
-				logger.fine("Loading class loader for " + pluginDirs[i]);
+				logger.fine("Loading class loader for " + curPluginDir);
 
-				PluginClassLoader classLoader = new PluginClassLoader(pluginDirs[i]);
-				Class[] foundPlugins = classLoader.findClassesImplementingGivenIterface(Plugin.class);
-				loadPluginClasses(foundPlugins);
+				PluginClassLoader classLoader = new PluginClassLoader(curPluginDir);
+				
+				File pluginDescriptorFile = new File(curPluginDir, pluginDescriptorFileName);
+				List descriptorClasses = new ArrayList();
+				if (pluginDescriptorFile.exists()) {
+					logger.finer("Found plugin descriptor file");
+					InputStream fileInStream = new FileInputStream(pluginDescriptorFile);
+					Reader reader = new InputStreamReader(fileInStream);
+					BufferedReader br = new BufferedReader(reader);
+					String line;
+					while ( (line = br.readLine()) != null ) {
+						logger.finer("Looking for plugin with name: '" + line + "'");
+						Class pluginClass = classLoader.findClass(line.trim());
+						descriptorClasses.add(pluginClass);
+					}
+				}
 
-				logger.fine("Finished loading plugins in " + pluginDirs[i]);
+				if (descriptorClasses.size() > 0) {
+					loadPluginClasses((Class[]) descriptorClasses.toArray(new Class[descriptorClasses.size()]));
+				}
+				else {
+					Class[] foundPlugins = classLoader.findClassesImplementingGivenIterface(Plugin.class);
+					loadPluginClasses(foundPlugins);
+				}
+
+				logger.fine("Finished loading plugins in " + curPluginDir);
 			}
 			catch (Exception e) {
-				errors.add(new PluginLoader.Error(pluginDirs[i], e));
+				errors.add(new PluginLoader.Error(curPluginDir, e));
 			}
 		}
 		
