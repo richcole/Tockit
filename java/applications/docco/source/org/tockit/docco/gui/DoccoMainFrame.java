@@ -97,6 +97,7 @@ import net.sourceforge.toscanaj.view.diagram.NodeView;
 import org.apache.lucene.queryParser.ParseException;
 import org.tockit.canvas.CanvasBackground;
 import org.tockit.canvas.CanvasItem;
+import org.tockit.canvas.events.CanvasItemDraggedEvent;
 import org.tockit.canvas.events.CanvasItemEventFilter;
 import org.tockit.canvas.events.CanvasItemSelectedEvent;
 import org.tockit.canvas.imagewriter.DiagramExportSettings;
@@ -104,6 +105,7 @@ import org.tockit.events.Event;
 import org.tockit.events.EventBroker;
 import org.tockit.events.EventBrokerListener;
 import org.tockit.events.filters.EventFilter;
+import org.tockit.events.filters.EventTypeFilter;
 import org.tockit.events.filters.SubjectTypeFilter;
 import org.tockit.plugin.PluginLoader;
 import org.tockit.swing.preferences.ExtendedPreferences;
@@ -992,7 +994,8 @@ public class DoccoMainFrame extends JFrame {
         eventBroker.subscribe(new NDimNodeMovementEventListener(), 
                 new EventFilter[] {
                         new SubjectTypeFilter(NodeView.class),
-                        new CanvasItemEventFilter(InputEvent.BUTTON1_DOWN_MASK,
+                        new EventTypeFilter(CanvasItemDraggedEvent.class),
+                        new CanvasItemEventFilter(0, // do not test BUTTON1_DOWN since that would skip the drop event
                                                   InputEvent.SHIFT_DOWN_MASK | InputEvent.ALT_DOWN_MASK | 
                                                   InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_GRAPH_DOWN_MASK |
                                                   InputEvent.BUTTON2_DOWN_MASK | InputEvent.BUTTON3_DOWN_MASK)
@@ -1000,7 +1003,8 @@ public class DoccoMainFrame extends JFrame {
         eventBroker.subscribe(new NodeMovementEventListener(), 
                 new EventFilter[] {
                         new SubjectTypeFilter(NodeView.class),
-                        new CanvasItemEventFilter(InputEvent.SHIFT_DOWN_MASK | InputEvent.BUTTON1_DOWN_MASK,
+                        new EventTypeFilter(CanvasItemDraggedEvent.class),
+                        new CanvasItemEventFilter(InputEvent.SHIFT_DOWN_MASK,
                                                   InputEvent.ALT_DOWN_MASK | InputEvent.CTRL_DOWN_MASK | 
                                                   InputEvent.ALT_GRAPH_DOWN_MASK |
                                                   InputEvent.BUTTON2_DOWN_MASK | InputEvent.BUTTON3_DOWN_MASK)
