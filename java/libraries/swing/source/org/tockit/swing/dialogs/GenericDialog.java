@@ -85,7 +85,7 @@ public class GenericDialog extends JDialog {
     public static boolean showDialog(Component parent, String title, Component selectionComponent) {
         GenericDialog dialog = new GenericDialog(parent, title, selectionComponent);
         dialog.setModal(true);
-        dialog.show();
+        dialog.setVisible(true);
         return dialog.okClicked;
     }
 }
