@@ -102,7 +102,7 @@ public class DocumentProcessingFactory {
 			}
 
 			doc.add(Field.Text(GlobalConstants.FIELD_DOC_PATH, file.getPath()));
-			doc.add(Field.Text(GlobalConstants.FIELD_DOC_PATH_WORDS, file.getPath().replace(File.separatorChar, ' ')));
+			doc.add(Field.Text(GlobalConstants.FIELD_DOC_PATH_WORDS, file.getParent().replace(File.separatorChar, ' ')));
 			doc.add(Field.Text(GlobalConstants.FIELD_DOC_EXTENSION,fileExtension));
 			String fileNameWithoutExtension = file.getName().substring(0,file.getName().length() - fileExtension.length() - 1);
 			doc.add(Field.Text(GlobalConstants.FIELD_DOC_NAME,fileNameWithoutExtension));
