@@ -98,6 +98,9 @@ public class KnowledgeBase {
     }
 
     public Type getType(String typeId) {
+        if(typeId == null) {
+            return Type.UNIVERSAL;
+        }
         return (Type) typeDict.get(typeId);
     }
 

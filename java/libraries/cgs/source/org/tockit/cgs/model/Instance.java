@@ -17,7 +17,7 @@ public class Instance {
         this.knowledgeBase = knowledgeBase;
         element = new Element("instance");
         element.setAttribute("identifier", identifier);
-        element.setAttribute("type", type.getName());
+        this.setType(type);
         knowledgeBase.addInstance(this, true);
     }
 
@@ -40,7 +40,11 @@ public class Instance {
     }
 
     public void setType(Type type) {
-        this.element.setAttribute("type", type.getName());
+        if( (type == null) || (type == Type.UNIVERSAL) ) {
+            this.element.removeAttribute("type");
+        } else {
+            this.element.setAttribute("type", type.getName());
+        }
     }
 
     public Element getElement() {
