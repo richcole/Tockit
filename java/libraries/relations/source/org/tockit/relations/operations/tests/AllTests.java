@@ -23,6 +23,7 @@ public class AllTests extends TestCase {
 		suite.addTest(org.tockit.relations.operations.tests.DropColumnsOperationTest.suite());
 		suite.addTest(org.tockit.relations.operations.tests.NegationOperationTest.suite());
 		suite.addTest(org.tockit.relations.operations.tests.UnionOperationTest.suite());
+		suite.addTest(org.tockit.relations.operations.tests.IntersectionOperationTest.suite());
         return suite;
     }
 }
