@@ -7,11 +7,14 @@
  */
 package org.tockit.cernatoXML.model;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 public abstract class TypeImplementation implements PropertyType {
     protected String name;
     protected Hashtable valueGroups = new Hashtable();
+    protected List values = new ArrayList();
 
     public TypeImplementation(String name) {
         this.name = name;
@@ -22,7 +25,11 @@ public abstract class TypeImplementation implements PropertyType {
     }
 
     public Value[] getValueRange() {
-        return null;
+        return (Value[]) this.values.toArray(new Value[this.values.size()]);
+    }
+    
+    public void addValue(Value value) {
+        this.values.add(value);
     }
 
     public void addValueGroup(ValueGroup column, String id) {

@@ -71,6 +71,11 @@ public class CernatoXMLParser {
             throw new DataFormatException("Type missing name");
         }
         TextualType newType = new TextualType(name);
+        List typeValues = element.getChildren("text_value");
+        for (Iterator iterator = typeValues.iterator(); iterator.hasNext();) {
+            Element valueElement = (Element) iterator.next();
+            newType.addValue(new TextualValue(valueElement.getText()));
+        }
         List valueGroups = element.getChildren("text_value_group");
         for (Iterator iterator = valueGroups.iterator(); iterator.hasNext();) {
             Element valueGroupElement = (Element) iterator.next();
@@ -96,7 +101,15 @@ public class CernatoXMLParser {
         if (name == null) {
             throw new DataFormatException("Type missing name");
         }
+        double typeMin = Double.parseDouble(element.getChild("minval").getText());
+        double typeMax = Double.parseDouble(element.getChild("maxval").getText());
+        int decimals = Integer.parseInt(element.getChild("decimals").getText());
+
         NumericalType newType = new NumericalType(name);
+        newType.addValue(new NumericalValue(typeMin));
+        newType.addValue(new NumericalValue(typeMax));
+        newType.setNumberOfDecimals(decimals);
+        
         List valueGroups = element.getChildren("num_value_group");
         for (Iterator iterator = valueGroups.iterator(); iterator.hasNext();) {
             Element valueGroupElement = (Element) iterator.next();

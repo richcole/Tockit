@@ -8,6 +8,8 @@
 package org.tockit.cernatoXML.model;
 
 public class NumericalType extends TypeImplementation {
+    private int numberOfDecimals = 2;
+    
     public NumericalType(String name) {
         super(name);
     }
@@ -18,5 +20,13 @@ public class NumericalType extends TypeImplementation {
             return;
         }
         throw new RuntimeException("Wrong value group type");
+    }
+    
+    public int getNumberOfDecimals() {
+        return numberOfDecimals;
+    }
+    
+    public void setNumberOfDecimals(int numberOfDecimals) {
+        this.numberOfDecimals = numberOfDecimals;
     }
 }
