@@ -26,7 +26,7 @@ class ConcreteScaleParser extends CSCFileSectionParser {
 
 	public void parse(CSCTokenizer tokenizer, CSCFile file) throws IOException, DataFormatException {
         String name = tokenizer.popCurrentToken();
-        ConcreteScale scale = new ConcreteScale(file, name);
+        ConcreteScale scale = new ConcreteScale(name);
         
         tokenizer.consumeToken("=");
         

@@ -11,8 +11,8 @@ public class RealisedScale extends ConscriptStructure{
     private ConcreteScale concreteScale;
 	private IdentifierMap identifierMap;
 	
-	public RealisedScale(CSCFile file, String identifier) {
-        super(file, identifier);
+	public RealisedScale(String identifier) {
+        super(identifier);
     }
 
 	public ConcreteScale getConcreteScale() {

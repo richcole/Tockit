@@ -12,8 +12,8 @@ import java.util.Map;
 public class IdentifierMap extends ConscriptStructure{
     private Map map;
     
-	public IdentifierMap(CSCFile file, String identifier) {
-        super(file, identifier);
+	public IdentifierMap(String identifier) {
+        super(identifier);
     }
 		
 	public Map getMap() {

@@ -14,8 +14,8 @@ import java.util.Map;
 public class StringMap extends ConscriptStructure{
 	private Map map = new Hashtable();;
 		
-	public StringMap(CSCFile file, String identifier) {
-        super(file, identifier);
+	public StringMap(String identifier) {
+        super(identifier);
 	}
 
 	public Map getMap() {

@@ -15,8 +15,8 @@ public class AbstractScale extends ConscriptStructure{
 	private FormalContext context;
 	private List lineDiagrams = new ArrayList();
 	
-	public AbstractScale(CSCFile file, String name) {
-        super(file, name);
+	public AbstractScale(String name) {
+        super(name);
 	}
 		
 	public FormalContext getContext() {

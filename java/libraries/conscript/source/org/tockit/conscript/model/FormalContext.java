@@ -12,8 +12,8 @@ public class FormalContext extends ConscriptStructure{
 	private FCAAttribute[] attributes;
 	private BinaryRelation relation;
 
-	public FormalContext(CSCFile file, String identifier) {
-        super(file, identifier);
+	public FormalContext(String identifier) {
+        super(identifier);
     }
 
 	public FCAAttribute[] getAttributes() {

@@ -24,7 +24,7 @@ class QueryMapParser extends CSCFileSectionParser {
     public void parse(CSCTokenizer tokenizer, CSCFile file)
         throws IOException, DataFormatException {
         String queryMapId = tokenizer.popCurrentToken();
-        QueryMap queryMap = new QueryMap(file, queryMapId);
+        QueryMap queryMap = new QueryMap(queryMapId);
 
         int line = tokenizer.getCurrentLine();
         tokenizer.consumeToken("=");

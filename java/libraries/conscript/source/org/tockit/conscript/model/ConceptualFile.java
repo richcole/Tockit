@@ -11,8 +11,8 @@ public class ConceptualFile extends ConscriptStructure {
 	private StringMap objectMap;
 	private RealisedScale[] realisedScales;
 	
-	public ConceptualFile(CSCFile file, String name) {
-        super(file, name);
+	public ConceptualFile(String name) {
+        super(name);
 	}
 
 	public StringMap getObjectMap() {

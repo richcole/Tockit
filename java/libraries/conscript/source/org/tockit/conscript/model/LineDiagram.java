@@ -15,8 +15,8 @@ public class LineDiagram extends ConscriptStructure{
 	private FCAAttribute[] attributes;
 	private Concept[] concepts;
 	
-	public LineDiagram(CSCFile file, String identifier) {
-        super(file, identifier);
+	public LineDiagram(String identifier) {
+        super(identifier);
 	}
 
 	public FCAAttribute[] getAttributes() {

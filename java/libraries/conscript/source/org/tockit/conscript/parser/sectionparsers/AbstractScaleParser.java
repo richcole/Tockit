@@ -25,7 +25,7 @@ class AbstractScaleParser extends CSCFileSectionParser {
 
 	public void parse(CSCTokenizer tokenizer, CSCFile file) throws IOException, DataFormatException {
         String name = tokenizer.popCurrentToken();
-        AbstractScale scale = new AbstractScale(file, name);
+        AbstractScale scale = new AbstractScale(name);
         
         tokenizer.consumeToken("=");
         

@@ -12,8 +12,8 @@ public class DatabaseDefinition extends ConscriptStructure {
 	private String table;
 	private String primaryKey;
 	
-	public DatabaseDefinition(CSCFile file, String name) {
-        super(file, name);
+	public DatabaseDefinition(String name) {
+        super(name);
 	}
 
     public String getDatabaseName() {

@@ -12,8 +12,8 @@ public class ConceptualSchema extends ConscriptStructure{
 	private DatabaseDefinition database;
 	private ConcreteScale[] concreteScales;
 	
-	public ConceptualSchema(CSCFile file, String identifier) {
-        super(file, identifier);
+	public ConceptualSchema(String identifier) {
+        super(identifier);
 	}
 
 	public ConcreteScale[] getConcreteScales() {

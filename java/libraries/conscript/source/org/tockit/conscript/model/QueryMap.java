@@ -14,8 +14,8 @@ import java.util.Map;
 public class QueryMap extends ConscriptStructure{
     private Map map = new Hashtable();;
 		
-	public QueryMap(CSCFile file, String identifier) {
-        super(file, identifier);
+	public QueryMap(String identifier) {
+        super(identifier);
     }
 
 	public Map getMap() {

@@ -25,7 +25,7 @@ class RealisedScaleParser extends CSCFileSectionParser {
 
 	public void parse(CSCTokenizer tokenizer, CSCFile file) throws IOException, DataFormatException {
         String name = tokenizer.popCurrentToken();
-        RealisedScale scale = new RealisedScale(file, name);
+        RealisedScale scale = new RealisedScale(name);
         
         tokenizer.consumeToken("=");
         

@@ -14,8 +14,8 @@ public class ConcreteScale extends ConscriptStructure{
 	private QueryMap queryMap;
 	private StringMap attributeMap;
 	
-	public ConcreteScale(CSCFile file, String name) {
-		super(file, name);
+	public ConcreteScale(String name) {
+		super(name);
 	}
 
 	public AbstractScale getAbstractScale() {
