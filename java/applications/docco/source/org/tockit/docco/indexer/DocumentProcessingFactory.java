@@ -71,7 +71,7 @@ public class DocumentProcessingFactory {
 		/// worthwhile keeping
 		Document doc = new Document(); 
 		
-		doc.add(docSummary.content.getDocumentField());
+		doc.add(Field.Text(GlobalConstants.FIELD_QUERY_BODY, docSummary.contentReader));
 		
 		if (docSummary.authors != null) {
 			Iterator it = docSummary.authors.iterator();

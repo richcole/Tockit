@@ -12,7 +12,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 
-import org.tockit.docco.indexer.DocumentContent;
 import org.tockit.docco.indexer.DocumentSummary;
 
 public class PlainTextDocumentHandler implements DocumentHandler {
@@ -20,7 +19,7 @@ public class PlainTextDocumentHandler implements DocumentHandler {
 	public DocumentSummary parseDocument(URL url) throws IOException, DocumentHandlerException {
 		Reader reader = new InputStreamReader(url.openStream());
 		DocumentSummary docSummary = new DocumentSummary();
-		docSummary.content = new DocumentContent(reader);
+		docSummary.contentReader = reader;
 		return docSummary;
 	}
 

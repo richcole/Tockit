@@ -7,6 +7,7 @@
  */
 package org.tockit.docco.indexer;
 
+import java.io.Reader;
 import java.util.Date;
 import java.util.List;
 
@@ -18,5 +19,5 @@ public class DocumentSummary {
 	public Date creationDate;
 	public Date modificationDate;
 	public String mimeType;
-	public DocumentContent content;
+	public Reader contentReader;
 }

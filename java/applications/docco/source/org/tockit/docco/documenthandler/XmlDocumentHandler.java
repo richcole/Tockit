@@ -8,6 +8,7 @@
 package org.tockit.docco.documenthandler;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.URL;
 
 
@@ -15,7 +16,6 @@ import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 import javax.xml.parsers.*;
 
-import org.tockit.docco.indexer.DocumentContent;
 import org.tockit.docco.indexer.DocumentSummary;
 
 
@@ -31,7 +31,7 @@ public class XmlDocumentHandler extends DefaultHandler implements DocumentHandle
 			SAXParserFactory parserFactory = SAXParserFactory.newInstance();
 			SAXParser parser = parserFactory.newSAXParser();
 			parser.parse(url.openStream(), this);
-			documentSummary.content = new DocumentContent(content.toString());
+			documentSummary.contentReader = new StringReader(content.toString());
 			return documentSummary;
 		}
 		catch (SAXException e) {
