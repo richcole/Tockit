@@ -25,8 +25,10 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.Point2D;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -79,9 +81,7 @@ import net.sourceforge.toscanaj.view.diagram.DiagramView;
 import net.sourceforge.toscanaj.view.diagram.LabelView;
 import net.sourceforge.toscanaj.view.diagram.NodeView;
 
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.store.FSDirectory;
 import org.tockit.canvas.CanvasBackground;
 import org.tockit.canvas.CanvasItem;
 import org.tockit.canvas.events.CanvasItemSelectedEvent;
@@ -102,6 +102,7 @@ import org.tockit.docco.query.QueryEngine;
 import org.tockit.docco.query.util.QueryWithResultSet;
 
 public class DoccoMainFrame extends JFrame {
+    private File lastDirectoryIndexed;
     private static final int LOWEST_PRIORITY = Thread.MIN_PRIORITY;
 	private static final int LOW_PRIORITY = (Thread.MIN_PRIORITY + Thread.NORM_PRIORITY)/2;
     private static final int MEDIUM_PRIORITY = Thread.NORM_PRIORITY;
@@ -112,20 +113,22 @@ public class DoccoMainFrame extends JFrame {
     private static final int DEFAULT_VERTICAL_DIVIDER_LOCATION = 600;
     private static final int DEFAULT_FRAME_WIDTH = 900;
     private static final int DEFAULT_FRAME_HEIGHT = 700;
-	private static final String DEFAULT_INDEX_NAME = "default";
 
 	private static final String WINDOW_TITLE = "Docco";
     
 	private static final String CONFIGURATION_SECTION_NAME = "DoccoMainPanel";
 	private static final String CONFIGURATION_VERTICAL_DIVIDER_LOCATION = "verticalDivider";
-	private static final String CONFIGURATION_INDEX_NAME = "indexName";
+	private static final String CONFIGURATION_INDEX_LOCATION = "indexLocation";
 	private static final String CONFIGURATION_LAST_INDEX_DIR = "lastIndexDir";
 	private static final String CONFIGURATION_SHOW_PHANTOM_NODES_NAME = "showPhantomNodes";
 	private static final String CONFIGURATION_SHOW_CONTINGENT_ONLY_NAME = "showContingentOnly";
 	private static final String CONFIGURATION_INDEXING_PRIORITY_NAME = "indexingPriority";
+	private static final String DEFAULT_INDEX_DIR = System.getProperty("user.dir") + 
+											System.getProperty("file.separator") + 
+											".doccoIndex";
 	
 	private QueryEngine queryEngine;
-	private Index index;
+	private List indexes = new ArrayList();
 
     private DocumentDisplayPane documentDisplayPane;
     private JTree hitList;
@@ -318,40 +321,7 @@ public class DoccoMainFrame extends JFrame {
 		Index.indexingPriority = ConfigurationManager.fetchInt(CONFIGURATION_SECTION_NAME, 
 															   CONFIGURATION_INDEXING_PRIORITY_NAME, MEDIUM_PRIORITY);	
 		
-        String indexLocation = getIndexLocation().getPath();
-		if(IndexReader.indexExists(indexLocation)) {
-			try {
-				if(IndexReader.isLocked(indexLocation)) {
-					if(!forceIndexAccess) {
-						JOptionPane.showMessageDialog(this, "The index is locked. You can run only one instance of Docco at one time.\n" +
-													  "If you want to override this error run Docco with the '-forceIndexAccess' option.",
-													  "Index locked", JOptionPane.ERROR_MESSAGE);
-						System.exit(1);
-					}
-					try {
-						IndexReader.unlock(FSDirectory.getDirectory(indexLocation, false));
-					} catch (IOException e) {
-						// we just ignore that here -- Lucene throws exceptions about lock files that can't be deleted since
-						// they are not there
-					}
-				}
-				Indexer.CallbackRecipient callbackRecipient = new Indexer.CallbackRecipient(){
-					public void showFeedbackMessage(String message) {
-						statusBarMessage.setText(message);
-					}
-				};
-				this.index = Index.openIndex(new File(indexLocation), callbackRecipient);
-				createQueryEngine();
-			} catch (IOException e) {
-				ErrorDialog.showError(this, e, "Couldn't access index -- program will exit");
-				System.exit(1);
-			}
-		} else {
-			createNewIndex();
-			if(!IndexReader.indexExists(getIndexLocation())) {
-				System.exit(1);
-			}
-		}
+        openIndexes(forceIndexAccess);
 
 		this.setVisible(true);
 		ConfigurationManager.restorePlacement(
@@ -366,12 +336,48 @@ public class DoccoMainFrame extends JFrame {
 		});
 	}
 
-    private File getIndexLocation() {
-        String indexLocation = GlobalConstants.INDEX_DIR + 
-        						ConfigurationManager.fetchString(CONFIGURATION_SECTION_NAME,
-        									CONFIGURATION_INDEX_NAME,
-        									DEFAULT_INDEX_NAME);
-        return new File(indexLocation);
+    private void openIndexes(boolean forceIndexAccess) {
+        File indexDirectory = getIndexDirectory();
+        File[] indexLocations = indexDirectory.listFiles(new FileFilter(){
+            public boolean accept(File pathname) {
+                return pathname.isDirectory();
+            }
+        });
+		Indexer.CallbackRecipient callbackRecipient = new Indexer.CallbackRecipient(){
+			public void showFeedbackMessage(String message) {
+				statusBarMessage.setText(message);
+			}
+		};
+        for (int i = 0; i < indexLocations.length; i++) {
+            File file = indexLocations[i];
+			try {
+                Index index = Index.openIndex(file.getName(), indexDirectory, callbackRecipient);
+                this.indexes.add(index);
+            } catch (IOException e) {
+            	ErrorDialog.showError(this, e, "Error opening index");
+            }
+        }
+		createQueryEngine();
+//        			if(!forceIndexAccess) {
+//        				JOptionPane.showMessageDialog(this, "The index is locked. You can run only one instance of Docco at one time.\n" +
+//        											  "If you want to override this error run Docco with the '-forceIndexAccess' option.",
+//        											  "Index locked", JOptionPane.ERROR_MESSAGE);
+//        				System.exit(1);
+//        			}
+//        			try {
+//        				IndexReader.unlock(FSDirectory.getDirectory(indexLocation, false));
+//        			} catch (IOException e) {
+//        				// we just ignore that here -- Lucene throws exceptions about lock files that can't be deleted since
+//        				// they are not there
+//        			}
+//        		}
+    }
+
+    private File getIndexDirectory() {
+        String indexDirectory = ConfigurationManager.fetchString(CONFIGURATION_SECTION_NAME,
+        														CONFIGURATION_INDEX_LOCATION,
+																DEFAULT_INDEX_DIR);
+        return new File(indexDirectory);
     }
 
     private JMenu createHelpMenu() {
@@ -459,7 +465,7 @@ public class DoccoMainFrame extends JFrame {
     }
     
 	private void fillFileMenu(final JMenu fileMenu) {
-		final JMenuItem newIndexItem = new JMenuItem("Index Another Directory...");
+		final JMenuItem newIndexItem = new JMenuItem("Index Directory...");
 		newIndexItem.setMnemonic('i');
 		newIndexItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -470,20 +476,26 @@ public class DoccoMainFrame extends JFrame {
 
 		fileMenu.addSeparator();
                 
-        addIndexMenu(fileMenu, this.index);
+        for (Iterator iter = this.indexes.iterator(); iter.hasNext();) {
+            Index currentIndex = (Index) iter.next();
+			addIndexMenu(fileMenu, currentIndex);
+        }
 
 		fileMenu.addSeparator();
-                
-		final JMenuItem editFileMappings = new JMenuItem("Edit Default File Mappings...");
-		editFileMappings.setMnemonic('f');
-		editFileMappings.addActionListener(new ActionListener(){
+		
+		final JMenuItem updateAllItem = new JMenuItem("Update All");
+		updateAllItem.setMnemonic('u');
+		updateAllItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				editFileMappings(index.getDocHandlersRegistry());
-			}
+				for (Iterator iter = indexes.iterator(); iter.hasNext();) {
+                    Index index = (Index) iter.next();
+                    index.updateIndex();
+                }
+            }
 		});
-		fileMenu.add(editFileMappings);
+		fileMenu.add(updateAllItem);
                 
-		final JMenu indexingPriorityMenu = new JMenu("Indexing priority");
+		final JMenu indexingPriorityMenu = new JMenu("Indexing Priority");
 		indexingPriorityMenu.setMnemonic('p');
 		final JRadioButtonMenuItem highestPriorityMenuItem = 
 					new JRadioButtonMenuItem("Highest (fast indexing, computer might get less responsive)");
@@ -544,12 +556,15 @@ public class DoccoMainFrame extends JFrame {
 	}
 
     private void addIndexMenu(final JMenu fileMenu, final Index currentIndex) {
-        final JMenu currentIndexMenu = new JMenu(currentIndex.getBaseDirectory().getPath());
+    	final JFrame outerThis = this;
+    	
+        final JMenu currentIndexMenu = new JMenu(currentIndex.getName());
 		final JCheckBoxMenuItem indexActiveItem = new JCheckBoxMenuItem("Active");
 		indexActiveItem.setMnemonic('a');
 		indexActiveItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				currentIndex.setActive(!currentIndex.isActive());
+				createQueryEngine();
 			}
 		});
 		indexActiveItem.setSelected(currentIndex.isActive());
@@ -559,7 +574,11 @@ public class DoccoMainFrame extends JFrame {
 		updateIndexItem.setMnemonic('u');
 		updateIndexItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				updateIndex();
+				try {
+					currentIndex.updateIndex();
+				} catch (Exception ex) {
+					ErrorDialog.showError(outerThis, ex, "Error updating the index");
+				}
 			}
 		});
 		updateIndexItem.setEnabled(!currentIndex.isWorking());
@@ -578,50 +597,54 @@ public class DoccoMainFrame extends JFrame {
 		deleteIndexItem.setMnemonic('d');
 		deleteIndexItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				/// @todo implement
+				deleteIndex(currentIndex);
 			}
 		});
 		currentIndexMenu.add(deleteIndexItem);
         fileMenu.add(currentIndexMenu);
     }
 
+    protected void deleteIndex(Index currentIndex) {
+    	int rv = JOptionPane.showConfirmDialog(this, "A deleted index can be restored only by re-running\n" +
+    		                                         "the whole indexing process. Are you sure you want to\n" +
+    		                                         "delete the index '" + currentIndex.getName() + "'?", 
+    		                                   "Delete Index?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+    	if(rv != JOptionPane.YES_OPTION) {
+    		return;
+    	}
+    	
+    	this.indexes.remove(currentIndex);
+    	currentIndex.delete();
+    }
+
     private void createNewIndex(){
 		try {
-			if(IndexReader.indexExists(getIndexLocation())) {
-				int result = JOptionPane.showConfirmDialog(this, "This will delete the existing index. Continue?", "Delete Index?",
-				                                           JOptionPane.OK_CANCEL_OPTION);
-				if(result != JOptionPane.OK_OPTION) {
-					return;
-				}
-			}
 			File inputDir = getDirectoryToIndex();
 			if(inputDir == null) {
 				return;
-			}
-			if(this.index != null) {
-				this.index.shutdown();			
 			}
 			Indexer.CallbackRecipient callbackRecipient = new Indexer.CallbackRecipient(){
 				public void showFeedbackMessage(String message) {
 					statusBarMessage.setText(message);
 				}
 			};
-			this.index = Index.createIndex(getIndexLocation(),inputDir, callbackRecipient);
+			// @todo do something better for the names
+			File indexLocation = getIndexDirectory();
+			String name = inputDir.getPath().substring(inputDir.getPath().lastIndexOf(File.separator) + 1);
+            this.indexes.add(Index.createIndex(name, indexLocation, inputDir, callbackRecipient));
         } catch (IOException e) {
 			ErrorDialog.showError(this, e, "There has been an error creating a new index");
         }
 
 		createQueryEngine();
-		
-		this.diagramView.showDiagram(null);
     }
 
-    private File getDirectoryToIndex() {
+    private File getDirectoryToIndex() throws IOException {
 		JFileChooser fileDialog;
-		if(this.index == null) { 
+		if(this.lastDirectoryIndexed == null) { 
 			fileDialog = new JFileChooser();
 		} else {
-			fileDialog = new JFileChooser(this.index.getBaseDirectory());
+			fileDialog = new JFileChooser(this.lastDirectoryIndexed);
 		}
 		fileDialog.setDialogTitle("Select directory to index");
 		fileDialog.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -632,21 +655,13 @@ public class DoccoMainFrame extends JFrame {
 		}
 		ConfigurationManager.storeString(CONFIGURATION_SECTION_NAME, CONFIGURATION_LAST_INDEX_DIR,
 									fileDialog.getSelectedFile().getPath());
-
-		return fileDialog.getSelectedFile();
+									
+		this.lastDirectoryIndexed = fileDialog.getSelectedFile();
+		return fileDialog.getSelectedFile().getCanonicalFile();
     }
     
-    private void updateIndex() {
-    	try {
-            this.index.updateIndex();
-        } catch (Exception e) {
-        	ErrorDialog.showError(this, e, "Error updating the index");
-        }
-    }
-
 	private void editFileMappings(DocumentHandlerRegistry docHandlersRegistry) {
         new FileMappingsEditingDialog(this, docHandlersRegistry);
-		// @todo store changed info in config manager?
 	}
 
     private void createQueryEngine() {
@@ -654,11 +669,19 @@ public class DoccoMainFrame extends JFrame {
 			QueryDecomposer queryDecomposer = new QueryDecomposer(
 													GlobalConstants.FIELD_QUERY_BODY, 
 													GlobalConstants.DEFAULT_ANALYZER);
-			this.queryEngine =	new QueryEngine(
-												this.index.getIndexLocation(),
+			List activeIndexesList = new ArrayList();
+			for (Iterator iter = this.indexes.iterator(); iter.hasNext();) {
+                Index currentIndex = (Index) iter.next();
+                if(currentIndex.isActive()) {
+                	activeIndexesList.add(currentIndex);
+                }
+            }
+            this.queryEngine =	new QueryEngine(((Index[]) activeIndexesList.toArray(new Index[activeIndexesList.size()])),
 												GlobalConstants.FIELD_QUERY_BODY,
 												GlobalConstants.DEFAULT_ANALYZER,
 												queryDecomposer);
+			this.diagramView.showDiagram(null);
+			this.hitList.setModel(null);
 		} catch (IOException e1) {
 			ErrorDialog.showError(this, e1, "Index not found");
 			String[] options = new String[]{"Recreate Index", "Exit Program"};
@@ -754,7 +777,13 @@ public class DoccoMainFrame extends JFrame {
 		this.diagramView.setToolTipText("dummy to enable tooltips");
 		this.diagramView.setConceptInterpreter(new DirectConceptInterpreter());
 		ConceptInterpretationContext conceptInterpretationContext = new ConceptInterpretationContext(new DiagramHistory(),new EventBroker());
-		conceptInterpretationContext.setObjectDisplayMode(ConceptInterpretationContext.EXTENT);
+		boolean showContingentsOnly = ConfigurationManager.fetchInt(CONFIGURATION_SECTION_NAME, 
+									                                CONFIGURATION_SHOW_CONTINGENT_ONLY_NAME, 0) == 1;
+		if(showContingentsOnly) {
+			conceptInterpretationContext.setObjectDisplayMode(ConceptInterpretationContext.CONTINGENT);
+		} else {
+			conceptInterpretationContext.setObjectDisplayMode(ConceptInterpretationContext.EXTENT);
+		}
 		this.diagramView.setConceptInterpretationContext(
 									conceptInterpretationContext);
 		this.diagramView.setQuery(AggregateQuery.COUNT_QUERY);
@@ -871,9 +900,12 @@ public class DoccoMainFrame extends JFrame {
 	}
 	
 	private void closeMainPanel() {
-		// shut down indexer
+		// shut down indexers
 		try {
-            this.index.shutdown();
+			for (Iterator iter = this.indexes.iterator(); iter.hasNext();) {
+                Index currentIndex = (Index) iter.next();
+				currentIndex.shutdown();
+            }
         } catch (Exception e) {
         	ErrorDialog.showError(this, e, "Could not shut down indexer");
         }
@@ -885,8 +917,6 @@ public class DoccoMainFrame extends JFrame {
 								(float) this.diagramView.getMinimumFontSize());
 		ConfigurationManager.storeInt(CONFIGURATION_SECTION_NAME, CONFIGURATION_VERTICAL_DIVIDER_LOCATION,
 								this.viewsSplitPane.getDividerLocation());
-		ConfigurationManager.storeString(CONFIGURATION_SECTION_NAME, CONFIGURATION_INDEX_NAME, 
-								DEFAULT_INDEX_NAME);
 								
 		// store menu settings
 		ConfigurationManager.storeInt(CONFIGURATION_SECTION_NAME, CONFIGURATION_SHOW_PHANTOM_NODES_NAME,

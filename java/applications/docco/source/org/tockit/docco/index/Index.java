@@ -29,6 +29,7 @@ public class Index {
 	 */
 	private boolean active = true;
 	
+	private String name;
     private File indexLocation;
 	private File baseDirectory;
 	private Indexer indexer;
@@ -37,27 +38,26 @@ public class Index {
 	public static int indexingPriority = Thread.MIN_PRIORITY;
 	private CallbackRecipient callbackRecipient;
 	
-    public static Index openIndex(File indexLocation, Indexer.CallbackRecipient callbackRecipient) throws IOException {
-		String[] paths = getLinesOfFile(getContentsFile(indexLocation));
+    public static Index openIndex(String name, File indexDirectory, Indexer.CallbackRecipient callbackRecipient) throws IOException {
+		String[] paths = getLinesOfFile(getContentsFile(new File(indexDirectory,name)));
 		try {
 			File baseDirectory = new File(paths[0]); 
-			Index retVal = new Index(indexLocation, baseDirectory, callbackRecipient);
+			Index retVal = new Index(name, indexDirectory, baseDirectory, callbackRecipient);
 			retVal.callbackRecipient = callbackRecipient;
 			return retVal;
 		} catch (ArrayIndexOutOfBoundsException e) {
-			throw new IOException("No base directory found in '" + getContentsFile(indexLocation).getPath() + "'");
+			throw new IOException("No base directory found in '" + getContentsFile(indexDirectory).getPath() + "'");
 		}
 	}
 	
-	public static Index createIndex(File indexLocation, File baseDirectory, 
+	public static Index createIndex(String name, File indexDirectory, File baseDirectory, 
 									Indexer.CallbackRecipient callbackRecipient) throws IOException {
-		createDirPath(indexLocation);
-		IndexWriter writer = new IndexWriter(
-								indexLocation,
-								GlobalConstants.DEFAULT_ANALYZER,
-								true);
+		createDirPath(indexDirectory);
+		IndexWriter writer = new IndexWriter(new File(indexDirectory, name),
+											 GlobalConstants.DEFAULT_ANALYZER,
+											 true);
 		writer.close();
-		Index retVal = new Index(indexLocation, baseDirectory, callbackRecipient);
+		Index retVal = new Index(name, indexDirectory, baseDirectory, callbackRecipient);
 		retVal.callbackRecipient = callbackRecipient;
 		retVal.updateIndex();
 		return retVal;
@@ -73,18 +73,19 @@ public class Index {
 		this.indexThread.start();
     }
 
-    private Index(File indexLocation, File baseDirectory, Indexer.CallbackRecipient callbackRecipient) throws IOException {
-		this.indexLocation = indexLocation;
+    private Index(String name, File indexDirectory, File baseDirectory, Indexer.CallbackRecipient callbackRecipient) throws IOException {
+    	this.name = name;
+		this.indexLocation = new File(indexDirectory, name);
 		this.baseDirectory = baseDirectory;
 		
-		File mappingsFile = getMappingsFile(indexLocation);
+		File mappingsFile = getMappingsFile(this.indexLocation);
 		if(mappingsFile.exists()) {
 			this.docHandlersRegistry = new DocumentHandlerRegistry(getLinesOfFile(mappingsFile));
 		} else {
 			this.docHandlersRegistry = new DocumentHandlerRegistry(DocumentHandlerRegistry.DEFAULT_MAPPINGS);
 		}
 		
-        this.indexer = new Indexer(indexLocation, baseDirectory, this.docHandlersRegistry, callbackRecipient);
+        this.indexer = new Indexer(this.indexLocation, baseDirectory, this.docHandlersRegistry, callbackRecipient);
 	}
 
 	private static File getContentsFile(File indexLocation) {
@@ -178,4 +179,27 @@ public class Index {
     public void setActive(boolean active) {
     	this.active = active;
     }
+    
+    public String getName() {
+    	return this.name;
+    }
+
+    public void delete() {
+    	shutdown();
+
+		getContentsFile(this.indexLocation).delete();
+		getMappingsFile(this.indexLocation).delete();
+		File[] indexContents = this.indexLocation.listFiles();
+		for (int i = 0; i < indexContents.length; i++) {
+            File file = indexContents[i];
+            file.delete();
+        }
+        boolean deleted = this.indexLocation.delete();
+
+        if(!deleted) {
+        	throw new RuntimeException("Couldn't delete index");
+        }
+
+		this.callbackRecipient.showFeedbackMessage("Index '" + getName() + "' deleted");
+   }
 }

@@ -11,10 +11,6 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 
 public class GlobalConstants {
-	public static final String INDEX_DIR = System.getProperty("user.dir") + 
-										System.getProperty("file.separator") + 
-										".doccoIndex" + 
-										System.getProperty("file.separator");	
 	public static final Analyzer DEFAULT_ANALYZER = new StandardAnalyzer();
 	
 	public static final String FIELD_QUERY_BODY = "body";
