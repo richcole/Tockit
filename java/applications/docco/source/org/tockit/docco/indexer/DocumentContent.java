@@ -9,6 +9,9 @@ package org.tockit.docco.indexer;
 
 import java.io.Reader;
 
+import org.apache.lucene.document.Field;
+import org.tockit.docco.GlobalConstants;
+
 /**
  * This class is here for one purpose only - to unify return value
  * in DocumentProcessor.getDocumentContent method. In most cases
@@ -17,24 +20,17 @@ import java.io.Reader;
  * there is probably a better way to do this, I just can't think of it right now ;)
  */
 public class DocumentContent {
-	private String stringContent;
-	private Reader readerContent;
+	private Field documentField;
 	
 	public DocumentContent(String content) {
-		this.stringContent = content;
+		this.documentField = Field.UnStored(GlobalConstants.FIELD_QUERY_BODY, content);
 	}
 	
 	public DocumentContent(Reader content) {
-		this.readerContent = content;
+		this.documentField = Field.Text(GlobalConstants.FIELD_QUERY_BODY, content);
 	}
-	
-	public String getString () {
-		return this.stringContent;
-	}
-	
-	public Reader getReader() {
-		return this.readerContent;
-	}
-	
 
+	public Field getDocumentField() {
+		return documentField;
+	}
 }

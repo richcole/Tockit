@@ -14,18 +14,30 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.tockit.docco.documenthandler.DocumentHandler;
+import org.tockit.docco.documenthandler.HtmlDocumentHandler;
+import org.tockit.docco.documenthandler.PlainTextDocumentHandler;
+import org.tockit.docco.documenthandler.XmlDocumentHandler;
 import org.tockit.docco.filefilter.DoccoFileFilter;
+import org.tockit.docco.filefilter.ExtensionFileFilter;
+import org.tockit.docco.filefilter.RegularExpresionExtensionFileFilter;
 
 public class DocumentHandlerRegistry {
-	public static final String[] DEFAULT_MAPPINGS = new String[]{
-		"html?:org.tockit.docco.filefilter.RegularExpresionExtensionFileFilter:org.tockit.docco.documenthandler.HtmlDocumentHandler",
-		"txt:org.tockit.docco.filefilter.ExtensionFileFilter:org.tockit.docco.documenthandler.PlainTextDocumentHandler",
-		"xml:org.tockit.docco.filefilter.ExtensionFileFilter:org.tockit.docco.documenthandler.XmlDocumentHandler"
+	private static final DocumentHandlerMapping[] DEFAULT_MAPPINGS = new DocumentHandlerMapping[]{
+		new DocumentHandlerMapping(new RegularExpresionExtensionFileFilter("html?"),
+								   new HtmlDocumentHandler()),
+		new DocumentHandlerMapping(new ExtensionFileFilter("txt"),
+								   new PlainTextDocumentHandler()),
+		new DocumentHandlerMapping(new ExtensionFileFilter("xml"),
+								   new XmlDocumentHandler())
 	};
 	
 	List docHandlersList = new LinkedList();
 
 	public DocumentHandlerRegistry () {
+		for (int i = 0; i < DEFAULT_MAPPINGS.length; i++) {
+			DocumentHandlerMapping mapping = DEFAULT_MAPPINGS[i];
+			this.docHandlersList.add(mapping);
+		}
 	}
 	
 	public DocumentHandlerRegistry (String[] mappings) {
@@ -113,16 +125,5 @@ public class DocumentHandlerRegistry {
 			index++;
 		}
 		return mappings;
-	}
-
-	public void restoreDefaultMappingList () {
-		docHandlersList = new LinkedList();
-		try {
-			registerMappings(DocumentHandlerRegistry.DEFAULT_MAPPINGS);	
-		}
-		catch (Exception e) {
-			// @todo what to do with these exceptions here?!!
-			e.printStackTrace();			
-		}
 	}
 }

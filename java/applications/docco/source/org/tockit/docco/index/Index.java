@@ -80,9 +80,10 @@ public class Index {
 		
 		File mappingsFile = getMappingsFile(this.indexLocation);
 		if(mappingsFile.exists()) {
+			///@todo move the load/save code into the DocumentHandlerRegistry and give it the file instead
 			this.docHandlersRegistry = new DocumentHandlerRegistry(getLinesOfFile(mappingsFile));
 		} else {
-			this.docHandlersRegistry = new DocumentHandlerRegistry(DocumentHandlerRegistry.DEFAULT_MAPPINGS);
+			this.docHandlersRegistry = new DocumentHandlerRegistry();
 		}
 		
         this.indexer = new Indexer(this.indexLocation, baseDirectory, this.docHandlersRegistry, callbackRecipient);
