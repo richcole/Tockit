@@ -23,7 +23,8 @@ public class GlobalConstants {
 	public static final String FIELD_DOC_SUMMARY = "summary";
 	public static final String FIELD_DOC_TITLE = "title";
 	public static final String FIELD_DOC_KEYWORDS = "keywords";
-	public static final String FIELD_DOC_DATE = "mod_date";
+	public static final String FIELD_DOC_MODIFICATION_DATE = "mod_date";
+	public static final String FIELD_DOC_CREATION_DATE = "creation_date";
 	public static final String FIELD_DOC_AUTHOR = "author";
 	public static final String FIELD_DOC_TYPE = "type";
 	public static final String FIELD_DOC_SIZE = "size";

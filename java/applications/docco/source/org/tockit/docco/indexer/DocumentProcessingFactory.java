@@ -44,8 +44,8 @@ public class DocumentProcessingFactory {
 				/// worthwhile keeping
 				Document doc = docProcessor.getDocument(file);
 				doc.add(Field.Text(GlobalConstants.FIELD_DOC_PATH, file.getPath()));
-				if (doc.get(GlobalConstants.FIELD_DOC_DATE) == null) {
-					doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_DATE,new Date(file.lastModified())));
+				if (doc.get(GlobalConstants.FIELD_DOC_MODIFICATION_DATE) == null) {
+					doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_MODIFICATION_DATE,new Date(file.lastModified())));
 				}
 				doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_SIZE, new Long(file.length()).toString()));
 				//printDebug(doc);
@@ -77,7 +77,7 @@ public class DocumentProcessingFactory {
 	
 	private void printDebug (Document doc) {
 		System.out.println("DOCUMENT:: path = " + doc.get(GlobalConstants.FIELD_DOC_PATH) +
-						"\n\t date = " +  doc.get(GlobalConstants.FIELD_DOC_DATE) + 
+						"\n\t date = " +  doc.get(GlobalConstants.FIELD_DOC_MODIFICATION_DATE) + 
 						"\n\t size = " +  doc.get(GlobalConstants.FIELD_DOC_SIZE) + 
 						"\n\t author = " + doc.get(GlobalConstants.FIELD_DOC_AUTHOR) + 
 						"\n\t summary = " + doc.get(GlobalConstants.FIELD_DOC_SUMMARY)+ 

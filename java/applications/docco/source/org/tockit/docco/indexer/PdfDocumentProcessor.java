@@ -12,7 +12,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import org.apache.lucene.document.Document;
@@ -56,8 +55,7 @@ public class PdfDocumentProcessor implements DocumentProcessor {
 		}
 		if (info.getCreationDate() != null) {
 			Calendar creationDate = info.getCreationDate();
-			SimpleDateFormat formatter = new SimpleDateFormat();
-			doc.add(Field.Text(GlobalConstants.FIELD_DOC_DATE, formatter.format(creationDate.getTime())));
+			doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_CREATION_DATE, creationDate.getTime()));
 		}
 
 		PDFTextStripper pdfToText = new PDFTextStripper();

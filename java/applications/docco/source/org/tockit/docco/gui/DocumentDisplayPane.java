@@ -179,8 +179,8 @@ public class DocumentDisplayPane extends JPanel {
 		this.authorField.setText(reference.getDocument().get(GlobalConstants.FIELD_DOC_AUTHOR));
 		this.currentDocument = reference.getDocument().get(GlobalConstants.FIELD_DOC_PATH);
         this.pathField.setText(currentDocument);
-		this.dateField.setText(reference.getDocument().get(GlobalConstants.FIELD_DOC_DATE));
-		Field dateField = reference.getDocument().getField(GlobalConstants.FIELD_DOC_DATE);
+		this.dateField.setText(reference.getDocument().get(GlobalConstants.FIELD_DOC_MODIFICATION_DATE));
+		Field dateField = reference.getDocument().getField(GlobalConstants.FIELD_DOC_MODIFICATION_DATE);
 		Date modDate = DateField.stringToDate(dateField.stringValue());
 		DateFormat format = DateFormat.getDateTimeInstance();
         this.dateField.setText(format.format(modDate));

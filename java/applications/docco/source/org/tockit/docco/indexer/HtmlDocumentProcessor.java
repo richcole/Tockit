@@ -134,7 +134,7 @@ public class HtmlDocumentProcessor implements DocumentProcessor {
 		doc.add(Field.Text(GlobalConstants.FIELD_DOC_AUTHOR, handler.metaAuthor));
 	
 		if (handler.metaDate != null) {
-			doc.add(Field.Text(GlobalConstants.FIELD_DOC_DATE, handler.metaDate.toString()));
+			doc.add(Field.Text(GlobalConstants.FIELD_DOC_MODIFICATION_DATE, handler.metaDate.toString()));
 		}
 	
 		doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_KEYWORDS, handler.metaKeywords));
