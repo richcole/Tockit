@@ -4,7 +4,7 @@
     <property name="build.dir"   value="${basedir}/build"/>
     <property name="jars.dir"   value="${basedir}/../jars"/>
 
-    <property name="jar.file"   value="${jars.dir}/conscript.jar"/>
+    <property name="jar.file"   value="${jars.dir}/tockit-conscript.jar"/>
 
     <path id="project.class.path">
         <pathelement location="${build.dir}/"/>
