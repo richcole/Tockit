@@ -1,0 +1,49 @@
+<html>
+<head>
+<title>Docco Online Help -- Indexing</title>
+</head>
+<body>
+<h1>Creating and Managing Indexes</h1>
+
+<p>The index stores all the information about your documents which is used during
+the queries. When you query for certain documents, the program does not search
+the file systems for the results, it uses only the index. This is why it is so
+fast in finding results, but it also means that you have to manage the index
+a bit.</p>
+
+<p>Although the program could run on multiple indexes (a.k.a. indices), the current
+version supports only using one at a time. Updating an index is not yet supported
+either -- if you want to run on a newer index you have to create a new one. This
+might change soon, but we don't promise anything.</p>
+
+<p>The two things you can do with the index are:</p>
+
+<ul>
+<li>replace it with a new one by calling File->Create New Index...</li>
+<li>add more files into it by calling File->Add Files Into Index...</li>
+</ul>
+
+<p>If you add files into an index, the program will ask you to specify which files
+to add. In the file dialog you can pick files and directories. If you chose a directory,
+all its contents will be indexed. It is also allowed to pick multiple files and
+directories at once.</p>
+
+<p>Once you have selected files to index and hit the "Index" button, the program
+will start indexing in the background. The indexer will tell you about the progress
+in the status bar at the bottom of the window. You can add more files/directory
+into this process while the program is still working. You can also start querying,
+but the results will be incomplete if the program hasn't finished the indexing
+yet. You can see that it is finished when the status bar shows "Ready!" again.</p>
+
+<p>Avoid closing the program while the indexer is still running. This will result
+in an incomplete index, which will work without problems, but the program will not
+remember that it still has to index some documents. This way you will not be able
+to find all documents without redoing the whole process.</p>
+
+<p>In the current version Docco indexes files with the extensions: TXT, HTM/HTML,
+DOC, XLS and PDF. Support for PDF and the MS Office formats is still a bit flaky,
+documents might get ignored due to that.</p>
+
+<a href="index.html">Back to the main page</a>
+</body>
+</html>
