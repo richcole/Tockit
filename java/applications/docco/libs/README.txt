@@ -15,3 +15,6 @@ ant-contrib.jar
   
 ToscanaJ.jar
   ToscanaJ, CVS snapshot (http://toscanaj.sourceforge.net, license in LICENSE-ToscanaJ.txt).  
+
+plastic.jar
+  Plastic look and feel from JGoodies, 1.1.2 (http://www.jgoodies.com, license in LICENSE-JGoodies.txt)
