@@ -91,15 +91,24 @@ public class DoccoMainFrame extends JFrame {
 			diagramView.showDiagram(diagram);
 		}
 
+		/**
+		 * Creates base vectors as described in Frank Vogt's book on page 61.
+		 * 
+		 * $w_m:=(2^i-2^{n-i-1},-2^i-2^{n-i-1})$ 
+		 * 
+		 * Slight changes: we use the CS coordinate system (i.e. inverted Y) and
+		 * we scale things a bit.
+		 */
 		public Point2D[] createBase(QueryWithResultSet queryResultSet) {
-			final double scale = 200;
+			final double scalex = 30;
+			final double scaley = 15;
 			
 			int n = queryResultSet.size();
 			Point2D[] baseVectors = new Point2D[n];
 			for (int i = 0; i < baseVectors.length; i++) {
-				double x = -1 + 2 * i / (n-1.0); // ranges from -1 to 1
-				double y = (1 - Math.abs(x))* (-0.2) + 0.5;
-				baseVectors[i] = new Point2D.Double(scale * x, scale * y);
+				double x = (1<<i) - (1<<(n-i-1));
+				double y = (1<<i) + (1<<(n-i-1));
+				baseVectors[i] = new Point2D.Double(scalex * x, scaley * y);
 			}
 			return baseVectors;
 		}
