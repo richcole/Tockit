@@ -47,14 +47,18 @@ import net.sourceforge.toscanaj.controller.fca.ConceptInterpretationContext;
 import net.sourceforge.toscanaj.controller.fca.ConceptInterpreter;
 import net.sourceforge.toscanaj.controller.fca.DiagramHistory;
 import net.sourceforge.toscanaj.controller.fca.DirectConceptInterpreter;
+import net.sourceforge.toscanaj.controller.ndimlayout.DefaultDimensionStrategy;
+import net.sourceforge.toscanaj.controller.ndimlayout.NDimLayoutOperations;
 import net.sourceforge.toscanaj.model.context.Attribute;
 import net.sourceforge.toscanaj.model.database.AggregateQuery;
+import net.sourceforge.toscanaj.model.diagram.Diagram2D;
 import net.sourceforge.toscanaj.model.diagram.DiagramNode;
 import net.sourceforge.toscanaj.model.diagram.LabelInfo;
 import net.sourceforge.toscanaj.model.diagram.SimpleLineDiagram;
 import net.sourceforge.toscanaj.model.diagram.WriteableDiagram2D;
 import net.sourceforge.toscanaj.model.lattice.Concept;
 import net.sourceforge.toscanaj.model.lattice.ConceptImplementation;
+import net.sourceforge.toscanaj.model.lattice.Lattice;
 import net.sourceforge.toscanaj.view.diagram.DiagramView;
 import net.sourceforge.toscanaj.view.diagram.NodeView;
 
@@ -106,12 +110,64 @@ public class DoccoMainFrame extends JFrame {
 			QueryWithResultSet queryResultSet = (QueryWithResultSet) event.getSubject();
 			
 			Concept[] concepts = createConcepts(queryResultSet);
-			Point2D[] baseVectors = createBase(queryResultSet);
-			
-			WriteableDiagram2D diagram = createDiagram(concepts, baseVectors);
+
+			Diagram2D diagram;
+			if(showPhantomNodesCheckBox.isSelected()) {
+				Point2D[] baseVectors = createBase(queryResultSet);
+				diagram = createDiagram(concepts, baseVectors);
+			} else {
+				final Concept[] finalConcepts = reduceConceptsToRealisedOnes(concepts);
+				Lattice lattice = new Lattice(){
+					public Concept[] getConcepts() {
+	                    return finalConcepts;
+	                }
+	                public Concept getBottom() {
+                        return finalConcepts[finalConcepts.length-1];
+                    }
+					public Concept getTop() {
+                        return finalConcepts[0];
+                    }
+				};
+				diagram = NDimLayoutOperations.createDiagram(lattice,"Query results",new DefaultDimensionStrategy());
+			}
 			
 			diagramView.showDiagram(diagram);
 		}
+
+		/**
+		 * Note: this method has the side effect of changing the upsets and downsets
+		 * of the concepts involved. Not suited for reuse unless this is fixed.
+		 */
+        private Concept[] reduceConceptsToRealisedOnes(Concept[] concepts) {
+			List realizedConcepts = new ArrayList();
+
+			outerLoop: for (int i = 0; i < concepts.length; i++) {
+				Concept concept = concepts[i];
+				// we assume top-down order
+				for (int j = i + 1; j < concepts.length; j++) {
+					ConceptImplementation subconcept = (ConceptImplementation) concepts[j];
+					if(concept.getExtentSize() == subconcept.getExtentSize()) { // not realized
+						// move attribute contingent down. We know there is an infimum on the
+						// set of concepts with the same extent, so that is ok.
+						Iterator it = concept.getAttributeContingentIterator();
+						while(it.hasNext()) {
+							Attribute attribute = (Attribute) it.next();
+							subconcept.addAttribute(attribute);
+						}
+						continue outerLoop;
+					}
+				}
+				realizedConcepts.add(concept);
+			}
+
+			for (Iterator it = realizedConcepts.iterator();it.hasNext();) {
+                ConceptImplementation concept = (ConceptImplementation) it.next();
+				concept.getUpset().retainAll(realizedConcepts);
+				concept.getDownset().retainAll(realizedConcepts);
+            }
+            
+            return (Concept[]) realizedConcepts.toArray(new Concept[realizedConcepts.size()]);
+        }
 
         /**
 		 * Creates base vectors as described in Frank Vogt's book on page 61.
@@ -138,59 +194,26 @@ public class DoccoMainFrame extends JFrame {
 		public WriteableDiagram2D createDiagram(Concept[] concepts,	Point2D[] baseVectors) {
 			WriteableDiagram2D diagram = new SimpleLineDiagram();
 			DiagramNode[] nodes = new DiagramNode[concepts.length];
-			List realizedConcepts = new ArrayList();
-			if(!showPhantomNodesCheckBox.isSelected()) {
-				outerLoop: for (int i = 0; i < concepts.length; i++) {
-					Concept concept = concepts[i];
-					// we assume top-down order
-					for (int j = i + 1; j < concepts.length; j++) {
-						ConceptImplementation subconcept = (ConceptImplementation) concepts[j];
-                    	if(concept.getExtentSize() == subconcept.getExtentSize()) { // not realized
-                    		// move attribute contingent down. We know there is an infimum on the
-                    		// set of concepts with the same extent, so that is ok.
-                    		Iterator it = concept.getAttributeContingentIterator();
-                    		while(it.hasNext()) {
-                    			Attribute attribute = (Attribute) it.next();
-                    			subconcept.addAttribute(attribute);
-                    		}
-                    		continue outerLoop;
-                    	}
-					}
-					realizedConcepts.add(concept);
-				}
-			}
 			for (int i = 0; i < concepts.length; i++) {
-				if(nodeIsShown(concepts[i])) {
-					if(!showPhantomNodesCheckBox.isSelected())  {
-						concepts[i].getUpset().retainAll(realizedConcepts);
-						concepts[i].getDownset().retainAll(realizedConcepts);
+				double x = 0;
+				double y = 0;
+				for (int j = 0; j < baseVectors.length; j++) {
+					int currentBit = 1<<j;
+					if ((i & currentBit) == currentBit) {
+						x += baseVectors[j].getX();
+						y += baseVectors[j].getY();
 					}
-					double x = 0;
-					double y = 0;
-					for (int j = 0; j < baseVectors.length; j++) {
-						int currentBit = 1<<j;
-						if ((i & currentBit) == currentBit) {
-							x += baseVectors[j].getX();
-							y += baseVectors[j].getY();
-						}
-					}
-					Point2D pos = new Point2D.Double(x,y);
-					nodes[i] = new DiagramNode(diagram, String.valueOf(i), pos, concepts[i],
-														new LabelInfo(), new LabelInfo(), null);
-					diagram.addNode(nodes[i]);
 				}
+				Point2D pos = new Point2D.Double(x,y);
+				nodes[i] = new DiagramNode(diagram, String.valueOf(i), pos, concepts[i],
+													new LabelInfo(), new LabelInfo(), null);
+				diagram.addNode(nodes[i]);
 			}
 			
 			for (int i = 0; i < concepts.length - 1; i++) {
-				if(!nodeIsShown(concepts[i])) {
-					continue;
-				}
 				for (int j = 0; j < baseVectors.length; j++) {
 					int currentBit = 1<<j;
 					if( (i | currentBit ) != i ) {
-						if(!nodeIsShown(concepts[i | currentBit])) {
-							continue;
-						}
 						diagram.addLine(nodes[i], nodes[i | currentBit]);
 					}
 				}
