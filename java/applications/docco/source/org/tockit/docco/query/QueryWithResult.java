@@ -5,11 +5,11 @@
  *
  * $Id$
  */
-package query;
+package org.tockit.docco.query;
 
 import org.apache.lucene.search.Query;
+import org.tockit.docco.query.util.*;
 
-import query.util.*;
 
 public class QueryWithResult {
 

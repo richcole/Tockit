@@ -5,12 +5,13 @@
  *
  * $Id$
  */
-package query.util;
+package org.tockit.docco.query.util;
 
 import java.util.Collection;
 import java.util.Iterator;
 
-import query.QueryWithResult;
+import org.tockit.docco.query.QueryWithResult;
+
 
 public interface QueryWithResultSet {
 	public int size();

@@ -5,7 +5,7 @@
  *
  * $Id$
  */
-package query;
+package org.tockit.docco.query;
 
 import java.util.HashSet;
 import java.util.LinkedList;

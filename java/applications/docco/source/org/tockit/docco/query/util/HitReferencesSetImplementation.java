@@ -5,13 +5,14 @@
  *
  * $Id$
  */
-package query.util;
+package org.tockit.docco.query.util;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Iterator;
 
-import query.HitReference;
+import org.tockit.docco.query.HitReference;
+
 
 public class HitReferencesSetImplementation implements HitReferencesSet {
 	private Set references;

@@ -5,7 +5,7 @@
  *
  * $Id$
  */
-package query;
+package org.tockit.docco.query;
 
 import org.apache.lucene.document.Document;
 

@@ -5,13 +5,15 @@
  *
  * $Id$
  */
-package query.util;
+package org.tockit.docco.query.util;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import query.QueryWithResult;;
+import org.tockit.docco.query.QueryWithResult;
+
+;
 
 public class QueryWithResultSetImplementation implements QueryWithResultSet {
 	private HashSet qwrSet = new HashSet();

@@ -54,6 +54,7 @@
  * <http://www.apache.org/>.
  */
 
+package org.tockit.docco;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -62,10 +63,10 @@ import java.util.Set;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.ParseException;
+import org.tockit.docco.query.QueryDecomposer;
+import org.tockit.docco.query.QueryEngine;
+import org.tockit.docco.query.QueryWithResult;
 
-import query.QueryDecomposer;
-import query.QueryEngine;
-import query.QueryWithResult;
 
 import docsearcher.DocSearch;
 

@@ -5,6 +5,7 @@
  *
  * $Id$
  */
+package org.tockit.docco;
 import docsearcher.DocSearch;
 
 public class GlobalVars {

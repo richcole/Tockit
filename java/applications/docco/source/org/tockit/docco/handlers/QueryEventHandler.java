@@ -6,21 +6,21 @@
  * $Id$
  */
 
-package handlers;
+package org.tockit.docco.handlers;
 import java.io.IOException;
 
 import org.apache.lucene.queryParser.ParseException;
+import org.tockit.docco.events.QueryEvent;
+import org.tockit.docco.events.QueryFinishedEvent;
+import org.tockit.docco.query.QueryEngine;
+import org.tockit.docco.query.QueryWithResult;
+import org.tockit.docco.query.util.QueryWithResultSet;
+import org.tockit.docco.query.util.QueryWithResultSetImplementation;
 import org.tockit.events.Event;
 import org.tockit.events.EventBroker;
 import org.tockit.events.EventBrokerListener;
 
-import events.QueryEvent;
-import events.QueryFinishedEvent;
 
-import query.QueryEngine;
-import query.QueryWithResult;
-import query.util.QueryWithResultSet;
-import query.util.QueryWithResultSetImplementation;
  
  
 public class QueryEventHandler implements EventBrokerListener {

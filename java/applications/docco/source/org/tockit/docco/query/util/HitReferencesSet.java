@@ -5,12 +5,13 @@
  *
  * $Id$
  */
-package query.util;
+package org.tockit.docco.query.util;
 
 import java.util.Iterator;
 import java.util.Set;
 
-import query.HitReference;
+import org.tockit.docco.query.HitReference;
+
 
 public interface HitReferencesSet {
 	public int size();

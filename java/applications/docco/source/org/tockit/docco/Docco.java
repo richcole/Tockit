@@ -5,20 +5,21 @@
  *
  * $Id$
  */
+package org.tockit.docco;
 import java.io.IOException;
 
 import net.sourceforge.toscanaj.gui.dialog.ErrorDialog;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.tockit.docco.events.QueryEvent;
+import org.tockit.docco.gui.DoccoMainFrame;
+import org.tockit.docco.handlers.QueryEventHandler;
+import org.tockit.docco.query.QueryDecomposer;
+import org.tockit.docco.query.QueryEngine;
 import org.tockit.events.EventBroker;
 
-import events.QueryEvent;
 
-import query.QueryDecomposer;
-import query.QueryEngine;
 
-import gui.DoccoMainFrame;
-import handlers.QueryEventHandler;
 
 public class Docco {
 	

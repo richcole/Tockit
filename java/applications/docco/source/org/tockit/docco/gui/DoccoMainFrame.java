@@ -5,7 +5,7 @@
  *
  * $Id$
  */
-package gui;
+package org.tockit.docco.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -60,16 +61,16 @@ import org.tockit.events.EventBroker;
 import org.tockit.events.EventBrokerListener;
 
 
-import GlobalVars;
+import org.tockit.docco.GlobalVars;
+import org.tockit.docco.events.QueryEvent;
+import org.tockit.docco.events.QueryFinishedEvent;
+import org.tockit.docco.query.HitReference;
+import org.tockit.docco.query.QueryWithResult;
+import org.tockit.docco.query.util.HitReferencesSet;
+import org.tockit.docco.query.util.HitReferencesSetImplementation;
+import org.tockit.docco.query.util.QueryWithResultSet;
 
-import query.HitReference;
-import query.QueryWithResult;
-import query.util.HitReferencesSet;
-import query.util.HitReferencesSetImplementation;
-import query.util.QueryWithResultSet;
 
-import events.QueryEvent;
-import events.QueryFinishedEvent;
 
 public class DoccoMainFrame extends JFrame {
 	private JTextField queryField = new JTextField(20);
@@ -215,7 +216,19 @@ public class DoccoMainFrame extends JFrame {
 		
 	}
 	
-	private class ResultsListRenderer extends JLabel implements ListCellRenderer {
+	private class ResultsListRenderer extends JPanel implements ListCellRenderer {
+		JLabel locLabel;
+		JLabel scoreLabel;
+		public ResultsListRenderer () {
+			super();
+			setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+			locLabel = new JLabel();
+			scoreLabel = new JLabel();
+			
+			add(locLabel);
+			add(scoreLabel);
+		}
+		
 		public Component getListCellRendererComponent(JList list, Object value, 
 											int index, boolean isSelected, 
 											boolean cellHasFocus) {
@@ -230,10 +243,14 @@ public class DoccoMainFrame extends JFrame {
 			}
 			
 			Document doc = hitRef.getDocument();
-			String text = doc.getField(GlobalVars.FIELD_DOC_PATH).stringValue();
+			String text = doc.getField(GlobalVars.FIELD_DOC_TITLE).stringValue();
 			//text += "\n";
 			//text += "\tscore: " + hitRef.getScore(); 		
-			setText(text);
+			//setText(text);
+			
+			locLabel.setText(text);
+			scoreLabel.setText("score: " + hitRef.getScore());
+			
 			setFont(list.getFont());
 			return this;
 		}

@@ -54,44 +54,59 @@
  * <http://www.apache.org/>.
  */
 
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.index.IndexWriter;
-
+package org.tockit.docco;
 import java.io.File;
-import java.util.Date;
+import java.io.Reader;
+import java.io.FileInputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
-class IndexFiles {
-  public static void main(String[] args) {
-    try {
-      Date start = new Date();
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.DateField;
 
-      IndexWriter writer = new IndexWriter("index1", new StandardAnalyzer(), true);
-      indexDocs(writer, new File(args[0]));
+/** A utility for making Lucene Documents from a File. */
 
-      writer.optimize();
-      writer.close();
+public class FileDocument {
+  /** Makes a document for a File.
+    <p>
+    The document has three fields:
+    <ul>
+    <li><code>path</code>--containing the pathname of the file, as a stored,
+    tokenized field;
+    <li><code>modified</code>--containing the last modified date of the file as
+    a keyword field as encoded by <a
+    href="lucene.document.DateField.html">DateField</a>; and
+    <li><code>contents</code>--containing the full contents of the file, as a
+    Reader field;
+    */
+  public static Document Document(File f)
+       throws java.io.FileNotFoundException {
+	 
+    // make a new, empty document
+    Document doc = new Document();
 
-      Date end = new Date();
+    // Add the path of the file as a field named "path".  Use a Text field, so
+    // that the index stores the path, and so that the path is searchable
+    doc.add(Field.Text("path", f.getPath()));
 
-      System.out.print(end.getTime() - start.getTime());
-      System.out.println(" total milliseconds");
+    // Add the last modified date of the file a field named "modified".  Use a
+    // Keyword field, so that it's searchable, but so that no attempt is made
+    // to tokenize the field into words.
+    doc.add(Field.Keyword("modified",
+			  DateField.timeToString(f.lastModified())));
 
-    } catch (Exception e) {
-    	e.printStackTrace();
-      System.out.println(" caught a " + e.getClass() +
-			 "\n with message: " + e.getMessage());
-    }
+    // Add the contents of the file a field named "contents".  Use a Text
+    // field, specifying a Reader, so that the text of the file is tokenized.
+    // ?? why doesn't FileReader work here ??
+    FileInputStream is = new FileInputStream(f);
+    Reader reader = new BufferedReader(new InputStreamReader(is));
+    doc.add(Field.Text("contents", reader));
+
+    // return the document
+    return doc;
   }
 
-  public static void indexDocs(IndexWriter writer, File file)
-       throws Exception {
-    if (file.isDirectory()) {
-      String[] files = file.list();
-      for (int i = 0; i < files.length; i++)
-	indexDocs(writer, new File(file, files[i]));
-    } else {
-      System.out.println("adding " + file);
-      writer.addDocument(FileDocument.Document(file));
-    }
-  }
+  private FileDocument() {}
 }
+    

@@ -6,7 +6,7 @@
  * $Id$
  */
 
-package query;
+package org.tockit.docco.query;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -20,8 +20,8 @@ import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
+import org.tockit.docco.query.util.*;
 
-import query.util.*;
 
 public class QueryEngine {
 	private Searcher searcher;
