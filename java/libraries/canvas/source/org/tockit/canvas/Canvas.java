@@ -438,8 +438,7 @@ public class Canvas extends JPanel implements Printable {
      * Removes an item from the canvas.
      */
     public void removeCanvasItem(CanvasItem item) {
-        ListIterator layerIt =
-            this.canvasLayers.listIterator(this.canvasLayers.size());
+        Iterator layerIt = this.canvasLayers.iterator();
         while (layerIt.hasNext()) {
             List layer = (List) layerIt.next();
             layer.remove(item);
