@@ -256,7 +256,7 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
             new RelationHierachyUpdateHandler(relationHierarchyViews[i], i + 1, this.eventBroker);
         }
 
-        JList instanceListView = new JList();
+        JList instanceListView = new InstanceList();
         new InstanceListUpdateHandler(instanceListView, this.eventBroker);
 
         rightLowerSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, tabPane, new JScrollPane(instanceListView));

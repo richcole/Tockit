@@ -200,6 +200,19 @@ public class GraphView extends Canvas implements DropTargetListener {
                 this.addCanvasItem(linkView);
                 repaint();
                 dtde.getDropTargetContext().dropComplete(true);
+            } else if (transferable.isDataFlavorSupported(CGFlavors.InstanceFlavor)) {
+                dtde.acceptDrop(DnDConstants.ACTION_COPY);
+                Instance instance = (Instance) transferable.getTransferData(CGFlavors.InstanceFlavor);
+                Node newNode = new Node(this.graphShown.getKnowledgeBase(), instance.getType(), instance, null);
+                Point screenPos = dtde.getLocation();
+                Point2D canvasPos = this.getCanvasCoordinates(screenPos);
+                newNode.setPosition(canvasPos.getX(), canvasPos.getY());
+                this.graphShown.addNode(newNode);
+                NodeView newView = new NodeView(newNode);
+                nodemap.put(newNode, newView);
+                this.addCanvasItem(newView);
+                repaint();
+                dtde.getDropTargetContext().dropComplete(true);
             } else {
                 dtde.rejectDrop();
             }
