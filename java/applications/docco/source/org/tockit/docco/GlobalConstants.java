@@ -13,6 +13,7 @@ import org.tockit.docco.documenthandler.DocumentHandler;
 import org.tockit.docco.documenthandler.HtmlDocumentHandler;
 import org.tockit.docco.documenthandler.OpenOfficeDocumentHandler;
 import org.tockit.docco.documenthandler.PlainTextDocumentHandler;
+import org.tockit.docco.documenthandler.RtfDocumentHandler;
 import org.tockit.docco.documenthandler.XmlDocumentHandler;
 
 public class GlobalConstants {
@@ -43,6 +44,7 @@ public class GlobalConstants {
 										new HtmlDocumentHandler(),
 										new XmlDocumentHandler(),
 										new OpenOfficeDocumentHandler(),
-										new PlainTextDocumentHandler()
+										new PlainTextDocumentHandler(),
+										new RtfDocumentHandler()
 										};
 }
