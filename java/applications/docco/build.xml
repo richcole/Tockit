@@ -125,6 +125,8 @@
 	</target>
 	<target name="fullDist" depends="_makeReleaseJar,_copyFiles,_makePlugins,_zipFile">
 	</target>
+	<target name="fullDebugDist" depends="_makeDebugJar,_copyFiles,_makePlugins,_zipFile">
+	</target>
 	<target name="_zipFile">
 		<zip destfile="${dist.dir}.zip">
 			<fileset dir="${dist.base.dir}">
