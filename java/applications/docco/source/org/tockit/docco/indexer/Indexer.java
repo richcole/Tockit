@@ -9,15 +9,20 @@
 package org.tockit.docco.indexer;
 
 import org.apache.lucene.index.IndexWriter;
+import org.tockit.docco.ConfigurationManager;
 import org.tockit.docco.GlobalConstants;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 public class Indexer extends Thread {
-	public interface CallbackRecipient {
+	private static final String CONFIGURATION_MAPPING_ENTRY_NAME = "extension_mappings";
+    private static final String CONFIGURATION_SECTION_NAME = "Indexer";
+    public interface CallbackRecipient {
 		void showFeedbackMessage(String message);
 	}
 
@@ -32,18 +37,29 @@ public class Indexer extends Thread {
 	public Indexer(CallbackRecipient output) {
 		this.callbackRecipient = output;
 		try {
-			Class htmlDocProcessorClass = HtmlDocumentProcessor.class;
-			this.docProcessingFactory.registerExtension("html", htmlDocProcessorClass);
-			this.docProcessingFactory.registerExtension("htm", htmlDocProcessorClass);
-
-			Class plainTextDocProcessorClass = PlainTextDocumentProcessor.class;
-			this.docProcessingFactory.registerExtension("txt", plainTextDocProcessorClass);
-
-			this.docProcessingFactory.registerExtension("pdf", PdfDocumentProcessor.class);
-
-			this.docProcessingFactory.registerExtension("doc", MSWordProcessor.class);
-
-			this.docProcessingFactory.registerExtension("xls", MSExcelDocProcessor.class);
+			List mappings = ConfigurationManager.fetchStringList(CONFIGURATION_SECTION_NAME, CONFIGURATION_MAPPING_ENTRY_NAME, 50);
+			if(mappings.size() == 0) {
+				mappings = new ArrayList(20);
+				mappings.add("html:org.tockit.docco.indexer.HtmlDocumentProcessor");
+				mappings.add("htm:org.tockit.docco.indexer.HtmlDocumentProcessor");
+				mappings.add("pdf:org.tockit.docco.indexer.PdfDocumentProcessor");
+				mappings.add("doc:org.tockit.docco.indexer.MSWordProcessor");
+				mappings.add("txt:org.tockit.docco.indexer.PlainTextDocumentProcessor");
+				mappings.add("xls:org.tockit.docco.indexer.MSExcelDocProcessor");
+				ConfigurationManager.storeStringList(CONFIGURATION_SECTION_NAME, CONFIGURATION_MAPPING_ENTRY_NAME, mappings);
+			}
+			for (Iterator iter = mappings.iterator(); iter.hasNext();) {
+                String mapping = (String) iter.next();
+                int colonIndex = mapping.indexOf(':');
+				String extension = mapping.substring(0,colonIndex);
+				String className = mapping.substring(colonIndex + 1);
+				try {
+					this.docProcessingFactory.registerExtension(extension,Class.forName(className));
+				} catch(ClassCastException e) {
+					System.err.println("WARNING: class " + className + " could not be loaded due to this error:");
+					e.printStackTrace();
+				}
+            }
 		}
 		catch (Exception e) {
 			e.printStackTrace();
