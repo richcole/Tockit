@@ -4,6 +4,8 @@ extern "C" {
 #include <sarl/relation_iterator.h>
 #include <sarl/ref_count.h>
   
+#include <sarl/set_iterator.h>
+
 }
 
 #include <iostream>
@@ -11,6 +13,7 @@ extern "C" {
 #include <sarl/relation_impl.h>
 #include <sarl/relation_iterator_impl.h>
 #include <sarl/plain_relation_iterator.h>
+#include <sarl/test.h>
 
 /* function prototypes used in function table declaired below */
 
@@ -138,8 +141,181 @@ struct Sarl_SetIterator *sarl_relation_iterator_range(
   return rng_it;
 };
 
-struct Iterator *sarl_relation_intent(
-  struct Sarl_RelationIterator *, Sarl_Index);
+struct Sarl_SetIterator *
+sarl_construct_aggregate(
+  struct Sarl_SetIterator **v, 
+  int lower, 
+  int upper, 
+  struct Sarl_SetIterator *(*func)(
+    struct Sarl_SetIterator *a, struct Sarl_SetIterator *b)
+)
+{
+  Sarl_SetIterator *left, *right, *result;
 
-struct Iterator *sarl_relation_extent(
-  struct Sarl_RelationIterator *, Sarl_Index);
+  if ( upper - lower == 3 ) {
+    result = func(
+      v[lower], 
+      left = sarl_set_iterator_release_ownership(
+        sarl_construct_aggregate(v, lower+1, upper, func)
+      )
+    );
+    sarl_set_iterator_decr_ref(left);
+  }
+  else if ( upper - lower == 2 ) {
+    result = func(v[lower], v[lower+1]);
+  }
+  else {
+    result = func(
+      left = sarl_set_iterator_release_ownership(
+        sarl_construct_aggregate(v, lower, (lower + upper)/2, func)
+      ),
+      right = sarl_set_iterator_release_ownership(
+        sarl_construct_aggregate(v, (lower + upper)/2, upper, func)
+      )
+    );
+    sarl_set_iterator_decr_ref(left);
+    sarl_set_iterator_decr_ref(right);
+  };
+
+  return result;
+};
+
+struct Sarl_SetIterator *sarl_relation_iterator_aggregate(
+  struct Sarl_RelationIterator *r, 
+  struct Sarl_SetIterator *s,
+  struct Sarl_SetIterator *(*op)(
+    struct Sarl_RelationIterator *,
+    Sarl_Index),
+  struct Sarl_SetIterator *(*ag)(
+    struct Sarl_SetIterator *,
+    struct Sarl_SetIterator *),
+  struct Sarl_SetIterator *(*empty_op)(
+    struct Sarl_RelationIterator *)
+)
+{
+  Sarl_Index       count, i; 
+  Sarl_SetIterator **v;
+  Sarl_SetIterator *result;
+  
+  count = sarl_set_iterator_count(s);
+  v = new (struct Sarl_SetIterator *)[count];
+
+  i = 0;
+  SARL_SET_ITERATOR_FOR(s) {
+    v[i] = op(r, sarl_set_iterator_val(s));
+    sarl_set_iterator_release_ownership(v[i]);
+    ++i;
+  }
+
+  if ( count > 1 ) {
+     result = sarl_construct_aggregate(v, 0, count, ag);
+  }
+  else {
+    if ( count == 1 ) {
+      result = sarl_set_iterator_obtain_ownership(v[0]);
+    }
+    else {
+      result = (*empty_op)(r);
+    }
+  }
+
+  for(i=0;i<count;++i) {
+    sarl_set_iterator_decr_ref(v[i]);
+  };
+  
+  delete v;
+  return result;
+};
+
+struct Sarl_SetIterator *sarl_relation_iterator_intent_set(
+  struct Sarl_RelationIterator *r, struct Sarl_SetIterator *s
+)
+{
+  return sarl_relation_iterator_aggregate(
+    r, s, 
+    sarl_relation_iterator_intent, 
+    sarl_set_iterator_meet, 
+    sarl_relation_iterator_range
+  );
+};
+
+struct Sarl_SetIterator *sarl_relation_iterator_extent_set(
+  struct Sarl_RelationIterator *r, 
+  struct Sarl_SetIterator *s)
+{
+  return sarl_relation_iterator_aggregate(
+    r, s, 
+    sarl_relation_iterator_extent, 
+    sarl_set_iterator_meet, 
+    sarl_relation_iterator_domain
+  );
+};
+
+struct Sarl_SetIterator *sarl_relation_iterator_extent_intent_set(
+  struct Sarl_RelationIterator *r, struct Sarl_SetIterator *intent
+)
+{
+  Sarl_SetIterator *extent;
+  Sarl_SetIterator *extent_intent;
+
+  extent = sarl_relation_iterator_extent_set(r, intent);
+  sarl_set_iterator_release_ownership(extent);
+
+  extent_intent = sarl_relation_iterator_intent_set(r, extent);
+  sarl_set_iterator_decr_ref(extent);
+
+  return extent_intent;
+};
+
+struct Sarl_SetIterator *sarl_relation_iterator_intent_extent_set(
+  struct Sarl_RelationIterator *r, struct Sarl_SetIterator *extent
+)
+{
+  Sarl_SetIterator *intent;
+  Sarl_SetIterator *intent_extent;
+  
+  intent        = sarl_relation_iterator_intent_set(r, extent);
+  sarl_set_iterator_release_ownership(intent);
+
+  intent_extent = sarl_relation_iterator_extent_set(r, intent);
+  sarl_set_iterator_decr_ref(intent);
+
+  return intent_extent;
+};
+
+extern struct Sarl_RelationIterator *
+  sarl_relation_iterator_obtain_ownership(
+    struct Sarl_RelationIterator *it
+  )
+{
+  Sarl_RelationIterator *result;
+  
+  if ( it->m_ownership == SARL_HAS_NO_OWNER ) {
+    result = it;
+    sarl_relation_iterator_incr_ref(it);
+  }
+  else {
+    result = sarl_relation_iterator_copy(it);
+    sarl_relation_iterator_release_ownership(result);
+  };
+  
+  SARL_TEST_ASSERT_EQ(result->m_ownership, SARL_HAS_NO_OWNER);
+  result->m_ownership = SARL_HAS_OWNER;
+  return result;
+};
+
+void
+  sarl_relation_iterator_release_ownership(
+    struct Sarl_RelationIterator *it
+  )
+{
+  SARL_TEST_ASSERT_EQ(it->m_ownership, SARL_HAS_OWNER);
+  it->m_ownership = SARL_HAS_NO_OWNER;
+};
+
+
+
+
+
+
+

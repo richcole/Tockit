@@ -54,10 +54,9 @@ struct Sarl_SetIterator *sarl_set_iterator_union(
   Sarl_UnionSetIterator* it  = new Sarl_UnionSetIterator();
   sarl_set_iterator_init(it, &s_unionIteratorTable);
 
-  it->first = a_first;
-  it->second = a_second;
-  sarl_set_iterator_incr_ref(it->first);
-  sarl_set_iterator_incr_ref(it->second);
+  it->first = sarl_set_iterator_obtain_ownership(a_first);
+  it->second = sarl_set_iterator_obtain_ownership(a_second);
+
   return it;
 }
 

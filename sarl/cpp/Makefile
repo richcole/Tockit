@@ -16,7 +16,8 @@ target: $(SARL_LIB_DIR_D)/libsarl++.so $(SARL_LIB_DIR)/libsarl++.so
 test: $(TEST:%=%.exe) $(TEST)
 
 $(TEST): 
-	LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(SARL_LIB_DIR_D); ./$@.exe
+	LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(SARL_LIB_DIR_D); echo $@; ./$@.exe
+
 
 %.o: %.cpp
 	$(CCC) -ggdb $(CPP_FLAGS) $(DEBUG) -c -I../.. -o $@ $< 

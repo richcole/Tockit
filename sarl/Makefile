@@ -22,7 +22,11 @@ TESTS = \
   test_set \
   test_set_iterator_meet \
   test_set_iterator_union \
-  test_set_iterator_set_minus
+  test_set_iterator_set_minus \
+  test_relation_001 \
+  test_relation_002 \
+  test_relation_003 \
+  test_relation_004 
 
 PUBLIC_HEADERS = \
   cpp/Set.h \
@@ -45,6 +49,9 @@ JAVA_SARL_LIB   =  java/libsarl_java.so
 
 export LD_LIBRARY_PATH += $(SARL_ROOT)/lib_d
 
+test_base: libs $(TESTS:%=%.exe) 
+	LD_LIBRARY_PATH=`pwd`/lib_d:$$LD_LIBRARY_PATH; \
+	for x in $(TESTS:%=%.exe) ; do echo $$x:; ./$$x || exit -1 ; done
 # Main.
 
 main: $(PYTHON_SARL_LIB) $(JAVA_SARL_LIB)
@@ -122,19 +129,25 @@ test_java: java/TestSarl.class $(JAVA_SARL_LIB)
 test_cpp: 
 	$(MAKE) -C cpp test
 
-clean: java_clean python_clean cpp_clean
-	rm -f *.o *.so *.exe depend.mak.bak
+clean: java_clean python_clean cpp_clean lib_clean
+	rm -f *.o
+
+cpp_clean:
+	$(MAKE) -C cpp clean
+
+python_clean:
+	rm -f python/*.pyc python/sarl_wrap.* python/*.so
 
 java_clean:
 	rm -f java/sarl_wrap.* 
 	rm -f java/*.class java/sarl.java 
 	rm -f java/*Iterator.java java/Set*.java java/Relation*.java
 
+lib_clean:
+	rm -f lib/*.so lib_d/*.so
+
 python_clean:
 	rm -f python/*.pyc python/sarl_wrap.* python/*.so
-
-cpp_clean:
-	cd cpp; make clean
 
 depend:
 	makedepend -Y../ *.cpp -fdepend.mak 

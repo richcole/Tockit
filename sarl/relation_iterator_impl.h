@@ -1,7 +1,7 @@
 #ifndef SARL_RELATION_ITERATOR_IMPL_H
 #define SARL_RELATION_ITERATOR_IMPL_H
 
-#include <sarl/pair.h>
+#include <sarl/iterator_impl.h>
 
 struct Sarl_RelationIteratorFunctionTable {
   void  (*next_gte)(struct Sarl_RelationIterator *, struct Sarl_Pair);
@@ -14,10 +14,9 @@ struct Sarl_RelationIteratorFunctionTable {
   struct Sarl_RelationIterator*  (*inverse)(struct Sarl_RelationIterator *);
 };
 
-struct Sarl_RelationIterator
+struct Sarl_RelationIterator : Sarl_Iterator
 {
-  Sarl_RefCount ref_count;
-  Sarl_RelationIteratorFunctionTable *funcs;
+  Sarl_RelationIteratorFunctionTable *mp_funcs;
 };
 
 struct Sarl_PlainRelationIterator : Sarl_RelationIterator
@@ -47,8 +46,9 @@ inline void sarl_relation_iterator_init(
   struct Sarl_RelationIterator *it,
   Sarl_RelationIteratorFunctionTable *ap_funcs)
 {
-  it->funcs = ap_funcs;
-  sarl_ref_count_init(&it->ref_count);
+  it->mp_funcs = ap_funcs;
+  it->m_ownership = SARL_HAS_OWNER;
+  sarl_ref_count_init(&it->m_ref_count);
 }
 
 #endif

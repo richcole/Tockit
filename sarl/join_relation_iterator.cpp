@@ -38,9 +38,8 @@ Sarl_RelationIterator *sarl_relation_iterator_join(
   Sarl_JoinRelationIterator* it  = new Sarl_JoinRelationIterator();
   sarl_relation_iterator_init(it, &s_join_relation_iterator_table);
 
-  /* fixme - this is now inconsistent with the other operators. */
-  it->first = sarl_relation_iterator_copy(ap_first);
-  it->second = sarl_relation_iterator_copy(ap_second);
+  it->mp_first = sarl_relation_iterator_obtain_ownership(ap_first);
+  it->mp_second = sarl_relation_iterator_obtain_ownership(ap_second);
 
   return it;
 }
@@ -240,11 +239,8 @@ struct Sarl_RelationIterator* sarl_relation_iterator_join_copy(
   Sarl_JoinRelationIterator* copy_it  = new Sarl_JoinRelationIterator();
   sarl_relation_iterator_init(copy_it, org_it->funcs);
 
-  copy_it->first = org_it->first;
-  copy_it->second = org_it->second;
-  
-  sarl_relation_iterator_incr_ref(copy_it->first);
-  sarl_relation_iterator_incr_ref(copy_it->second);
+  copy_it->mp_first = sarl_relation_iterator_copy(org_it->mp_first);
+  copy_it->mp_second = sarl_relation_iterator_copy(org_it->mp_second);
   
   return copy_it;
 }

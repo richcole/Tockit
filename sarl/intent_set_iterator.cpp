@@ -59,12 +59,10 @@ struct Sarl_SetIterator* sarl_relation_iterator_intent(
 
   sarl_set_iterator_init(it, &s_intent_iterator_table);
 
-  it->iterator = ap_it;
-  it->object = a_object;
+  it->mp_iterator = sarl_relation_iterator_obtain_ownership(ap_it);
+  it->m_object = a_object;
 
-  sarl_relation_iterator_incr_ref(it->iterator);
   sarl_set_iterator_reset(it);
-
   return it;
 };
 
@@ -144,7 +142,10 @@ static struct Sarl_SetIterator* sarl_set_iterator_intent_copy(
   
   Sarl_IntentSetIterator* copy_it  = new Sarl_IntentSetIterator();
   sarl_set_iterator_init(copy_it, &s_intent_iterator_table);
-  copy_it->iterator = sarl_relation_iterator_copy(org_it->iterator);
+
+  copy_it->mp_iterator = sarl_relation_iterator_copy(org_it->mp_iterator);
+  copy_it->m_object = org_it->m_object;
+  
   return copy_it;
 }
 

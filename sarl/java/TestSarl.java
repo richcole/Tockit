@@ -1,5 +1,6 @@
+import SetIteratorFunctions;
 
-class TestSarl
+class TestSarl extends SetIteratorFunctions
 {
   static {
     try {
@@ -32,8 +33,10 @@ class TestSarl
       }
     }
 
-    SetIterator it = new SetIterator(A).iterator_meet(
-      new SetIterator(B));
+    SetIterator it_a = new SetIterator(A);
+    SetIterator it_b = new SetIterator(B);
+    
+    SetIterator it = meet(it_a, it_b);
 
     if ( it.count() != LEN/6 ) {
       System.out.println("Error, it.count() != " + LEN/6);

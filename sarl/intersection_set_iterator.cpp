@@ -78,10 +78,9 @@ struct Sarl_SetIterator *sarl_set_iterator_meet(
   Sarl_IntersectionSetIterator* it  = new Sarl_IntersectionSetIterator();
   sarl_set_iterator_init(it, &s_intersectionIteratorTable);
 
-  it->first = a_first;
-  it->second = a_second;
-  sarl_set_iterator_incr_ref(it->first);
-  sarl_set_iterator_incr_ref(it->second);
+  it->first = sarl_set_iterator_obtain_ownership(a_first);
+  it->second = sarl_set_iterator_obtain_ownership(a_second);
+
   sarl_set_iterator_intersection_advance(it);
   return it;
 }

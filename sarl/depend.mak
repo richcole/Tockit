@@ -66,6 +66,15 @@ set_minus_set_iterator.o: ../sarl/set_iterator.h ../sarl/ref_count.h
 set_minus_set_iterator.o: ../sarl/set_impl.h
 set_minus_set_iterator.o: ../sarl/set_minus_set_iterator_impl.h
 set_minus_set_iterator.o: ../sarl/set_iterator_impl.h
+test_relation_001.o: ../sarl/relation.h ../sarl/index.h ../sarl/pair.h
+test_relation_001.o: ../sarl/relation_iterator.h ../sarl/set_iterator.h
+test_relation_001.o: ../sarl/test.h args.cc
+test_relation_002.o: ../sarl/relation.h ../sarl/index.h ../sarl/pair.h
+test_relation_002.o: ../sarl/relation_iterator.h ../sarl/set_iterator.h
+test_relation_002.o: ../sarl/set.h ../sarl/test.h args.cc
+test_relation.o: ../sarl/relation.h ../sarl/index.h ../sarl/pair.h
+test_relation.o: ../sarl/relation_iterator.h ../sarl/set_iterator.h
+test_relation.o: ../sarl/test.h args.cc
 test_set.o: ../sarl/set.h ../sarl/index.h ../sarl/set_iterator.h
 test_set_iterator_meet.o: ../sarl/set.h ../sarl/index.h
 test_set_iterator_meet.o: ../sarl/set_iterator.h

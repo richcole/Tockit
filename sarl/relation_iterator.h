@@ -13,6 +13,7 @@
   )
 
 /* set_iterator moving operations */
+
 extern void  sarl_relation_iterator_next_gte(
   struct Sarl_RelationIterator *, 
   struct Sarl_Pair);
@@ -35,8 +36,20 @@ extern void sarl_relation_iterator_decr_ref(
 extern void sarl_relation_iterator_incr_ref(
   struct Sarl_RelationIterator *);
 
-extern struct Sarl_RelationIterator* sarl_relation_iterator_copy(
-  struct Sarl_RelationIterator *);
+extern struct Sarl_RelationIterator* 
+  sarl_relation_iterator_copy(
+    struct Sarl_RelationIterator *
+  );
+
+extern struct Sarl_RelationIterator* 
+  sarl_relation_iterator_obtain_ownership(
+    struct Sarl_RelationIterator *
+  );
+
+void
+  sarl_relation_iterator_release_ownership(
+    struct Sarl_RelationIterator *
+  );
 
 extern struct Sarl_RelationIterator* sarl_relation_iterator_inverse(
   struct Sarl_RelationIterator *);
@@ -58,25 +71,21 @@ extern struct Sarl_SetIterator *sarl_relation_iterator_intent(
 extern struct Sarl_SetIterator *sarl_relation_iterator_extent(
   struct Sarl_RelationIterator *, Sarl_Index);
 
-/* omit ---
-
-extern struct Sarl_SetIterator *sarl_relation_intent_set(
-  struct Sarl_RelationIterator *, struct Iterator *
-);
-
-extern struct Sarl_SetIterator *sarl_relation_extent_set(
-  struct Sarl_RelationIterator *, struct Iterator *
-);
-
-extern struct Sarl_SetIterator *sarl_relation_extent_intent_set(
+extern struct Sarl_SetIterator *sarl_relation_iterator_intent_set(
   struct Sarl_RelationIterator *, struct Sarl_SetIterator *
 );
 
-extern struct Sarl_SetIterator *sarl_relation_intent_extent_set(
+extern struct Sarl_SetIterator *sarl_relation_iterator_extent_set(
   struct Sarl_RelationIterator *, struct Sarl_SetIterator *
 );
 
-*/
+extern struct Sarl_SetIterator *sarl_relation_iterator_extent_intent_set(
+  struct Sarl_RelationIterator *, struct Sarl_SetIterator *
+);
+
+extern struct Sarl_SetIterator *sarl_relation_iterator_intent_extent_set(
+  struct Sarl_RelationIterator *, struct Sarl_SetIterator *
+);
 
 /* construction of relation objects */
 

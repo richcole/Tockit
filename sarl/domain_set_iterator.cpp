@@ -112,8 +112,7 @@ struct Sarl_SetIterator *sarl_relation_iterator_domain(
   Sarl_DomainSetIterator* it  = new Sarl_DomainSetIterator();
   sarl_set_iterator_init(it, &s_domain_iterator_table);
 
-  it->rel_it = a_it;
-  sarl_relation_iterator_incr_ref(it->rel_it);
+  it->rel_it = sarl_relation_iterator_obtain_ownership(a_it);
   return it;
 };
 

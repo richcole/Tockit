@@ -7,6 +7,7 @@
 
 using namespace std;
 
+class SetIterator;
 
 int main()
 {
@@ -21,23 +22,18 @@ int main()
       t.insert(i);
     }
   }
-  
-  SetIterator it_s = s;
-  SetIterator it_t = t;
-  
-  SetIterator it = it_s.iterator_meet(it_t);
-  SetIterator tmp;
-  tmp = it;
 
-  SetIterator *p_it = new SetIterator(tmp);
+  SetIterator it_s(s);
+  SetIterator it_t(t);
   
+  SetIterator it  = meet(it_s, it_t);
+  
+  it  = SetIteratorFunctions::meet(it_s, it_t);
   if ( it.count_remaining() != LEN/6 ) {
     cerr << "Error, expected count_remaining=" << LEN/6 << ", but got ";
     cerr << it.count_remaining() << endl;
     exit(-1);
   }
-
-  delete p_it;
 
   return 0;
 };

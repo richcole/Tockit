@@ -8,6 +8,7 @@ extern "C" {
 
 #include <sarl/set_impl.h>
 #include <sarl/set_iterator_impl.h>
+#include <sarl/test.h>
 
 /* function prototypes used in function table declaired below */
 
@@ -93,6 +94,9 @@ static Sarl_Index sarl_set_iterator_plain_value(struct Sarl_SetIterator *a_it)
   if ( ! sarl_set_iterator_at_end(it) ) {
     return *it->it;
   }
+  else {
+    return 0;
+  }
 }
 
 static int   sarl_set_iterator_plain_at_end(struct Sarl_SetIterator *a_it)
@@ -176,7 +180,7 @@ struct Sarl_SetIterator* sarl_set_iterator_copy(
   return a_it->funcs->copy(a_it);
 };
 
-extern Sarl_Index  sarl_set_iterator_count(struct Sarl_SetIterator *a_it)
+Sarl_Index  sarl_set_iterator_count(struct Sarl_SetIterator *a_it)
 {
   Sarl_SetIterator *it_copy = sarl_set_iterator_copy(a_it);
   Sarl_Index count = 0;
@@ -189,7 +193,7 @@ extern Sarl_Index  sarl_set_iterator_count(struct Sarl_SetIterator *a_it)
   return count;
 };
 
-extern Sarl_Index  sarl_set_iterator_count_remaining(
+Sarl_Index  sarl_set_iterator_count_remaining(
   struct Sarl_SetIterator *a_it)
 {
   Sarl_SetIterator *it_copy = sarl_set_iterator_copy(a_it);
@@ -283,6 +287,39 @@ int sarl_set_iterator_subset(
   sarl_set_iterator_decr_ref(v);
   return ret_val;
 };
+
+struct Sarl_SetIterator *
+  sarl_set_iterator_obtain_ownership(
+    struct Sarl_SetIterator *it
+  )
+{
+  Sarl_SetIterator *result;
+  
+  if ( it->m_ownership == SARL_HAS_NO_OWNER ) {
+    result = it;
+    sarl_set_iterator_incr_ref(it);
+  }
+  else {
+    result = sarl_set_iterator_copy(it);
+    sarl_set_iterator_release_ownership(result);
+  };
+  
+  SARL_TEST_ASSERT_EQ(result->m_ownership, SARL_HAS_NO_OWNER);
+  result->m_ownership = SARL_HAS_OWNER;
+  return result;
+};
+
+
+struct Sarl_SetIterator *
+  sarl_set_iterator_release_ownership(
+    struct Sarl_SetIterator *it
+  )
+{
+  SARL_TEST_ASSERT_EQ(it->m_ownership, SARL_HAS_OWNER);
+  it->m_ownership = SARL_HAS_NO_OWNER;
+  return it;
+};
+
 
   
   

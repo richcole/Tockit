@@ -15,22 +15,42 @@ struct Sarl_Set;
   )
 
 /* copy operations */
-extern struct Sarl_SetIterator *sarl_set_iterator_copy(struct Sarl_SetIterator *);
+
+extern struct Sarl_SetIterator *
+  sarl_set_iterator_copy(struct Sarl_SetIterator *);
+
+/*! the function will return either _it_, or _it->copy()_. 
+ *  In anycase the returned object will have a reference count of
+ *  1 and so decr_ref_count, should be called on it.
+ */
+extern struct Sarl_SetIterator *
+  sarl_set_iterator_obtain_ownership(struct Sarl_SetIterator *);
+
+/*! the function will set the object to be not owned but will not
+ *  decrement the reference count. 
+ */
+extern struct Sarl_SetIterator *
+  sarl_set_iterator_release_ownership(struct Sarl_SetIterator *);
 
 /* constructive operations */
-extern struct Sarl_SetIterator *sarl_set_iterator_create(struct Sarl_Set *);
 
-extern struct Sarl_SetIterator *sarl_set_iterator_meet(
-  struct Sarl_SetIterator *, struct Sarl_SetIterator *
-);
+extern struct Sarl_SetIterator *
+  sarl_set_iterator_create(struct Sarl_Set *);
 
-extern struct Sarl_SetIterator *sarl_set_iterator_union(
-  struct Sarl_SetIterator *, struct Sarl_SetIterator *
-);
+extern struct Sarl_SetIterator *
+  sarl_set_iterator_meet(
+    struct Sarl_SetIterator *, struct Sarl_SetIterator *
+  );
 
-extern struct Sarl_SetIterator *sarl_set_iterator_minus(
-  struct Sarl_SetIterator *, struct Sarl_SetIterator *
-);
+extern struct Sarl_SetIterator *
+  sarl_set_iterator_union(
+    struct Sarl_SetIterator *, struct Sarl_SetIterator *
+  );
+
+extern struct Sarl_SetIterator *
+  sarl_set_iterator_minus(
+    struct Sarl_SetIterator *, struct Sarl_SetIterator *
+  );
 
 /* boolean operations */
 

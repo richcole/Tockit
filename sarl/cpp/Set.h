@@ -11,33 +11,18 @@ extern "C" {
 class SetIterator;
 
 class Set {
+
   friend class SetIterator;
- public: 
+
+public: 
   Set() {
     mp_setRef = sarl_set_create();
   };
 
-  Set(Set const& it) {
-    mp_setRef = 0;
-    *this = it;
-  }
-
-	Set(SetIterator const& it);
-
-  Set& operator=(Set const& it) {
-    if ( it.mp_setRef == mp_setRef ) {
-      return *this;
-    }
-    if ( mp_setRef != 0 ) {
-      sarl_set_decr_ref(mp_setRef);
-    }
-    mp_setRef = it.mp_setRef;
-    if ( mp_setRef != 0 ) {
-      sarl_set_incr_ref(mp_setRef);
-    }
-    return *this;
-  }
-
+  inline Set(Set const& set);
+  inline Set(SetIterator const& it);
+  inline Set& operator=(Set const& it);
+  
   virtual ~Set() {
     sarl_set_decr_ref(mp_setRef);
   };
@@ -50,7 +35,9 @@ class Set {
     sarl_set_remove(mp_setRef, x);
   };
 
-  Set copy();
+  Set copy() {
+    return Set(*this);
+  };
 
  private:
   Sarl_Set* mp_setRef;
@@ -58,6 +45,31 @@ class Set {
   Set(Sarl_Set* ap_ref) {
     mp_setRef = ap_ref;
   }
+};
+
+#include <sarl/cpp/SetIterator.h>
+
+inline Set::Set(Set const& set) {
+  SetIterator it(set);
+  mp_setRef = sarl_set_copy(it.mp_itRef);
+};
+
+inline Set::Set(SetIterator const& it) {
+  mp_setRef = sarl_set_copy(it.mp_itRef);
+};
+
+inline Set& Set::operator=(Set const& it) {
+  if ( it.mp_setRef == mp_setRef ) {
+    return *this;
+  }
+  if ( mp_setRef != 0 ) {
+    sarl_set_decr_ref(mp_setRef);
+  }
+  mp_setRef = it.mp_setRef;
+  if ( mp_setRef != 0 ) {
+    sarl_set_incr_ref(mp_setRef);
+  }
+  return *this;
 };
 
 #endif

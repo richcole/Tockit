@@ -33,7 +33,7 @@ for i in range(1,len):
 
 b_it = SetIterator(b)
 c_it = SetIterator(c)
-it = b_it.iterator_meet(c_it)
+it = meet(b_it, c_it)
 
 while(not it.at_end()):
     it.next()
@@ -48,9 +48,9 @@ if SetIterator(b).count_remaining() != len/3:
 if it.count() != len/6:
    print "Error, it.count() returned ", it.count()
 
-x = SetIterator(a).iterator_union(SetIterator(b))
-y = SetIterator(a).iterator_meet(SetIterator(b))
-z = SetIterator(a).iterator_minus(SetIterator(b))
+x = join(SetIterator(a),SetIterator(b))
+y = meet(SetIterator(a),SetIterator(b))
+z = minus(SetIterator(a), SetIterator(b))
 
 if x.subset(y):
     print "Error subset(x,y) returned true"
