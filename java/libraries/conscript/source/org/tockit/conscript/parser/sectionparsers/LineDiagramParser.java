@@ -55,6 +55,10 @@ class LineDiagramParser extends CSCFileSectionParser {
 			double x = Double.parseDouble(tokenizer.popCurrentToken());
 			double y = Double.parseDouble(tokenizer.popCurrentToken());
 			points.put(id, new Point(id.longValue(), x, y, null, null));
+            while(!tokenizer.newLineHasStarted()) { // ignore optional format definitions
+                // @todo add parsing here
+                tokenizer.advance();
+            }
 		}
         diagram.setPoints((Point[]) points.values().toArray(new Point[points.size()]));
 		tokenizer.advance();

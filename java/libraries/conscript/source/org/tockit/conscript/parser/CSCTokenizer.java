@@ -109,7 +109,7 @@ public class CSCTokenizer {
     }
 
 	public boolean done() throws IOException {
-		return !this.inputReader.ready();
+		return !this.inputReader.ready() && this.characterWaiting == -1;
 	}
 	
     public int getCurrentLine() {
