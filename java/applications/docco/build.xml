@@ -121,7 +121,7 @@
 	<target name="dist" depends="makeReleaseJar,copyFiles,zipFile">
 	</target>
 	<target name="zipFile">
-		<zip destfile="${dist.dir}/${dist.name}-bin.zip">
+		<zip destfile="${dist.dir}/${dist.name}.zip">
 			<fileset dir="${dist.dir}">
 				<include name="${dist.name}/**"/>
 			</fileset>
