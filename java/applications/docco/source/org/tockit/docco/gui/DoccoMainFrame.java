@@ -423,14 +423,14 @@ public class DoccoMainFrame extends JFrame {
 		});
 		fileMenu.add(newIndexItem);
 
-		JMenuItem addDirectoryItem = new JMenuItem("Add a Directory Into Index...");
-		addDirectoryItem.setMnemonic('a');
-		addDirectoryItem.addActionListener(new ActionListener(){
+		JMenuItem addFilesItem = new JMenuItem("Add Files Into Index...");
+		addFilesItem.setMnemonic('a');
+		addFilesItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				addDirectoryToIndex();
+				addFilesIntoIndex();
 			}
 		});
-		fileMenu.add(addDirectoryItem);
+		fileMenu.add(addFilesItem);
 
 		fileMenu.addSeparator();
 		JMenuItem exitItem = new JMenuItem("Exit");
@@ -473,27 +473,26 @@ public class DoccoMainFrame extends JFrame {
         }
 
 		createQueryEngine();
+		
+		addFilesIntoIndex();
     }
 
-    private void addDirectoryToIndex() {
-		JFileChooser fileDialog;
-		String lastIndexedDir = getIndexLocation();
-		if (lastIndexedDir != null) {
-			fileDialog = new JFileChooser(lastIndexedDir);
-		}
-		else {
-			fileDialog = new JFileChooser();
-		}
-		fileDialog.setDialogTitle("Select directory to index");
-		fileDialog.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		int rv = fileDialog.showDialog(null, "Index Directory");
+    private void addFilesIntoIndex() {
+		JFileChooser fileDialog = new JFileChooser(getIndexLocation());
+		fileDialog.setDialogTitle("Select directories and files to index");
+		fileDialog.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+		fileDialog.setMultiSelectionEnabled(true);
+		int rv = fileDialog.showDialog(null, "Index");
 		if(rv != JFileChooser.APPROVE_OPTION) {
 			return;
 		}
 		ConfigurationManager.storeString(CONFIGURATION_SECTION_NAME, CONFIGURATION_LAST_INDEX_DIR,
 									fileDialog.getSelectedFile().getAbsolutePath());
 
-		this.indexThread.enqueue(fileDialog.getSelectedFile());
+		File[] files = fileDialog.getSelectedFiles();
+		for (int i = 0; i < files.length; i++) {
+			this.indexThread.enqueue(files[i]);
+        }
     }
 
 	private String getIndexLocation() {
