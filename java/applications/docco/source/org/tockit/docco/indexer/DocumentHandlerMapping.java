@@ -37,11 +37,11 @@ public class DocumentHandlerMapping {
 		String docHandlerClassName = serialForm.substring(lastColonIndex + 1);
 		FileFilterFactory fileFilterFactory = FileFilterFactoryRegistry.getFileFilterFactoryByName(fileFilterClassName);
 		if(fileFilterFactory == null) {
-			throw new ClassNotFoundException("File filter type not available in this installation (plugin missing?)");
+			throw new ClassNotFoundException("File filter type not available in this installation (plugin missing?): " + fileFilterClassName);
 		}
 		this.docHandler = DocumentHandlerRegistry.getDocumentHandlerByName(docHandlerClassName);
 		if(docHandler == null) {
-			throw new ClassNotFoundException("Document handler not available in this installation (plugin missing?)");
+			throw new ClassNotFoundException("Document handler not available in this installation (plugin missing?) " + docHandlerClassName);
 		}
 		this.fileFilter = fileFilterFactory.createNewFilter(filterExpression);
 	}
