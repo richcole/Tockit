@@ -87,7 +87,7 @@ public class DocumentProcessingFactory {
 				doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_KEYWORDS, docProcessor.getKeywords()));
 			}
 
-
+			doc.add(Field.Text(GlobalConstants.FIELD_DOC_PATH, file.getPath()));
 			doc.add(Field.Text(GlobalConstants.FIELD_DOC_PATH, file.getPath()));
 			if (doc.get(GlobalConstants.FIELD_DOC_MODIFICATION_DATE) == null) {
 				doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_MODIFICATION_DATE,new Date(file.lastModified())));
