@@ -8,6 +8,7 @@
 package org.tockit.canvas.controller;
 
 import java.awt.Point;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -42,6 +43,11 @@ public class CanvasController implements MouseListener, MouseMotionListener {
      * event.
      */
     private boolean popupOpen = false;
+    
+    /**
+     * True iff the last mouse down was the primary mouse button.
+     */
+    private boolean buttonOnePressed = false;
 
     /**
      * Distance that label has to be moved to enable dragMode
@@ -101,6 +107,9 @@ public class CanvasController implements MouseListener, MouseMotionListener {
             popupOpen = false;
             return; // nothing to do, we react only on normal clicks
         }
+        if(this.selectedCanvasItem == null) {
+        	return;
+        }
         Point screenPos = e.getPoint();
         if (e.isPopupTrigger()) {
             Point2D canvasPos = canvas.getCanvasCoordinates(screenPos);
@@ -117,16 +126,18 @@ public class CanvasController implements MouseListener, MouseMotionListener {
             this.eventBroker.processEvent(
                     new CanvasItemClickedEvent(this.selectedCanvasItem,
                                                e.getModifiers(), modelPos, screenPos));
-            if (e.getClickCount() == 1) {
-                this.doubleClickTimer = new Timer();
-                this.doubleClickTimer.schedule(
-                        new CanvasItemSingleClickTask(this.selectedCanvasItem,
-                                e.getModifiers(), modelPos, screenPos, eventBroker), 300);
-            } else if (e.getClickCount() == 2) {
-                this.doubleClickTimer.cancel();
-                this.eventBroker.processEvent(
-                        new CanvasItemActivatedEvent(selectedCanvasItem,
-                                                     e.getModifiers(), modelPos, screenPos));
+			if(this.buttonOnePressed) {
+	            if (e.getClickCount() == 1) {
+	                this.doubleClickTimer = new Timer();
+	                this.doubleClickTimer.schedule(
+	                        new CanvasItemSingleClickTask(this.selectedCanvasItem,
+	                                e.getModifiers(), modelPos, screenPos, eventBroker), 300);
+	            } else if (e.getClickCount() == 2) {
+	                this.doubleClickTimer.cancel();
+	                this.eventBroker.processEvent(
+	                        new CanvasItemActivatedEvent(selectedCanvasItem,
+	                                                     e.getModifiers(), modelPos, screenPos));
+	            }
             }
         }
         selectedCanvasItem = null;
@@ -218,6 +229,12 @@ public class CanvasController implements MouseListener, MouseMotionListener {
         if (this.selectedCanvasItem.hasAutoRaise()) {
             canvas.raiseItem(this.selectedCanvasItem);
         }
+
+        int onMask = InputEvent.BUTTON1_DOWN_MASK;
+        int offMask = InputEvent.BUTTON2_DOWN_MASK | InputEvent.BUTTON3_DOWN_MASK |
+                      InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK |
+                      InputEvent.ALT_GRAPH_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK;
+        this.buttonOnePressed = (e.getModifiersEx() & (onMask | offMask)) == onMask;
         this.lastMousePos = screenPos;
         if (e.isPopupTrigger()) {
             handlePopupRequest(e.getModifiers(), canvasPos, screenPos);
