@@ -104,21 +104,25 @@ public class Indexer implements Runnable {
 		if(this.shuttingDown) {
 			return;
 		}
-		if (file.isDirectory()) {
-			String[] files = file.list();
-			if(files == null) {
-				// seems to happen if dir access denied
-				return; 
+	    // if the file is a symlink
+	    if(file.getAbsolutePath().equals(file.getCanonicalPath())) {
+			if (file.isDirectory()) {
+				String[] files = file.list();
+				if(files == null) {
+					// seems to happen if dir access denied
+					return; 
+				}
+				for (int i = 0; i < files.length; i++) {
+					findNewFiles(new File(file, files[i]), knownDocuments);
+				}
 			}
-			for (int i = 0; i < files.length; i++) {
-				findNewFiles(new File(file, files[i]), knownDocuments);
+			else {
+			    // test if it is a file and if we do not have it yet
+				if(file.isFile() && !knownDocuments.contains(file.getPath())) {
+			        indexFile(file);
+				}
 			}
-		}
-		else {
-			if(!knownDocuments.contains(file.getPath())) {
-				indexFile(file);
-			}
-		}
+	    }
 	}
 
 	/**

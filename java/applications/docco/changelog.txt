@@ -1,5 +1,8 @@
 Changes since Docco 0.3:
 
+Docco:
+- symlinks are not followed anymore (Linux/UNIX)
+
 POI-Plugin:
 - support for PowerPoint files
 - fixed a bug leaking open input streams
