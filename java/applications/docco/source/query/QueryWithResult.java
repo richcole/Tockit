@@ -26,5 +26,10 @@ public class QueryWithResult {
 	public HitReferencesSet getResultSet() {
 		return resultSet;
 	}
+	
+	public String toString() {
+		String str = "QueryWithResult [query:" + query + ", result: " + resultSet + " ]";
+		return str;
+	}
 
 }

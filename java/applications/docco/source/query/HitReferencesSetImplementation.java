@@ -66,6 +66,15 @@ public class HitReferencesSetImplementation implements HitReferencesSet {
 		return references.remove(ref);
 	}
 	
+	public String toString() {
+		String str = "HitReferenceSet: size = " + this.references.size() + "\n";
+		Iterator it = this.references.iterator();
+		while (it.hasNext()) {
+			HitReference cur = (HitReference) it.next();
+			str = str + "\t" + cur.getDocument().getField("path") + " (score: " + cur.getScore() + ")\n";
+		}
+		return str;
+	}
 	
 
 }

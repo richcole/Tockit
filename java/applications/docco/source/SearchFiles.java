@@ -57,14 +57,19 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.ParseException;
 
-import query.HitReference;
-import query.HitReferencesSet;
+import query.QueryDecomposer;
 import query.QueryEngine;
+import query.QueryWithResult;
+import query.SimpleQueryReference;
 
 import docsearcher.DocSearch;
 
@@ -72,44 +77,51 @@ class SearchFiles {
 	private String indexLocation = DocSearch.indexDir + "/test";
 	private String defaultQueryField = "body";
 	private QueryEngine queryEngine;
+	private QueryDecomposer queryDecomposer;
 	
 	public SearchFiles()  throws IOException {
 		this.queryEngine = new QueryEngine(this.indexLocation, this.defaultQueryField, new StandardAnalyzer());
+		this.queryDecomposer = new QueryDecomposer(this.defaultQueryField, new StandardAnalyzer());
 	}
 	
-	public HitReferencesSet query (String queryString) throws IOException, ParseException{
-		return queryEngine.executeQuery(queryString);
-	}
-	
-	public void stop() throws IOException {
+	private void stop() throws IOException {
 		this.queryEngine.finishQueries();
 	}
-	
-  
-	public static void printResults(HitReferencesSet hits) throws IOException {
-		System.out.println(hits.size() + " total matching documents");
-		
-		Iterator it = hits.iterator();
-		int count = 1;
-		while (it.hasNext()) {
-			HitReference hitRef = (HitReference) it.next();
-			String path = hitRef.getDocument().get("path");
-			if (path != null) {
-				  System.out.println(count + ". " + path);
-			} else {
-			  String url = hitRef.getDocument().get("url");
-			  if (url != null) {
-				System.out.println(count + ". " + url);
-				System.out.println("   - " + hitRef.getDocument().get("title"));
-			  } else {
-				System.out.println(count + ". " + "No path nor URL for this document");
-			  }
+
+	private Set buildQueryTermsCombinations (List queryTerms) {
+		Set result = new HashSet();
+		for (int i = 0; i < Math.pow(2,queryTerms.size()); i++) {
+			String objectData = "";
+			List relatedAttributes = new LinkedList();
+			for(int j = 0; j < queryTerms.size(); j++) {
+				if( j != 0 ) {
+					objectData += " AND ";
+				}
+				if( (i & (1 << j)) == 0 ) {
+					objectData += " NOT ";
+				} else {
+					relatedAttributes.add(queryTerms.get(j));
+				}
+				SimpleQueryReference q = (SimpleQueryReference) queryTerms.get(j);
+				objectData += "(" +  q.getQuery() + ")";
+				result.add(objectData);
 			}
-			System.out.println("\tscore: " + hitRef.getScore());
-			count++;	
-		}	
+		}
+		System.out.println("num of combinations: " + result.size());
+		return result;
 	}
 	
+	public void query(String line) throws ParseException, IOException {
+		List queryTerms = queryDecomposer.breakQueryIntoTerms(line);
+		Set queryTermsCombinations = buildQueryTermsCombinations(queryTerms);
+		Iterator it = queryTermsCombinations.iterator();
+		while (it.hasNext()) {
+			String cur = (String) it.next();
+			QueryWithResult qwr = queryEngine.executeQuery(cur);
+			System.out.println(qwr);
+		}
+	}
+
 	public void repetativeQuery () throws IOException, ParseException {
 		BufferedReader in =
 			new BufferedReader(new InputStreamReader(System.in));
@@ -120,14 +132,11 @@ class SearchFiles {
 				
 			if (line.length() == -1)
 				break;
-	
-			queryEngine.breakQueryIntoTerms(line);
-			
-			//HitReferencesSet hits =	query(line);
-			//printResults(hits);
+			query(line);
 		}
 		stop();
 	}
+
 	
 	public void singleQuery ()  throws IOException, ParseException {
 		BufferedReader in =
@@ -138,10 +147,7 @@ class SearchFiles {
 			
 		if (line.length() == -1)
 			return;
-
-		HitReferencesSet hits =	query(line);
-		//printResults(hits);
-
+		query(line);
 		stop();
 	}
 
