@@ -147,7 +147,7 @@ public class Indexer extends Thread {
 				}
 			}
 		}
-		catch (UnknownFileExtensionException e) {
+		catch (UnknownFileTypeException e) {
 		}
 		catch (NotFoundFileExtensionException e) {
 		}

@@ -33,7 +33,7 @@ public class DocumentProcessingFactory {
 
 	public Document processDocument(File file) throws DocumentHandlerException, 
 													NotFoundFileExtensionException,
-													UnknownFileExtensionException,
+													UnknownFileTypeException,
 													InstantiationException, 
 													IllegalAccessException, 
 													IOException {
@@ -108,7 +108,7 @@ public class DocumentProcessingFactory {
 			//printDebug(doc);
 			return doc;								
 		}
-		catch (UnknownFileExtensionException e) {
+		catch (UnknownFileTypeException e) {
 			/// @todo shall we add all files at least as files?
 			throw e;
 		}

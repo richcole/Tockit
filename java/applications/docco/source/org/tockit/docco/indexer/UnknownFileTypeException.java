@@ -10,18 +10,18 @@ package org.tockit.docco.indexer;
 import org.tockit.docco.indexer.documenthandler.*;
 
 
-public class UnknownFileExtensionException extends DocumentHandlerException {
+public class UnknownFileTypeException extends DocumentHandlerException {
 
-	public UnknownFileExtensionException(String message) {
+	public UnknownFileTypeException(String message) {
 		super(message);
 
 	}
 
-	public UnknownFileExtensionException(String message, Throwable e) {
+	public UnknownFileTypeException(String message, Throwable e) {
 		super(message, e);
 	}
 
-	public UnknownFileExtensionException(Throwable e) {
+	public UnknownFileTypeException(Throwable e) {
 		super(e);
 	}
 }
