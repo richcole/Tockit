@@ -25,6 +25,8 @@ class SaxTextContentParser extends DefaultHandler {
     private StringBuffer elementBuffer;
 	private StringBuffer contentBuffer;
 
+	// @todo this is very expensive in memory consumption, it would be better to implement an InputStream with input piped from the SAX parser
+	// idea: put SAX parser in thread, write to PipedOutputStream, connected to PipedInputStream as return value 
 	public String parse(InputSource inputSource) throws IOException, ParserConfigurationException, SAXException {		
 		this.elementBuffer = new StringBuffer();
 		this.contentBuffer = new StringBuffer();
