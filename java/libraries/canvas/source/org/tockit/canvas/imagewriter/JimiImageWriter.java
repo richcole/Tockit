@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Properties;
 
 import org.tockit.canvas.Canvas;
 
@@ -107,7 +108,7 @@ public class JimiImageWriter implements ImageWriter {
     /**
      * Saves the canvas using the settings to the file.
      */
-    public void exportGraphic(Canvas canvas, DiagramExportSettings settings, File outputFile)
+    public void exportGraphic(Canvas canvas, DiagramExportSettings settings, File outputFile, Properties metadata)
             throws ImageGenerationException {
         if (settings.usesAutoMode()) {
             // update information

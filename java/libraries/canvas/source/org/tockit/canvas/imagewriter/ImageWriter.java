@@ -8,6 +8,7 @@
 package org.tockit.canvas.imagewriter;
 
 import java.io.File;
+import java.util.Properties;
 
 import org.tockit.canvas.Canvas;
 
@@ -31,6 +32,6 @@ public interface ImageWriter {
     /**
      * Saves the canvas using the settings to the file.
      */
-    void exportGraphic(Canvas canvas, DiagramExportSettings settings, File outputFile)
+    void exportGraphic(Canvas canvas, DiagramExportSettings settings, File outputFile, Properties metadata)
             throws ImageGenerationException;
 }
