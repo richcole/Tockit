@@ -47,7 +47,6 @@
     <target name="compile" depends="clean,prepare">
       <javac destdir="${build.dir}"  debug="on" optimize="off"	deprecation="on">
           <src path="${src.dir}/org"/>
-          <src path="${src.dir}/com"/>
           <classpath refid="project.class.path"/>
       </javac>
     </target>
