@@ -61,7 +61,7 @@ public class ConcreteScale extends ConscriptStructure{
 	}
 
     public void printCSC(PrintStream stream) {
-        printIdentifierLine(stream);
+        printTitleRemarkSpecials(stream);
         stream.print("\t\t(" + this.abstractScale.getName() + ", ");
         if(this.queryMap != null) {
             stream.print(this.queryMap.getName());

@@ -89,7 +89,7 @@ public abstract class ConscriptStructure {
 
     abstract public void printCSC(PrintStream stream);
 
-    protected void printIdentifierLine(PrintStream stream) {
+    protected void printTitleRemarkSpecials(PrintStream stream) {
         stream.println("\t" + getName() + " = ");
         if(this.title != null) {
             stream.println("\t\tTITLE \"" + this.title + "\"");

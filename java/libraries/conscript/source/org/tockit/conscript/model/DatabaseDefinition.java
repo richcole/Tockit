@@ -43,7 +43,7 @@ public class DatabaseDefinition extends ConscriptStructure {
     }
 
     public void printCSC(PrintStream stream) {
-        printIdentifierLine(stream);
+        printTitleRemarkSpecials(stream);
         stream.print("\t\t(\"" + this.databaseName + "\", ");
         stream.print("\"" + this.table + "\", ");
         stream.println("\"" + this.primaryKey + "\");");

@@ -73,7 +73,7 @@ public class LineDiagram extends ConscriptStructure{
 	}
 
     public void printCSC(PrintStream stream) {
-        printIdentifierLine(stream);
+        printTitleRemarkSpecials(stream);
         stream.println("\t\tTODO");
         stream.println("\t\tTODO");
         stream.println("\t\tTODO");

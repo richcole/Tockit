@@ -39,7 +39,7 @@ public class ConceptualSchema extends ConscriptStructure{
 	}
 
     public void printCSC(PrintStream stream) {
-        printIdentifierLine(stream);
+        printTitleRemarkSpecials(stream);
         stream.print("\t\t(" + this.database.getName());
         for (Iterator iter = this.concreteScales.iterator(); iter.hasNext();) {
             ConcreteScale scale = (ConcreteScale) iter.next();

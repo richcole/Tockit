@@ -38,7 +38,7 @@ public class ConceptualFile extends ConscriptStructure {
     }
 
     public void printCSC(PrintStream stream) {
-        printIdentifierLine(stream);
+        printTitleRemarkSpecials(stream);
         stream.print("\t\t(" + this.objectMap.getName());
         for (Iterator iter = this.realisedScales.iterator(); iter.hasNext();) {
             RealisedScale scale = (RealisedScale) iter.next();

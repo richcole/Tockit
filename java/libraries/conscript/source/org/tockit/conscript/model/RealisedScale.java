@@ -34,7 +34,7 @@ public class RealisedScale extends ConscriptStructure{
 	}
 
     public void printCSC(PrintStream stream) {
-        printIdentifierLine(stream);
+        printTitleRemarkSpecials(stream);
         stream.print("\t\t(" + this.concreteScale.getName() + ", "); 
         stream.println(this.identifierMap.getName() + ");");
     }

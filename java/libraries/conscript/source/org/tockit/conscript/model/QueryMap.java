@@ -29,7 +29,7 @@ public class QueryMap extends ConscriptStructure{
 	}
 
     public void printCSC(PrintStream stream) {
-        printIdentifierLine(stream);
+        printTitleRemarkSpecials(stream);
         for (Iterator iter = this.map.keySet().iterator(); iter.hasNext(); ) {
             String concreteObj = (String) iter.next();
             stream.println("\t\t(\"" + concreteObj + "\", " + this.map.get(concreteObj) + ");");

@@ -29,7 +29,7 @@ public class StringMap extends ConscriptStructure{
     }
 
     public void printCSC(PrintStream stream) {
-        printIdentifierLine(stream);
+        printTitleRemarkSpecials(stream);
         for (Iterator iter = this.map.keySet().iterator(); iter.hasNext(); ) {
         	String id = (String) iter.next();
             stream.println("\t\t(" + id + ", " + this.map.get(id) + ");");

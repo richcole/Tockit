@@ -51,7 +51,7 @@ public class FormalContext extends ConscriptStructure{
     }
 
     public void printCSC(PrintStream stream) {
-        printIdentifierLine(stream);
+        printTitleRemarkSpecials(stream);
         stream.println("\tOBJECTS");
         for (Iterator iter = this.objects.iterator(); iter.hasNext();) {
             FCAObject object = (FCAObject) iter.next();
