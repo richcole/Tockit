@@ -102,6 +102,7 @@ import org.tockit.docco.query.QueryEngine;
 import org.tockit.docco.query.util.QueryWithResultSet;
 
 public class DoccoMainFrame extends JFrame {
+    private int indexingPriority;
     private File lastDirectoryIndexed;
     private static final int LOWEST_PRIORITY = Thread.MIN_PRIORITY;
 	private static final int LOW_PRIORITY = (Thread.MIN_PRIORITY + Thread.NORM_PRIORITY)/2;
@@ -318,8 +319,8 @@ public class DoccoMainFrame extends JFrame {
 		
 		setContentPane(contentPane);
 		
-		Index.indexingPriority = ConfigurationManager.fetchInt(CONFIGURATION_SECTION_NAME, 
-															   CONFIGURATION_INDEXING_PRIORITY_NAME, MEDIUM_PRIORITY);	
+		this.indexingPriority = ConfigurationManager.fetchInt(CONFIGURATION_SECTION_NAME, 
+															  CONFIGURATION_INDEXING_PRIORITY_NAME, MEDIUM_PRIORITY);	
 		
         openIndexes(forceIndexAccess);
 
@@ -501,46 +502,51 @@ public class DoccoMainFrame extends JFrame {
 					new JRadioButtonMenuItem("Highest (fast indexing, computer might get less responsive)");
 		highestPriorityMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Index.indexingPriority = HIGHEST_PRIORITY;
+				indexingPriority = HIGHEST_PRIORITY;
+				updateIndexPriorities();
 			}
 		});
-		highestPriorityMenuItem.setSelected(Index.indexingPriority == HIGHEST_PRIORITY);
+		highestPriorityMenuItem.setSelected(indexingPriority == HIGHEST_PRIORITY);
 		indexingPriorityMenu.add(highestPriorityMenuItem);
 		final JRadioButtonMenuItem highPriorityMenuItem = 
 					new JRadioButtonMenuItem("High");
 		highPriorityMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Index.indexingPriority = HIGH_PRIORITY;
+				indexingPriority = HIGH_PRIORITY;
+				updateIndexPriorities();
 			}
 		});
-		highPriorityMenuItem.setSelected(Index.indexingPriority == HIGH_PRIORITY);
+		highPriorityMenuItem.setSelected(indexingPriority == HIGH_PRIORITY);
 		indexingPriorityMenu.add(highPriorityMenuItem);
 		final JRadioButtonMenuItem mediumPriorityMenuItem = 
 					new JRadioButtonMenuItem("Medium");
 		mediumPriorityMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Index.indexingPriority = MEDIUM_PRIORITY;
+				indexingPriority = MEDIUM_PRIORITY;
+				updateIndexPriorities();
 			}
 		});
-		mediumPriorityMenuItem.setSelected(Index.indexingPriority == MEDIUM_PRIORITY);
+		mediumPriorityMenuItem.setSelected(indexingPriority == MEDIUM_PRIORITY);
 		indexingPriorityMenu.add(mediumPriorityMenuItem);
 		final JRadioButtonMenuItem lowPriorityMenuItem = 
 					new JRadioButtonMenuItem("Low");
 		lowPriorityMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Index.indexingPriority = LOW_PRIORITY;
+				indexingPriority = LOW_PRIORITY;
+				updateIndexPriorities();
 			}
 		});
-		lowPriorityMenuItem.setSelected(Index.indexingPriority == LOW_PRIORITY);
+		lowPriorityMenuItem.setSelected(indexingPriority == LOW_PRIORITY);
 		indexingPriorityMenu.add(lowPriorityMenuItem);
 		final JRadioButtonMenuItem lowestPriorityMenuItem = 
 					new JRadioButtonMenuItem("Lowest (slow indexing, but computer stays responsive)");
-		highestPriorityMenuItem.addActionListener(new ActionListener() {
+		lowestPriorityMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Index.indexingPriority = LOWEST_PRIORITY;
-				lowestPriorityMenuItem.setSelected(Index.indexingPriority == LOWEST_PRIORITY);
+				indexingPriority = LOWEST_PRIORITY;
+				updateIndexPriorities();
 			}
 		});
+		lowestPriorityMenuItem.setSelected(indexingPriority == LOWEST_PRIORITY);
 		indexingPriorityMenu.add(lowestPriorityMenuItem);
 		fileMenu.add(indexingPriorityMenu);
                 
@@ -554,6 +560,13 @@ public class DoccoMainFrame extends JFrame {
 		});
 		fileMenu.add(exitItem);
 	}
+
+    protected void updateIndexPriorities() {
+    	for (Iterator iter = this.indexes.iterator(); iter.hasNext();) {
+            Index index = (Index) iter.next();
+            index.setPriority(this.indexingPriority);
+        }
+    }
 
     private void addIndexMenu(final JMenu fileMenu, final Index currentIndex) {
     	final JFrame outerThis = this;
@@ -928,7 +941,7 @@ public class DoccoMainFrame extends JFrame {
 		ConfigurationManager.storeInt(CONFIGURATION_SECTION_NAME, CONFIGURATION_SHOW_CONTINGENT_ONLY_NAME,
 								this.showContingentOnlyCheckBox.isSelected()?1:0);
 		ConfigurationManager.storeInt(CONFIGURATION_SECTION_NAME, CONFIGURATION_INDEXING_PRIORITY_NAME,
-								Index.indexingPriority);
+								this.indexingPriority);
 		
 		ConfigurationManager.saveConfiguration();
 		System.exit(0);

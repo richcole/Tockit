@@ -35,7 +35,7 @@ public class Index {
 	private Indexer indexer;
 	private Thread indexThread;
 	private DocumentHandlerRegistry docHandlersRegistry;
-	public static int indexingPriority = Thread.MIN_PRIORITY;
+	private int indexingPriority = Thread.MIN_PRIORITY;
 	private CallbackRecipient callbackRecipient;
 	
     public static Index openIndex(String name, File indexDirectory, Indexer.CallbackRecipient callbackRecipient) throws IOException {
@@ -71,6 +71,17 @@ public class Index {
 		this.indexThread = new Thread(this.indexer);
         this.indexThread.setPriority(indexingPriority);
 		this.indexThread.start();
+    }
+    
+    public void setPriority(int priority) {
+		if(priority < Thread.MIN_PRIORITY) {
+			throw new IllegalArgumentException("Priority argument too low");
+		}
+		if(priority > Thread.MAX_PRIORITY) {
+			throw new IllegalArgumentException("Priority argument too high");
+		}
+    	this.indexingPriority = priority;
+    	this.indexThread.setPriority(priority);
     }
 
     private Index(String name, File indexDirectory, File baseDirectory, Indexer.CallbackRecipient callbackRecipient) throws IOException {
