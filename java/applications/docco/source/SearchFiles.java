@@ -122,12 +122,12 @@ class SearchFiles {
 	public void query(String line) throws ParseException, IOException {
 		List queryTerms = queryDecomposer.breakQueryIntoTerms(line);
 		Set queryTermsCombinations = buildQueryTermsCombinations(queryTerms);
-//		Iterator it = queryTermsCombinations.iterator();
-//		while (it.hasNext()) {
-//			String cur = (String) it.next();
-//			QueryWithResult qwr = queryEngine.executeQuery(cur);
-//			System.out.println(qwr);
-//		}
+		Iterator it = queryTermsCombinations.iterator();
+		while (it.hasNext()) {
+			String cur = (String) it.next();
+			QueryWithResult qwr = queryEngine.executeQuery(cur);
+			System.out.println(qwr);
+		}
 	}
 
 	public void repetativeQuery () throws IOException, ParseException {
