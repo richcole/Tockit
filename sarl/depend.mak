@@ -1,5 +1,13 @@
 # DO NOT DELETE
 
+context.o: ../sarl/context.h ../sarl/index.h ../sarl/pair.h
+context.o: ../sarl/context_impl.h ../sarl/ref_count.h ../sarl/set_impl.h
+context.o: ../sarl/relation_impl.h ../sarl/relation_iterator.h
+context_iterator.o: ../sarl/context.h ../sarl/index.h ../sarl/pair.h
+context_iterator.o: ../sarl/context_impl.h ../sarl/ref_count.h
+context_iterator.o: ../sarl/set_impl.h ../sarl/relation_impl.h
+context_iterator.o: ../sarl/relation_iterator.h context_impl.h
+context_iterator.o: context_iterator_impl.h
 domain_set_iterator.o: ../sarl/set.h ../sarl/index.h ../sarl/set_iterator.h
 domain_set_iterator.o: ../sarl/ref_count.h ../sarl/set_impl.h
 domain_set_iterator.o: ../sarl/domain_set_iterator_impl.h
@@ -41,8 +49,9 @@ range_set_iterator.o: ../sarl/domain_set_iterator_impl.h
 range_set_iterator.o: ../sarl/set_iterator_impl.h ../sarl/relation_iterator.h
 range_set_iterator.o: ../sarl/pair.h
 ref_count.o: ../sarl/ref_count.h
-relation.o: ../sarl/relation.h ../sarl/index.h ../sarl/pair.h
-relation.o: ../sarl/relation_iterator.h ../sarl/ref_count.h relation_impl.h
+relation.o: ../sarl/set.h ../sarl/index.h ../sarl/set_iterator.h
+relation.o: ../sarl/relation.h ../sarl/pair.h ../sarl/relation_iterator.h
+relation.o: ../sarl/ref_count.h relation_impl.h
 relation_iterator.o: ../sarl/relation.h ../sarl/index.h ../sarl/pair.h
 relation_iterator.o: ../sarl/relation_iterator.h ../sarl/ref_count.h
 relation_iterator.o: ../sarl/relation_impl.h ../sarl/relation_iterator_impl.h

@@ -13,7 +13,9 @@ OBJECTS = \
   union_set_iterator \
   set_minus_set_iterator \
   join_relation_iterator \
-  ref_count 
+  ref_count \
+  context \
+  context_iterator
 
 TESTS = \
   test_set \
@@ -80,10 +82,10 @@ lib_d/libsarl++.so: lib_d
 	$(MAKE) -C cpp ../$@
 
 %.o: %.cpp
-	$(CC) $(DEBUG) -c -I../ -o $@ $< 
+	$(CCC) $(DEBUG) -c -I../ -o $@ $< 
 
 %.o: %.cpp
-	$(CC) $(DEBUG) -c -I../ -o $@ $< 
+	$(CCC) $(DEBUG) -c -I../ -o $@ $< 
 
 %.exe: %.o
 	$(CCC) $(DEBUG) -I../ -o $@ $^ -lstdc++ -Llib_d -lsarl

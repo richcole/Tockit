@@ -38,12 +38,10 @@ Sarl_RelationIterator *sarl_relation_iterator_join(
   Sarl_JoinRelationIterator* it  = new Sarl_JoinRelationIterator();
   sarl_relation_iterator_init(it, &s_join_relation_iterator_table);
 
-  it->first = ap_first;
-  it->second = ap_second;
+  /* fixme - this is now inconsistent with the other operators. */
+  it->first = sarl_relation_iterator_copy(ap_first);
+  it->second = sarl_relation_iterator_copy(ap_second);
 
-  sarl_relation_iterator_incr_ref(it->first);
-  sarl_relation_iterator_incr_ref(it->second);
-  
   return it;
 }
 

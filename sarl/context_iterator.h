@@ -10,19 +10,12 @@ extern struct Sarl_ContextIterator *
   struct Context *
 );
 
-/*! 
- * construct a context from iterators. The context iterator is 
- * defined as follows: 
- *   self.G_it = union(G_it, domain(I_it))
- *   self.M_it = union(M_it, range(I_It))
- *   self.I_It = copy(I_it)
- */
 extern struct Sarl_ContextIterator *
-  sarl_context_iterator_create
+  sarl_context_iterator_copy
 (
-	struct SetIterator*      G_it,
-  struct SetIterator*      M_it,
-  struct RelationIterator* I_it
+	struct Sarl_SetIterator*      G_it,
+  struct Sarl_SetIterator*      M_it,
+  struct Sarl_RelationIterator* I_it
 );
 
 extern struct Sarl_SetIterator *
