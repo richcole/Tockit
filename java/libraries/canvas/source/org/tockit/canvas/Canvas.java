@@ -41,10 +41,17 @@ import org.tockit.events.EventBroker;
  * All drawing and related features like printing or graphic export are
  * handled by the canvas, too.
  *
- * @todo Move some more of the drawing code from DiagramView into this
- * class, add options for automatic rescaling or not.
+ * @todo Move some more of the drawing code from ToscanaJ's DiagramView into
+ *       this  class, add options for automatic rescaling or not.
  *
  * @todo Add zooming/panning options.
+ * 
+ * @todo add layer reordering
+ * 
+ * @todo add access to the layer names (it might be a good idea to introduce a
+ *       layer  object for this)
+ * 
+ * @todo add tests for this class
  */
 
 public class Canvas extends JPanel implements Printable {
@@ -64,6 +71,11 @@ public class Canvas extends JPanel implements Printable {
     
     /**
      * Stores the names of the layers as a mapping into the layer objects.
+     * 
+     * The empty string is used to refer to an automatically created upper layer
+     * (created when an object is added but no layer exists -- this ensures
+     * backwards compatibility), otherwise each layer has to have its unique
+     * name.
      */
     protected Hashtable layerNameMapping = new Hashtable();
 
@@ -129,6 +141,13 @@ public class Canvas extends JPanel implements Printable {
         }
     }
 
+	/**
+	 * Raises all items that have been requested to raise.
+	 * 
+	 * This might happen delayed since we can't change the item lists while we
+	 * are still iterating over it (e.g. a raisal while drawing would cause
+	 * ConcurrentModificationExceptions).
+	 */
     private void raiseMarkedItems() {
         for (Iterator iterator = itemsToRaise.iterator(); iterator.hasNext();) {
             CanvasItem canvasItem = (CanvasItem) iterator.next();
@@ -305,6 +324,9 @@ public class Canvas extends JPanel implements Printable {
         return retVal;
     }
 
+	/**
+	 * Makes the given item the uppermost in its layer.
+	 */
     public void raiseItem(CanvasItem item) {
         // can not be done here since this would easily cause ConcurrentModificationExceptions whenever someone iterates
         // over the items and calls this
@@ -398,7 +420,9 @@ public class Canvas extends JPanel implements Printable {
     /**
      * Creates a new layer with the given name.
      * 
-     * The new layer will be the uppermost one in the canvas.
+     * The new layer will be the uppermost one in the canvas. The layer name
+     * must not be null nor empty (otherwise an IllegalLayerNameException will
+     * be thrown).
      */
     public void addLayer(String layerName) {
     	if(layerName == null) {
@@ -410,5 +434,16 @@ public class Canvas extends JPanel implements Printable {
     	List newLayer = new ArrayList();
     	this.canvasLayers.add(newLayer);
     	this.layerNameMapping.put(layerName, newLayer);
+    }
+    
+    /**
+     * Removes a whole layer from the canvas.
+     */
+    public void removeLayer(String layerName) {
+    	if(!this.layerNameMapping.containsKey(layerName)) {
+    		throw new NoSuchLayerException("Could not find layer named \"" + layerName + "\"");
+    	}
+    	Object removeLayer = this.layerNameMapping.remove(layerName);
+    	this.canvasLayers.remove(removeLayer);
     }
 }

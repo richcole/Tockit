@@ -7,6 +7,10 @@
  */
 package org.tockit.canvas.exceptions;
 
+/**
+ * Thrown whenever a layer name is used that is unknown.
+ *
+ */
 public class NoSuchLayerException extends InvalidLayerException {
     public NoSuchLayerException() {
         super();

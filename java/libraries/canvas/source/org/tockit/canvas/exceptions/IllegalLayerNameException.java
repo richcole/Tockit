@@ -7,6 +7,11 @@
  */
 package org.tockit.canvas.exceptions;
 
+/**
+ * Thrown in case an illegal layer name is used.
+ * 
+ * Illegal names are the null object and an empty string.
+ */
 public class IllegalLayerNameException extends InvalidLayerException {
     public IllegalLayerNameException() {
         super();
