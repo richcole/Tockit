@@ -30,5 +30,6 @@ public class ConceptFactory {
      */
     Concept getConcept(Object lattice, Object point) {
         /// TODO: implement this
+        return null;
     }
 }
