@@ -398,10 +398,8 @@ public class PluginClassLoader extends ClassLoader {
 				zipFileEntriesList.add(curEntry);
 			}
 		} catch (ZipException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return zipFileEntriesList;
