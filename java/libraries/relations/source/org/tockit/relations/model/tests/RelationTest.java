@@ -10,9 +10,7 @@ package org.tockit.relations.model.tests;
 import org.tockit.relations.model.Relation;
 import org.tockit.relations.model.Tuple;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 public abstract class RelationTest extends TestCase {
     public static Relation stringRelation;
@@ -24,10 +22,6 @@ public abstract class RelationTest extends TestCase {
         super(s);
     }
 
-    public static Test suite() {
-        return new TestSuite(RelationImplementationTest.class);
-    }
-    
     public void testSetup() {
         assertEquals("stringRelation has wrong arity", 3, stringRelation.getArity());
         assertEquals("stringRelation has wrong size", 7, stringRelation.getSize());

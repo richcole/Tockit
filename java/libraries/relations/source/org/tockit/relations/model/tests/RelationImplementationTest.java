@@ -7,6 +7,9 @@
  */
 package org.tockit.relations.model.tests;
 
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 import org.tockit.relations.model.Relation;
 import org.tockit.relations.model.RelationImplementation;
 
@@ -16,6 +19,10 @@ public class RelationImplementationTest extends RelationTest {
         super(s);
     }
 
+	public static Test suite() {
+		return new TestSuite(RelationImplementationTest.class);
+	}
+    
     protected Relation createRelation(String[] dimensionNames) {
         return new RelationImplementation(dimensionNames);
     }
