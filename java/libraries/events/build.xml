@@ -1,0 +1,41 @@
+<project name="Tockit Events" default="jar" basedir=".">
+    <property name="src.dir"   value="${basedir}/source"/>
+    <property name="libTesting.dir"   value="${basedir}/../../thirdParty/unitTesting"/>
+    <property name="build.dir"   value="${basedir}/build"/>
+    <property name="jars.dir"   value="${basedir}/../jars"/>
+
+    <property name="jar.file"   value="${jars.dir}/events.jar"/>
+
+    <path id="project.class.path">
+        <pathelement location="${build.dir}/"/>
+        <fileset dir="${libTesting.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+        <fileset dir="${jars.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+    <target name="all" depends="clean,prepare,compile"/>
+
+    <target name="prepare">
+        <mkdir  dir="${build.dir}"/>
+        <mkdir  dir="${jars.dir}"/>
+    </target>
+
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+        <delete file="${jar.file}"/>
+    </target>
+
+    <target name="compile" depends="clean,prepare">
+      <javac destdir="${build.dir}"  debug="on" optimize="off"	deprecation="on">
+          <src path="${src.dir}/org"/>
+          <classpath refid="project.class.path"/>
+      </javac>
+    </target>
+
+    <target name="jar" depends="compile">
+        <jar jarfile="${jar.file}" basedir="${build.dir}"/>
+    </target>
+</project>
