@@ -614,7 +614,11 @@ public class DoccoMainFrame extends JFrame {
     	}
     	
     	this.indexes.remove(currentIndex);
-    	currentIndex.delete();
+    	try {
+            currentIndex.delete();
+        } catch (IOException e) {
+        	ErrorDialog.showError(this, e, "Index not fully deleted");
+        }
     }
 
     private void createNewIndex(){

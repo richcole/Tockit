@@ -184,7 +184,7 @@ public class Index {
     	return this.name;
     }
 
-    public void delete() {
+    public void delete() throws IOException {
     	shutdown();
 
 		getContentsFile(this.indexLocation).delete();
@@ -197,7 +197,7 @@ public class Index {
         boolean deleted = this.indexLocation.delete();
 
         if(!deleted) {
-        	throw new RuntimeException("Couldn't delete index");
+        	throw new IOException("Couldn't delete index at position '" + this.indexLocation + "'");
         }
 
 		this.callbackRecipient.showFeedbackMessage("Index '" + getName() + "' deleted");
