@@ -52,18 +52,6 @@ extern void
   );
 
 extern struct Sarl_LatticeIterator *
-  sarl_lattice_iterator_ideal_from_intent(
-    struct Sarl_SetIterator *it,
-    struct Sarl_SetIterator *B
-  );
-
-extern struct Sarl_LatticeIterator *
-  sarl_lattice_iterator_filter_from_extent(
-    struct Sarl_LatticeIterator *it,
-    struct Sarl_SetIterator *A
-  );
-
-extern struct Sarl_LatticeIterator *
   sarl_lattice_iterator_filter(
     struct Sarl_LatticeIterator *it
   );

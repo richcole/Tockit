@@ -46,9 +46,20 @@ static struct Sarl_SetIterator* sarl_lattice_iterator_filter_intent(
   struct Sarl_LatticeIterator *it);
 
 static struct Sarl_LatticeIterator *
-  sarl_lattice_iterator_filter_filter_from_extent(
-    struct Sarl_LatticeIterator *it,
-    struct Sarl_SetIterator *filter);
+  sarl_lattice_iterator_filter_upper_covers(
+    struct Sarl_LatticeIterator *it);
+
+static struct Sarl_LatticeIterator *
+  sarl_lattice_iterator_filter_lower_covers(
+    struct Sarl_LatticeIterator *it);
+
+static struct Sarl_LatticeIterator *
+  sarl_lattice_iterator_filter_ideal(
+    struct Sarl_LatticeIterator *it);
+
+static struct Sarl_LatticeIterator *
+  sarl_lattice_iterator_filter_filter(
+    struct Sarl_LatticeIterator *it);
 
 /* function prototypes used in function table declaired below */
 
@@ -65,7 +76,11 @@ struct Sarl_LatticeIteratorFunctionTable s_filterLatticeIteratorTable =
   sarl_lattice_iterator_filter_extent,
   sarl_lattice_iterator_filter_intent,
 
-  sarl_lattice_iterator_filter_filter_from_extent
+  sarl_lattice_iterator_filter_upper_covers,
+  sarl_lattice_iterator_filter_lower_covers,
+
+  sarl_lattice_iterator_filter_ideal,
+  sarl_lattice_iterator_filter_filter,
 };
 
 struct Sarl_LatticeIterator *
@@ -315,6 +330,41 @@ struct Sarl_LatticeIterator*
   copy_it->filter = sarl_set_iterator_copy(it->filter);
 
   return copy_it;
+};
+
+static struct Sarl_LatticeIterator *
+  sarl_lattice_iterator_filter_upper_covers(
+    struct Sarl_LatticeIterator *it)
+{
+  SARL_NOT_IMPLEMENTED;
+  return 0;
+};
+
+
+static struct Sarl_LatticeIterator *
+  sarl_lattice_iterator_filter_lower_covers(
+    struct Sarl_LatticeIterator *it)
+{
+  SARL_NOT_IMPLEMENTED;
+  return 0;
+};
+
+
+static struct Sarl_LatticeIterator *
+  sarl_lattice_iterator_filter_ideal(
+    struct Sarl_LatticeIterator *it)
+{
+  SARL_NOT_IMPLEMENTED;
+  return 0;
+};
+
+
+static struct Sarl_LatticeIterator *
+  sarl_lattice_iterator_filter_filter(
+    struct Sarl_LatticeIterator *it)
+{
+  SARL_NOT_IMPLEMENTED;
+  return 0;
 };
 
 

@@ -1,8 +1,14 @@
 CCC = g++
 
 CPP_FLAGS = -DSARL_NATIVE
-OBJECTS = Set SetIterator Relation RelationIterator RefCount
-TEST = test_intersection test_relation test_relation_join test_context
+
+OBJECTS = \
+  Set SetIterator Relation RelationIterator RefCount
+
+TEST = \
+  test_intersection test_relation \
+  test_relation_join test_context \
+  test_assignment
 
 SARL_LIB_DIR   = ../lib
 SARL_LIB_DIR_D = ../lib_d
@@ -16,14 +22,13 @@ target: $(SARL_LIB_DIR_D)/libsarl++.so $(SARL_LIB_DIR)/libsarl++.so
 test: $(TEST:%=%.exe) $(TEST)
 
 $(TEST): 
-	LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(SARL_LIB_DIR_D); echo $@; ./$@.exe
-
+	LD_LIBRARY_PATH=$$LD_LIBRARY_PATH:$(SARL_LIB_DIR_D); echo $@; ./$@.exe
 
 %.o: %.cpp
 	$(CCC) -ggdb $(CPP_FLAGS) $(DEBUG) -c -I../.. -o $@ $< 
 
 %.exe: %.o $(SARL_LIB_DIR_D)/libsarl++.so
-	$(CCC) -ggdb -o $@ $< -L$(SARL_LIB_DIR_D) -lsarl++ -lsarl
+	$(CCC) -ggdb -o $@ $< -L$(SARL_LIB_DIR_D) -lsarl++ -lsarl -Wl,-rpath,../lib_d
 
 $(SARL_LIB_DIR_D)/libsarl++.so: $(OBJECTS:%=%.o)
 	$(CC) $(DEBUG) -shared -o $@ $^

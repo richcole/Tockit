@@ -48,23 +48,6 @@ void
 
 
 struct Sarl_LatticeIterator *
-  sarl_lattice_iterator_ideal_from_intent(
-    struct Sarl_LatticeIterator *it,
-    struct Sarl_SetIterator *B)
-{
-  SARL_NOT_IMPLEMENTED;
-};
-
-
-struct Sarl_LatticeIterator *
-  sarl_lattice_iterator_filter_from_extent(
-    struct Sarl_LatticeIterator *it,
-    struct Sarl_SetIterator *A)
-{
-  it->funcs->filter_from_extent(it, A);
-};
-
-struct Sarl_LatticeIterator *
   sarl_lattice_iterator_filter(
     struct Sarl_LatticeIterator *it,
     struct Sarl_ConceptIterator *c)

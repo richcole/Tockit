@@ -16,6 +16,7 @@ Set.o: Set.h ../../sarl/set.h ../../sarl/index.h ../../sarl/set_iterator.h
 Set.o: ../../sarl/cpp/Index.h ../../sarl/cpp/SetIterator.h
 Set.o: ../../sarl/cpp/Set.h SetIterator.h
 SetIterator.o: SetIterator.h
+test_assignment.o: ../../sarl/test.h
 test_context.o: ../../sarl/cpp/Context.h ../../sarl/context.h
 test_context.o: ../../sarl/index.h ../../sarl/pair.h
 test_context.o: ../../sarl/context_iterator.h ../../sarl/cpp/Index.h

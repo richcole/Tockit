@@ -19,10 +19,11 @@ struct Sarl_LatticeIteratorFunctionTable {
   Sarl_SetIterator* (*extent)(Sarl_LatticeIterator *);
   Sarl_SetIterator* (*intent)(Sarl_LatticeIterator *);
 
-  Sarl_LatticeIterator* (*filter_from_extent)(
-    Sarl_LatticeIterator *it,
-    Sarl_SetIterator *filter
-  );
+  Sarl_LatticeIterator* (*upper_covers)(Sarl_LatticeIterator *);
+  Sarl_LatticeIterator* (*lower_covers)(Sarl_LatticeIterator *);
+
+  Sarl_LatticeIterator* (*filter)(Sarl_LatticeIterator *);
+  Sarl_LatticeIterator* (*ideal)(Sarl_LatticeIterator *);
 };
 
 struct Sarl_LatticeIterator : Sarl_Iterator 

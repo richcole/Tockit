@@ -100,6 +100,10 @@ extern struct Sarl_SetIterator *
     struct Sarl_SetIterator *B
   );
 
+/*! 
+ *  return 0 if there is no next extent, otherwise return the
+ *  next extent.
+ */
 extern struct Sarl_SetIterator* 
   sarl_context_iterator_next_extent(
     Sarl_ContextIterator *K,

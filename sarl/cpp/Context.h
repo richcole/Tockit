@@ -66,17 +66,15 @@ inline Context::Context(ContextIterator const& it) {
   mp_contextRef = sarl_context_copy(it.mp_itRef);
 };
 
-inline Context& Context::operator=(Context const& it) {
-  if ( it.mp_contextRef == mp_contextRef ) {
+inline Context& Context::operator=(Context const& K) {
+  if ( this == &K ) {
     return *this;
   }
   if ( mp_contextRef != 0 ) {
     sarl_context_decr_ref(mp_contextRef);
   }
-  mp_contextRef = it.mp_contextRef;
-  if ( mp_contextRef != 0 ) {
-    sarl_context_incr_ref(mp_contextRef);
-  }
+  ContextIterator it(K);
+  mp_contextRef = sarl_context_copy(it.mp_itRef);
   return *this;
 };
 

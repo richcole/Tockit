@@ -16,6 +16,8 @@ class LatticeIterator;
 
 class SetIterator {
 
+  class Temporary;
+
   friend class Set;
   friend class Relation;
   friend class RelationIterator;
@@ -23,7 +25,7 @@ class SetIterator {
   friend class ConceptIterator;
   friend class LatticeIterator;
 
-  friend SetIterator meet(SetIterator& a_it, SetIterator& b_it);
+  friend SetIterator::Temporary meet(SetIterator& a_it, SetIterator& b_it);
   friend SetIterator join(SetIterator& a_it, SetIterator& b_it);
   friend SetIterator minus(SetIterator& a_it, SetIterator& b_it);
 
@@ -90,6 +92,28 @@ private:
     mp_itRef = ap_itRef;
   };
 
+  class Temporary {
+  public:
+    Sarl_SetIterator* mp_itRef;
+    Temporary(Sarl_SetIterator *itRef) {
+      sarl_set_iterator_incr_ref(itRef);
+      mp_itRef = itRef;
+      sarl_set_iterator_release_ownership(itRef);
+    }
+    Temporary(Temporary const& t) {
+      sarl_set_iterator_incr_ref(t.mp_itRef);
+      mp_itRef = t.mp_itRef;
+    }
+    ~Temporary() {
+      sarl_set_iterator_decr_ref(mp_itRef);
+    };
+  };
+
+public:
+  SetIterator(Temporary const& t) {
+    mp_itRef = sarl_set_iterator_obtain_ownership(t.mp_itRef);
+  };
+
 public: // nasty hack for SWIG
   SetIterator() {
     mp_itRef = 0;
@@ -110,7 +134,7 @@ inline SetIterator::SetIterator(Set const& set) {
 
 inline SetIterator::SetIterator(SetIterator const& it) {
   if ( it.mp_itRef != 0 ) {
-    mp_itRef = sarl_set_iterator_copy(it.mp_itRef);
+    mp_itRef = sarl_set_iterator_obtain_ownership(it.mp_itRef);
   }
   else {
     mp_itRef = 0;
@@ -124,23 +148,23 @@ inline SetIterator& SetIterator::operator=(SetIterator const& it) {
   if ( mp_itRef != 0 ) {
     sarl_set_iterator_decr_ref(mp_itRef);
   }
-  mp_itRef = it.mp_itRef;
-  if ( mp_itRef != 0 ) {
-    sarl_set_iterator_incr_ref(mp_itRef);
-  }
+  mp_itRef = sarl_set_iterator_obtain_ownership(it.mp_itRef);
   return *this;
 };
 
-inline SetIterator meet(SetIterator& a_it, SetIterator& b_it) 
+inline SetIterator::Temporary meet(SetIterator& a_it, SetIterator& b_it) 
 {
+  Sarl_SetIterator *p_it;
+  
   if ( a_it.mp_itRef != 0 && b_it.mp_itRef != 0 ) {
-    Sarl_SetIterator *p_it = 
-      sarl_set_iterator_meet(a_it.mp_itRef, b_it.mp_itRef);
-    return SetIterator(p_it);
+    p_it = sarl_set_iterator_meet(a_it.mp_itRef, b_it.mp_itRef);
   }
   else {
-    return SetIterator();
+    Sarl_Set* empty = sarl_set_create();
+    p_it = sarl_set_iterator_create(empty);
+    sarl_set_decr_ref(empty);
   }
+  return SetIterator::Temporary(p_it);
 };
 
 inline SetIterator join(SetIterator& a_it, SetIterator& b_it) 
