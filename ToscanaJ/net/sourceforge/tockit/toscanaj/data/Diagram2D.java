@@ -1,6 +1,6 @@
 package net.sourceforge.tockit.toscanaj.data;
 
-import net.sourceforge.tockit.toscanaj.diagram.DiagramNode;
+import net.sourceforge.tockit.toscanaj.data.DiagramNode;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;

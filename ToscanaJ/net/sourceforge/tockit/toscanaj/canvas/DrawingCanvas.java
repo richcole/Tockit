@@ -170,7 +170,7 @@ public class DrawingCanvas extends JComponent implements MouseListener, MouseMot
     }
 
     /**
-     * create a new list
+     * create a new list of canvasItems
      */
     public void newCanvasItemsList() {
         canvasItems = new LinkedList();

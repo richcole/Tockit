@@ -1,16 +1,12 @@
-package net.sourceforge.tockit.toscanaj.diagram;
+package net.sourceforge.tockit.toscanaj.data;
 
-import net.sourceforge.tockit.toscanaj.canvas.CanvasItem;
-import net.sourceforge.tockit.toscanaj.gui.ToscanajGraphics2D;
-
-import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 
 /**
  * class DiagramNode holds details on node position and size
  */
 
-public class DiagramNode extends CanvasItem {
+public class DiagramNode {// extends CanvasItem {
 
   /**
    * The size of a point.
@@ -73,17 +69,4 @@ public class DiagramNode extends CanvasItem {
   public String toString() {
     return "X = " + point2D.getX() + " Y = " + point2D.getY();
   }
-
-  public void draw(ToscanajGraphics2D g) {
-    g.drawEllipse2D(point2D, RADIUS);
-  }
-
-    /**
-     * Returns always false at the moment.
-     *
-     * @TODO: implement correct behaviour.
-     */
-    public boolean containsPoint(Point2D point) {
-        return false;
-    }
 }

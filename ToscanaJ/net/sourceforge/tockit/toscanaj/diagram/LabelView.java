@@ -8,6 +8,7 @@ import net.sourceforge.tockit.toscanaj.canvas.CanvasItem;
 import net.sourceforge.tockit.toscanaj.data.LabelInfo;
 import net.sourceforge.tockit.toscanaj.gui.ToscanajGraphics2D;
 import net.sourceforge.tockit.toscanaj.data.Diagram;
+import net.sourceforge.tockit.toscanaj.data.DiagramNode;
 
 /**
  * This class encapsulates all label drawing code.

@@ -15,6 +15,7 @@ import java.util.ListIterator;
 
 import net.sourceforge.tockit.toscanaj.canvas.CanvasItem;
 import net.sourceforge.tockit.toscanaj.canvas.DrawingCanvas;
+import net.sourceforge.tockit.toscanaj.data.DiagramNode;
 import net.sourceforge.tockit.toscanaj.data.Diagram;
 import net.sourceforge.tockit.toscanaj.data.Diagram2D;
 import net.sourceforge.tockit.toscanaj.data.LabelInfo;
@@ -179,7 +180,8 @@ public class DiagramView extends DrawingCanvas implements MouseListener, MouseMo
         // add all points and labels to the canvas
         for( int i = 0; i < _diagram.getNumberOfNodes(); i++ ) {
             DiagramNode node = new DiagramNode(_diagram.getNodePosition(i));
-            addCanvasItem( node );
+            NodeView nodeView = new NodeView(node);
+            addCanvasItem( nodeView );
             addCanvasItem( new LabelView( this, node, LabelView.ABOVE, _diagram.getAttributeLabel( i ) ) );
             addCanvasItem( new LabelView( this, node, LabelView.BELOW, _diagram.getObjectLabel( i ) ) );
         }
