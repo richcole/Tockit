@@ -229,7 +229,6 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
         Type mat = new Type(knowledgeBase, "Mat");
         Instance john = new Instance(knowledgeBase, "John", person);
         Instance boston = new Instance(knowledgeBase, "Boston", city);
-        Instance cat = new Instance(knowledgeBase, "Cat", animal);
         Relation go = new Relation(knowledgeBase, "go", new Type[]{person, city, bus});
         Relation between = new Relation(knowledgeBase, "between", new Type[]{person, rock, place});
         Relation attribute = new Relation(knowledgeBase, "attribute", new Type[]{place, hard});
