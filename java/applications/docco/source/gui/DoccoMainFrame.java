@@ -53,8 +53,6 @@ public class DoccoMainFrame extends JFrame {
 	private JComponent buildQueryViewComponent() {
 		JPanel queryPanel = new JPanel(new FlowLayout());
 		
-		this.queryField.setFocusable(true);
-		
 		this.queryField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				doQuery();
