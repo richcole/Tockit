@@ -187,12 +187,13 @@ public class CSXParser
                 }
 
                 // get the object labels
-                LabelInfo label = diagram.getObjectLabel( number );
+                LabelInfo label = new LabelInfo();
                 Element contElem = concept.getChild( "objectContingent" );
                 Element style = contElem.getChild( "labelStyle" );
                 if( style != null )
                 {
                     parseLabelStyle( label, style );
+                    diagram.getNode(number).setObjectLabelInfo(label);
                 }
                 List contingent = contElem.getChildren( "objectRef" );
                 Iterator it3 = contingent.iterator();
@@ -203,12 +204,13 @@ public class CSXParser
                 }
 
                 // get the attribute labels
-                label = diagram.getAttributeLabel( number );
+                label = new LabelInfo();
                 contElem = concept.getChild( "attributeContingent" );
                 style = contElem.getChild( "labelStyle" );
                 if( style != null )
                 {
                     parseLabelStyle( label, style );
+                    diagram.getNode(number).setAttributeLabelInfo(label);
                 }
                 contingent = contElem.getChildren( "attributeRef" );
                 it3 = contingent.iterator();

@@ -28,7 +28,7 @@ public class NodeView extends CanvasItem {
     public void draw(ToscanajGraphics2D g) {
         ///@TODO Probably should throw a NodeNotFoundException
         if(diagramNode != null) {
-            g.drawEllipse2D(diagramNode.getPoint(), diagramNode.getRadius());
+            g.drawEllipse2D(diagramNode.getPosition(), diagramNode.getRadius());
         }
     }
 

@@ -32,25 +32,25 @@ public interface Diagram2D
     public Rectangle2D getBounds();
 
     /**
-     * Returns the coordinates of a node.
+     * Returns a node in the diagram.
      *
      * Numbers start with zero.
      */
-    public Point2D getNodePosition( int nodeNumber );
+    public DiagramNode getNode( int nodeNumber );
 
     /**
      * Returns the coordinates of a starting point of a line.
      *
      * Numbers start with zero.
      */
-    public Point2D getFromPoint( int lineNumber );
+    public Point2D getFromPosition( int lineNumber );
 
     /**
      * Returns the coordinates of an end point of a line.
      *
      * Numbers start with zero.
      */
-    public Point2D getToPoint( int lineNumber );
+    public Point2D getToPosition( int lineNumber );
 
     /**
      * Returns the information on the object label of the diagram.

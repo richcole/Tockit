@@ -1,7 +1,6 @@
 package net.sourceforge.tockit.toscanaj.data;
 
 import net.sourceforge.tockit.toscanaj.diagram.DiagramObserver;
-import net.sourceforge.tockit.toscanaj.data.DiagramNode;
 import net.sourceforge.tockit.toscanaj.gui.MainPanel;
 
 import java.awt.geom.Point2D;
@@ -18,7 +17,7 @@ import java.util.LinkedList;
 public class Diagram implements DiagramObservable, Diagram2D
 {
     /**
-     * vector holds all observers
+     * The list of objects currently observing changes.
      */
     private List diagramObserver = null;
 
@@ -31,20 +30,6 @@ public class Diagram implements DiagramObservable, Diagram2D
      * The list of nodes in the diagram.
      */
     private List nodes;
-
-    /**
-     * The list of object labels.
-     *
-     * The order has to be the same as in nodes.
-     */
-    private List objectLabels;
-
-    /**
-     * The list of attribute labels.
-     *
-     * The order has to be the same as in nodes.
-     */
-    private List attributeLabels;
 
     /**
      * The list of starting points of lines in the diagram.
@@ -68,8 +53,6 @@ public class Diagram implements DiagramObservable, Diagram2D
     public Diagram() {
         title = "";
         nodes = new LinkedList();
-        attributeLabels = new LinkedList();
-        objectLabels = new LinkedList();
         lineStartPoints = new LinkedList();
         lineEndPoints = new LinkedList();
         diagramObserver = new LinkedList();
@@ -130,7 +113,7 @@ public class Diagram implements DiagramObservable, Diagram2D
         double maxY = Double.MIN_VALUE;
 
         for( int i = 0; i < this.nodes.size(); i++ ) {
-            Point2D p = (Point2D)this.nodes.get( i );
+            Point2D p = ((DiagramNode)this.nodes.get( i )).getPosition();
             double x = p.getX();
             double y = p.getY();
 
@@ -151,21 +134,19 @@ public class Diagram implements DiagramObservable, Diagram2D
     }
 
     /**
-     * Returns the coordinates of a node.
+     * Returns a node in the diagram.
      *
      * Numbers start with zero.
      */
-    public Point2D getNodePosition( int nodeNumber ) {
-        return (Point2D)this.nodes.get( nodeNumber );
+    public DiagramNode getNode( int nodeNumber ) {
+        return (DiagramNode)this.nodes.get( nodeNumber );
     }
 
     /**
      * Adds a point to the diagram (at the end of the list).
      */
     public void addNode( Point2D position ) {
-        this.nodes.add(position);
-        this.objectLabels.add( new LabelInfo() );
-        this.attributeLabels.add( new LabelInfo() );
+        this.nodes.add(new DiagramNode(position,null,null));
     }
 
     /**
@@ -173,9 +154,10 @@ public class Diagram implements DiagramObservable, Diagram2D
      *
      * Numbers start with zero.
      */
-    public Point2D getFromPoint( int lineNumber ) {
+    public Point2D getFromPosition( int lineNumber ) {
         Integer num = (Integer)this.lineStartPoints.get( lineNumber );
-        return (Point2D)this.nodes.get( num.intValue() );
+        DiagramNode node = (DiagramNode) this.nodes.get(num.intValue());
+        return node.getPosition();
     }
 
     /**
@@ -183,9 +165,10 @@ public class Diagram implements DiagramObservable, Diagram2D
      *
      * Numbers start with zero.
      */
-    public Point2D getToPoint( int lineNumber ) {
+    public Point2D getToPosition( int lineNumber ) {
         Integer num = (Integer)this.lineEndPoints.get( lineNumber );
-        return (Point2D)this.nodes.get( num.intValue() );
+        DiagramNode node = (DiagramNode) this.nodes.get(num.intValue());
+        return node.getPosition();
     }
 
     /**
@@ -202,14 +185,14 @@ public class Diagram implements DiagramObservable, Diagram2D
     /**
      * Returns the information on the object label of the diagram.
      */
-    public LabelInfo getObjectLabel( int pointNumber ) {
-        return (LabelInfo)this.objectLabels.get( pointNumber );
+    public LabelInfo getObjectLabel( int nodeNumber ) {
+        return ((DiagramNode)this.nodes.get(nodeNumber)).getObjectLabelInfo();
     }
 
     /**
      * Returns the information on the attribute label of the diagram.
      */
-    public LabelInfo getAttributeLabel( int pointNumber ) {
-        return (LabelInfo)this.attributeLabels.get( pointNumber );
+    public LabelInfo getAttributeLabel( int nodeNumber ) {
+        return ((DiagramNode)this.nodes.get(nodeNumber)).getAttributeLabelInfo();
     }
 }

@@ -131,7 +131,7 @@ public class DiagramView extends DrawingCanvas implements MouseListener, MouseMo
         // RADIUS of the points
         int invY = 1;
         if( _diagram.getNumberOfNodes() > 0 ) {
-            if( diagBounds.getY() < _diagram.getNodePosition(0).getY() ) {
+            if( diagBounds.getY() < _diagram.getNode(0).getPosition().getY() ) {
                 invY = -1;
             }
         }
@@ -157,7 +157,7 @@ public class DiagramView extends DrawingCanvas implements MouseListener, MouseMo
         if( diagBounds.getHeight() != 0 && _diagram.getNumberOfNodes() != 0 )
         {
             yScale = h / diagBounds.getHeight() * invY;
-            yOrigin = y - _diagram.getNodePosition(0).getY() * yScale;
+            yOrigin = y - _diagram.getNode(0).getPosition().getY() * yScale;
         }
         //store updated ToscanajGraphics2D
         graphics = new ToscanajGraphics2D(g2d, new Point2D.Double( xOrigin, yOrigin ), xScale, yScale );
@@ -176,16 +176,22 @@ public class DiagramView extends DrawingCanvas implements MouseListener, MouseMo
          newCanvasItemsList();
         // add all lines to the canvas
         for( int i = 0; i < _diagram.getNumberOfLines(); i++ ) {
-            DiagramLine dl = new DiagramLine( _diagram.getFromPoint( i ), _diagram.getToPoint( i ));
+            DiagramLine dl = new DiagramLine( _diagram.getFromPosition( i ), _diagram.getToPosition( i ));
             addCanvasItem( new LineView(dl) );
         }
         // add all points and labels to the canvas
         for( int i = 0; i < _diagram.getNumberOfNodes(); i++ ) {
-            DiagramNode node = new DiagramNode(_diagram.getNodePosition(i));
+            DiagramNode node = _diagram.getNode(i);
             NodeView nodeView = new NodeView(node);
             addCanvasItem( nodeView );
-            addCanvasItem( new LabelView( this, node, LabelView.ABOVE, _diagram.getAttributeLabel( i ) ) );
-            addCanvasItem( new LabelView( this, node, LabelView.BELOW, _diagram.getObjectLabel( i ) ) );
+            LabelInfo attrLabelInfo = _diagram.getAttributeLabel( i );
+            if( attrLabelInfo != null ) {
+                addCanvasItem( new LabelView( this, node, LabelView.ABOVE, attrLabelInfo ) );
+            }
+            LabelInfo objLabelInfo = _diagram.getObjectLabel( i );
+            if( objLabelInfo != null ) {
+                addCanvasItem( new LabelView( this, node, LabelView.BELOW, objLabelInfo ) );
+            }
         }
         repaint();
     }
