@@ -411,7 +411,7 @@ public class DoccoMainFrame extends JFrame {
         JMenu viewMenu = new JMenu("View");
         viewMenu.setMnemonic('v');
         
-        this.showPhantomNodesCheckBox = new JCheckBoxMenuItem("Show phantom nodes");
+        this.showPhantomNodesCheckBox = new JCheckBoxMenuItem("Show all possible combinations");
         this.showPhantomNodesCheckBox.setMnemonic('p');
         this.showPhantomNodesCheckBox.setSelected(true);
         this.showPhantomNodesCheckBox.addActionListener(new ActionListener(){
