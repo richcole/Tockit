@@ -5,7 +5,7 @@
  *
  * $Id$
  */
-package ord.tockit.context.model;
+package org.tockit.context.model;
 
 public interface BinaryRelation {
     boolean contains(Object domainObject, Object rangeObject);

@@ -5,7 +5,7 @@
  *
  * $Id$
  */
-package ord.tockit.context.model;
+package org.tockit.context.model;
 
 import java.util.Collection;
 import java.util.HashSet;
