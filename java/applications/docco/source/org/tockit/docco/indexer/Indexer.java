@@ -77,7 +77,6 @@ public class Indexer extends Thread {
 		if(this.writer == null) {
 			return; // nothing to stop
 		}
-		this.writer.optimize();
 		this.writer.close();
 		this.fileQueue.clear();
 		this.writer = null;
@@ -89,6 +88,12 @@ public class Indexer extends Thread {
 			if(!this.fileQueue.isEmpty()) {  
 				file = (File) this.fileQueue.remove(0);
 			} else {
+				try {
+                    this.writer.optimize();
+                } catch (IOException e) {
+                	e.printStackTrace();
+                	showFeedbackMessage("ERROR: " + e.getMessage());
+                }
 				file = null;
 			}
 			if(this.writer != null && file != null) {
