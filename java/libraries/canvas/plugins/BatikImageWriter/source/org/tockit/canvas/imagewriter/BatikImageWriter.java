@@ -12,9 +12,13 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Properties;
+import java.util.zip.GZIPOutputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import org.apache.batik.dom.GenericDOMImplementation;
 import org.apache.batik.svggen.SVGGraphics2D;
@@ -56,6 +60,34 @@ public class BatikImageWriter implements ImageWriter {
     }
 
     /**
+     * A format representing compressed SVG.
+     */
+    static protected class GraphicFormatSVGZ extends GraphicFormat {
+        /**
+         * Implements GraphicFormat.getName().
+         */
+        public String getName() {
+            return "Scalable Vector Graphics (compressed)";
+        }
+
+        /**
+         * Implements GraphicFormat.getExtensions().
+         */
+        public String[] getExtensions() {
+            String[] retVal = new String[1];
+            retVal[0] = "svgz";
+            return retVal;
+        }
+
+        /**
+         * Implements GraphicFormat.getWriter().
+         */
+        public ImageWriter getWriter() {
+            return singleton;
+        }
+    }
+
+    /**
      * The only instance of this class.
      */
     static private BatikImageWriter singleton;
@@ -72,6 +104,7 @@ public class BatikImageWriter implements ImageWriter {
     static public void initialize() {
         singleton = new BatikImageWriter();
         GraphicFormatRegistry.registerType(new GraphicFormatSVG());
+        GraphicFormatRegistry.registerType(new GraphicFormatSVGZ());
     }
 
     /**
@@ -128,7 +161,10 @@ public class BatikImageWriter implements ImageWriter {
         // character to byte encoding
         boolean useCSS = true; // we want to use CSS style attribute
         try {
-            FileOutputStream outStream = new FileOutputStream(outputFile);
+            OutputStream outStream = new FileOutputStream(outputFile);
+            if (settings.getGraphicFormat() instanceof GraphicFormatSVGZ) {
+                outStream = new GZIPOutputStream(outStream);
+            }
             Writer out = new OutputStreamWriter(outStream, "UTF-8");
 			svgGenerator.stream(svgRoot, out, useCSS);
 		    outStream.close();
