@@ -27,12 +27,15 @@ import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import javax.swing.BorderFactory;
@@ -76,6 +79,8 @@ import net.sourceforge.toscanaj.view.diagram.DiagramView;
 import net.sourceforge.toscanaj.view.diagram.LabelView;
 import net.sourceforge.toscanaj.view.diagram.NodeView;
 
+import org.apache.lucene.document.DateField;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.queryParser.ParseException;
@@ -456,6 +461,15 @@ public class DoccoMainFrame extends JFrame {
 		});
 		fileMenu.add(addFilesItem);
 
+		JMenuItem updateIndexItem = new JMenuItem("Update Index");
+		updateIndexItem.setMnemonic('u');
+		updateIndexItem.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				updateIndex();
+			}
+		});
+		fileMenu.add(updateIndexItem);
+
 		fileMenu.addSeparator();
 
 		JMenuItem editFileMappings = new JMenuItem("Edit File Mappings...");
@@ -529,7 +543,36 @@ public class DoccoMainFrame extends JFrame {
 			this.indexThread.enqueue(files[i]);
         }
     }
-
+    
+    private void updateIndex() {
+    	// first check all documents in the index if they disappeared or changed
+		Set knownDocuments;
+    	try {
+			IndexReader reader = IndexReader.open(this.indexLocation);
+			knownDocuments = new HashSet(reader.numDocs());
+            for(int i = 0; i < reader.maxDoc(); i++) {
+            	Document doc = reader.document(i);
+            	if(doc != null) {
+            		String path = doc.get(GlobalConstants.FIELD_DOC_PATH);
+            		knownDocuments.add(path);
+            		File file = new File(path);
+            		if(!file.exists()) {
+            			System.out.println("Removed: " + path);
+            		} else {
+            			String dateIndex = doc.get(GlobalConstants.FIELD_DOC_MODIFICATION_DATE);
+            			String dateFS = DateField.dateToString(new Date(file.lastModified()));
+            			if(!dateFS.equals(dateIndex)) {
+            				System.out.println("Modified: " + path);	
+            			}
+            		}
+            	}
+            }
+        } catch (IOException e) {
+        	ErrorDialog.showError(this, e, "Can't access index");
+        	return;
+        }
+        // then add new ones -- @todo we need to store the base directory for this
+    }
 
 	private void editFileMappings() {
 		FileMappingsEditingDialog fileMappingsEditingDialog = 
