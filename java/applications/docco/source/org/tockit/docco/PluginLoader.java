@@ -54,6 +54,7 @@ public class PluginLoader {
 				break; 
 			}
 		}
+		System.out.println("Found plugins num: " + pluginDirs.length);
 		
 		if (pluginDirs == null) {
 			ErrorDialog.showError(null, null, "Didn't find any plugins");			
@@ -71,7 +72,6 @@ public class PluginLoader {
 					loadPlugins(foundPlugins);
 
 					System.out.println("finished loading all plugins");
-					break;
 				}
 				catch (FileNotFoundException e) {
 					e.printStackTrace();
