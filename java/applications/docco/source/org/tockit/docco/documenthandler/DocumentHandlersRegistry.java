@@ -21,14 +21,10 @@ public class DocumentHandlersRegistry {
 	private DocumentHandlersRegistry() {
 	}
 	
-	public static void registerDefaults () throws ClassNotFoundException,
-											InstantiationException,
-											IllegalAccessException {
-		String[] defaultDocHandlers = GlobalConstants.DEFAULT_DOC_HANDLER_IMPLEMENTATIONS;
+	public static void registerDefaults () {
+		DocumentHandler[] defaultDocHandlers = GlobalConstants.DEFAULT_DOC_HANDLER_IMPLEMENTATIONS;
 		for (int i = 0; i < defaultDocHandlers.length; i++) {
-			String docHandlerName = defaultDocHandlers[i];
-			DocumentHandler curInstance = (DocumentHandler) Class.forName(docHandlerName).newInstance();
-			docHandlers.add(curInstance);
+			registerDocumentHandler(defaultDocHandlers[i]);
 		}
 	}
 	

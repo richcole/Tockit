@@ -9,6 +9,7 @@ package org.tockit.docco;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.tockit.docco.documenthandler.DocumentHandler;
 
 public class GlobalConstants {
 	public static final Analyzer DEFAULT_ANALYZER = new StandardAnalyzer();
@@ -34,9 +35,9 @@ public class GlobalConstants {
 	 */
 	public static final String FIELD_DOC_PATH_WORDS = "path_words";
 	
-	public static final String[] DEFAULT_DOC_HANDLER_IMPLEMENTATIONS = {
-										"org.tockit.docco.documenthandler.HtmlDocumentHandler",
-										"org.tockit.docco.documenthandler.XmlDocumentHandler",
-										"org.tockit.docco.documenthandler.PlainTextDocumentHandler"
+	public static final DocumentHandler[] DEFAULT_DOC_HANDLER_IMPLEMENTATIONS = {
+										new org.tockit.docco.documenthandler.HtmlDocumentHandler(),
+										new org.tockit.docco.documenthandler.XmlDocumentHandler(),
+										new org.tockit.docco.documenthandler.PlainTextDocumentHandler()
 										};
 }
