@@ -85,20 +85,15 @@ public class MultivalentDocumentHandler implements DocumentHandler, Plugin {
 			// media adaptors are obligated to perform outside of a browser context too
 			MediaAdaptor mediaAdapter = (MediaAdaptor)Behavior.getInstance(genre, genre, null, null, null);
 			
-			File infile = null;
-			try {
-				// @todo do we really need uri? 
-				URI uri = new URI(url.toString());
-				if (uri.getScheme().equals("file")) {
-					infile = new File(uri);
-				}
-				mediaAdapter.docURI = uri;
-			}
-			catch (URISyntaxException e) {
-			}
-	
-			InputStream is = new CachedInputStream(url.openStream(), infile, null);
-			mediaAdapter.setInputStream(is);
+            if(!url.getProtocol().equals("file")) {
+                throw new DocumentHandlerException("Multivalent handler can take only local files");
+            }
+
+            File file = new File(url.getPath());
+            mediaAdapter.docURI = file.toURI();
+
+			InputStream is = new CachedInputStream(url.openStream(),file,null);
+            mediaAdapter.setInputStream(is);
 			mediaAdapter.setHints(MediaAdaptor.HINT_NO_IMAGE | MediaAdaptor.HINT_NO_SHAPE | MediaAdaptor.HINT_EXACT | MediaAdaptor.HINT_NO_TRANSCLUSIONS);    // only want text
 
 			mediaAdapter.parse(doc);
