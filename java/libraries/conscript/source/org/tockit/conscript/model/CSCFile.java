@@ -10,6 +10,7 @@ package org.tockit.conscript.model;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -20,6 +21,7 @@ import org.tockit.conscript.parser.DataFormatException;
 public class CSCFile {
 	private URL location;
     private CSCFile parent;
+    private List remarks;
     
     private static class StructureId {}
 
@@ -68,6 +70,18 @@ public class CSCFile {
     
     public CSCFile getParent() {
         return this.parent;
+    }
+    
+    public List getRemarks() {
+        return Collections.unmodifiableList(this.remarks);
+    }
+    
+    public List getIncludeFiles() {
+        return Collections.unmodifiableList(this.includeFiles);
+    }
+    
+    public void addRemark(String remark) {
+        this.remarks.add(remark);
     }
     
     public void add(FormalContext context) {
