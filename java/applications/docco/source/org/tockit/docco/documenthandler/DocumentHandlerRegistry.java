@@ -29,7 +29,6 @@ public class DocumentHandlerRegistry {
 	}
 	
 	public static void registerDocumentHandler (DocumentHandler docHandler) {
-		System.out.println("Registering document handler: " + docHandler);
 		docHandlers.add(docHandler);
 	}
 	
