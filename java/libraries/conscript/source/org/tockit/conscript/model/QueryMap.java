@@ -18,6 +18,9 @@ public class QueryMap extends SchemaPart{
 	private Hashtable specials;
 	private Hashtable map;
 		
+	public QueryMap() {
+	}
+
 	public QueryMap(URL file, String identifier, FormattedString title,
 					  String remark, Hashtable specials, Hashtable map) {
 		this.file = file;
@@ -28,101 +31,52 @@ public class QueryMap extends SchemaPart{
 		this.map = map;
 	}
 	
-	/**
-	 * Returns the file.
-	 * @return URL
-	 */
 	public URL getFile() {
 		return file;
 	}
 
-	/**
-	 * Returns the identifier.
-	 * @return String
-	 */
 	public String getIdentifier() {
 		return identifier;
 	}
 
-	/**
-	 * Returns the map.
-	 * @return Hashtable
-	 */
 	public Hashtable getMap() {
 		return map;
 	}
 
-	/**
-	 * Returns the remark.
-	 * @return String
-	 */
 	public String getRemark() {
 		return remark;
 	}
 
-	/**
-	 * Returns the specials.
-	 * @return Hashtable
-	 */
 	public Hashtable getSpecials() {
 		return specials;
 	}
 
-	/**
-	 * Returns the title.
-	 * @return FormattedString
-	 */
 	public FormattedString getTitle() {
 		return title;
 	}
 
-	/**
-	 * Sets the file.
-	 * @param file The file to set
-	 */
 	public void setFile(URL file) {
 		this.file = file;
 	}
 
-	/**
-	 * Sets the identifier.
-	 * @param identifier The identifier to set
-	 */
 	public void setIdentifier(String identifier) {
 		this.identifier = identifier;
 	}
 
-	/**
-	 * Sets the map.
-	 * @param map The map to set
-	 */
 	public void setMap(Hashtable map) {
 		this.map = map;
 	}
 
-	/**
-	 * Sets the remark.
-	 * @param remark The remark to set
-	 */
 	public void setRemark(String remark) {
 		this.remark = remark;
 	}
 
-	/**
-	 * Sets the specials.
-	 * @param specials The specials to set
-	 */
 	public void setSpecials(Hashtable specials) {
 		this.specials = specials;
 	}
 
-	/**
-	 * Sets the title.
-	 * @param title The title to set
-	 */
 	public void setTitle(FormattedString title) {
 		this.title = title;
 	}
-
 }
 
