@@ -1,0 +1,15 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: sarl
+Description: sets and relations library
+Version: @VERSION@
+Requires: @REQUIREMENTS@
+
+Libs: @CLIENT_APP_LIBS@
+Cflags: @CLIENT_APP_CFLAGS@
+
+
+

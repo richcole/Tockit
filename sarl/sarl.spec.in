@@ -1,0 +1,91 @@
+%define	name	 sarl
+%define ver      @SARL_VERSION@
+%define rel      1
+%define prefix   @PREFIX@
+%define sysconfdir @SYSCONFDIR@
+%define exec_prefix @EXECPREFIX@
+%define bindir @BINDIR@
+%define libdir @LIBDIR@
+%define includedir @INCLUDEDIR@
+
+Summary: SARL
+Name: %{name}
+Version: %{ver}
+Release: %{rel}
+Copyright: GPL
+Group: System Environment/Libraries
+Source: http://prdownloads.sourceforge.net/tockit/%{name}-%{ver}.tar.bz2
+BuildRoot: %{_tmppath}/%{name}-root
+Packager: Ben Martin <monkeyiq@users.sourceforge.net>
+URL: http://sourceforge.net/project/showfiles.php?group_id=sarl
+#Requires: libsigc++ >= 1.0.3
+
+%description
+SARL
+
+%package devel
+Summary: sarl headers, static libraries and documentation
+Group: System/Libraries
+Requires: %{name} >= @SARL_VERSION@
+%description devel
+Headers, static libraries and documentation for sarl.
+
+%prep
+rm -rf $RPM_BUILD_ROOT
+
+%setup -q
+
+%build
+
+if [ ! -f configure ]; then
+	CFLAGS="$RPM_OPT_FLAGS" ./autogen.sh --prefix=%{prefix} --sysconfdir=%{sysconfdir}
+else
+	CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{prefix} --sysconfdir=%{sysconfdir}
+fi
+
+
+if [ "$SMP" != "" ]; then
+  (make "MAKE=make -k -j $SMP"; exit 0)
+  make
+else
+  make
+fi
+
+%install
+rm -rf $RPM_BUILD_ROOT
+make \
+	prefix=$RPM_BUILD_ROOT%{prefix} \
+	sysconfdir=$RPM_BUILD_ROOT%{sysconfdir} \
+	exec_prefix=$RPM_BUILD_ROOT%{exec_prefix} \
+	bindir=$RPM_BUILD_ROOT%{bindir} \
+	libdir=$RPM_BUILD_ROOT%{libdir} \
+	includedir=$RPM_BUILD_ROOT%{includedir} \
+	install
+
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%post -p /sbin/ldconfig
+
+%postun -p /sbin/ldconfig
+
+%files
+%defattr(-,root,root,0755)
+%doc AUTHORS README COPYING ChangeLog INSTALL
+@LIBDIR@/libsarl.so*
+@LIBDIR@/libsarl.la
+@LIBDIR@/libsarlplus.so*
+@LIBDIR@/libsarlplus.la
+
+%files devel
+%defattr(-,root,root,0444)
+%attr(0755, root, root) @BINDIR@/sarl-config
+%attr(0755, root, root) @BINDIR@/sarl++-config
+@INCLUDEDIR@/*
+@LIBDIR@/pkgconfig/sarl*.pc
+
+
+%changelog
+* Sun May 4 2003 Ben Martin
+- Created 
