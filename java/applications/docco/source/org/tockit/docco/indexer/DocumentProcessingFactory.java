@@ -111,7 +111,7 @@ public class DocumentProcessingFactory {
 		}
 		
 		// @todo use paths relative to the base directory of the index
-		doc.add(Field.Text(GlobalConstants.FIELD_DOC_PATH, file.getPath()));
+		doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_PATH, file.getPath()));
 		doc.add(Field.Text(GlobalConstants.FIELD_DOC_PATH_WORDS, file.getParent().replace(File.separatorChar, ' ')));
 		String fileExtension = FileExtensionExtractor.getExtension(file);
 		if (fileExtension != null) {
