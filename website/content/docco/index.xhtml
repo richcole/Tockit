@@ -11,20 +11,36 @@
         Analysis' visualisation techniques.</p>
         
         <p>The tool is able to index local hard drives and everything mounted into the local file system, such
-        as Windows or Unix network drives. It scans for plain text, HTML, Word, Excel and PDF documents and
+        as Windows or Unix network drives. It scans for a number of different document formats and
         creates a database containing which words are contained in which documents. This allows very fast
         lookup of keywords and other information like authors, title or location. The keywords used are
         generated from the bodies of the documents, such that no manual annotation is required.</p>
+        
+        <p>Docco support the follwing formats:</p>
+        <ul>
+        	<li>plain text</li>
+        	<li>HTML</li>
+        	<li>XML</li>
+        	<li><a href="http://www.openoffice.org">OpenOffice</a>/
+        		<a href="http://wwws.sun.com/software/star/staroffice/6.0/index.html">StarOffice 6.0</a> documents</li>
+        	<li>Word (with <a href="http://jakarta.apache.org/poi/index.html">POI</a> plugin)</li>
+        	<li>Excel (with <a href="http://jakarta.apache.org/poi/index.html">POI</a> plugin)</li>
+        	<li>PDF (with <a href="http://www.pdfbox.org/">PDFbox</a> or 
+        	    <a href="http://www.cs.berkeley.edu/~phelps/Multivalent/">Multivalent</a> plugin)</li>
+        	<li>TeX DVI (with <a href="http://www.cs.berkeley.edu/~phelps/Multivalent/">Multivalent</a> plugin)</li>
+        	<li>UNIX man pages (with <a href="http://www.cs.berkeley.edu/~phelps/Multivalent/">Multivalent</a> plugin)</li>
+        </ul>
         
         <p>Once an index is created, the query interface allows asking for any documents containing certain
         keywords and shows how these combine. Once a set of interesting documents is found, they can be 
         selected and will be displayed as tree view, from which they can be opened in the default application.</p>
         
-        <p>The program can be downloaded from the 
+        <p>The program and the plugins can be downloaded from the 
         <a href="http://sourceforge.net/project/showfiles.php?group_id=21448">Sourceforge download page</a>, it
-        requires a recent version of Java to be installed (at least JRE/JDK 1.4.0). At the time of writing
-        (Docco version 0.1), it has all basic functionality but the PDF and the MS Office formats indexing is still 
-        a bit broken -- some documents get ignored. On HTML and TXT it works like a charm. <tt>:-)</tt></p>
+        requires a recent version of Java to be installed (at least JRE/JDK 1.4.0). To run the program just extract
+        the main zip file and start the script for your platform ("run-docco.[bat/sh]"). To install the plugins just
+        extract the plugin zip files into the "plugins" directory in the main installation. Afterwards restart the
+        program. All new indexes created will include the files supported by the plugin.</p>
 	</body>
 </html>
 
