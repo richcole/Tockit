@@ -10,9 +10,9 @@ package org.tockit.docco.indexer;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Hashtable;
 
-import org.apache.lucene.document.DateField;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.tockit.docco.GlobalConstants;
@@ -48,8 +48,7 @@ public class DocumentProcessingFactory {
 				Document doc = docProcessor.getDocument(file);
 				doc.add(Field.Text(GlobalConstants.FIELD_DOC_PATH, file.getPath()));
 				if (doc.get(GlobalConstants.FIELD_DOC_DATE) == null) {
-					doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_DATE,
-							  DateField.timeToString(file.lastModified())));
+					doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_DATE,new Date(file.lastModified())));
 				}
 				doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_SIZE, new Long(file.length()).toString()));
 				//printDebug(doc);

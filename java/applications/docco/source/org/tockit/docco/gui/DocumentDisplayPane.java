@@ -15,7 +15,9 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.NumberFormat;
+import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -27,6 +29,8 @@ import javax.swing.JTextField;
 import net.sourceforge.toscanaj.dbviewer.BrowserLauncher;
 import net.sourceforge.toscanaj.gui.dialog.ErrorDialog;
 
+import org.apache.lucene.document.DateField;
+import org.apache.lucene.document.Field;
 import org.tockit.docco.GlobalConstants;
 import org.tockit.docco.query.HitReference;
 
@@ -176,8 +180,10 @@ public class DocumentDisplayPane extends JPanel {
 		this.currentDocument = reference.getDocument().get(GlobalConstants.FIELD_DOC_PATH);
         this.pathField.setText(currentDocument);
 		this.dateField.setText(reference.getDocument().get(GlobalConstants.FIELD_DOC_DATE));
-		String dateStr = reference.getDocument().get(GlobalConstants.FIELD_DOC_DATE);
-		this.dateField.setText(dateStr);
+		Field dateField = reference.getDocument().getField(GlobalConstants.FIELD_DOC_DATE);
+		Date modDate = DateField.stringToDate(dateField.stringValue());
+		DateFormat format = DateFormat.getDateTimeInstance();
+        this.dateField.setText(format.format(modDate));
 		long size = Long.parseLong(reference.getDocument().get(GlobalConstants.FIELD_DOC_SIZE));
         this.sizeField.setText(NumberFormat.getIntegerInstance().format(size) + " bytes");
 		this.summaryArea.setText(reference.getDocument().get(GlobalConstants.FIELD_DOC_SUMMARY));
