@@ -17,9 +17,5 @@ public class DocumentProcessingException extends Exception {
 	public DocumentProcessingException(String message, Throwable e) {
 		super(message, e);
 	}
-
-	public DocumentProcessingException(Throwable e) {
-		super(e);
-	}
 	
 }

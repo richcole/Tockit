@@ -64,7 +64,7 @@ public class MSWordHandler implements DocumentHandler {
 		}
 		catch (IOException e) {
 			if (e.getMessage().startsWith("Unable to read entire header")) {
-				throw new DocumentHandlerException(e);
+				throw new DocumentHandlerException("Couldn't process document", e);
 			} else {
 				throw e;
 			}
@@ -79,20 +79,16 @@ public class MSWordHandler implements DocumentHandler {
 			return new DocumentContent(docTextWriter.toString());
 		}
 		catch (ArrayIndexOutOfBoundsException e) {
-			System.err.println("ArrayIndexOutOfBoundsException while extracting content in " + file.getPath());
-			throw new DocumentHandlerException(e);
+			throw new DocumentHandlerException("ArrayIndexOutOfBoundsException", e);
 		}
 		catch (IndexOutOfBoundsException e) {
-			System.err.println("ArrayIndexOutOfBoundsException while extracting content in " + file.getPath());
-			throw new DocumentHandlerException(e);
+			throw new DocumentHandlerException("ArrayIndexOutOfBoundsException", e);
 		}
 		catch (NegativeArraySizeException e) {
-			System.err.println("IndexOutOfBoundsException while extracting content in " + file.getPath());
-			throw new DocumentHandlerException(e);
+			throw new DocumentHandlerException("IndexOutOfBoundsException",e);
 		}
 		catch (NullPointerException e) {
-			System.err.println("NullPointerException while extracting content in " + file.getPath());
-			throw new DocumentHandlerException(e);
+			throw new DocumentHandlerException("NullPointerException", e);
 		}
 	}
 

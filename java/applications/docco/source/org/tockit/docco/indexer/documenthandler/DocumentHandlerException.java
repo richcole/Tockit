@@ -20,8 +20,4 @@ public class DocumentHandlerException extends DocumentProcessingException {
 	public DocumentHandlerException(String message, Throwable e) {
 		super(message, e);
 	}
-
-	public DocumentHandlerException(Throwable e) {
-		super(e);
-	}
 }

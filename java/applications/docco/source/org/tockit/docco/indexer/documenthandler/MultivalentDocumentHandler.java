@@ -114,7 +114,7 @@ public class MultivalentDocumentHandler implements DocumentHandler {
 			return result;
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new DocumentHandlerException(e);
+			throw new DocumentHandlerException("Caught Exception", e);
 		}
 	}
 

@@ -33,7 +33,7 @@ public class MSExcelDocHandler implements DocumentHandler {
 			return docSummary;	
 		}
 		catch (RecordFormatException e) {
-			throw new DocumentHandlerException(e);
+			throw new DocumentHandlerException("Caught RecordFormatException while processing " + file.getAbsolutePath(), e);
 		}		
 	}
 

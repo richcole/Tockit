@@ -14,6 +14,5 @@ public class UnknownFileTypeException extends DocumentProcessingException {
 
 	public UnknownFileTypeException(String message) {
 		super(message);
-
 	}
 }

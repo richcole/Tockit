@@ -10,7 +10,6 @@ package org.tockit.docco.indexer.documenthandler;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,10 +20,7 @@ import org.tockit.docco.indexer.DocumentSummary;
 
 import tool.ExtractText;
 
-import multivalent.ParseException;
 import multivalent.std.adaptor.pdf.PDFReader;
-
-
 
 public class PdfMultivalentDocumentHandler implements DocumentHandler {
 
@@ -58,17 +54,8 @@ public class PdfMultivalentDocumentHandler implements DocumentHandler {
 			
 			return docSummary;
 		}
-		catch (URISyntaxException e) {
-			throw new DocumentHandlerException(e);
-		}
-		catch (ParseException e) {
-			throw new DocumentHandlerException(e);
-		}
-		catch (NullPointerException e) {
-			throw new DocumentHandlerException(e);
-		}
 		catch (Exception e) {
-			throw new DocumentHandlerException(e);
+			throw new DocumentHandlerException("Couldn't process document", e);
 		}
 	}
 
