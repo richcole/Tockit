@@ -113,6 +113,15 @@ public:
     return sarl_relation_iterator_count(mp_itRef);
   }
 
+  bool is_member(Index dom, Index rng) {
+    return sarl_relation_iterator_is_member(mp_itRef, sarl_pair(dom,rng));
+  };
+  
+  bool is_member(Pair const& p) {
+    return sarl_relation_iterator_is_member(mp_itRef, p);
+  };
+  
+
 private:
   RelationIterator retn() 
   {

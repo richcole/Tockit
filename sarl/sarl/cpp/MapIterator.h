@@ -9,6 +9,7 @@ extern "C" {
 #include <sarl/cpp/Index.h>
 #include <sarl/cpp/SetIterator.h>
 #include <sarl/cpp/Map.h>
+#include <sarl/cpp/RelationIterator.h>
 
 class ContextIterator;
 class SetIterator;
@@ -75,47 +76,65 @@ public:
     sarl_map_iterator_reset(mp_itRef);
   };
 
+  RelationIterator relation_iterator() {
+    RelationIterator it = sarl_map_iterator_create_relation_iterator(mp_itRef);
+    return it.retn();
+  }
+
   SetIterator domain() {
-  	RelationIterator it(relation_iterator());
+    RelationIterator it(relation_iterator());
     return it.domain();
   }
   
-  RelationIterator relation_iterator() {
-  	RelationIterator it = sarl_map_iterator_relation_iterator(mp_itRef);
-  	return it.retn();
-  }
-
   SetIterator range() {
-    return SetIterator(sarl_map_iterator_range(mp_itRef)).retn();
+    RelationIterator it(relation_iterator());
+    return it.range().retn();
   }
 
   SetIterator extent(Sarl_Index m) {
-    return SetIterator(
-      sarl_map_iterator_extent(mp_itRef, m)
-    ).retn();
+    RelationIterator it(relation_iterator());
+    return it.extent(m).retn();
   }
   
   SetIterator intent(Sarl_Index g) {
-    return SetIterator(
-      sarl_map_iterator_intent(mp_itRef, g)
-    ).retn();
+    RelationIterator it(relation_iterator());
+    return it.intent(g).retn();
   }
 
-  MapIterator join(MapIterator& it) {
-    return MapIterator(
-      sarl_map_iterator_join(
-	mp_itRef, it.mp_itRef
-      )
-    ).retn();
-  }
+  //! @todo: join for maps should be composition right?
+  //  MapIterator join(MapIterator& A) {
+  //    RelationIterator this_it(relation_iterator());
+  //    RelationIterator A_it(A.relation_iterator());
+  //    return it.join(it).retn();
+  //  }
 
   Index count_remaining() {
-    return sarl_map_iterator_count_remaining(mp_itRef);
+    RelationIterator it(relation_iterator());
+    return it.count_remaining();
   }
 
   Index count() {
-    return sarl_map_iterator_count(mp_itRef);
+    RelationIterator it(relation_iterator());
+    return it.count();
   }
+
+  bool is_member(Index dom, Index rng) {
+    RelationIterator it(relation_iterator());
+    return it.is_member(dom, rng);
+  };
+  
+  bool is_member(Pair const& p) {
+    RelationIterator it(relation_iterator());
+    return it.is_member(p);
+  };
+
+  Index image(Index dom) {
+    return sarl_map_iterator_image(mp_itRef, dom);
+  };
+  
+  SetIterator coimage(Index rng) {
+    return extent(rng).retn();
+  };
 
 private:
   MapIterator retn() 

@@ -89,7 +89,7 @@ struct Sarl_MapIterator* sarl_map_iterator_copy(
 struct Sarl_RelationIterator* sarl_map_iterator_create_relation_iterator(
   struct Sarl_MapIterator *a_it)
 {
-  return a_it;
+  return sarl_map_iterator_copy(a_it);
 };
 
 Sarl_Index sarl_map_iterator_image(Sarl_MapIterator *m, Sarl_Index x)
@@ -107,11 +107,20 @@ Sarl_Index sarl_map_iterator_image(Sarl_MapIterator *m, Sarl_Index x)
   return result;
 };
 
+struct Sarl_MapIterator *
+  sarl_map_iterator_obtain_ownership(
+    struct Sarl_MapIterator *it
+  )
+{
+  return sarl_iterator_obtain_ownership(it, sarl_map_iterator_copy);
+};
 
-
-
-
-
-
+struct Sarl_MapIterator *
+  sarl_map_iterator_release_ownership(
+    struct Sarl_MapIterator *it
+  )
+{
+  return sarl_iterator_release_ownership(it);
+};
 
 

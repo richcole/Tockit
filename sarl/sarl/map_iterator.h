@@ -53,6 +53,7 @@ extern struct Sarl_MapIterator*
 
 extern Sarl_Index 
   sarl_map_iterator_image(
+    struct Sarl_MapIterator *,
     Sarl_Index index
   );
 
@@ -62,9 +63,10 @@ extern struct Sarl_MapIterator *sarl_map_iterator_create(
   struct Sarl_Map *
 );
 
-extern struct Sarl_RelationIterator *sarl_map_iterator_relation_iterator(
-  struct Sarl_MapIterator *
-);
+extern struct Sarl_RelationIterator *
+  sarl_map_iterator_create_relation_iterator(
+    struct Sarl_MapIterator *
+  );
 
 
 #endif

@@ -30,6 +30,7 @@ public:
   friend class LatticeIterator;
   friend class Dictionary;
   friend class Lattice;
+  friend class MapIterator;
 
   friend SetIterator meet(SetIterator& a_it, SetIterator& b_it);
   friend SetIterator join(SetIterator& a_it, SetIterator& b_it);
@@ -100,6 +101,12 @@ public:
     SARL_ASSERT(mp_itRef != 0);
     return
       sarl_set_iterator_lexical_compare(mp_itRef, a_it.mp_itRef);
+  };
+
+  bool is_member(Index x)
+  {
+    SARL_ASSERT(mp_itRef != 0);
+    return sarl_set_iterator_is_member(mp_itRef, x);
   };
 
 protected:

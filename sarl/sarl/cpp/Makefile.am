@@ -45,8 +45,8 @@ sarlplusinclude_HEADERS = \
 	ContextReader.h \
 	ContextIterator.h \
 	RefCount.h \
-	String.h \
-	MapIterator.h
+        MapIterator.h \
+	String.h
 #
 # Sources and headers not to be installed
 #
@@ -59,6 +59,8 @@ libsarlplus_la_SOURCES = \
 	Relation.cpp \
 	RelationIterator.cpp \
 	Set.cpp \
+	MapIterator.cpp \
+	Map.cpp \
 	SetIterator.cpp 
 
 
