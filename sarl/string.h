@@ -8,7 +8,6 @@ struct Sarl_String;
 typedef char Sarl_Char;
 typedef short Sarl_Short;
 
-
 /* construction of set objects */
 extern struct Sarl_String *
   sarl_string_create();
