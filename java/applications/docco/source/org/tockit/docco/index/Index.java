@@ -25,7 +25,7 @@ import org.apache.lucene.document.DateField;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.tockit.docco.GlobalConstants;
-import org.tockit.docco.indexer.DocumentHandlersRegistery;
+import org.tockit.docco.indexer.DocumentHandlerRegistry;
 import org.tockit.docco.indexer.Indexer;
 
 public class Index {
@@ -33,7 +33,7 @@ public class Index {
 	private String indexLocation;
 	private File[] filesIndexed = new File[0];
 	private Indexer indexThread;
-	private DocumentHandlersRegistery docHandlersRegistry;
+	private DocumentHandlerRegistry docHandlersRegistry;
 	
 	public Index(String indexLocation, Indexer.CallbackRecipient callbackRecipient) throws IOException {
 		this.indexLocation = indexLocation;
@@ -51,7 +51,7 @@ public class Index {
             }
 		}
 
-		this.docHandlersRegistry = new DocumentHandlersRegistery(true);
+		this.docHandlersRegistry = new DocumentHandlerRegistry(true);
 		
         this.indexThread = new Indexer(this.docHandlersRegistry, callbackRecipient);
 		this.indexThread.start();
@@ -139,7 +139,7 @@ public class Index {
 		return this.indexThread.isIndexing();
 	}
 	
-    public DocumentHandlersRegistery getDocHandlersRegistry() {
+    public DocumentHandlerRegistry getDocHandlersRegistry() {
         return docHandlersRegistry;
     }
 }

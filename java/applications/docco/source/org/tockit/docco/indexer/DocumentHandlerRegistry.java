@@ -19,17 +19,17 @@ import org.tockit.docco.ConfigurationManager;
 import org.tockit.docco.indexer.documenthandler.DocumentHandler;
 import org.tockit.docco.indexer.filefilter.DoccoFileFilter;
 
-public class DocumentHandlersRegistery {
+public class DocumentHandlerRegistry {
 	
 	private static final String CONFIGURATION_MAPPING_ENTRY_NAME = "extension_mappings";
 	private static final String CONFIGURATION_SECTION_NAME = "Indexer";
 	
 	List docHandlersList = new LinkedList();
 
-	public DocumentHandlersRegistery () {
+	public DocumentHandlerRegistry () {
 	}
 	
-	public DocumentHandlersRegistery (boolean loadFromConfig) {
+	public DocumentHandlerRegistry (boolean loadFromConfig) {
 		if (loadFromConfig) {
 			try {
 				loadDocumentHandlersRegistery();

@@ -24,9 +24,9 @@ import org.tockit.docco.indexer.filefilter.NotFoundFileExtensionException;
  */
 public class DocumentProcessingFactory {
 	
-	private DocumentHandlersRegistery docHandlersRegistery;
+	private DocumentHandlerRegistry docHandlersRegistery;
 	
-	public DocumentProcessingFactory(DocumentHandlersRegistery docHandlersRegistery) {
+	public DocumentProcessingFactory(DocumentHandlerRegistry docHandlersRegistery) {
 		this.docHandlersRegistery = docHandlersRegistery;
 	}
 

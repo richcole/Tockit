@@ -41,14 +41,14 @@ import net.sourceforge.toscanaj.gui.dialog.ErrorDialog;
 
 import org.tockit.docco.GlobalConstants;
 import org.tockit.docco.indexer.DocumentHandlerMapping;
-import org.tockit.docco.indexer.DocumentHandlersRegistery;
+import org.tockit.docco.indexer.DocumentHandlerRegistry;
 import org.tockit.docco.indexer.documenthandler.DocumentHandler;
 import org.tockit.docco.indexer.filefilter.DoccoFileFilter;
 
 
 public class CreateNewFileMappingDialog extends JDialog {
 	
-	private DocumentHandlersRegistery docHandlersRegistery;
+	private DocumentHandlerRegistry docHandlersRegistery;
 	private DefaultComboBoxModel instantiatedFileFiltersModel;
 	private DefaultComboBoxModel fileFilterImplementationsModel;
 	private DefaultComboBoxModel docHandlerImplementationsModel;
@@ -104,7 +104,7 @@ public class CreateNewFileMappingDialog extends JDialog {
 		}
 	}	
 
-	public CreateNewFileMappingDialog(Dialog owner, DocumentHandlersRegistery registery) 
+	public CreateNewFileMappingDialog(Dialog owner, DocumentHandlerRegistry registery) 
 										throws HeadlessException {
 		super(owner, "Create new mapping", true);
 		this.docHandlersRegistery = registery;

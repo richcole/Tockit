@@ -34,14 +34,14 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.tockit.docco.indexer.DocumentHandlerMapping;
-import org.tockit.docco.indexer.DocumentHandlersRegistery;
+import org.tockit.docco.indexer.DocumentHandlerRegistry;
 import org.tockit.docco.indexer.documenthandler.DocumentHandler;
 import org.tockit.docco.indexer.filefilter.DoccoFileFilter;
 
 public class FileMappingsEditingDialog extends JDialog {
 	
 	private DocHandlersRegisteryListModel model;
-	private DocumentHandlersRegistery docHandlersRegistery;
+	private DocumentHandlerRegistry docHandlersRegistery;
 	
 	private JButton upButton = new JButton("Move Up");
 	private JButton downButton = new JButton("Move Down");
@@ -75,11 +75,11 @@ public class FileMappingsEditingDialog extends JDialog {
 	}
 	
 	private class DocHandlersRegisteryListModel extends AbstractListModel {
-		private DocumentHandlersRegistery copyRegistery;
+		private DocumentHandlerRegistry copyRegistery;
 		
-		public DocHandlersRegisteryListModel (DocumentHandlersRegistery registery) {
+		public DocHandlersRegisteryListModel (DocumentHandlerRegistry registery) {
 			
-			copyRegistery = new DocumentHandlersRegistery();
+			copyRegistery = new DocumentHandlerRegistry();
 
 			Iterator it = registery.getDocumentMappingList().iterator();
 			while (it.hasNext()) {
@@ -119,13 +119,13 @@ public class FileMappingsEditingDialog extends JDialog {
 			fireIntervalAdded(copyRegistery.getMappingAt(getSize() - 1), 0, getSize());
 		}
 		
-		public DocumentHandlersRegistery getRegistery () {
+		public DocumentHandlerRegistry getRegistery () {
 			return copyRegistery;
 		}
 	}
 
 	
-	public FileMappingsEditingDialog(Frame parent, DocumentHandlersRegistery registery) 
+	public FileMappingsEditingDialog(Frame parent, DocumentHandlerRegistry registery) 
 													throws HeadlessException {
 		super(parent, "Edit File Mappins Configuration", true);
 		this.docHandlersRegistery = registery;

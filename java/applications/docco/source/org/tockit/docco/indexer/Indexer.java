@@ -31,7 +31,7 @@ public class Indexer extends Thread {
     private DocumentProcessingFactory docProcessingFactory;
     private int filesSeen;
 	
-	public Indexer(DocumentHandlersRegistery docHandlerRegistery, CallbackRecipient output) {
+	public Indexer(DocumentHandlerRegistry docHandlerRegistery, CallbackRecipient output) {
 		this.callbackRecipient = output;
 		try {
             this.docProcessingFactory = new DocumentProcessingFactory(docHandlerRegistery);
