@@ -55,7 +55,7 @@ public class Relation {
         return retVal;
     }
 
-    public Relation[] getSuperRelations() {
+    public Relation[] getDirectSupertypes() {
         List superrelationChildren = this.element.getChildren("superrelation");
         Relation[] retVal = new Relation[superrelationChildren.size()];
         int pos = 0;
@@ -68,7 +68,7 @@ public class Relation {
         return retVal;
     }
 
-    public void addSuperRelation(Relation other) {
+    public void addDirectSupertype(Relation other) {
         Element superrelElem = new Element("superrelation");
         superrelElem.addContent(other.getName());
         this.element.addContent(superrelElem);
@@ -81,6 +81,13 @@ public class Relation {
     public int getArity() {
         List signatureChildren = this.element.getChildren("type");
         return signatureChildren.size();
+    }
+
+    public Relation[] getDirectSubtypes() {
+        Collection subtypes = this.knowledgeBase.getDirectSubtypes(this);
+        Relation[] retVal = new Relation[subtypes.size()];
+        subtypes.toArray(retVal);
+        return retVal;
     }
 
 }

@@ -49,7 +49,11 @@ public class Node {
         if(typeId == null) {
             return Type.UNIVERSAL;
         }
-        return knowledgeBase.getType(typeId);
+        Type type = knowledgeBase.getType(typeId);
+        if(type == null) {
+            return Type.UNIVERSAL;
+        }
+        return type;
     }
 
     public void setType(Type type) {

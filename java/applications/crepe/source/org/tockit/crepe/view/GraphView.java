@@ -8,12 +8,10 @@
 package org.tockit.crepe.view;
 
 import org.tockit.canvas.Canvas;
-import org.tockit.canvas.events.CanvasItemDraggedEvent;
 import org.tockit.events.EventBroker;
-import org.tockit.events.LoggingEventListener;
 import org.tockit.canvas.manipulators.ItemMovementManipulator;
 import org.tockit.cgs.model.*;
-import org.tockit.crepe.view.manipulators.NodeMoveManipulator;
+import org.tockit.crepe.view.manipulators.*;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -32,6 +30,8 @@ public class GraphView extends Canvas {
         getBackgroundItem().setPaint(Color.LIGHT_GRAY);
         new NodeMoveManipulator(this, eventBroker);
         new ItemMovementManipulator(this, LinkView.class, eventBroker);
+        new NodeContextMenuHandler(this, eventBroker);
+        new LinkContextMenuHandler(this, eventBroker);
 //        new LoggingEventListener(eventBroker, CanvasItemDraggedEvent.class, Object.class, System.out);
     }
 

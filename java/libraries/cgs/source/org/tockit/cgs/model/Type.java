@@ -17,7 +17,8 @@ import java.util.*;
  */
 public class Type {
     private static class ImplicitType extends Type {
-        public ImplicitType() {
+        public ImplicitType(KnowledgeBase knowledgeBase) {
+            super(knowledgeBase);
         }
 
         public String getName() {
@@ -33,13 +34,22 @@ public class Type {
         }
     }
 
-    public static final Type UNIVERSAL = new ImplicitType();
-    public static final Type ABSURD = new ImplicitType();
+    public static Type UNIVERSAL = null;
+    public static Type ABSURD = null;
 
     private Element element = null;
     private KnowledgeBase knowledgeBase = null;
 
-    private Type() {
+    /**
+     * @todo evil hack -- do something better
+     */
+    public static void setDefaultKnowledgeBase(KnowledgeBase knowledgeBase) {
+        Type.UNIVERSAL = new ImplicitType(knowledgeBase);
+        Type.ABSURD = new ImplicitType(knowledgeBase);
+    }
+
+    private Type(KnowledgeBase knowledgeBase) {
+        this.knowledgeBase = knowledgeBase;
     }
 
     public Type(KnowledgeBase knowledgeBase, String name) {
@@ -65,6 +75,9 @@ public class Type {
 
     public Type[] getDirectSupertypes() {
         List supertypeChildren = this.element.getChildren("supertype");
+        if(supertypeChildren.size() == 0) {
+            return new Type[]{Type.UNIVERSAL};
+        }
         Type[] retVal = new Type[supertypeChildren.size()];
         int pos = 0;
         for (Iterator iterator = supertypeChildren.iterator(); iterator.hasNext();) {
@@ -101,5 +114,12 @@ public class Type {
             }
         }
         return false;
+    }
+
+    public Type[] getDirectSubtypes() {
+        Collection subtypes = this.knowledgeBase.getDirectSubtypes(this);
+        Type[] retVal = new Type[subtypes.size()];
+        subtypes.toArray(retVal);
+        return retVal;
     }
 }

@@ -15,18 +15,19 @@ import java.util.*;
 
 public class KnowledgeBase {
     private Element element = null; // root element
-    private Hashtable cgs = new Hashtable();
-    private Hashtable nodes = new Hashtable();
-    private Hashtable types = new Hashtable();
-    private Hashtable instances = new Hashtable();
-    private Hashtable links = new Hashtable();
-    private Hashtable relations = new Hashtable();
+    private Hashtable graphDict = new Hashtable();
+    private Hashtable nodeDict = new Hashtable();
+    private Hashtable typeDict = new Hashtable();
+    private Hashtable instanceDict = new Hashtable();
+    private Hashtable linkDict = new Hashtable();
+    private Hashtable relationDict = new Hashtable();
     private IdPool nodeIdPool = new IdPool();
     private IdPool linkIdPool = new IdPool();
     private IdPool graphIdPool = new IdPool();
 
     public KnowledgeBase() {
         this.element = new Element("knowledgeBase");
+        Type.setDefaultKnowledgeBase(this);
     }
 
     public KnowledgeBase(Element element) {
@@ -67,66 +68,67 @@ public class KnowledgeBase {
             Element relationElem = (Element) it.next();
             new Relation(this, relationElem);
         }
+        Type.setDefaultKnowledgeBase(this);
     }
 
     public void addGraph(ConceptualGraph graph, boolean addXML) {
-        cgs.put(graph.getId(), graph);
+        graphDict.put(graph.getId(), graph);
         if (addXML) {
             this.element.addContent(graph.getElement());
         }
     }
 
     public ConceptualGraph getGraph(String graphId) {
-        return (ConceptualGraph) cgs.get(graphId);
+        return (ConceptualGraph) graphDict.get(graphId);
     }
 
     public void addNode(Node node) {
-        nodes.put(node.getId(), node);
+        nodeDict.put(node.getId(), node);
     }
 
     public Node getNode(String nodeId) {
-        return (Node) nodes.get(nodeId);
+        return (Node) nodeDict.get(nodeId);
     }
 
     public void addType(Type type, boolean addXML) {
-        types.put(type.getName(), type);
+        typeDict.put(type.getName(), type);
         if (addXML) {
             this.element.addContent(type.getElement());
         }
     }
 
     public Type getType(String typeId) {
-        return (Type) types.get(typeId);
+        return (Type) typeDict.get(typeId);
     }
 
     public void addInstance(Instance instance, boolean addXML) {
-        instances.put(instance.getIdentifier(), instance);
+        instanceDict.put(instance.getIdentifier(), instance);
         if (addXML) {
             this.element.addContent(instance.getElement());
         }
     }
 
     public Instance getInstance(String instanceId) {
-        return (Instance) instances.get(instanceId);
+        return (Instance) instanceDict.get(instanceId);
     }
 
     public void addLink(Link link) {
-        links.put(link.getId(), link);
+        linkDict.put(link.getId(), link);
     }
 
     public Link getLink(String linkId) {
-        return (Link) links.get(linkId);
+        return (Link) linkDict.get(linkId);
     }
 
     public void addRelation(Relation relation, boolean addXML) {
-        relations.put(relation.getName(), relation);
+        relationDict.put(relation.getName(), relation);
         if (addXML) {
             this.element.addContent(relation.getElement());
         }
     }
 
     public Relation getRelation(String relationName) {
-        return (Relation) this.relations.get(relationName);
+        return (Relation) this.relationDict.get(relationName);
     }
 
     String createNewNodeId() {
@@ -158,31 +160,69 @@ public class KnowledgeBase {
     }
 
     public Collection getGraphIds() {
-        return this.cgs.keySet();
+        return this.graphDict.keySet();
     }
 
     public Collection getRelationNames() {
-        return this.relations.keySet();
+        return this.relationDict.keySet();
     }
 
     public Collection getTypeNames() {
-        return this.types.keySet();
+        return this.typeDict.keySet();
     }
 
-    public Collection getRelations() {
-        return this.relations.values();
+    public Collection getRelationDict() {
+        return this.relationDict.values();
     }
 
     public Collection getTypes() {
-        return this.types.values();
+        return this.typeDict.values();
     }
 
     public void remove(Node node) {
-        this.nodes.remove(node);
-        Collection graphs = this.cgs.values();
+        this.nodeDict.remove(node);
+        Collection graphs = this.graphDict.values();
         for (Iterator iterator = graphs.iterator(); iterator.hasNext();) {
             ConceptualGraph graph = (ConceptualGraph) iterator.next();
             graph.remove(node);
         }
+    }
+
+    public Collection getDirectSubtypes(Type type) {
+        Set retVal = new HashSet();
+        Collection types = getTypes();
+        if (type != Type.ABSURD) {
+            for (Iterator iterator = types.iterator(); iterator.hasNext();) {
+                Type other = (Type) iterator.next();
+                Type[] candidates = other.getDirectSupertypes();
+                for (int i = 0; i < candidates.length; i++) {
+                    Type candidate = candidates[i];
+                    if(candidate == type) {
+                        retVal.add(other);
+                    }
+                }
+            }
+        }
+        return retVal;
+    }
+
+    public Collection getDirectSubtypes(Relation relation) {
+        Set retVal = new HashSet();
+        Collection types = getRelations();
+        for (Iterator iterator = types.iterator(); iterator.hasNext();) {
+            Relation other = (Relation) iterator.next();
+            Relation[] candidates = other.getDirectSupertypes();
+            for (int i = 0; i < candidates.length; i++) {
+                Relation candidate = candidates[i];
+                if(candidate == relation) {
+                    retVal.add(other);
+                }
+            }
+        }
+        return retVal;
+    }
+
+    private Collection getRelations() {
+        return this.relationDict.values();
     }
 }
