@@ -31,8 +31,10 @@ import multivalent.node.LeafText;
 
 /**
  * Should be able to parse scanned paper, PDF, HTML, UNIX manual pages, TeX DVI.
- * this parser is largerly based on tool.ExtractText code from Multivalent project,
- * the only addition to the core code is ability to exract metadata.
+ * 
+ * this parser is largerly based on tool.ExtractText code from Multivalent project
+ * (http://www.cs.berkeley.edu/~phelps/Multivalent/), the only addition to the core 
+ * code is ability to exract metadata.
  */
 public class MultivalentDocumentProcessor implements DocumentProcessor {
 	private URI uri;
@@ -50,7 +52,6 @@ public class MultivalentDocumentProcessor implements DocumentProcessor {
 	public DocumentContent getDocumentContent() throws IOException, DocumentProcessingException {
 		// @todo make use of mime types...? 
 		String mimeType = null;
-		System.out.println("----------" + this.uri + "---------------");
 		
 		StringBuffer stringBuffer = new StringBuffer(20 * 1000);
 
@@ -84,12 +85,6 @@ public class MultivalentDocumentProcessor implements DocumentProcessor {
 				this.summary = doc.getAttr("summary");
 			}
 			
-			System.out.println(doc.getAttributes());
-
-
-			// Extract body text with extractBody(doc),
-			// and extract metadata with doc.getAttr(<var>key</var>), where <var>key</var> is <code>title</code>, <code>author</code>.
-	
 			int page = Math.max(1, Integers.parseInt(doc.getAttr(Document.ATTR_PAGE), -1)), pagecnt = Integers.parseInt(doc.getAttr(Document.ATTR_PAGECOUNT), -1);
 			if (pagecnt<=0) {   // single long scroll
 				extractBody(doc, stringBuffer);
@@ -103,16 +98,11 @@ public class MultivalentDocumentProcessor implements DocumentProcessor {
 			}
 	
 			mediaAdapter.closeInputStream();
-			
-			System.out.println("content size: " + stringBuffer.toString().length());
 			return new DocumentContent(stringBuffer.toString());
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new DocumentProcessingException(e);
 		}
-
-		
 	}
 
 	public List getAuthors() {
