@@ -101,7 +101,7 @@ extern struct Sarl_SetIterator*
   );
 
 struct Sarl_SetIterator* 
-  sarl_context_iterator_next_extent_subseteq(
+  sarl_context_iterator_next_extent_superseteq(
     Sarl_SetIterator     *A, 
     Sarl_SetIterator     *parent_extent, 
     Sarl_ContextIterator *K
