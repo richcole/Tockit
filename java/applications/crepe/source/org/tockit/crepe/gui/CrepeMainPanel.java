@@ -14,6 +14,7 @@ import org.tockit.crepe.Crepe;
 import org.tockit.crepe.gui.eventhandlers.*;
 import org.tockit.crepe.gui.treeviews.*;
 import org.tockit.crepe.view.GraphView;
+import org.tockit.crepe.view.GridView;
 import org.tockit.cgs.model.*;
 import org.tockit.util.IdPool;
 import org.jdom.Document;
@@ -177,11 +178,15 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
         Type bus = new Type(knowledgeBase, "Bus");
         Type rock = new Type(knowledgeBase, "Rock");
         Type hard = new Type(knowledgeBase, "Hard");
+        Type animal = new Type(knowledgeBase, "Animal");
+        Type mat = new Type(knowledgeBase, "Mat");
         Instance john = new Instance(knowledgeBase, "John", person);
         Instance boston = new Instance(knowledgeBase, "Boston", city);
+        Instance cat = new Instance(knowledgeBase, "Cat", animal);
         Relation go = new Relation(knowledgeBase, "go", new Type[]{person, city, bus});
         Relation between = new Relation(knowledgeBase, "between", new Type[]{person, rock, place});
         Relation attribute = new Relation(knowledgeBase, "attribute", new Type[]{place, hard});
+        Relation on = new Relation(knowledgeBase, "on", new Type[]{animal, mat});
 
         switch (number) {
             case 1:
@@ -207,6 +212,14 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
                 graph.addNode(hardNode);
                 graph.addLink(betweenLink);
                 graph.addLink(attributeLink);
+                break;
+            case 3:
+                Node animalNode = new Node(knowledgeBase, animal, null, null);
+                Node matNode = new Node(knowledgeBase, mat, null, null);
+                Link onLink = new Link(knowledgeBase, on, new Node[]{animalNode, matNode});
+                graph.addNode(animalNode);
+                graph.addNode(matNode);
+                graph.addLink(onLink);
                 break;
             default:
                 throw new RuntimeException("no such graph");
@@ -269,7 +282,9 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
         div = ConfigurationManager.fetchInt("CrepeMainPanel", "upperRightDivider", 200);
         rightSplitPane.setDividerLocation(div);
 
-        mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, graphView, rightSplitPane);
+        JScrollPane scrollPane = new JScrollPane(graphView, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        scrollPane.setViewportBorder(BorderFactory.createLineBorder(Color.black));
+        mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollPane, rightSplitPane);
         mainSplitPane.setOneTouchExpandable(true);
         mainSplitPane.setResizeWeight(1);
         div = ConfigurationManager.fetchInt("CrepeMainPanel", "mainDivider", 400);
@@ -620,6 +635,14 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
         exampleItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 showTestGraph(2);
+            }
+        });
+        examplesMenu.add(exampleItem);
+
+        exampleItem = new JMenuItem("The Cat is on the mat");
+        exampleItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                showTestGraph(3);
             }
         });
         examplesMenu.add(exampleItem);
