@@ -57,11 +57,13 @@ test_base: $(TESTS:%=%.exe)
 	for x in $^ ; do echo $$x:; ./$$x || exit -1 ; done
 
 
-python/sarlcmodule.so: libs $(OBJECTS:%=%.o) python/sarl_wrap.o
+python/sarlcmodule.so: lib_d/libsarl.so lib_d/libsarl++.so \
+        $(OBJECTS:%=%.o) python/sarl_wrap.o
 	$(CC) $(DEBUG) -shared -o $@ $(OBJECTS:%=%.o) python/sarl_wrap.o \
          -Llib_d -lstdc++ -lsarl++ -lsarl
 
-java/libsarlmodule.so: $(OBJECTS:%=%.o) java/sarl_wrap.o libs
+java/libsarlmodule.so: lib_d/libsarl.so lib_d/libsarl++.so \
+        $(OBJECTS:%=%.o) java/sarl_wrap.o libs
 	$(CC) $(DEBUG) -shared -o $@ $(OBJECTS:%=%.o) java/sarl_wrap.o \
           -Llib_d -lstdc++ -lsarl++ -lsarl
 
