@@ -52,13 +52,13 @@ x = join(SetIterator(a),SetIterator(b))
 y = meet(SetIterator(a),SetIterator(b))
 z = minus(SetIterator(a), SetIterator(b))
 
-if x.subset(y):
+if x.subseteq(y):
     print "Error subset(x,y) returned true"
 
-if not y.subset(x):
+if not y.subseteq(x):
     print "Error subset(y,x) returned false"
 
-if not y.subset(x):
+if not y.subseteq(x):
     print "Error subset(y,x) returned false"
 
 if z.lexical_compare(SetIterator(a)) <= 0:
