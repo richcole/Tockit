@@ -242,9 +242,6 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
     }
 
     private void executeCommand(String command) {
-        String err = "";
-        String out = "";
-        int exitVal;
         try {
             // add command shell on Win32 platforms
             String osName = System.getProperty("os.name");
@@ -255,22 +252,7 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
             }
 
             Runtime rt = Runtime.getRuntime();
-            Process proc = rt.exec(command);
-            InputStream stderr = proc.getErrorStream();
-            InputStreamReader isr = new InputStreamReader(stderr);
-            BufferedReader br = new BufferedReader(isr);
-            String line = null;
-            while ((line = br.readLine()) != null) {
-                err += line;
-            }
-            InputStream stdout = proc.getInputStream();
-            isr = new InputStreamReader(stdout);
-            br = new BufferedReader(isr);
-            line = null;
-            while ((line = br.readLine()) != null) {
-                out += line;
-            }
-            exitVal = proc.waitFor();
+            rt.exec(command);
         } catch (Exception e) {
             e.printStackTrace();
         }
