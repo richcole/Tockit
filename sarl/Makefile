@@ -21,9 +21,9 @@ sarl_wrap.c: index.h set.h set_iterator.h sarl.input
 	swig -python sarl.input
 
 clean: 
-	rm -f sarl_wrap.c *.o *.so depend.mak
+	rm -f sarl_wrap.* *.o *.so *.pyc depend.mak.bak
 
 depend:
-	makedepend -Y../ *.cpp -fdepend.mak 1&2> /dev/null
+	makedepend -Y../ *.cpp -fdepend.mak 
 
 include depend.mak

@@ -1,0 +1,7 @@
+sarl_wrap.*
+*.o
+*.so
+*.pyc
+*~
+*.bak
+
