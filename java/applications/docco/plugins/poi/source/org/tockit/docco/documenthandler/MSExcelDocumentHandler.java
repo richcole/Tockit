@@ -23,7 +23,7 @@ import org.tockit.docco.documenthandler.DocumentHandler;
 import org.tockit.docco.documenthandler.DocumentHandlerException;
 
 
-public class MSExcelDocHandler implements DocumentHandler {
+public class MSExcelDocumentHandler implements DocumentHandler {
 
 	public DocumentSummary parseDocument(URL url) throws IOException, DocumentHandlerException {
 		try {
