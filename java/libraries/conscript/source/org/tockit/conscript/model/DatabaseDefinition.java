@@ -7,6 +7,8 @@
  */
 package org.tockit.conscript.model;
 
+import java.io.PrintStream;
+
 public class DatabaseDefinition extends ConscriptStructure {
     private String databaseName;
 	private String table;
@@ -38,5 +40,12 @@ public class DatabaseDefinition extends ConscriptStructure {
     
     public void setTable(String table) {
         this.table = table;
+    }
+
+    public void printCSC(PrintStream stream) {
+        printIdentifierLine(stream);
+        stream.print("\t\t(\"" + this.databaseName + "\", ");
+        stream.print("\"" + this.table + "\", ");
+        stream.println("\"" + this.primaryKey + "\");");
     }
 }

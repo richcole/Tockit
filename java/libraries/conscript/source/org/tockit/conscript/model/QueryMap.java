@@ -7,8 +7,10 @@
  */
 package org.tockit.conscript.model;
 
+import java.io.PrintStream;
 import java.util.Collections;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Map;
 
 public class QueryMap extends ConscriptStructure{
@@ -25,4 +27,12 @@ public class QueryMap extends ConscriptStructure{
 	public void addEntry(String concreteObject, String abstractObjectId) {
 		this.map.put(concreteObject, abstractObjectId);
 	}
+
+    public void printCSC(PrintStream stream) {
+        printIdentifierLine(stream);
+        for (Iterator iter = this.map.keySet().iterator(); iter.hasNext(); ) {
+            String concreteObj = (String) iter.next();
+            stream.println("\t\t(\"" + concreteObj + "\", " + this.map.get(concreteObj) + ");");
+        }
+    }
 }

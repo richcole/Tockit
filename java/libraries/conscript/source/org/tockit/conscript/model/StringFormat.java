@@ -249,5 +249,63 @@ public class StringFormat {
 	public void setVerticalAlign(VerticalAlign verticalAlign) {
 		this.verticalAlign = verticalAlign;
 	}
-
+	
+    public String toString() {
+        StringBuffer retVal = new StringBuffer();
+        if(this.fontFamily != null) {
+            retVal.append(this.fontFamily);
+        }
+        retVal.append(",");
+        if(this.fontStyle == BOLD) {
+            retVal.append("b");
+        }
+        if(this.fontStyle == CURSIVE) {
+            retVal.append("c");
+        }
+        if(this.fontStyle == OUTLINED) {
+            retVal.append("o");
+        }
+        if(this.fontStyle == SHADOWED) {
+            retVal.append("s");
+        }
+        if(this.fontStyle == UNDERLINED) {
+            retVal.append("u");
+        }
+        retVal.append(",");
+        if(this.colorName != null) {
+            retVal.append(this.colorName);
+        }
+        retVal.append(",");
+        if(this.fontSize != null) {
+            retVal.append(this.fontSize.toString());
+        }
+        retVal.append(",");
+        if(this.offset != null) {
+            retVal.append("(" + this.offset.getX() + "," + this.offset.getY() + ")");
+        }
+        retVal.append(",");
+        if(this.horizontalAlign== LEFT) {
+            retVal.append("l");
+        }
+        if(this.horizontalAlign == H_CENTER) {
+            retVal.append("c");
+        }
+        if(this.horizontalAlign == RIGHT) {
+            retVal.append("r");
+        }
+        if(this.verticalAlign == BOTTOM) {
+            retVal.append("b");
+        }
+        if(this.verticalAlign == V_CENTER) {
+            retVal.append("c");
+        }
+        if(this.verticalAlign == TOP) {
+            retVal.append("t");
+        }
+        retVal.append(",");
+        if(this.clipbox != null) {
+            retVal.append("(" + this.clipbox.getWidth() + "," + this.clipbox.getHeight() + ")");
+        }
+        return retVal.toString();
+    }
 }

@@ -61,4 +61,11 @@ public class Point {
 	public void setY(double y) {
 		this.y = y;
 	}
+    
+    public String toString() {
+        if(this.x == Double.MIN_VALUE) {
+            return "" + this.number;
+        }
+        return "" + this.number + " " + this.x + " " + this.y;
+    }
 }

@@ -7,9 +7,13 @@
  */
 package org.tockit.conscript.model;
 
+import java.io.PrintStream;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @todo subtypes should check for initialization in setters, too
@@ -35,7 +39,11 @@ public abstract class ConscriptStructure {
     }
 
     public Map getSpecials() {
-    	return Collections.unmodifiableMap(specials);
+        return Collections.unmodifiableMap(specials);
+    }
+
+    public Set getSpecials(String specialGroup) {
+        return Collections.unmodifiableSet((Set) specials.get(specialGroup));
     }
 
     public FormattedString getTitle() {
@@ -53,7 +61,12 @@ public abstract class ConscriptStructure {
         if(this.isInitialized()) {
             throw new IllegalStateException("Structure already initialized");
         }
-        specials.put(special, value);
+        Set specialSet = (Set) this.specials.get(special);
+        if(specialSet == null) {
+            specialSet = new HashSet();
+            this.specials.put(special, specialSet);
+        }
+        specialSet.add(value);
     }
 
     public void setTitle(FormattedString title) {
@@ -72,5 +85,28 @@ public abstract class ConscriptStructure {
     
     public boolean isInitialized() {
         return this.initialized;
+    }
+
+    abstract public void printCSC(PrintStream stream);
+
+    protected void printIdentifierLine(PrintStream stream) {
+        stream.println("\t" + getName() + " = ");
+        if(this.title != null) {
+            stream.println("\t\tTITLE \"" + this.title + "\"");
+        }
+        if(this.remark != null) {
+            stream.println("\t\tREMARK \"" + this.remark + "\"");
+        }
+        if(!this.specials.isEmpty()) {
+            stream.println("\t\tSPECIAL");
+            for (Iterator iter = this.specials.keySet().iterator(); iter.hasNext();) {
+                String special = (String) iter.next();
+                Set specialSet = (Set) this.specials.get(special);
+                for (Iterator innerIter = specialSet.iterator(); innerIter.hasNext();) {
+                    String value = (String) innerIter.next();
+                    stream.println("\t\t\t\"" + special + ":" + value + "\"");
+                }
+            }
+        }
     }
 }

@@ -7,6 +7,7 @@
  */
 package org.tockit.conscript.model;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -70,5 +71,12 @@ public class LineDiagram extends ConscriptStructure{
 	public void setUnitLength(TypedSize unitLength) {
 		this.unitLength = unitLength;
 	}
+
+    public void printCSC(PrintStream stream) {
+        printIdentifierLine(stream);
+        stream.println("\t\tTODO");
+        stream.println("\t\tTODO");
+        stream.println("\t\tTODO");
+    }
 
 }

@@ -7,12 +7,14 @@
  */
 package org.tockit.conscript.model;
 
+import java.io.PrintStream;
 import java.util.Collections;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Map;
 
 public class StringMap extends ConscriptStructure{
-	private Map map = new Hashtable();;
+	private Map map = new Hashtable();
 		
 	public StringMap(String identifier) {
         super(identifier);
@@ -24,5 +26,13 @@ public class StringMap extends ConscriptStructure{
     
     public void addEntry(String attributeId, FormattedString label) {
         this.map.put(attributeId, label);
+    }
+
+    public void printCSC(PrintStream stream) {
+        printIdentifierLine(stream);
+        for (Iterator iter = this.map.keySet().iterator(); iter.hasNext(); ) {
+        	String id = (String) iter.next();
+            stream.println("\t\t(" + id + ", " + this.map.get(id) + ");");
+        }
     }
 }

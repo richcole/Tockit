@@ -7,8 +7,10 @@
  */
 package org.tockit.conscript.model;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -35,4 +37,15 @@ public class ConceptualSchema extends ConscriptStructure{
 	public void setDatabase(DatabaseDefinition database) {
 		this.database = database;
 	}
+
+    public void printCSC(PrintStream stream) {
+        printIdentifierLine(stream);
+        stream.print("\t\t(" + this.database.getName());
+        for (Iterator iter = this.concreteScales.iterator(); iter.hasNext();) {
+            ConcreteScale scale = (ConcreteScale) iter.next();
+            stream.println(",");
+            stream.print("\t\t\t" + scale.getName());
+        }
+        stream.println(");");
+    }
 }

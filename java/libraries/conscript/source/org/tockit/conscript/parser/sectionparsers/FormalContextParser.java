@@ -47,7 +47,7 @@ class FormalContextParser extends CSCFileSectionParser {
             }
             // @todo the empty point is a hack. How to the objects in the context and 
             //       the ones in the diagram relate to each other? Do we need two types?
-            FCAObject object = new FCAObject(new Point(number, 0, 0, null, null), objectId, description);
+            FCAObject object = new FCAObject(new Point(number, Double.MIN_VALUE, 0, null, null), objectId, description);
             context.addObject(object);
 		}
 		tokenizer.consumeToken("ATTRIBUTES");
@@ -66,7 +66,7 @@ class FormalContextParser extends CSCFileSectionParser {
             }
             // @todo the empty point is a hack. How to the objects in the context and 
             //       the ones in the diagram relate to each other? Do we need two types?
-            FCAAttribute attribute = new FCAAttribute(new Point(number, 0, 0, null, null), attributeId, description);
+            FCAAttribute attribute = new FCAAttribute(new Point(number, Double.MIN_VALUE, 0, null, null), attributeId, description);
             context.addAttribute(attribute);
 		}
         tokenizer.consumeToken("RELATION");

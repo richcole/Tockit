@@ -7,6 +7,8 @@
  */
 package org.tockit.conscript.model;
 
+import java.io.PrintStream;
+
 public class RealisedScale extends ConscriptStructure{
     private ConcreteScale concreteScale;
 	private IdentifierMap identifierMap;
@@ -31,4 +33,9 @@ public class RealisedScale extends ConscriptStructure{
 		this.identifierMap = identifierMap;
 	}
 
+    public void printCSC(PrintStream stream) {
+        printIdentifierLine(stream);
+        stream.print("\t\t(" + this.concreteScale.getName() + ", "); 
+        stream.println(this.identifierMap.getName() + ");");
+    }
 }

@@ -7,6 +7,7 @@
  */
 package org.tockit.conscript.model;
 
+import java.io.PrintStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,9 +22,19 @@ import org.tockit.conscript.parser.DataFormatException;
 public class CSCFile {
 	private URL location;
     private CSCFile parent;
-    private List remarks;
+    private List remarks = new ArrayList();
     
-    private static class StructureId {}
+    private static class StructureId {
+        static List ids = new ArrayList(); 
+        private String idString;
+        public StructureId(String idString) {
+            this.idString = idString;
+            ids.add(this);
+        }
+        public String getIdString() {
+            return this.idString;
+        }
+    }
 
     /**
      * We use a map instead of different members to allow reusing code more
@@ -31,34 +42,27 @@ public class CSCFile {
      */
     private Map structures = new Hashtable();
     
-    private final static StructureId FORMAL_CONTEXT = new StructureId();
-    private final static StructureId LINE_DIAGRAM = new StructureId();
-    private final static StructureId STRING_MAP = new StructureId();
-    private final static StructureId IDENTIFIER_MAP = new StructureId();
-    private final static StructureId QUERY_MAP = new StructureId();
-    private final static StructureId ABSTRACT_SCALE = new StructureId();
-    private final static StructureId CONCRETE_SCALE = new StructureId();
-    private final static StructureId REALISED_SCALE = new StructureId();
-    private final static StructureId DATABASE_DEFINITION = new StructureId();
-    private final static StructureId CONCEPTUAL_SCHEMA = new StructureId();
-    private final static StructureId CONCEPTUAL_FILE = new StructureId();
+    private final static StructureId FORMAL_CONTEXT = new StructureId("FORMAL_CONTEXT");
+    private final static StructureId LINE_DIAGRAM = new StructureId("LINE_DIAGRAM");
+    private final static StructureId STRING_MAP = new StructureId("STRING_MAP");
+    private final static StructureId IDENTIFIER_MAP = new StructureId("IDENTIFIER_MAP");
+    private final static StructureId QUERY_MAP = new StructureId("QUERY_MAP");
+    private final static StructureId ABSTRACT_SCALE = new StructureId("ABSTRACT_SCALE");
+    private final static StructureId CONCRETE_SCALE = new StructureId("CONCRETE_SCALE");
+    private final static StructureId REALIZED_SCALE = new StructureId("REALIZED_SCALE");
+    private final static StructureId DATABASE_DEFINITION = new StructureId("DATABASE");
+    private final static StructureId CONCEPTUAL_SCHEMA = new StructureId("CONCEPTUAL_SCHEME");
+    private final static StructureId CONCEPTUAL_FILE = new StructureId("CONCEPTUAL_FILE");
 
     private List includeFiles = new ArrayList();
 
     public CSCFile(URL file, CSCFile parent) {
 		this.location = file;
         this.parent = parent;
-        this.structures.put(FORMAL_CONTEXT, new Hashtable());
-        this.structures.put(LINE_DIAGRAM, new Hashtable());
-        this.structures.put(STRING_MAP, new Hashtable());
-        this.structures.put(IDENTIFIER_MAP, new Hashtable());
-        this.structures.put(QUERY_MAP, new Hashtable());
-        this.structures.put(ABSTRACT_SCALE, new Hashtable());
-        this.structures.put(CONCRETE_SCALE, new Hashtable());
-        this.structures.put(REALISED_SCALE, new Hashtable());
-        this.structures.put(DATABASE_DEFINITION, new Hashtable());
-        this.structures.put(CONCEPTUAL_SCHEMA, new Hashtable());
-        this.structures.put(CONCEPTUAL_FILE, new Hashtable());
+        for (Iterator iter = StructureId.ids.iterator(); iter.hasNext();) {
+            StructureId id = (StructureId) iter.next();
+            this.structures.put(id, new Hashtable());
+        }
         if(parent != null) {
             parent.includeFiles.add(this);
         }
@@ -120,7 +124,7 @@ public class CSCFile {
     }
 
     public void add(RealisedScale scale) {
-        Map realisedScales = (Map) this.structures.get(REALISED_SCALE);
+        Map realisedScales = (Map) this.structures.get(REALIZED_SCALE);
         realisedScales.put(scale.getName(), scale);
     }
 
@@ -168,7 +172,7 @@ public class CSCFile {
     }
     
     public List getRealisedScales() {
-        return getListGlobal(REALISED_SCALE);
+        return getListGlobal(REALIZED_SCALE);
     }
     
     public List getDatabaseDefinitions() {
@@ -230,7 +234,7 @@ public class CSCFile {
     }    
     
     public RealisedScale findRealisedScale(String name) {
-        return (RealisedScale) findSchemaPartGlobal(REALISED_SCALE, name);
+        return (RealisedScale) findSchemaPartGlobal(REALIZED_SCALE, name);
     }    
     
     public DatabaseDefinition findDatabaseDefinition(String name) {
@@ -292,5 +296,38 @@ public class CSCFile {
             }
         }
         return false;
+    }
+
+    public void printCSC(PrintStream stream) {
+        if(!this.remarks.isEmpty()) {
+            stream.println("REMARK");
+            for (Iterator iter = this.remarks.iterator(); iter.hasNext();) {
+                String remark = (String) iter.next();
+                stream.println("\"" + remark + "\";");
+            }
+        }
+
+        for (Iterator iter = StructureId.ids.iterator(); iter.hasNext();) {
+            StructureId id = (StructureId) iter.next();
+            printStructures(id, stream);
+        }
+        
+        for (Iterator iter = this.includeFiles.iterator(); iter.hasNext();) {
+            CSCFile includeFile = (CSCFile) iter.next();
+            includeFile.printCSC(stream);
+        }
+    }
+    
+    private void printStructures(StructureId structureType, PrintStream stream) {
+        Map structureMap = (Map) this.structures.get(structureType);
+        Collection values = structureMap.values();
+        if(!values.isEmpty()) {
+            stream.println(structureType.getIdString());
+            for (Iterator iter = values.iterator(); iter.hasNext();) {
+                ConscriptStructure element = (ConscriptStructure) iter.next();
+                element.printCSC(stream);
+                stream.println();
+            }
+        }
     }
 }

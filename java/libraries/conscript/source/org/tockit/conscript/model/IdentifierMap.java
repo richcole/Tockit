@@ -7,8 +7,10 @@
  */
 package org.tockit.conscript.model;
 
+import java.io.PrintStream;
 import java.util.Collections;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Map;
 
 public class IdentifierMap extends ConscriptStructure{
@@ -24,5 +26,13 @@ public class IdentifierMap extends ConscriptStructure{
 
     public void addEntry(String fromId, String toId) {
         this.map.put(fromId, toId);
+    }
+
+    public void printCSC(PrintStream stream) {
+        printIdentifierLine(stream);
+        for (Iterator iter = this.map.keySet().iterator(); iter.hasNext(); ) {
+            String from = (String) iter.next();
+            stream.println("\t\t(" + from + ", " + this.map.get(from) + ");");
+        }
     }
 }

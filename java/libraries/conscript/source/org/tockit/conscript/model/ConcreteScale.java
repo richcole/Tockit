@@ -7,6 +7,8 @@
  */
 package org.tockit.conscript.model;
 
+import java.io.PrintStream;
+
 public class ConcreteScale extends ConscriptStructure{
 	private String[] tables;
 	private String[] fields;
@@ -57,4 +59,13 @@ public class ConcreteScale extends ConscriptStructure{
 	public void setTables(String[] tables) {
 		this.tables = tables;
 	}
+
+    public void printCSC(PrintStream stream) {
+        printIdentifierLine(stream);
+        stream.print("\t\t(" + this.abstractScale.getName() + ", ");
+        if(this.queryMap != null) {
+            stream.print(this.queryMap.getName());
+        }
+        stream.println(", " + this.attributeMap + ");");
+    }
 }

@@ -7,8 +7,10 @@
  */
 package org.tockit.conscript.model;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 public class ConceptualFile extends ConscriptStructure {
@@ -33,5 +35,15 @@ public class ConceptualFile extends ConscriptStructure {
     
     public void addRealisedScale(RealisedScale scale) {
         this.realisedScales.add(scale);
+    }
+
+    public void printCSC(PrintStream stream) {
+        printIdentifierLine(stream);
+        stream.print("\t\t(" + this.objectMap.getName());
+        for (Iterator iter = this.realisedScales.iterator(); iter.hasNext();) {
+            RealisedScale scale = (RealisedScale) iter.next();
+            stream.print(", " + scale.getName());
+        }
+        stream.println(");");
     }
 }

@@ -7,8 +7,10 @@
  */
 package org.tockit.conscript.model;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 public class AbstractScale extends ConscriptStructure{
@@ -33,4 +35,14 @@ public class AbstractScale extends ConscriptStructure{
 	public void addLineDiagram(LineDiagram lineDiagram) {
 		this.lineDiagrams.add(lineDiagram);
 	}
+
+    public void printCSC(PrintStream stream) {
+        printIdentifierLine(stream);
+        stream.print("\t\t(" + this.context.getName() + ", "); // two commas for the missing lattice bit
+        for (Iterator iter = this.lineDiagrams.iterator(); iter.hasNext();) {
+            LineDiagram diagram = (LineDiagram) iter.next();
+            stream.print(", " + diagram.getName());
+        }
+        stream.println(");");
+    }
 }
