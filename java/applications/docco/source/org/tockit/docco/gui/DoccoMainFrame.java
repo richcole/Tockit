@@ -109,7 +109,7 @@ public class DoccoMainFrame extends JFrame {
 				Point2D[] baseVectors = createBase(queryResultSet);
 				diagram = createDiagram(concepts, baseVectors);
 			} else {
-				final Concept[] finalConcepts = reduceConceptsToRealisedOnes(concepts);
+				final Concept[] finalConcepts = reduceConceptsToRealizedOnes(concepts);
 				Lattice lattice = new Lattice(){
 					public Concept[] getConcepts() {
 	                    return finalConcepts;
@@ -131,14 +131,17 @@ public class DoccoMainFrame extends JFrame {
 		 * Note: this method has the side effect of changing the upsets and downsets
 		 * of the concepts involved. Not suited for reuse unless this is fixed.
 		 */
-        private Concept[] reduceConceptsToRealisedOnes(Concept[] concepts) {
+        private Concept[] reduceConceptsToRealizedOnes(Concept[] concepts) {
 			List realizedConcepts = new ArrayList();
 
 			outerLoop: for (int i = 0; i < concepts.length; i++) {
 				Concept concept = concepts[i];
-				// we assume top-down order
+				// we still assume the binary encoding of the intent in the concept numbering
 				for (int j = i + 1; j < concepts.length; j++) {
 					ConceptImplementation subconcept = (ConceptImplementation) concepts[j];
+					if( (i & j) != i ){
+						continue; // not a subconcept
+					}
 					if(concept.getExtentSize() == subconcept.getExtentSize()) { // not realized
 						// move attribute contingent down. We know there is an infimum on the
 						// set of concepts with the same extent, so that is ok.
