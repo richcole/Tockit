@@ -32,6 +32,7 @@ public:
   friend class Dictionary;
   friend class Lattice;
   friend class MapIterator;
+  friend class Context;
 
   friend SetIterator meet(SetIterator const& a_it, SetIterator const& b_it);
   friend SetIterator join(SetIterator const& a_it, SetIterator const& b_it);

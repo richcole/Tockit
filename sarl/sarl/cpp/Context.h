@@ -7,6 +7,8 @@ extern "C" {
 }
 
 #include <sarl/cpp/Index.h>
+#include <sarl/cpp/SetIterator.h>
+#include <sarl/cpp/RelationIterator.h>
 
 class Set;
 class Relation;
@@ -37,6 +39,32 @@ public:
 
   inline void remove(Index g, Index m) {
     sarl_context_remove_pair(mp_contextRef, sarl_pair(g, m));
+  };
+
+  inline void insert_object(Index g) {
+    sarl_context_insert_object(mp_contextRef, g);
+  };
+  
+  inline void insert_attribute(Index m) {
+    sarl_context_insert_attribute(mp_contextRef, m);
+  };
+
+  inline SetIterator objects() {
+    return SetIterator(
+      sarl_context_objects(mp_contextRef)
+    ).retn();
+  };
+
+  inline SetIterator attributes() {
+    return SetIterator(
+      sarl_context_attributes(mp_contextRef)
+    ).retn();
+  };
+
+  inline RelationIterator incidence() {
+    return RelationIterator(
+      sarl_context_incidence(mp_contextRef)
+    ).retn();
   };
 
   Context copy() {

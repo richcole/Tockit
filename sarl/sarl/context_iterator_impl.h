@@ -1,7 +1,10 @@
 #ifndef SARL_CONTEXT_ITERATOR_IMPL_H
 #define SARL_CONTEXT_ITERATOR_IMPL_H
 
+extern "C" {
 #include <sarl/ref_count.h>
+}
+
 #include <sarl/iterator_impl.h>
 
 struct Sarl_ContextIterator : Sarl_Iterator {

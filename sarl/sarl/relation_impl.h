@@ -1,8 +1,10 @@
 #ifndef SARL_RELATION_IMPL_H
 #define SARL_RELATION_IMPL_H
 
+extern "C" {
 #include <sarl/pair.h>
 #include <sarl/relation_iterator.h>
+}
 
 #include <set>
 
