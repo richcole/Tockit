@@ -88,7 +88,6 @@ public class DatabaseDriverLoader extends LoaderBase {
 		}
 		logger.fine("STARTING to load drivers. Found " + driverDirs.length + " db drivers");
 
-		List foundDrivers = new ArrayList();
 		for (int i = 0; i < driverDirs.length; i++) {
 			File curDriverDir = driverDirs[i];
 			try {
@@ -110,5 +109,4 @@ public class DatabaseDriverLoader extends LoaderBase {
 		DatabaseDriverLoader.Error[] errorsRes = (DatabaseDriverLoader.Error[]) errors.toArray(new DatabaseDriverLoader.Error[errors.size()]);
 		return errorsRes;
 	}
-	
 }
