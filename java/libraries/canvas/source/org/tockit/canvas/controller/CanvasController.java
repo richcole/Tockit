@@ -166,9 +166,12 @@ public class CanvasController implements MouseListener, MouseMotionListener {
     }
 
     public void mouseEntered(MouseEvent e) {
+    	mouseMoved(e);
     }
 
     public void mouseExited(MouseEvent e) {
+		this.pointedCanvasItem = null;
+		hideMouseFromItems(true);
     }
 
     /**
@@ -275,6 +278,7 @@ public class CanvasController implements MouseListener, MouseMotionListener {
 													this.pointedCanvasItem, 0,
 													null, null));
 			} else {
+				/// @todo see if we can find the mouse position here
 				this.eventBroker.processEvent(new CanvasItemMouseEnterEvent(
 													this.pointedCanvasItem, 0,
 													null, null));
