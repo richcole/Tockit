@@ -7,36 +7,44 @@
  */
 package org.tockit.conscript.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class FormalContext extends ConscriptStructure{
-    private FCAObject[] objects;
-	private FCAAttribute[] attributes;
-	private BinaryRelation relation;
+    private List objects = new ArrayList();
+	private List attributes = new ArrayList();
+	private BinaryRelationImplementation relation = new BinaryRelationImplementation();
 
 	public FormalContext(String identifier) {
         super(identifier);
     }
 
-	public FCAAttribute[] getAttributes() {
-		return attributes;
+	public List getAttributes() {
+		return Collections.unmodifiableList(attributes);
 	}
 
-	public FCAObject[] getObjects() {
-		return objects;
+	public List getObjects() {
+		return Collections.unmodifiableList(objects);
 	}
 
 	public BinaryRelation getRelation() {
 		return relation;
 	}
 
-	public void setAttributes(FCAAttribute[] attributes) {
-		this.attributes = attributes;
+	public void addAttribute(FCAAttribute attribute) {
+		this.attributes.add(attribute);
 	}
 
-	public void setObjects(FCAObject[] objects) {
-		this.objects = objects;
+	public void addObject(FCAObject object) {
+		this.objects.add(object);
 	}
 
-	public void setRelation(BinaryRelation relation) {
-		this.relation = relation;
-	}
+    public void setRelationship(FCAObject object, FCAAttribute attribute) {
+        this.relation.insert(object, attribute);
+    }
+
+    public void removeRelationship(FCAObject object, FCAAttribute attribute) {
+        this.relation.remove(object, attribute);
+    }
 }

@@ -7,48 +7,8 @@
  */
 package org.tockit.conscript.model;
 
-public class FCAAttribute {
-    private Point point;
-    private String identifier;
-    private FormattedString format;
-    private String content;
-    
-    public FCAAttribute(Point point, String identifier, String content, FormattedString format) {
-        this.point = point;
-        this.identifier = identifier;
-        this.content = content;
-        this.format = format;
-    }
-
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    public Point getPoint() {
-        return point;
-    }
-
-    public void setIdentifier(String identifier) {
-        this.identifier = identifier;
-    }
-
-    public void setPoint(Point point) {
-        this.point = point;
-    }
-    
-    public String getContent() {
-        return this.content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-    
-    public FormattedString getFormat() {
-        return this.format;
-    }
-    
-    public void setFormat(FormattedString format) {
-        this.format = format;
+public class FCAAttribute extends FCAElement {
+    public FCAAttribute(Point point, String identifier, FormattedString label) {
+        super(point, identifier, label);
     }
 }

@@ -8,88 +8,102 @@
 package org.tockit.conscript.parser.sectionparsers;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.logging.Level;
 
-import org.tockit.conscript.model.BinaryRelationImplementation;
 import org.tockit.conscript.model.CSCFile;
+import org.tockit.conscript.model.FCAAttribute;
+import org.tockit.conscript.model.FCAObject;
 import org.tockit.conscript.model.FormalContext;
+import org.tockit.conscript.model.FormattedString;
+import org.tockit.conscript.model.Point;
+import org.tockit.conscript.model.StringFormat;
 import org.tockit.conscript.parser.CSCParser;
 import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
 class FormalContextParser extends CSCFileSectionParser {
 	public void parse(CSCTokenizer tokenizer, CSCFile file)
-		throws IOException, DataFormatException {
-		List objects = new ArrayList();
-		List attributes = new ArrayList();
+	                        throws IOException, DataFormatException {
 		String contextId = tokenizer.popCurrentToken();
         FormalContext context = getFormalContext(file, contextId);
 
         parseTitleRemarkSpecials(tokenizer, context);
         
-		while (!tokenizer.getCurrentToken().equals("OBJECTS")) {
-			tokenizer.advance();
-		}
 		tokenizer.consumeToken("OBJECTS");
 
 		while (!tokenizer.getCurrentToken().equals("ATTRIBUTES")) {
-			// find objects until attributes come
-            
-			tokenizer.advance(); // skip number
-			tokenizer.advance(); // skip id
-			objects.add(tokenizer.getCurrentToken()); // use name
-			tokenizer.advance(); // next
+            long number = Long.parseLong(tokenizer.popCurrentToken());
+            String objectId = tokenizer.popCurrentToken();
+            FormattedString description = null;
+            if(!tokenizer.newLineHasStarted()) {
+                String descriptionText = tokenizer.popCurrentToken();
+                StringFormat descriptionFormat = null;
+                if(!tokenizer.newLineHasStarted()) {
+                    descriptionFormat = new StringFormat(tokenizer.popCurrentToken());
+                }
+                description = new FormattedString(descriptionText, descriptionFormat);
+            }
+            // @todo the empty point is a hack. How to the objects in the context and 
+            //       the ones in the diagram relate to each other? Do we need two types?
+            FCAObject object = new FCAObject(new Point(number, 0, 0, null, null), objectId, description);
+            context.addObject(object);
 		}
 		tokenizer.consumeToken("ATTRIBUTES");
 
 		while (!tokenizer.getCurrentToken().equals("RELATION")) {
-			// find attributes until relation comes
-			tokenizer.advance(); // skip number
-			tokenizer.advance(); // skip id
-            attributes.add(tokenizer.getCurrentToken()); // use name
-			tokenizer.advance(); // next
+            long number = Long.parseLong(tokenizer.popCurrentToken());
+            String attributeId = tokenizer.popCurrentToken();
+            FormattedString description = null;
+            if(!tokenizer.newLineHasStarted()) {
+                String descriptionText = tokenizer.popCurrentToken();
+                StringFormat descriptionFormat = null;
+                if(!tokenizer.newLineHasStarted()) {
+                    descriptionFormat = new StringFormat(tokenizer.popCurrentToken());
+                }
+                description = new FormattedString(descriptionText, descriptionFormat);
+            }
+            // @todo the empty point is a hack. How to the objects in the context and 
+            //       the ones in the diagram relate to each other? Do we need two types?
+            FCAAttribute attribute = new FCAAttribute(new Point(number, 0, 0, null, null), attributeId, description);
+            context.addAttribute(attribute);
 		}
         tokenizer.consumeToken("RELATION");
         
         int height = Integer.parseInt(tokenizer.popCurrentToken());
-        if(height != objects.size()) {
+        if(height != context.getObjects().size()) {
             throw new DataFormatException("Relation height does not match number of objects in context '" +
                                           contextId + "', line " + tokenizer.getCurrentLine() + ", file '" +
                                           file.getLocation() + "'");
         }
         tokenizer.consumeToken(",");
         int width = Integer.parseInt(tokenizer.popCurrentToken());
-        if(width != attributes.size()) {
+        if(width != context.getAttributes().size()) {
             throw new DataFormatException("Relation width does not match number of attributes in context '" +
                                           contextId + "', line " + tokenizer.getCurrentLine() + ", file '" +
                                           file.getLocation() + "'");
         }
 
-		// create relation
-        BinaryRelationImplementation relation = new BinaryRelationImplementation();
-		Iterator objIt = objects.iterator(); // iterate over objects/rows
+		Iterator objIt = context.getObjects().iterator(); // iterate over objects/rows
 		while (objIt.hasNext()) {
-			Object object = objIt.next();
+			FCAObject object = (FCAObject) objIt.next();
 			String row = tokenizer.getCurrentToken(); // get row string
 			if (row.length() == 0) {
 				throw new DataFormatException(
 					"Missing row in the relation in line "
 						+ tokenizer.getCurrentLine());
 			}
-			if (row.length() < attributes.size()) {
+			if (row.length() < context.getAttributes().size()) {
 				throw new DataFormatException(
 					"Incomplete row in the relation in line "
 						+ tokenizer.getCurrentLine());
 			}
-			Iterator attrIt = attributes.iterator(); // iterate over attributes
+			Iterator attrIt = context.getAttributes().iterator(); // iterate over attributes
 			int i = 0; // count pos in string
 			while (attrIt.hasNext()) {
-				Object attribute = attrIt.next();
+				FCAAttribute attribute = (FCAAttribute) attrIt.next();
 				if (row.charAt(i) == '*') {
-					relation.insert(object,attribute); // hit --> add to relation
+					context.setRelationship(object,attribute); // hit --> add to relation
 				}
 				i++;
 			}

@@ -21,6 +21,7 @@ import org.tockit.conscript.model.FormattedString;
 import org.tockit.conscript.model.Line;
 import org.tockit.conscript.model.LineDiagram;
 import org.tockit.conscript.model.Point;
+import org.tockit.conscript.model.StringFormat;
 import org.tockit.conscript.model.TypedSize;
 import org.tockit.conscript.parser.CSCParser;
 import org.tockit.conscript.parser.CSCTokenizer;
@@ -97,16 +98,18 @@ class LineDiagramParser extends CSCFileSectionParser {
             }
             
             String id = tokenizer.popCurrentToken();
-			String content = tokenizer.popCurrentToken();
-			FormattedString format = null;
+			FormattedString label = null;
             
 			if (!tokenizer.newLineHasStarted()) {
-				// still on the same line --> we have a formatting string
-				tokenizer.popCurrentToken();
-                // @todo parse format
+                String content = tokenizer.popCurrentToken();
+                StringFormat format = null;
+                if (!tokenizer.newLineHasStarted()) {
+                    format = new StringFormat(tokenizer.popCurrentToken());
+                }
+                label = new FormattedString(content, format);
 			}
 			
-            objects.add(new FCAObject(point, id, content, format));
+            objects.add(new FCAObject(point, id, label));
 		}
 		tokenizer.advance();
         diagram.setObjects((FCAObject[]) objects.toArray(new FCAObject[objects.size()]));
@@ -122,16 +125,18 @@ class LineDiagramParser extends CSCFileSectionParser {
             }
             
             String id = tokenizer.popCurrentToken();
-            String content = tokenizer.popCurrentToken();
-            FormattedString format = null;
+            FormattedString label = null;
             
             if (!tokenizer.newLineHasStarted()) {
-                // still on the same line --> we have a formatting string
-                tokenizer.popCurrentToken();
-                // @todo parse format
+                String content = tokenizer.popCurrentToken();
+                StringFormat format = null;
+                if (!tokenizer.newLineHasStarted()) {
+                    format = new StringFormat(tokenizer.popCurrentToken());
+                }
+                label = new FormattedString(content, format);
             }
             
-            attributes.add(new FCAAttribute(point, id, content, format));
+            attributes.add(new FCAAttribute(point, id, label));
 		}
 		tokenizer.advance();
         diagram.setAttributes((FCAAttribute[]) attributes.toArray(new FCAAttribute[attributes.size()]));
