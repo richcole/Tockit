@@ -187,7 +187,7 @@ public class EventBroker implements EventListener {
      *
      * In all other cases the return value is false.
      */
-    private boolean extendsOrImplements(Class subClass, Class superClass) {
+    public static boolean extendsOrImplements(Class subClass, Class superClass) {
         return implementsInterface(subClass, superClass) || extendsClass(subClass, superClass);
     }
 
@@ -201,7 +201,7 @@ public class EventBroker implements EventListener {
      * * the first parameter is an interface which extends the interface
      *   given by the second parameter (directly or indirectly)
      */
-    private boolean implementsInterface(Class classType, Class interfaceType) {
+    private static boolean implementsInterface(Class classType, Class interfaceType) {
         Class curClass = classType;
         while (curClass != null) {
             if (implementsInterfaceDirectly(curClass, interfaceType)) {
@@ -219,7 +219,7 @@ public class EventBroker implements EventListener {
      * the second parameter itself as interface (and not a subtype) or if the
      * first parameter is an interface deriving directly from the latter.
      */
-    private boolean implementsInterfaceDirectly(Class classType, Class interfaceType) {
+    private static boolean implementsInterfaceDirectly(Class classType, Class interfaceType) {
         Class[] interfaces = classType.getInterfaces();
         for (int i = 0; i < interfaces.length; i++) {
             Class curInterface = interfaces[i];
@@ -236,7 +236,7 @@ public class EventBroker implements EventListener {
      * This is treated as transitive (i.e. subinterfaces of subinterfaces are accepted)
      * and reflexive (an interface is considered to extend itself).
      */
-    private boolean extendsInterface(Class subInterface, Class superInterface) {
+    private static boolean extendsInterface(Class subInterface, Class superInterface) {
         if (subInterface.equals(superInterface)) {
             return true;
         }
@@ -257,7 +257,7 @@ public class EventBroker implements EventListener {
      * This is treated as transitive (i.e. subclasses of subclasses are accepted)
      * and reflexive (a class is considered to extend itself).
      */
-    private boolean extendsClass(Class subClass, Class superClass) {
+    private static boolean extendsClass(Class subClass, Class superClass) {
         Class curClass = subClass;
         while (curClass != null) {
             if (curClass.equals(superClass)) {
