@@ -12,6 +12,6 @@ import java.io.IOException;
 
 import org.tockit.docco.indexer.DocumentSummary;
 
-public interface DocumentProcessor {
-	public DocumentSummary parseDocument(File file) throws IOException, DocumentProcessingException;
+public interface DocumentHandler {
+	public DocumentSummary parseDocument(File file) throws IOException, DocumentHandlerException;
 }

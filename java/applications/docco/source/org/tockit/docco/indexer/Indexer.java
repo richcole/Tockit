@@ -148,7 +148,7 @@ public class Indexer extends Thread {
 		}
 		catch (NotFoundFileExtensionException e) {
 		}
-		catch (DocumentProcessingException e) {
+		catch (DocumentHandlerException e) {
 		}
 		catch (Exception e) {
 			// sometimes shit happens. E.g. the PDF header might be screwed. Some other things

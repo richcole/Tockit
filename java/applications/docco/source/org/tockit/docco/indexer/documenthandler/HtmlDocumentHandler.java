@@ -25,7 +25,7 @@ import javax.swing.text.html.parser.ParserDelegator;
 import org.tockit.docco.indexer.DocumentContent;
 import org.tockit.docco.indexer.DocumentSummary;
 
-public class HtmlDocumentProcessor implements DocumentProcessor {
+public class HtmlDocumentHandler implements DocumentHandler {
 
 	/**
 	 * java sun example on parsing html can be found here:
@@ -98,7 +98,7 @@ public class HtmlDocumentProcessor implements DocumentProcessor {
 		
 	}
 	
-	public DocumentSummary parseDocument(File file) throws IOException, DocumentProcessingException {
+	public DocumentSummary parseDocument(File file) throws IOException, DocumentHandlerException {
 		Reader reader = new FileReader(file);		
 
 		BufferedReader br = new BufferedReader(reader);

@@ -7,10 +7,10 @@
  */
 package org.tockit.docco.indexer.filefilter;
 
-import org.tockit.docco.indexer.documenthandler.DocumentProcessingException;
+import org.tockit.docco.indexer.documenthandler.DocumentHandlerException;
 
 
-public class NotFoundFileExtensionException extends DocumentProcessingException {
+public class NotFoundFileExtensionException extends DocumentHandlerException {
 
 	public NotFoundFileExtensionException(String message) {
 		super(message);

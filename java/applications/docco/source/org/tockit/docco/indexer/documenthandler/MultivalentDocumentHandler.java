@@ -62,9 +62,9 @@ import multivalent.node.LeafText;
  * ON AN "AS IS" BASIS, AND THE UNIVERSITY OF CALIFORNIA HAS NO OBLIGATION TO
  * PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
  */
-public class MultivalentDocumentProcessor implements DocumentProcessor {
+public class MultivalentDocumentHandler implements DocumentHandler {
 	
-	public DocumentSummary parseDocument(File file) throws IOException, DocumentProcessingException {
+	public DocumentSummary parseDocument(File file) throws IOException, DocumentHandlerException {
 		URI uri = file.getCanonicalFile().toURI();	
 		
 		DocumentSummary result = new DocumentSummary();
@@ -114,7 +114,7 @@ public class MultivalentDocumentProcessor implements DocumentProcessor {
 			return result;
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new DocumentProcessingException(e);
+			throw new DocumentHandlerException(e);
 		}
 	}
 

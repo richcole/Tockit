@@ -15,9 +15,9 @@ import java.io.Reader;
 import org.tockit.docco.indexer.DocumentContent;
 import org.tockit.docco.indexer.DocumentSummary;
 
-public class PlainTextDocumentProcessor implements DocumentProcessor {
+public class PlainTextDocumentHandler implements DocumentHandler {
 
-	public DocumentSummary parseDocument(File file) throws IOException, DocumentProcessingException {
+	public DocumentSummary parseDocument(File file) throws IOException, DocumentHandlerException {
 		Reader reader = new FileReader(file);
 		DocumentSummary docSummary = new DocumentSummary();
 		docSummary.content = new DocumentContent(reader);

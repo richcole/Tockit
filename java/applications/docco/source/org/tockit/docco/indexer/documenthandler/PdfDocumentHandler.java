@@ -24,11 +24,11 @@ import org.pdfbox.util.PDFTextStripper;
 import org.tockit.docco.indexer.DocumentContent;
 import org.tockit.docco.indexer.DocumentSummary;
 
-public class PdfDocumentProcessor implements DocumentProcessor {
+public class PdfDocumentHandler implements DocumentHandler {
 	
 	private File file;
 
-	public DocumentSummary parseDocument(File file) throws IOException, DocumentProcessingException {
+	public DocumentSummary parseDocument(File file) throws IOException, DocumentHandlerException {
 		this.file = file;
 		
 		PDFParser pdfParser = new PDFParser(new FileInputStream (file));

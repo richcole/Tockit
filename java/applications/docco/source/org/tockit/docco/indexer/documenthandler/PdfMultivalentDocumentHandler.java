@@ -26,9 +26,9 @@ import multivalent.std.adaptor.pdf.PDFReader;
 
 
 
-public class PdfMultivalentDocumentProcessor implements DocumentProcessor {
+public class PdfMultivalentDocumentHandler implements DocumentHandler {
 
-	public DocumentSummary parseDocument(File file) throws IOException, DocumentProcessingException {
+	public DocumentSummary parseDocument(File file) throws IOException, DocumentHandlerException {
 		try {
 			PDFReader reader = new PDFReader(file);
 			Map infoMap = reader.getInfo();
@@ -60,14 +60,14 @@ public class PdfMultivalentDocumentProcessor implements DocumentProcessor {
 				return docSummary;
 			}
 			catch (URISyntaxException e) {
-				throw new DocumentProcessingException(e);
+				throw new DocumentHandlerException(e);
 			}
 			catch (Exception e) {
-				throw new DocumentProcessingException(e);
+				throw new DocumentHandlerException(e);
 			}
 		}
 		catch (ParseException e) {
-			throw new DocumentProcessingException(e);
+			throw new DocumentHandlerException(e);
 		}
 	}
 

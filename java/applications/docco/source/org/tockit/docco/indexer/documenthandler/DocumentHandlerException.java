@@ -8,18 +8,18 @@
 package org.tockit.docco.indexer.documenthandler;
 
 
-public class DocumentProcessingException extends Exception {
+public class DocumentHandlerException extends Exception {
 
-	public DocumentProcessingException(String message) {
+	public DocumentHandlerException(String message) {
 		super(message);
 
 	}
 
-	public DocumentProcessingException(String message, Throwable e) {
+	public DocumentHandlerException(String message, Throwable e) {
 		super(message, e);
 	}
 
-	public DocumentProcessingException(Throwable e) {
+	public DocumentHandlerException(Throwable e) {
 		super(e);
 	}
 }

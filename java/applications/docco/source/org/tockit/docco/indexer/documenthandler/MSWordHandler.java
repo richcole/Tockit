@@ -24,7 +24,7 @@ import org.apache.poi.poifs.eventfilesystem.POIFSReaderListener;
 import org.tockit.docco.indexer.DocumentContent;
 import org.tockit.docco.indexer.DocumentSummary;
 
-public class MSWordProcessor implements DocumentProcessor {
+public class MSWordHandler implements DocumentHandler {
 	
 	private class DocSummaryPOIFSReaderListener implements POIFSReaderListener {
 		private SummaryInformation summary = null;
@@ -42,7 +42,7 @@ public class MSWordProcessor implements DocumentProcessor {
 		}
 	}
 
-	public DocumentSummary parseDocument(File file) throws IOException, DocumentProcessingException {
+	public DocumentSummary parseDocument(File file) throws IOException, DocumentHandlerException {
 		try {		
 			POIFSReader poiReader = new POIFSReader();
 			DocSummaryPOIFSReaderListener summaryListener = new DocSummaryPOIFSReaderListener();
@@ -64,14 +64,14 @@ public class MSWordProcessor implements DocumentProcessor {
 		}
 		catch (IOException e) {
 			if (e.getMessage().startsWith("Unable to read entire header")) {
-				throw new DocumentProcessingException(e);
+				throw new DocumentHandlerException(e);
 			} else {
 				throw e;
 			}
 		}
 	}
 	
-	private DocumentContent getDocumentContent(File file) throws IOException, DocumentProcessingException {
+	private DocumentContent getDocumentContent(File file) throws IOException, DocumentHandlerException {
 		try {
 			WordDocument wordDoc = new WordDocument(file.getAbsolutePath());
 			Writer docTextWriter = new StringWriter();
@@ -80,19 +80,19 @@ public class MSWordProcessor implements DocumentProcessor {
 		}
 		catch (ArrayIndexOutOfBoundsException e) {
 			System.err.println("ArrayIndexOutOfBoundsException while extracting content in " + file.getPath());
-			throw new DocumentProcessingException(e);
+			throw new DocumentHandlerException(e);
 		}
 		catch (IndexOutOfBoundsException e) {
 			System.err.println("ArrayIndexOutOfBoundsException while extracting content in " + file.getPath());
-			throw new DocumentProcessingException(e);
+			throw new DocumentHandlerException(e);
 		}
 		catch (NegativeArraySizeException e) {
 			System.err.println("IndexOutOfBoundsException while extracting content in " + file.getPath());
-			throw new DocumentProcessingException(e);
+			throw new DocumentHandlerException(e);
 		}
 		catch (NullPointerException e) {
 			System.err.println("NullPointerException while extracting content in " + file.getPath());
-			throw new DocumentProcessingException(e);
+			throw new DocumentHandlerException(e);
 		}
 	}
 

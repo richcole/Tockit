@@ -40,7 +40,7 @@ public class DocumentProcessingFactory {
 		this.docRegistry.put(fileFilter, docProcessorClass);
 	}
 
-	public Document processDocument(File file) throws DocumentProcessingException, 
+	public Document processDocument(File file) throws DocumentHandlerException, 
 													NotFoundFileExtensionException,
 													UnknownFileExtensionException, 
 													InstantiationException, 
@@ -58,7 +58,7 @@ public class DocumentProcessingFactory {
 
 		if (docProcessorClass != null) {
 
-			DocumentProcessor docProcessor = (DocumentProcessor) docProcessorClass.newInstance();
+			DocumentHandler docProcessor = (DocumentHandler) docProcessorClass.newInstance();
 			DocumentSummary docSummary = docProcessor.parseDocument(file);
 			
 			/// @todo check what else we can get from the JDK side. Every feature we can get from the File API should be

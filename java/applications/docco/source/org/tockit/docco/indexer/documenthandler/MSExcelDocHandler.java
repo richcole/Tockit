@@ -21,9 +21,9 @@ import org.tockit.docco.indexer.DocumentContent;
 import org.tockit.docco.indexer.DocumentSummary;
 
 
-public class MSExcelDocProcessor implements DocumentProcessor {
+public class MSExcelDocHandler implements DocumentHandler {
 
-	public DocumentSummary parseDocument(File file) throws IOException, DocumentProcessingException {
+	public DocumentSummary parseDocument(File file) throws IOException, DocumentHandlerException {
 		try {
 			HSSFWorkbook workbook = new HSSFWorkbook(new FileInputStream(file));	
 			
@@ -33,7 +33,7 @@ public class MSExcelDocProcessor implements DocumentProcessor {
 			return docSummary;	
 		}
 		catch (RecordFormatException e) {
-			throw new DocumentProcessingException(e);
+			throw new DocumentHandlerException(e);
 		}		
 	}
 
