@@ -92,6 +92,7 @@ import org.tockit.events.EventBrokerListener;
 
 import org.tockit.docco.ConfigurationManager;
 import org.tockit.docco.GlobalConstants;
+import org.tockit.docco.PluginLoader;
 import org.tockit.docco.fca.DiagramGenerator;
 import org.tockit.docco.index.Index;
 import org.tockit.docco.indexer.DocumentHandlerRegistry;
@@ -318,6 +319,11 @@ public class DoccoMainFrame extends JFrame {
 		contentPane.add(this.statusBarMessage, BorderLayout.SOUTH);
 		
 		setContentPane(contentPane);
+
+		/// @todo where should we call PluginLoader from?
+		this.statusBarMessage.setText("Loading plugins...");
+		new PluginLoader();
+		this.statusBarMessage.setText("Ready!");
 		
 		this.indexingPriority = ConfigurationManager.fetchInt(CONFIGURATION_SECTION_NAME, 
 															  CONFIGURATION_INDEXING_PRIORITY_NAME, MEDIUM_PRIORITY);	

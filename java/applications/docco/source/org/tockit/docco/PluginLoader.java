@@ -12,6 +12,8 @@ import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.sourceforge.toscanaj.gui.dialog.ErrorDialog;
 
@@ -20,6 +22,8 @@ import org.tockit.plugin.PluginClassLoader;
 
 
 public class PluginLoader {
+
+	private static final Logger logger = Logger.getLogger(PluginLoader.class.getName());
 	
 	private List errors = new ArrayList();
 	
@@ -33,6 +37,8 @@ public class PluginLoader {
 	}
 	
 	public PluginLoader () {
+		logger.setLevel(Level.FINER);
+		
 		/// @todo this should be read from config manager?...
 		String pluginsDirName = "plugins";
 
@@ -54,7 +60,7 @@ public class PluginLoader {
 				break; 
 			}
 		}
-		System.out.println("Found plugins num: " + pluginDirs.length);
+		logger.fine("STARTING to load plugins. Found " + pluginDirs.length + " plugins");
 		
 		if (pluginDirs == null) {
 			ErrorDialog.showError(null, null, "Didn't find any plugins");			
@@ -62,16 +68,11 @@ public class PluginLoader {
 		else {
 			for (int i = 0; i < pluginDirs.length; i++) {
 				try {
-					System.out.println("\nloading plugin loader for dir " + pluginDirs[i]);
+					logger.fine("Loading class loader for " + pluginDirs[i]);
 					PluginClassLoader classLoader = new PluginClassLoader(pluginDirs[i]);
-
-					System.out.println("loaded plugin loader, looking for plugins now");
 					Class[] foundPlugins = listPlugins(classLoader);
-
-					System.out.println("trying to load each plugin");
 					loadPlugins(foundPlugins);
-
-					System.out.println("finished loading all plugins");
+					logger.fine("Finished loading plugins in " + pluginDirs[i]);
 				}
 				catch (FileNotFoundException e) {
 					e.printStackTrace();
@@ -80,21 +81,16 @@ public class PluginLoader {
 			}
 		}
 		
-		System.out.println("errors: " + errors.size());
 		if (errors.size() > 0) {
 			/// @todo need to deal with errors in a better fashion. 
 			ErrorDialog.showError(null, null, "There were errors loading plugins. Check exceptions stack trace");
 		}
-		
-
-		System.out.println("finished");
-		
+		logger.fine("FINISHED loading plugins");
 	}
 	
 	private Class[] listPlugins (PluginClassLoader classLoader) {
 		try {
 			Class[] foundPlugins = classLoader.findClassesImplementingGivenIterface(Plugin.class);
-			System.out.println("found num of classes: " + foundPlugins.length);
 			return foundPlugins;
 		}
 		catch (NoClassDefFoundError e) {
@@ -113,7 +109,7 @@ public class PluginLoader {
 			for (int i = 0; i < plugins.length; i++) {
 				Class cur = plugins[i];
 				Plugin plugin = (Plugin) cur.newInstance();
-				System.out.println("\t loading plugin " + plugin.getClass().getName());
+				logger.finer("Loading plugin " + plugin.getClass().getName());
 				plugin.load();
 			}
 		} catch (InstantiationException e) {
