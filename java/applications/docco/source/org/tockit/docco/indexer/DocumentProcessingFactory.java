@@ -15,8 +15,8 @@ import java.util.Iterator;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.tockit.docco.GlobalConstants;
-import org.tockit.docco.indexer.filefilter.FileExtensionExtractor;
-import org.tockit.docco.indexer.filefilter.NotFoundFileExtensionException;
+import org.tockit.docco.filefilter.FileExtensionExtractor;
+import org.tockit.docco.filefilter.NotFoundFileExtensionException;
 
 /**
  * @todo search for something doing file magic (as in the GNU "file" command). That would be

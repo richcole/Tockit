@@ -5,19 +5,15 @@
  *
  * $Id$
  */
-package org.tockit.docco.indexer.documenthandler;
+package org.tockit.docco.filefilter;
 
 import org.tockit.docco.indexer.DocumentProcessingException;
 
 
-public class DocumentHandlerException extends DocumentProcessingException {
+public class NotFoundFileExtensionException extends DocumentProcessingException {
 
-	public DocumentHandlerException(String message) {
+	public NotFoundFileExtensionException(String message) {
 		super(message);
 
-	}
-
-	public DocumentHandlerException(String message, Throwable e) {
-		super(message, e);
 	}
 }

@@ -13,8 +13,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.tockit.docco.indexer.documenthandler.DocumentHandler;
-import org.tockit.docco.indexer.filefilter.DoccoFileFilter;
+import org.tockit.docco.documenthandler.DocumentHandler;
+import org.tockit.docco.filefilter.DoccoFileFilter;
 
 public class DocumentHandlerRegistry {
 	public static final String[] DEFAULT_MAPPINGS = new String[]{

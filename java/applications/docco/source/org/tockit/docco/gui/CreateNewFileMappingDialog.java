@@ -42,8 +42,8 @@ import net.sourceforge.toscanaj.gui.dialog.ErrorDialog;
 import org.tockit.docco.GlobalConstants;
 import org.tockit.docco.indexer.DocumentHandlerMapping;
 import org.tockit.docco.indexer.DocumentHandlerRegistry;
-import org.tockit.docco.indexer.documenthandler.DocumentHandler;
-import org.tockit.docco.indexer.filefilter.DoccoFileFilter;
+import org.tockit.docco.documenthandler.DocumentHandler;
+import org.tockit.docco.filefilter.DoccoFileFilter;
 
 
 public class CreateNewFileMappingDialog extends JDialog {

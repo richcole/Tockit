@@ -5,7 +5,7 @@
  *
  * $Id$
  */
-package org.tockit.docco.indexer.filefilter;
+package org.tockit.docco.filefilter;
 
 import java.io.File;
 import java.util.regex.Pattern;

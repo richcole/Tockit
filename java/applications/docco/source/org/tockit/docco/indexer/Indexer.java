@@ -13,8 +13,8 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.tockit.docco.GlobalConstants;
-import org.tockit.docco.indexer.documenthandler.DocumentHandlerException;
-import org.tockit.docco.indexer.filefilter.NotFoundFileExtensionException;
+import org.tockit.docco.documenthandler.DocumentHandlerException;
+import org.tockit.docco.filefilter.NotFoundFileExtensionException;
 
 import java.io.File;
 import java.io.IOException;

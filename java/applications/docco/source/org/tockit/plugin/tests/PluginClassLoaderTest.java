@@ -12,7 +12,7 @@ import java.io.FileNotFoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.tockit.docco.indexer.documenthandler.DocumentHandler;
+import org.tockit.docco.documenthandler.DocumentHandler;
 import org.tockit.plugin.PluginClassLoader;
 
 import junit.framework.TestCase;

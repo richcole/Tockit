@@ -7,8 +7,8 @@
  */
 package org.tockit.docco.indexer;
 
-import org.tockit.docco.indexer.documenthandler.DocumentHandler;
-import org.tockit.docco.indexer.filefilter.DoccoFileFilter;
+import org.tockit.docco.documenthandler.DocumentHandler;
+import org.tockit.docco.filefilter.DoccoFileFilter;
 
 public class DocumentHandlerMapping {
 	private DoccoFileFilter fileFilter;
