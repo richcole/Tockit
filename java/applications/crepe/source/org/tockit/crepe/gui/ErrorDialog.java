@@ -10,16 +10,10 @@ package org.tockit.crepe.gui;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import org.tockit.canvas.imagewriter.ImageGenerationException;
-
 
 /**
  * This is a generic class top handle error messages.
- *
- * ToscanJ Exceptions will give the user the option to see a simple error message
- * or thay can view more detailed error message.
  */
-
 public class ErrorDialog {
 
     /**
@@ -55,11 +49,8 @@ public class ErrorDialog {
      * error message if required.
      */
     private void showDetailedErrorMsg(JFrame frame, Throwable e, String title, String errorMsg) {
-        ///@TODO an interface is requird for all toscanaJ exceptions
-        Exception original = null;
-        if (e instanceof ImageGenerationException) {
-            original = ((ImageGenerationException) e).getOriginal();
-        }
+        Throwable original = e.getCause();
+        
         if (original == null) {
             new ErrorDialog(frame, title, errorMsg);
             return;

@@ -16,37 +16,19 @@ package org.tockit.canvas.imagewriter;
  * @todo build hierarchy for this.
  */
 public class ImageGenerationException extends Exception {
-    /**
-     * This can be used to get the original Exception.
-     */
-    private Exception exception = null;
-
-    /**
-     * Constructs an exception without detail message.
-     */
     public ImageGenerationException() {
-        super();
+    super();
     }
 
-    /**
-     * Constructs an exception with detail message.
-     */
-    public ImageGenerationException(String s) {
-        super(s);
+    public ImageGenerationException(String message) {
+    super(message);
     }
 
-    /**
-     * Constructs an exception with detail message and embedded exception.
-     */
-    public ImageGenerationException(String s, Exception e) {
-        super(s);
-        exception = e;
+    public ImageGenerationException(String message, Throwable cause) {
+        super(message, cause);
     }
 
-    /**
-     * Returns the originial exception if attached.
-     */
-    public Exception getOriginal() {
-        return exception;
+    public ImageGenerationException(Throwable cause) {
+        super(cause);
     }
 }
