@@ -7,25 +7,29 @@
  */
 package org.tockit.conscript.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 
 public class ConceptualSchema extends ConscriptStructure{
 	private DatabaseDefinition database;
-	private ConcreteScale[] concreteScales;
+	private List concreteScales = new ArrayList();
 	
 	public ConceptualSchema(String identifier) {
         super(identifier);
 	}
 
-	public ConcreteScale[] getConcreteScales() {
-		return concreteScales;
+	public List getConcreteScales() {
+		return Collections.unmodifiableList(concreteScales);
 	}
 
 	public DatabaseDefinition getDatabase() {
 		return database;
 	}
 
-	public void setConcreteScales(ConcreteScale[] concreteScales) {
-		this.concreteScales = concreteScales;
+	public void addConcreteScale(ConcreteScale concreteScale) {
+		this.concreteScales.add(concreteScale);
 	}
 
 	public void setDatabase(DatabaseDefinition database) {
