@@ -92,9 +92,9 @@ import org.tockit.events.Event;
 import org.tockit.events.EventBroker;
 import org.tockit.events.EventBrokerListener;
 import org.tockit.plugin.PluginLoader;
+import org.tockit.swing.preferences.ExtendedPreferences;
 
 
-import org.tockit.docco.ConfigurationManager;
 import org.tockit.docco.GlobalConstants;
 import org.tockit.docco.documenthandler.DocumentHandlerRegistry;
 import org.tockit.docco.fca.DiagramGenerator;
@@ -121,7 +121,8 @@ public class DoccoMainFrame extends JFrame {
 
 	private static final String WINDOW_TITLE = "Docco";
     
-	private static final String CONFIGURATION_SECTION_NAME = "DoccoMainPanel";
+    private static final ExtendedPreferences preferences = 
+                            ExtendedPreferences.userNodeForClass(DoccoMainFrame.class);
 	private static final String CONFIGURATION_VERTICAL_DIVIDER_LOCATION = "verticalDivider";
 	private static final String CONFIGURATION_INDEX_LOCATION = "indexLocation";
 	private static final String CONFIGURATION_LAST_INDEX_DIR = "lastIndexDir";
@@ -327,10 +328,8 @@ public class DoccoMainFrame extends JFrame {
 		/// @todo where should we call PluginLoader from?
 		loadPlugins();
 		
-		this.indexingPriority = ConfigurationManager.fetchInt(CONFIGURATION_SECTION_NAME, 
-															  CONFIGURATION_INDEXING_PRIORITY_NAME, MEDIUM_PRIORITY);	
-		String lastDirectory = ConfigurationManager.fetchString(CONFIGURATION_SECTION_NAME, CONFIGURATION_LAST_INDEX_DIR,
-										                        null);
+		this.indexingPriority = preferences.getInt(CONFIGURATION_INDEXING_PRIORITY_NAME, MEDIUM_PRIORITY);	
+		String lastDirectory = preferences.get(CONFIGURATION_LAST_INDEX_DIR, null);
 		if(lastDirectory != null) {
 			this.lastDirectoryIndexed = new File(lastDirectory);
 		}
@@ -338,9 +337,7 @@ public class DoccoMainFrame extends JFrame {
         openIndexes(forceIndexAccess);
 
 		this.setVisible(true);
-		ConfigurationManager.restorePlacement(
-					CONFIGURATION_SECTION_NAME,
-					this,
+        preferences.restoreWindowPlacement(this,
 					new Rectangle(10, 10, DEFAULT_FRAME_WIDTH, DEFAULT_FRAME_HEIGHT));
 
 		addWindowListener(new WindowAdapter() {
@@ -426,9 +423,7 @@ public class DoccoMainFrame extends JFrame {
     }
 
     private File getIndexDirectory() {
-        String indexDirectoryLocation = ConfigurationManager.fetchString(CONFIGURATION_SECTION_NAME,
-        														CONFIGURATION_INDEX_LOCATION,
-																DEFAULT_INDEX_DIR);
+        String indexDirectoryLocation = preferences.get(CONFIGURATION_INDEX_LOCATION, DEFAULT_INDEX_DIR);
 		File indexDirectory = new File(indexDirectoryLocation);
 		if (!indexDirectory.exists()) {
 			indexDirectory.mkdir();
@@ -470,10 +465,7 @@ public class DoccoMainFrame extends JFrame {
         
         this.showPhantomNodesCheckBox = new JCheckBoxMenuItem("Show all possible combinations");
         this.showPhantomNodesCheckBox.setMnemonic('p');
-        this.showPhantomNodesCheckBox.setSelected(
-        				ConfigurationManager.fetchInt(CONFIGURATION_SECTION_NAME, 
-        											  CONFIGURATION_SHOW_PHANTOM_NODES_NAME, 1) == 1
-        );
+        this.showPhantomNodesCheckBox.setSelected(preferences.getBoolean(CONFIGURATION_SHOW_PHANTOM_NODES_NAME, true));
         this.showPhantomNodesCheckBox.addActionListener(new ActionListener(){
         	public void actionPerformed(ActionEvent e) {
         		/// @todo this is a bit brute force and will be confusing if the text field has changed since
@@ -485,10 +477,7 @@ public class DoccoMainFrame extends JFrame {
         
         this.showContingentOnlyCheckBox = new JCheckBoxMenuItem("Show matches only once");
         this.showContingentOnlyCheckBox.setMnemonic('o');
-		this.showContingentOnlyCheckBox.setSelected(
-						ConfigurationManager.fetchInt(CONFIGURATION_SECTION_NAME, 
-													  CONFIGURATION_SHOW_CONTINGENT_ONLY_NAME, 0) == 1
-	    );
+		this.showContingentOnlyCheckBox.setSelected(preferences.getBoolean(CONFIGURATION_SHOW_CONTINGENT_ONLY_NAME, true));
         this.showContingentOnlyCheckBox.addActionListener(new ActionListener(){
         	public void actionPerformed(ActionEvent e) {
         		if(showContingentOnlyCheckBox.isSelected()) {
@@ -883,8 +872,7 @@ public class DoccoMainFrame extends JFrame {
 		this.diagramView.setToolTipText("dummy to enable tooltips");
 		this.diagramView.setConceptInterpreter(new DirectConceptInterpreter());
 		ConceptInterpretationContext conceptInterpretationContext = new ConceptInterpretationContext(new DiagramHistory(),new EventBroker());
-		boolean showContingentsOnly = ConfigurationManager.fetchInt(CONFIGURATION_SECTION_NAME, 
-									                                CONFIGURATION_SHOW_CONTINGENT_ONLY_NAME, 0) == 1;
+		boolean showContingentsOnly = preferences.getBoolean(CONFIGURATION_SHOW_CONTINGENT_ONLY_NAME, true);
 		if(showContingentsOnly) {
 			conceptInterpretationContext.setObjectDisplayMode(ConceptInterpretationContext.CONTINGENT);
 		} else {
@@ -970,10 +958,8 @@ public class DoccoMainFrame extends JFrame {
 		viewsSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
 										   leftPane, scrollPane);
 		viewsSplitPane.setOneTouchExpandable(true);
-		viewsSplitPane.setDividerLocation(ConfigurationManager.fetchInt( 
-										CONFIGURATION_SECTION_NAME, 
-										CONFIGURATION_VERTICAL_DIVIDER_LOCATION, 
-										DEFAULT_VERTICAL_DIVIDER_LOCATION));
+		viewsSplitPane.setDividerLocation(preferences.getInt(CONFIGURATION_VERTICAL_DIVIDER_LOCATION, 
+										                    DEFAULT_VERTICAL_DIVIDER_LOCATION));
 		viewsSplitPane.setResizeWeight(0.9);
 
 		return viewsSplitPane;
@@ -1020,27 +1006,25 @@ public class DoccoMainFrame extends JFrame {
         }
 		
 		// store current position
-		ConfigurationManager.storePlacement(CONFIGURATION_SECTION_NAME, this);
+		preferences.storeWindowPlacement(this);
 		
-		ConfigurationManager.storeFloat(CONFIGURATION_SECTION_NAME,	"minLabelFontSize",
-								(float) this.diagramView.getMinimumFontSize());
-		ConfigurationManager.storeInt(CONFIGURATION_SECTION_NAME, CONFIGURATION_VERTICAL_DIVIDER_LOCATION,
+		preferences.putDouble("minLabelFontSize", this.diagramView.getMinimumFontSize());
+		preferences.putInt(CONFIGURATION_VERTICAL_DIVIDER_LOCATION,
 								this.viewsSplitPane.getDividerLocation());
 								
 		// store menu settings
-		ConfigurationManager.storeInt(CONFIGURATION_SECTION_NAME, CONFIGURATION_SHOW_PHANTOM_NODES_NAME,
+		preferences.putInt(CONFIGURATION_SHOW_PHANTOM_NODES_NAME,
 								this.showPhantomNodesCheckBox.isSelected()?1:0);
-		ConfigurationManager.storeInt(CONFIGURATION_SECTION_NAME, CONFIGURATION_SHOW_CONTINGENT_ONLY_NAME,
+		preferences.putInt(CONFIGURATION_SHOW_CONTINGENT_ONLY_NAME,
 								this.showContingentOnlyCheckBox.isSelected()?1:0);
-		ConfigurationManager.storeInt(CONFIGURATION_SECTION_NAME, CONFIGURATION_INDEXING_PRIORITY_NAME,
+		preferences.putInt(CONFIGURATION_INDEXING_PRIORITY_NAME,
 								this.indexingPriority);
 		
 		if(this.lastDirectoryIndexed != null) {
-			ConfigurationManager.storeString(CONFIGURATION_SECTION_NAME, CONFIGURATION_LAST_INDEX_DIR,
+			preferences.put(CONFIGURATION_LAST_INDEX_DIR,
 											 this.lastDirectoryIndexed.getPath());
 		}
 
-		ConfigurationManager.saveConfiguration();
 		System.exit(0);
 	}
 }

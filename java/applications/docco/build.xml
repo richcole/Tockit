@@ -82,10 +82,9 @@
 				<include name="*.txt"/>
 				<include name="*.bat"/>
 				<include name="*.sh"/>
-				<include name="docco.prop"/>
 			</fileset>
 		</copy>
-		<fixcrlf srcDir="${dist.dir}" eol="crlf" includes="*.txt, *.bat, docco.prop"/>
+		<fixcrlf srcDir="${dist.dir}" eol="crlf" includes="*.txt, *.bat"/>
 		<fixcrlf srcDir="${dist.dir}" eol="lf" includes="*.sh"/>
 		<copy todir="${dist.dir}/doc" includeEmptyDirs="no">
 			<fileset dir="${basedir}/doc">
