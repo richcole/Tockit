@@ -71,6 +71,12 @@ extern void
      struct Sarl_ConceptIterator *c
   );
 
+extern void 
+  sarl_lattice_iterator_prev_leq(
+    struct Sarl_LatticeIterator *K,
+     struct Sarl_ConceptIterator *c
+  );
+
 extern struct Sarl_LatticeIterator *
   sarl_lattice_iterator_filter(
     struct Sarl_LatticeIterator *it
@@ -106,5 +112,18 @@ extern struct Sarl_LatticeIterator *
  */
 extern struct Sarl_LatticeIterator *
   sarl_lattice_iterator_release_ownership(struct Sarl_LatticeIterator *);
+
+extern struct Sarl_LatticeIterator *
+  sarl_lattice_iterator_create_object_factor(
+    struct Sarl_LatticeIterator *L,
+    struct Sarl_SetIterator* G_s
+  );
+
+extern struct Sarl_LatticeIterator *
+  sarl_lattice_iterator_create_attribute_factor(
+    struct Sarl_LatticeIterator *L,
+    struct Sarl_SetIterator* M_s
+  );
+
 
 #endif

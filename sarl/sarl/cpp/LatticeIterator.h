@@ -38,7 +38,12 @@ public:
     sarl_lattice_iterator_next(mp_itRef);
   };
 
+  void prev() {
+    sarl_lattice_iterator_prev(mp_itRef);
+  };
+
   inline void next_gte(ConceptIterator const& c);
+  inline void prev_leq(ConceptIterator const& c);
 
   inline ConceptIterator value();
 
@@ -50,9 +55,20 @@ public:
     return sarl_lattice_iterator_reset(mp_itRef);
   };
 
+  inline void reset_last() {
+    return sarl_lattice_iterator_reset_last(mp_itRef);
+  };
+
   inline SetIterator intent();
 
   inline SetIterator extent();
+
+  inline int count();
+
+  inline LatticeIterator object_factor(SetIterator G_s);
+  
+
+  inline LatticeIterator attribute_factor(SetIterator M_s);
 
 private:
   Sarl_LatticeIterator* mp_itRef;
@@ -93,6 +109,10 @@ inline void LatticeIterator::next_gte(ConceptIterator const& c) {
   sarl_lattice_iterator_next_gte(mp_itRef, c.mp_itRef);
 };
 
+inline void LatticeIterator::prev_leq(ConceptIterator const& c) {
+  sarl_lattice_iterator_prev_leq(mp_itRef, c.mp_itRef);
+};
+
 ConceptIterator LatticeIterator::value() {
   return ConceptIterator(sarl_lattice_iterator_value(mp_itRef)).retn();
 };
@@ -104,6 +124,33 @@ SetIterator LatticeIterator::intent() {
 SetIterator LatticeIterator::extent() {
   return SetIterator(sarl_lattice_iterator_extent(mp_itRef)).retn();
 };
+
+inline int LatticeIterator::count() {
+  LatticeIterator tmp_it = *this;
+  int count = 0;
+  SARL_FOR(tmp_it) {
+    ++count;
+  }
+  return count;
+};
+
+  inline LatticeIterator LatticeIterator::object_factor(SetIterator A) {
+    return 
+      LatticeIterator(
+	sarl_lattice_iterator_create_object_factor(
+	  mp_itRef, A.mp_itRef
+	)
+      );
+  };
+
+  inline LatticeIterator LatticeIterator::attribute_factor(SetIterator B) {
+    return 
+      LatticeIterator(
+	sarl_lattice_iterator_create_attribute_factor(
+	  mp_itRef, B.mp_itRef
+	)
+      );
+  };
 
 
 #endif

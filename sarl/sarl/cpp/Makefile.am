@@ -82,7 +82,8 @@ check_PROGRAMS = \
   test_relation \
   test_relation_join \
   test_stl \
-  test_string 
+  test_string \
+  test_attribute_factor
 
 TESTS = \
   test_additive_layout \
@@ -97,9 +98,13 @@ TESTS = \
   test_relation \
   test_relation_join \
   test_stl \
-  test_string 
+  test_string \
+  test_attribute_factor
 
 ##
+
+test_attribute_factor_SOURCES = test_attribute_factor.cpp
+test_attribute_factor_LDADD = ../libsarl.la libsarlplus.la
 
 test_string_SOURCES = test_string.cpp
 test_string_LDADD = ../libsarl.la libsarlplus.la

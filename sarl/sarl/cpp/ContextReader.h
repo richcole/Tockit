@@ -13,12 +13,14 @@ extern "C" {
 #include <sarl/cpp/Context.h>
 #include <sarl/cpp/LatticeIterator.h>
 #include <sarl/cpp/Lattice.h>
+#include <sarl/cpp/InputFileStream.h>
+#include <sarl/cpp/OutputStream.h>
 
 class ContextReader {
  public:
   ContextReader() {};
 
-  int read_cxt(
+  static int read_cxt(
       InputStream &in, 
       Lattice&    L, 
       String&     title,
@@ -26,24 +28,38 @@ class ContextReader {
       Dictionary& M,
       OutputStream& err
       ) 
-    {
-      Context K;
-      int result = sarl_read_cxt_context(
-        G.mp_dictionaryRef, 
-        M.mp_dictionaryRef, 
-        K.mp_contextRef, 
-        title.mp_stringRef, 
-        in.mp_inRef, 
-        err.mp_outRef
-      );
+  {
+    Context K;
+    int result = sarl_read_cxt_context(
+      G.mp_dictionaryRef, 
+      M.mp_dictionaryRef, 
+      K.mp_contextRef, 
+      title.mp_stringRef, 
+      in.mp_inRef, 
+      err.mp_outRef
+    );
 
-      if ( result == SARL_OK ) {
-        LatticeIterator it(K);
-        L = Lattice(it);
-      }
-      
-      return result;
-    };
+    if ( result == SARL_OK ) {
+      LatticeIterator it(K);
+      L = Lattice(it);
+    }
+    
+    return result;
+  };
+
+  static Lattice read_cxt_lattice_from_file(String& s) 
+  {
+    InputFileStream in = s;
+    String title;
+    Dictionary D;
+    String err_string;
+    OutputStream err(err_string);
+
+    Lattice L;
+    
+    read_cxt(in, L, title, D, D, err);
+    return L;
+  };
 };
 
     

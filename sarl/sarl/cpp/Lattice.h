@@ -23,6 +23,7 @@ class Lattice {
 
 public: 
 
+  inline Lattice();
   inline Lattice(LatticeIterator const& it);
   inline Lattice(Lattice const& lattice);
   inline Lattice& operator=(Lattice const& it);
@@ -31,9 +32,7 @@ public:
     sarl_lattice_decr_ref(mp_latticeRef);
   };
 
-  Lattice copy() {
-    return Lattice(*this);
-  };
+  inline Lattice copy();
 
   inline SetIterator concepts() const {
     SetIterator result(
@@ -146,6 +145,13 @@ private:
 
 #include <sarl/cpp/LatticeIterator.h>
 
+inline Lattice::Lattice() {
+  Context K;
+  ContextIterator K_it = K;
+  Lattice L(K_it);
+  *this = L;
+};
+
 inline Lattice::Lattice(Lattice const& lattice) {
   mp_latticeRef = lattice.mp_latticeRef;
   if ( lattice.mp_latticeRef ) {
@@ -169,6 +175,11 @@ inline Lattice& Lattice::operator=(Lattice const& L) {
     sarl_lattice_incr_ref(mp_latticeRef);
   }
   return *this;
+};
+
+inline  Lattice Lattice::copy() {
+  LatticeIterator it(*this);
+  return Lattice(sarl_lattice_copy(it.mp_itRef));
 };
 
 #endif
