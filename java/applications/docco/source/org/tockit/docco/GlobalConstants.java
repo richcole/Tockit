@@ -29,4 +29,10 @@ public class GlobalConstants {
 	public static final String FIELD_DOC_TYPE = "type";
 	public static final String FIELD_DOC_SIZE = "size";
 	public static final String FIELD_DOC_PATH = "path";
+	/**
+	 * As opposed to the constant above, this one is used to store the path as separte words for indexing.
+	 * This is to experiment with looking at occurrances of words in different paths. The wildcards won't
+	 * help too much since they are not allowed at the beginning.
+	 */
+	public static final String FIELD_DOC_PATH_WORDS = "path_words";
 }

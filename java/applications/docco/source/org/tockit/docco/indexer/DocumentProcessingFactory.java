@@ -44,6 +44,7 @@ public class DocumentProcessingFactory {
 				/// worthwhile keeping
 				Document doc = docProcessor.getDocument(file);
 				doc.add(Field.Text(GlobalConstants.FIELD_DOC_PATH, file.getPath()));
+				doc.add(Field.Text(GlobalConstants.FIELD_DOC_PATH_WORDS, file.getPath().replace(File.separatorChar, ' ')));
 				if (doc.get(GlobalConstants.FIELD_DOC_MODIFICATION_DATE) == null) {
 					doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_MODIFICATION_DATE,new Date(file.lastModified())));
 				}
