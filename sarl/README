@@ -13,7 +13,7 @@ The current version of sarl has been compiled with:
   * swig 1.3.10
   * gcc version 2.96 20000731 (Red Hat Linux 7.3 2.96-110)
   * jdk 1.3.1_03
-  * python 1.5.2
+  * python 1.5.2 or python2.2
 
 So far Sarl only appears to be sensitive to the version of swig.
 

@@ -31,7 +31,6 @@ PUBLIC_HEADERS = \
   relation.h \
   relation_iterator.h 
 
-
 CLASSES = \
   Set \
   SetIterator \
@@ -87,17 +86,17 @@ python/sarl_wrap.o: python/sarl_wrap.c
           -o $@ $^
 
 python/sarl_wrap.c: $(PUBLIC_HEADERS) sarl.input
-	cd python; swig -I.. -o sarl_wrap.c -c++ -shadow -python sarl.input 
+	cd python; $(SWIG) -I.. -o sarl_wrap.c -c++ -shadow -python sarl.input 
 
 test_python: java/TestSarl.class
 	LD_LIBRARY_PATH=`pwd`/lib_d:$$LD_LIBRARY_PATH; \
-	cd python; python test_sarl.py
+	cd python; $(PYTHON) test_sarl.py
 
 java/sarl_wrap.o: java/sarl_wrap.c
 	$(CCC) -c -I../ $(SWIG_INC:%=-I%) $(JAVA_INC:%=-I%) -o $@ $^
 
 java/sarl_wrap.c: $(PUBLIC_HEADERS) sarl.input
-	cd java; swig -I.. -o sarl_wrap.c -c++ -shadow -java ../sarl.input
+	cd java; $(SWIG) -I.. -o sarl_wrap.c -c++ -shadow -java ../sarl.input
 
 java/TestSarl.class: java/TestSarl.java
 	cd java; javac TestSarl.java
