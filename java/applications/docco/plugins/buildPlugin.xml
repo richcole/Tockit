@@ -22,7 +22,7 @@
 	standalone
 	-->
 	<property name="plugin.name" value="MultivalentDocumentHandlerPlugin"/>
-	<property name="docco.build.dir" value="../../build/dev"/>
+	<property name="docco.classes" value="../../build/dev"/>
 	<property name="plugins.dist.dir" value="dist"/>
 
 	<!-- Shouldn't need to change anything from now on -->
@@ -36,7 +36,7 @@
     <path id="plugin.class.path">
         <pathelement path="${classpath}"/>
         <pathelement path="${plugin.build.dir}"/>
-        <pathelement path="${docco.build.dir}"/>
+        <pathelement path="${docco.classes}"/>
         <fileset dir="${plugin.libs.dir}">
             <include name="**/*.jar"/>
         </fileset>
