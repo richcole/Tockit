@@ -8,8 +8,11 @@
 package org.tockit.conscript.parser.sectionparsers;
 
 import java.io.IOException;
+import java.util.logging.Level;
 
 import org.tockit.conscript.model.CSCFile;
+import org.tockit.conscript.model.IdentifierMap;
+import org.tockit.conscript.parser.CSCParser;
 import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
@@ -18,7 +21,27 @@ class IdentifierMapParser extends CSCFileSectionParser {
 		return "IDENTIFIER_MAP";
 	}
 
-	public void parse(CSCTokenizer tokenizer, CSCFile targetFile) throws IOException, DataFormatException {
-		throw new SectionTypeNotSupportedException("parse() in " + this.getClass().getName() + " not yet implemented.");
+	public void parse(CSCTokenizer tokenizer, CSCFile file) throws IOException, DataFormatException {
+        String id = tokenizer.popCurrentToken();
+        IdentifierMap map = getIdentifierMap(file, id);
+        tokenizer.consumeToken("=");
+        
+        if(tokenizer.getCurrentToken().equals("REMARK")) {
+            tokenizer.consumeToken("REMARK");
+            map.setRemark(tokenizer.popCurrentToken());
+        }
+        
+        while(!tokenizer.getCurrentToken().equals(";")) {
+            tokenizer.consumeToken("(");
+            String from = tokenizer.popCurrentToken();
+            tokenizer.consumeToken(",");
+            String to = tokenizer.popCurrentToken();
+            tokenizer.consumeToken(")");
+            map.addEntry(from, to);
+        }
+        tokenizer.consumeToken(";");
+
+        map.setInitialized();
+        CSCParser.logger.log(Level.FINER, "Identifier map added: '" + map.getName() + "'");
 	}
 }

@@ -7,21 +7,22 @@
  */
 package org.tockit.conscript.model;
 
+import java.util.Collections;
+import java.util.Hashtable;
 import java.util.Map;
 
 public class IdentifierMap extends ConscriptStructure{
-    private Map map;
+    private Map map = new Hashtable();
     
 	public IdentifierMap(String identifier) {
         super(identifier);
     }
 		
 	public Map getMap() {
-		return map;
+		return Collections.unmodifiableMap(map);
 	}
 
-	public void setMap(Map map) {
-		this.map = map;
-	}
-
+    public void addEntry(String fromId, String toId) {
+        this.map.put(fromId, toId);
+    }
 }
