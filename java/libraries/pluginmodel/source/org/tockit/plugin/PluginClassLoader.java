@@ -392,9 +392,9 @@ public class PluginClassLoader extends ClassLoader {
 		List zipFileEntriesList = new ArrayList();
 		try {
 			ZipFile zipFile = new ZipFile(file);
-			Enumeration enum = zipFile.entries();
-			while (enum.hasMoreElements()) {
-				ZipEntry curEntry = (ZipEntry) enum.nextElement();
+			Enumeration enumeration = zipFile.entries();
+			while (enumeration.hasMoreElements()) {
+				ZipEntry curEntry = (ZipEntry) enumeration.nextElement();
 				zipFileEntriesList.add(curEntry);
 			}
 		} catch (ZipException e) {

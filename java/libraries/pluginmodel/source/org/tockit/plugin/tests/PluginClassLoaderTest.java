@@ -52,9 +52,9 @@ public class PluginClassLoaderTest extends TestCase {
 		assertNull(classLoader.getResource("Multivalent.class"));
 		assertNotNull(classLoader.getResource("sys/Preferences.txt"));
 
-		Enumeration enum = classLoader.getResources("sys/Preferences.txt");
-		assertNotNull(enum);
-		assertEquals(true, enum.hasMoreElements());
+		Enumeration enumeration = classLoader.getResources("sys/Preferences.txt");
+		assertNotNull(enumeration);
+		assertEquals(true, enumeration.hasMoreElements());
 	}
 
 	public void testFindClass() throws ClassNotFoundException {
