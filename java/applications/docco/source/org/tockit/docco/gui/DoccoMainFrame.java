@@ -105,7 +105,8 @@ import org.tockit.docco.query.util.QueryWithResultSet;
 
 
 public class DoccoMainFrame extends JFrame {
-	private static final int VISIBLE_TREE_DEPTH = 2;
+	private QueryEventHandler queryEventHandler;
+    private static final int VISIBLE_TREE_DEPTH = 2;
     private DocumentDisplayPane documentDisplayPane;
     private JTree hitList;
     private JTextField queryField = new JTextField(20);
@@ -490,25 +491,6 @@ public class DoccoMainFrame extends JFrame {
 				System.exit(1);
 			}
 		}
-
-		QueryDecomposer queryDecomposer = new QueryDecomposer(
-												GlobalConstants.FIELD_QUERY_BODY, 
-												GlobalConstants.DEFAULT_ANALYZER);
-			
-		QueryEngine queryEngine = null;
-        try {
-            queryEngine =
-                new QueryEngine(
-                    GlobalConstants.DEFAULT_INDEX_LOCATION,
-                    GlobalConstants.FIELD_QUERY_BODY,
-                    GlobalConstants.DEFAULT_ANALYZER,
-                    queryDecomposer);
-        } catch (IOException e1) {
-        	ErrorDialog.showError(this, e1, "Index not found");
-        	System.exit(1);
-        }
-
-		this.eventBroker.subscribe(new QueryEventHandler(eventBroker, queryEngine), QueryEvent.class, Object.class);
 	}
 
     private JMenu createHelpMenu() {
@@ -612,6 +594,27 @@ public class DoccoMainFrame extends JFrame {
 		}
 		/// @todo add some better feedback here
 		new Indexer(fileDialog.getSelectedFile().getAbsolutePath());
+
+		QueryDecomposer queryDecomposer = new QueryDecomposer(
+												GlobalConstants.FIELD_QUERY_BODY, 
+												GlobalConstants.DEFAULT_ANALYZER);
+			
+		QueryEngine queryEngine = null;
+		try {
+			queryEngine =
+				new QueryEngine(
+					GlobalConstants.DEFAULT_INDEX_LOCATION,
+					GlobalConstants.FIELD_QUERY_BODY,
+					GlobalConstants.DEFAULT_ANALYZER,
+					queryDecomposer);
+		} catch (IOException e1) {
+			ErrorDialog.showError(this, e1, "Index not found");
+			System.exit(1);
+		}
+
+		this.eventBroker.removeSubscriptions(this.queryEventHandler);
+		this.queryEventHandler = new QueryEventHandler(eventBroker, queryEngine);
+		this.eventBroker.subscribe(this.queryEventHandler, QueryEvent.class, Object.class);
     }
 	
 	private JComponent buildQueryViewComponent() {
