@@ -4,7 +4,7 @@
 #include <stdio.h>  // fprintf()
 #include <stdlib.h> // exit()
 
-#include <sarl/config.h>
+#include <sarl/global.h>
 
 #define SARL_ASSIGN(x,y) \
   if ( (x) != 0 ) sarl_ref_count_decr((x)->ref_count); \

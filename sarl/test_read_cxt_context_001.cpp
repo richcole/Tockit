@@ -1,5 +1,5 @@
 extern "C" {
-#include <sarl/config.h>
+#include <sarl/global.h>
 #include <sarl/read_cxt_context.h>
 #include <sarl/dictionary.h>
 #include <sarl/string.h>

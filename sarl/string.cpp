@@ -1,6 +1,6 @@
 extern "C" {
 
-#include <sarl/config.h>
+#include <sarl/global.h>
 #include <sarl/string.h>
 #include <sarl/ref_count.h>
   

@@ -1,5 +1,5 @@
 extern "C" {
-  #include <sarl/config.h>
+  #include <sarl/global.h>
   #include <sarl/output_stream.h>
   #include <sarl/string.h>
 }

@@ -1,6 +1,6 @@
 extern "C" {
 
-#include <sarl/config.h>
+#include <sarl/global.h>
 #include <sarl/concept_iterator.h>
 #include <sarl/context_iterator.h>
 #include <sarl/lattice_iterator.h>

@@ -1,6 +1,6 @@
 extern "C" {
 
-#include <sarl/config.h>
+#include <sarl/global.h>
 #include <sarl/dictionary_indexes_set_iterator.h>
 #include <sarl/set.h>
 #include <sarl/set_iterator.h>

@@ -3,7 +3,7 @@
 
 extern "C" {
 #include "sarl/read_cxt_context.h"
-#include "sarl/config.h"
+#include "sarl/global.h"
 }
 
 #include <sarl/cpp/InputStream.h>

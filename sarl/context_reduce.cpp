@@ -1,5 +1,5 @@
 extern "C" {
-#include <sarl/config.h>
+#include <sarl/global.h>
 #include <sarl/context_reduce.h>
 #include <sarl/context.h>
 #include <sarl/map.h>
