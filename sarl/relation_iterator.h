@@ -20,7 +20,7 @@ extern void  sarl_relation_iterator_next_gte(
 extern void  sarl_relation_iterator_next(
   struct Sarl_RelationIterator *);
 
-extern struct Sarl_Pair sarl_relation_iterator_val(
+extern struct Sarl_Pair sarl_relation_iterator_value(
   struct Sarl_RelationIterator *);
 
 extern int   sarl_relation_iterator_at_end(

@@ -18,7 +18,7 @@ extern void sarl_relation_iterator_join_next_gte(
 extern void sarl_relation_iterator_join_next(
   struct Sarl_RelationIterator *it);
 
-extern Sarl_Pair sarl_relation_iterator_join_val(
+extern Sarl_Pair sarl_relation_iterator_join_value(
   struct Sarl_RelationIterator *it);
 
 extern int sarl_relation_iterator_join_at_end(

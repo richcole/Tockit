@@ -4,6 +4,11 @@
 #include <stdio.h>  // fprintf()
 #include <stdlib.h> // exit()
 
+#define SARL_ASSIGN(x,y) \
+  if ( (x) != 0 ) sarl_ref_count_decr((x)->ref_count); \
+  (x) = (y); \
+  sarl_ref_count_incr((x)->ref_count); 
+
 struct Sarl_RefCount {
   size_t count;
 };

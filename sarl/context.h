@@ -31,6 +31,14 @@ extern void sarl_context_remove_attribute(
   struct Sarl_Context *, Sarl_Index
 );
 
+extern void sarl_context_decr_ref(
+	struct Sarl_Context *ap_context
+);
+
+extern void sarl_context_incr_ref(
+	struct Sarl_Context *ap_context
+);
+
 #endif
 
 

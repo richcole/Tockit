@@ -18,7 +18,7 @@ static void sarl_set_iterator_union_next_gte(
 static void sarl_set_iterator_union_next(
   struct Sarl_SetIterator *it);
 
-static Sarl_Index sarl_set_iterator_union_val(
+static Sarl_Index sarl_set_iterator_union_value(
   struct Sarl_SetIterator *it);
 
 static int sarl_set_iterator_union_at_end(
@@ -39,7 +39,7 @@ struct Sarl_SetIteratorFunctionTable s_unionIteratorTable =
 {
   sarl_set_iterator_union_next_gte,
   sarl_set_iterator_union_next,
-  sarl_set_iterator_union_val,
+  sarl_set_iterator_union_value,
   sarl_set_iterator_union_at_end,
   sarl_set_iterator_union_reset,
   sarl_set_iterator_union_decr_ref,
@@ -89,8 +89,8 @@ static void  sarl_set_iterator_union_next(struct Sarl_SetIterator *a_it)
   }
 
   if ( ! finished_u && ! finished_v ) {
-    Sarl_Index u = sarl_set_iterator_val(it->first);
-    Sarl_Index v = sarl_set_iterator_val(it->second);
+    Sarl_Index u = sarl_set_iterator_value(it->first);
+    Sarl_Index v = sarl_set_iterator_value(it->second);
 
     if ( u < v ) {
       sarl_set_iterator_next(it->first);
@@ -105,7 +105,7 @@ static void  sarl_set_iterator_union_next(struct Sarl_SetIterator *a_it)
   }
 }
 
-static Sarl_Index sarl_set_iterator_union_val(struct Sarl_SetIterator *a_it)
+static Sarl_Index sarl_set_iterator_union_value(struct Sarl_SetIterator *a_it)
 {
   Sarl_UnionSetIterator *it = static_cast<Sarl_UnionSetIterator*>(a_it);
 
@@ -113,16 +113,16 @@ static Sarl_Index sarl_set_iterator_union_val(struct Sarl_SetIterator *a_it)
   int finished_v = sarl_set_iterator_at_end(it->second);
 
   if ( finished_u && ! finished_v ) {
-    return sarl_set_iterator_val(it->second);
+    return sarl_set_iterator_value(it->second);
   }
   
   if ( ! finished_u && finished_v ) {
-    return sarl_set_iterator_val(it->first);
+    return sarl_set_iterator_value(it->first);
   }
 
   if ( ! finished_u && ! finished_v ) {
-    Sarl_Index u = sarl_set_iterator_val(it->first);
-    Sarl_Index v = sarl_set_iterator_val(it->second);
+    Sarl_Index u = sarl_set_iterator_value(it->first);
+    Sarl_Index v = sarl_set_iterator_value(it->second);
     return u < v ? u : v;
   }
   
@@ -148,7 +148,7 @@ static void  sarl_set_iterator_union_reset(struct Sarl_SetIterator *a_it)
 void sarl_set_iterator_union_decr_ref(struct Sarl_SetIterator *a_it)
 {
   Sarl_UnionSetIterator *it = static_cast<Sarl_UnionSetIterator*>(a_it);
-  if ( sarl_ref_count_decr(&it->m_ref_count) ) {
+  if ( sarl_ref_count_decr(&it->ref_count) ) {
     sarl_set_iterator_decr_ref(it->first);
     sarl_set_iterator_decr_ref(it->second);
     delete it;

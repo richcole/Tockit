@@ -18,7 +18,7 @@ struct Sarl_RelationIteratorFunctionTable s_plain_relation_iterator_table =
 {
   sarl_relation_iterator_plain_next_gte,
   sarl_relation_iterator_plain_next,
-  sarl_relation_iterator_plain_val,
+  sarl_relation_iterator_plain_value,
   sarl_relation_iterator_plain_at_end,
   sarl_relation_iterator_plain_reset,
   sarl_relation_iterator_plain_decr_ref,
@@ -32,7 +32,7 @@ void  sarl_relation_iterator_plain_next_gte(
   Sarl_Pair value)
 {
   while( ! sarl_relation_iterator_at_end(it) && 
-    sarl_pair_compare(sarl_relation_iterator_val(it),value) < 0 ) 
+    sarl_pair_compare(sarl_relation_iterator_value(it),value) < 0 ) 
   {
     sarl_relation_iterator_next(it);
   }
@@ -44,17 +44,17 @@ void  sarl_relation_iterator_plain_next(
   Sarl_PlainRelationIterator *it = 
     static_cast<Sarl_PlainRelationIterator*>(a_it);
   if ( ! sarl_relation_iterator_at_end(it) ) {
-    it->m_it++;
+    it->it++;
   }
 }
 
-Sarl_Pair sarl_relation_iterator_plain_val(
+Sarl_Pair sarl_relation_iterator_plain_value(
   struct Sarl_RelationIterator *a_it)
 {
   Sarl_PlainRelationIterator *it = 
     static_cast<Sarl_PlainRelationIterator*>(a_it);
   if ( ! sarl_relation_iterator_at_end(it) ) {
-    return *it->m_it;
+    return *it->it;
   }
 }
 
@@ -63,7 +63,7 @@ int sarl_relation_iterator_plain_at_end(
 {
   Sarl_PlainRelationIterator *it = 
     static_cast<Sarl_PlainRelationIterator*>(a_it);
-  return it->m_it == it->mp_relation->forward.end();
+  return it->it == it->relation->forward.end();
 };
 
 void  sarl_relation_iterator_plain_reset(
@@ -71,7 +71,7 @@ void  sarl_relation_iterator_plain_reset(
 {
   Sarl_PlainRelationIterator *it = 
     static_cast<Sarl_PlainRelationIterator*>(a_it);
-  it->m_it = it->mp_relation->forward.begin();
+  it->it = it->relation->forward.begin();
 };
 
 /* reference counting interface */
@@ -79,8 +79,8 @@ void sarl_relation_iterator_plain_decr_ref(struct Sarl_RelationIterator *a_it)
 {
   Sarl_PlainRelationIterator *it = 
     static_cast<Sarl_PlainRelationIterator*>(a_it);
-  if ( sarl_ref_count_decr(&it->m_ref_count) ) {
-    sarl_relation_decr_ref(it->mp_relation);
+  if ( sarl_ref_count_decr(&it->ref_count) ) {
+    sarl_relation_decr_ref(it->relation);
     delete it;
   }
 }
@@ -92,12 +92,12 @@ struct Sarl_RelationIterator* sarl_relation_iterator_plain_copy(
     static_cast<Sarl_PlainRelationIterator*>(a_it);
   
   Sarl_PlainRelationIterator* copy_it  = new Sarl_PlainRelationIterator();
-  sarl_relation_iterator_init(copy_it, org_it->mp_funcs);
+  sarl_relation_iterator_init(copy_it, org_it->funcs);
 
-  copy_it->mp_relation = org_it->mp_relation;
-  sarl_relation_incr_ref(copy_it->mp_relation);
+  copy_it->relation = org_it->relation;
+  sarl_relation_incr_ref(copy_it->relation);
   
-  copy_it->m_it = org_it->m_it;
+  copy_it->it = org_it->it;
   return copy_it;
 }
 

@@ -27,10 +27,10 @@ struct Sarl_RelationIterator *sarl_relation_iterator_create(
   Sarl_PlainRelationIterator* it  = new Sarl_PlainRelationIterator();
   sarl_relation_iterator_init(it, &s_plain_relation_iterator_table);
 
-  it->mp_relation = r;
-  sarl_relation_incr_ref(it->mp_relation);
+  it->relation = r;
+  sarl_relation_incr_ref(it->relation);
   
-  it->m_it = r->forward.begin();
+  it->it = r->forward.begin();
   return it;
 };
 
@@ -47,55 +47,55 @@ void  sarl_relation_iterator_next_gte(
   struct Sarl_RelationIterator *it, 
   Sarl_Pair value)
 {
-  it->mp_funcs->next_gte(it, value);
+  it->funcs->next_gte(it, value);
 }
 
 void  sarl_relation_iterator_next(
   struct Sarl_RelationIterator *it)
 {
-  it->mp_funcs->next(it);
+  it->funcs->next(it);
 }
 
-struct Sarl_Pair sarl_relation_iterator_val(
+struct Sarl_Pair sarl_relation_iterator_value(
   struct Sarl_RelationIterator *it)
 {
-  return it->mp_funcs->val(it);
+  return it->funcs->value(it);
 }
 
 int sarl_relation_iterator_at_end(
   struct Sarl_RelationIterator *it)
 {
-  return it->mp_funcs->at_end(it);
+  return it->funcs->at_end(it);
 };
 
 void  sarl_relation_iterator_reset(
   struct Sarl_RelationIterator *it) 
 {
-  it->mp_funcs->reset(it);
+  it->funcs->reset(it);
 };
 
 void sarl_relation_iterator_decr_ref(
   struct Sarl_RelationIterator *it)
 {
-  it->mp_funcs->decr_ref(it);
+  it->funcs->decr_ref(it);
 }
 
 void sarl_relation_iterator_incr_ref(
   struct Sarl_RelationIterator *it)
 {
-  sarl_ref_count_incr(&it->m_ref_count);
+  sarl_ref_count_incr(&it->ref_count);
 };
 
 struct Sarl_RelationIterator* sarl_relation_iterator_copy(
   struct Sarl_RelationIterator *a_it)
 {
-  return a_it->mp_funcs->copy(a_it);
+  return a_it->funcs->copy(a_it);
 };
 
 struct Sarl_RelationIterator* sarl_relation_iterator_inverse(
   struct Sarl_RelationIterator *a_it)
 {
-  return a_it->mp_funcs->inverse(a_it);
+  return a_it->funcs->inverse(a_it);
 }
 
 Sarl_Index  sarl_relation_iterator_count(

@@ -60,7 +60,7 @@ class SetIterator {
   };
 
   Index value() {
-    return sarl_set_iterator_val(mp_itRef);
+    return sarl_set_iterator_value(mp_itRef);
   };
 
   bool at_end() {

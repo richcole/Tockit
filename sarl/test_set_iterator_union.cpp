@@ -41,8 +41,8 @@ int main()
 	cerr << "i=" << i << ", z.at_end() == true" << endl;
 	return -1;
       }
-      if ( sarl_set_iterator_val(z) != i ) {
-	cerr << "Mismatch i=" << i << ", z=" << sarl_set_iterator_val(z);
+      if ( sarl_set_iterator_value(z) != i ) {
+	cerr << "Mismatch i=" << i << ", z=" << sarl_set_iterator_value(z);
 	cerr << endl;
 	return -1;
       }

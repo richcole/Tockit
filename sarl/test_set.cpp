@@ -26,7 +26,7 @@ int main()
 
   i=0;
   SARL_SET_ITERATOR_FOR(it) {
-    if (i != sarl_set_iterator_val(it)) {
+    if (i != sarl_set_iterator_value(it)) {
       cerr << "Error, set content doesn't match" << endl;
     }
     ++i;

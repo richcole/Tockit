@@ -6,7 +6,7 @@
 struct Sarl_RelationIteratorFunctionTable {
   void  (*next_gte)(struct Sarl_RelationIterator *, struct Sarl_Pair);
   void  (*next)(struct Sarl_RelationIterator *);
-  struct Sarl_Pair (*val)(struct Sarl_RelationIterator *);
+  struct Sarl_Pair (*value)(struct Sarl_RelationIterator *);
   int   (*at_end)(struct Sarl_RelationIterator *);
   void  (*reset)(struct Sarl_RelationIterator *);
   void  (*decr_ref)(struct Sarl_RelationIterator *);
@@ -16,30 +16,30 @@ struct Sarl_RelationIteratorFunctionTable {
 
 struct Sarl_RelationIterator
 {
-  Sarl_RefCount m_ref_count;
-  Sarl_RelationIteratorFunctionTable *mp_funcs;
+  Sarl_RefCount ref_count;
+  Sarl_RelationIteratorFunctionTable *funcs;
 };
 
 struct Sarl_PlainRelationIterator : Sarl_RelationIterator
 {
   typedef Sarl_Relation::Sarl_RelationImpl::const_iterator Iterator;
 
-  Sarl_Relation* mp_relation;
-  Iterator  m_it;
+  Sarl_Relation* relation;
+  Iterator  it;
 };
 
 struct Sarl_JoinRelationIterator : Sarl_RelationIterator
 {
-  Sarl_RelationIterator* mp_first;
-  Sarl_RelationIterator* mp_second;
+  Sarl_RelationIterator* first;
+  Sarl_RelationIterator* second;
 };
 
 inline void sarl_relation_iterator_init(
   struct Sarl_RelationIterator *it,
   Sarl_RelationIteratorFunctionTable *ap_funcs)
 {
-  it->mp_funcs = ap_funcs;
-  sarl_ref_count_init(&it->m_ref_count);
+  it->funcs = ap_funcs;
+  sarl_ref_count_init(&it->ref_count);
 }
 
 #endif

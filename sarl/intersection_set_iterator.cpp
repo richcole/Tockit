@@ -18,7 +18,7 @@ static void sarl_set_iterator_intersection_next_gte(
 static void sarl_set_iterator_intersection_next(
   struct Sarl_SetIterator *it);
 
-static Sarl_Index sarl_set_iterator_intersection_val(
+static Sarl_Index sarl_set_iterator_intersection_value(
   struct Sarl_SetIterator *it);
 
 static int sarl_set_iterator_intersection_at_end(
@@ -39,7 +39,7 @@ struct Sarl_SetIteratorFunctionTable s_intersectionIteratorTable =
 {
   sarl_set_iterator_intersection_next_gte,
   sarl_set_iterator_intersection_next,
-  sarl_set_iterator_intersection_val,
+  sarl_set_iterator_intersection_value,
   sarl_set_iterator_intersection_at_end,
   sarl_set_iterator_intersection_reset,
   sarl_set_iterator_intersection_decr_ref,
@@ -55,8 +55,8 @@ inline void sarl_set_iterator_intersection_advance(
     ! sarl_set_iterator_at_end(it->first) &&
     ! sarl_set_iterator_at_end(it->second))
   {
-    u = sarl_set_iterator_val(it->first);
-    v = sarl_set_iterator_val(it->second);
+    u = sarl_set_iterator_value(it->first);
+    v = sarl_set_iterator_value(it->second);
     
     if ( u < v ) {
       sarl_set_iterator_next_gte(it->first, v);
@@ -107,12 +107,12 @@ static void  sarl_set_iterator_intersection_next(struct Sarl_SetIterator *a_it)
   sarl_set_iterator_intersection_advance(it);
 }
 
-static Sarl_Index sarl_set_iterator_intersection_val(
+static Sarl_Index sarl_set_iterator_intersection_value(
   struct Sarl_SetIterator *a_it)
 {
   Sarl_IntersectionSetIterator *it = 
     static_cast<Sarl_IntersectionSetIterator*>(a_it);
-  return sarl_set_iterator_val(it->first);
+  return sarl_set_iterator_value(it->first);
 }
 
 static int sarl_set_iterator_intersection_at_end(
@@ -139,7 +139,7 @@ void sarl_set_iterator_intersection_decr_ref(struct Sarl_SetIterator *a_it)
 {
   Sarl_IntersectionSetIterator *it = 
     static_cast<Sarl_IntersectionSetIterator*>(a_it);
-  if ( sarl_ref_count_decr(&it->m_ref_count) ) {
+  if ( sarl_ref_count_decr(&it->ref_count) ) {
     sarl_set_iterator_decr_ref(it->first);
     sarl_set_iterator_decr_ref(it->second);
     delete it;

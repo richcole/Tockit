@@ -65,8 +65,8 @@ int main()
 	cerr << "i=" << i << ", v.at_end() == true" << endl;
 	return -1;
       }
-      if ( sarl_set_iterator_val(v) != i ) {
-	cerr << "Mismatch i=" << i << ", v=" << sarl_set_iterator_val(v);
+      if ( sarl_set_iterator_value(v) != i ) {
+	cerr << "Mismatch i=" << i << ", v=" << sarl_set_iterator_value(v);
 	cerr << endl;
 	return -1;
       }

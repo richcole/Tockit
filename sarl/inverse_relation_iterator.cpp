@@ -32,7 +32,7 @@ struct Sarl_RelationIteratorFunctionTable s_inverse_relation_iterator_table =
 {
   sarl_relation_iterator_plain_next_gte,
   sarl_relation_iterator_plain_next,
-  sarl_relation_iterator_plain_val,
+  sarl_relation_iterator_plain_value,
   sarl_relation_iterator_inverse_at_end,
   sarl_relation_iterator_inverse_reset,
   sarl_relation_iterator_plain_decr_ref,
@@ -48,10 +48,10 @@ struct Sarl_RelationIterator* sarl_relation_iterator_plain_inverse(
   Sarl_PlainRelationIterator* it  = new Sarl_PlainRelationIterator();
   sarl_relation_iterator_init(it, &s_inverse_relation_iterator_table);
 
-  it->mp_relation = plain_it->mp_relation;
-  sarl_relation_incr_ref(it->mp_relation);
+  it->relation = plain_it->relation;
+  sarl_relation_incr_ref(it->relation);
   
-  it->m_it = plain_it->mp_relation->reverse.begin();
+  it->it = plain_it->relation->reverse.begin();
   return it;
 };
 
@@ -61,7 +61,7 @@ struct Sarl_RelationIterator *sarl_relation_iterator_inverse_inverse(
   Sarl_PlainRelationIterator* org_it = 
     static_cast<Sarl_PlainRelationIterator*>(a_it);
 
-  return sarl_relation_iterator_create(org_it->mp_relation);
+  return sarl_relation_iterator_create(org_it->relation);
 };
 
 static void  sarl_relation_iterator_inverse_reset(
@@ -69,7 +69,7 @@ static void  sarl_relation_iterator_inverse_reset(
 {
   Sarl_PlainRelationIterator *it = 
     static_cast<Sarl_PlainRelationIterator*>(a_it);
-  it->m_it = it->mp_relation->reverse.begin();
+  it->it = it->relation->reverse.begin();
 };
 
 static int sarl_relation_iterator_inverse_at_end(
@@ -77,6 +77,6 @@ static int sarl_relation_iterator_inverse_at_end(
 {
   Sarl_PlainRelationIterator *it = 
     static_cast<Sarl_PlainRelationIterator*>(a_it);
-  return it->m_it == it->mp_relation->reverse.end();
+  return it->it == it->relation->reverse.end();
 };
 

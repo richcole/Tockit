@@ -18,7 +18,7 @@ static void sarl_set_iterator_plain_next_gte(
 static void sarl_set_iterator_plain_next(
   struct Sarl_SetIterator *it);
 
-static Sarl_Index sarl_set_iterator_plain_val(
+static Sarl_Index sarl_set_iterator_plain_value(
   struct Sarl_SetIterator *it);
 
 static int sarl_set_iterator_plain_at_end(
@@ -39,7 +39,7 @@ struct Sarl_SetIteratorFunctionTable s_plainIteratorTable =
 {
   sarl_set_iterator_plain_next_gte,
   sarl_set_iterator_plain_next,
-  sarl_set_iterator_plain_val,
+  sarl_set_iterator_plain_value,
   sarl_set_iterator_plain_at_end,
   sarl_set_iterator_plain_reset,
   sarl_set_iterator_plain_decr_ref,
@@ -52,10 +52,10 @@ struct Sarl_SetIterator *sarl_set_iterator_create(struct Sarl_Set *S)
   Sarl_PlainSetIterator* it  = new Sarl_PlainSetIterator();
   sarl_set_iterator_init(it, &s_plainIteratorTable);
 
-  it->mp_set = S;
-  sarl_set_incr_ref(it->mp_set);
+  it->set = S;
+  sarl_set_incr_ref(it->set);
   
-  it->m_it = S->m_set.begin();
+  it->it = S->set.begin();
   return it;
 };
 
@@ -73,7 +73,7 @@ static void  sarl_set_iterator_plain_next_gte(
   Sarl_Index value)
 {
   while( ! sarl_set_iterator_at_end(it) && 
-    sarl_set_iterator_val(it) < value ) 
+    sarl_set_iterator_value(it) < value ) 
   {
     sarl_set_iterator_next(it);
   }
@@ -83,36 +83,36 @@ static void  sarl_set_iterator_plain_next(struct Sarl_SetIterator *a_it)
 {
   Sarl_PlainSetIterator *it = static_cast<Sarl_PlainSetIterator*>(a_it);
   if ( ! sarl_set_iterator_at_end(it) ) {
-    it->m_it++;
+    it->it++;
   }
 }
 
-static Sarl_Index sarl_set_iterator_plain_val(struct Sarl_SetIterator *a_it)
+static Sarl_Index sarl_set_iterator_plain_value(struct Sarl_SetIterator *a_it)
 {
   Sarl_PlainSetIterator *it = static_cast<Sarl_PlainSetIterator*>(a_it);
   if ( ! sarl_set_iterator_at_end(it) ) {
-    return *it->m_it;
+    return *it->it;
   }
 }
 
 static int   sarl_set_iterator_plain_at_end(struct Sarl_SetIterator *a_it)
 {
   Sarl_PlainSetIterator *it = static_cast<Sarl_PlainSetIterator*>(a_it);
-  return it->m_it == it->mp_set->m_set.end();
+  return it->it == it->set->set.end();
 };
 
 static void  sarl_set_iterator_plain_reset(struct Sarl_SetIterator *a_it) 
 {
   Sarl_PlainSetIterator *it = static_cast<Sarl_PlainSetIterator*>(a_it);
-  it->m_it = it->mp_set->m_set.begin();
+  it->it = it->set->set.begin();
 };
 
 /* reference counting interface */
 void sarl_set_iterator_plain_decr_ref(struct Sarl_SetIterator *a_it)
 {
   Sarl_PlainSetIterator *it = static_cast<Sarl_PlainSetIterator*>(a_it);
-  if ( sarl_ref_count_decr(&it->m_ref_count) ) {
-    sarl_set_decr_ref(it->mp_set);
+  if ( sarl_ref_count_decr(&it->ref_count) ) {
+    sarl_set_decr_ref(it->set);
     delete it;
   }
 }
@@ -125,10 +125,10 @@ static struct Sarl_SetIterator* sarl_set_iterator_plain_copy(
   Sarl_PlainSetIterator* copy_it  = new Sarl_PlainSetIterator();
   sarl_set_iterator_init(copy_it, &s_plainIteratorTable);
 
-  copy_it->mp_set = org_it->mp_set;
-  sarl_set_incr_ref(copy_it->mp_set);
+  copy_it->set = org_it->set;
+  sarl_set_incr_ref(copy_it->set);
   
-  copy_it->m_it = org_it->m_it;
+  copy_it->it = org_it->it;
   return copy_it;
 }
 
@@ -137,43 +137,43 @@ void  sarl_set_iterator_next_gte(
   struct Sarl_SetIterator *it, 
   Sarl_Index value)
 {
-  it->mp_funcs->next_gte(it, value);
+  it->funcs->next_gte(it, value);
 }
 
 void  sarl_set_iterator_next(struct Sarl_SetIterator *it)
 {
-  it->mp_funcs->next(it);
+  it->funcs->next(it);
 }
 
-Sarl_Index sarl_set_iterator_val(struct Sarl_SetIterator *it)
+Sarl_Index sarl_set_iterator_value(struct Sarl_SetIterator *it)
 {
-  return it->mp_funcs->val(it);
+  return it->funcs->value(it);
 }
 
 int   sarl_set_iterator_at_end(struct Sarl_SetIterator *it)
 {
-  return it->mp_funcs->at_end(it);
+  return it->funcs->at_end(it);
 };
 
 void  sarl_set_iterator_reset(struct Sarl_SetIterator *it) 
 {
-  it->mp_funcs->reset(it);
+  it->funcs->reset(it);
 };
 
 void sarl_set_iterator_decr_ref(struct Sarl_SetIterator *it)
 {
-  it->mp_funcs->decr_ref(it);
+  it->funcs->decr_ref(it);
 }
 
 void sarl_set_iterator_incr_ref(struct Sarl_SetIterator *it)
 {
-  sarl_ref_count_incr(&it->m_ref_count);
+  sarl_ref_count_incr(&it->ref_count);
 };
 
 struct Sarl_SetIterator* sarl_set_iterator_copy(
   struct Sarl_SetIterator *a_it)
 {
-  return a_it->mp_funcs->copy(a_it);
+  return a_it->funcs->copy(a_it);
 };
 
 extern Sarl_Index  sarl_set_iterator_count(struct Sarl_SetIterator *a_it)
@@ -232,8 +232,8 @@ int sarl_set_iterator_lexical_compare(
   
   if ( ! sarl_set_iterator_at_end(w) ) {
     if ( ! sarl_set_iterator_at_end(c) ) {
-      ret_val = sarl_set_iterator_val(w) - 
-	sarl_set_iterator_val(c);
+      ret_val = sarl_set_iterator_value(w) - 
+	sarl_set_iterator_value(c);
     }
     else {
       ret_val = -1;
@@ -271,9 +271,9 @@ int sarl_set_iterator_subset(
   sarl_set_iterator_reset(v);
 
   SARL_SET_ITERATOR_FOR(u) {
-    Sarl_Index val = sarl_set_iterator_val(u);
+    Sarl_Index val = sarl_set_iterator_value(u);
     sarl_set_iterator_next_gte(v, val);
-    if ( sarl_set_iterator_val(v) != val ) {
+    if ( sarl_set_iterator_value(v) != val ) {
       ret_val = 0;
       break;
     }

@@ -18,7 +18,7 @@ extern void sarl_relation_iterator_plain_next_gte(
 extern void sarl_relation_iterator_plain_next(
   struct Sarl_RelationIterator *it);
 
-extern Sarl_Pair sarl_relation_iterator_plain_val(
+extern Sarl_Pair sarl_relation_iterator_plain_value(
   struct Sarl_RelationIterator *it);
 
 extern int sarl_relation_iterator_plain_at_end(

@@ -18,7 +18,7 @@ struct Sarl_RelationIteratorFunctionTable s_join_relation_iterator_table =
 {
   sarl_relation_iterator_join_next_gte,
   sarl_relation_iterator_join_next,
-  sarl_relation_iterator_join_val,
+  sarl_relation_iterator_join_value,
   sarl_relation_iterator_join_at_end,
   sarl_relation_iterator_join_reset,
   sarl_relation_iterator_join_decr_ref,
@@ -33,11 +33,11 @@ Sarl_RelationIterator *sarl_relation_iterator_join(
   Sarl_JoinRelationIterator* it  = new Sarl_JoinRelationIterator();
   sarl_relation_iterator_init(it, &s_join_relation_iterator_table);
 
-  it->mp_first = ap_first;
-  it->mp_second = ap_second;
+  it->first = ap_first;
+  it->second = ap_second;
 
-  sarl_relation_incr_ref(it->mp_first);
-  sarl_relation_incr_ref(it->mp_second);
+  sarl_relation_incr_ref(it->first);
+  sarl_relation_incr_ref(it->second);
   
   return it;
 }
@@ -49,8 +49,8 @@ struct Sarl_RelationIterator* sarl_relation_iterator_join_inverse(
     static_cast<JoinSarl_RelationIterator*>(a_it);
 
   return sarl_relation_iterator_join(
-    sarl_relation_iterator_inverse(join_it->mp_first), 
-    sarl_relation_iterator_inverse(join_it->mp_second)
+    sarl_relation_iterator_inverse(join_it->first), 
+    sarl_relation_iterator_inverse(join_it->second)
   );
 };
 
@@ -65,35 +65,35 @@ void  sarl_relation_iterator_join_next_gte(
   /* determine if the iterator is already past value */
   if ( sarl_relation_iterator_at_end(it) ||
     sarl_pair_compare(
-      sarl_relation_iterator_val(it),
+      sarl_relation_iterator_value(it),
       value) > 0 
   ) {
     return;
   };
 
   /* advance past value->dom */
-  sarl_relation_iterator_next_gte(it->mp_first, value->dom);
-  sarl_relation_iterator_reset(it->mp_second)
+  sarl_relation_iterator_next_gte(it->first, value->dom);
+  sarl_relation_iterator_reset(it->second)
   
   while( 
     sarl_relation_iterator_next_gte(
-      it->mp_second, 
+      it->second, 
       sarl_pair(
-	sarl_relation_iterator_val(it->mp_first).rng, 
+	sarl_relation_iterator_value(it->first).rng, 
 	value.rng
       )
     ),
     sarl_relation_iterator_at_end(
-      it->mp_second
+      it->second
     )
   ) {
     /*! \todo{review this algorithm for improved efficiency} */
-    sarl_relation_iterator_next(it->mp_first);
+    sarl_relation_iterator_next(it->first);
 
-    if ( sarl_relation_iterator_at_end(it->mp_first) ) {
+    if ( sarl_relation_iterator_at_end(it->first) ) {
       return;
     }
-    else if ( sarl_relation_iterator_val(it->mp_first).dom != value.dom ) {
+    else if ( sarl_relation_iterator_value(it->first).dom != value.dom ) {
       sarl_relation_iterator_join_advance(it);
       return;
     }
@@ -106,17 +106,17 @@ void  sarl_relation_iterator_join_advance(
   JoinSarl_RelationIterator *it = 
     static_cast<JoinSarl_RelationIterator*>(ap_it);
 
-  sarl_relation_iterator_reset(it->mp_second);
+  sarl_relation_iterator_reset(it->second);
   while(
     sarl_relation_iterator_next_gte(
-      it->mp_second, 
+      it->second, 
       sarl_pair(
-	sarl_relation_iterator_val(it->mp_first).rng, 
+	sarl_relation_iterator_value(it->first).rng, 
 	0
       )
     ),
     sarl_relation_iterator_at_end(
-      it->mp_second
+      it->second
     )
   {
     
@@ -126,7 +126,7 @@ void  sarl_relation_iterator_join_advance(
 void  sarl_relation_iterator_join_next(
   struct Sarl_RelationIterator *a_it)
 {
-  SarlPair pair = sarl_relation_iterator_join_val(a_it);
+  SarlPair pair = sarl_relation_iterator_join_value(a_it);
   sarl_relation_iterator_join_next_gte(
     sarl_pair(pair.dom, pair.rng+1)
   )
@@ -135,17 +135,17 @@ void  sarl_relation_iterator_join_next(
   JoinSarl_RelationIterator *it = 
     static_cast<JoinSarl_RelationIterator*>(a_it);
   if ( ! sarl_relation_iterator_at_end(it) ) {
-    it->m_it++;
+    it->it++;
   }
 }
 
-Sarl_Pair sarl_relation_iterator_join_val(
+Sarl_Pair sarl_relation_iterator_join_value(
   struct Sarl_RelationIterator *a_it)
 {
   JoinSarl_RelationIterator *it = 
     static_cast<JoinSarl_RelationIterator*>(a_it);
   if ( ! sarl_relation_iterator_at_end(it) ) {
-    return *it->m_it;
+    return *it->it;
   }
 }
 
@@ -154,7 +154,7 @@ int sarl_relation_iterator_join_at_end(
 {
   JoinSarl_RelationIterator *it = 
     static_cast<JoinSarl_RelationIterator*>(a_it);
-  return it->m_it == it->mp_relation->forward.end();
+  return it->it == it->relation->forward.end();
 };
 
 void  sarl_relation_iterator_join_reset(
@@ -162,7 +162,7 @@ void  sarl_relation_iterator_join_reset(
 {
   JoinSarl_RelationIterator *it = 
     static_cast<JoinSarl_RelationIterator*>(a_it);
-  it->m_it = it->mp_relation->forward.begin();
+  it->it = it->relation->forward.begin();
 };
 
 /* reference counting interface */
@@ -171,8 +171,8 @@ void sarl_relation_iterator_join_decr_ref(
 {
   JoinSarl_RelationIterator *it = 
     static_cast<JoinSarl_RelationIterator*>(a_it);
-  if ( sarl_ref_count_decr(&it->m_ref_count) ) {
-    sarl_relation_decr_ref(it->mp_relation);
+  if ( sarl_ref_count_decr(&it->ref_count) ) {
+    sarl_relation_decr_ref(it->relation);
     delete it;
   }
 }
@@ -184,12 +184,12 @@ struct Sarl_RelationIterator* sarl_relation_iterator_join_copy(
     static_cast<JoinSarl_RelationIterator*>(a_it);
   
   JoinSarl_RelationIterator* copy_it  = new JoinSarl_RelationIterator();
-  sarl_relation_iterator_init(copy_it, org_it->mp_funcs);
+  sarl_relation_iterator_init(copy_it, org_it->funcs);
 
-  copy_it->mp_relation = org_it->mp_relation;
-  sarl_relation_incr_ref(copy_it->mp_relation);
+  copy_it->relation = org_it->relation;
+  sarl_relation_incr_ref(copy_it->relation);
   
-  copy_it->m_it = org_it->m_it;
+  copy_it->it = org_it->it;
   return copy_it;
 }
 

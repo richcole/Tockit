@@ -7,8 +7,8 @@ struct Sarl_Set
 {
   typedef std::set<Sarl_Index> Sarl_SetImpl;
 
-  Sarl_SetImpl m_set;
-  Sarl_RefCount m_ref_count;
+  Sarl_SetImpl  set;
+  Sarl_RefCount ref_count;
 };
 
 #endif

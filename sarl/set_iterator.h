@@ -49,7 +49,7 @@ extern int sarl_set_iterator_is_empty(
 /* set_iterator moving operations */
 extern void  sarl_set_iterator_next_gte(struct Sarl_SetIterator *, Sarl_Index);
 extern void  sarl_set_iterator_next(struct Sarl_SetIterator *);
-extern Sarl_Index sarl_set_iterator_val(struct Sarl_SetIterator *);
+extern Sarl_Index sarl_set_iterator_value(struct Sarl_SetIterator *);
 extern int   sarl_set_iterator_at_end(struct Sarl_SetIterator *);
 extern void  sarl_set_iterator_reset(struct Sarl_SetIterator *);
 

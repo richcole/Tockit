@@ -59,7 +59,7 @@ class RelationIterator {
   };
 
   Pair value() {
-    return sarl_relation_iterator_val(mp_itRef);
+    return sarl_relation_iterator_value(mp_itRef);
   };
 
   bool at_end() {

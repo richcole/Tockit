@@ -24,6 +24,13 @@ extern void sarl_relation_insert_pair(
 extern void sarl_relation_remove_pair(
   struct Sarl_Relation *r, struct Sarl_Pair pair);
 
+extern void sarl_relation_remove_extent(
+	struct Sarl_Relation *r, Sarl_Index index);
+
+extern void sarl_relation_remove_intent(
+	struct Sarl_Relation *r, Sarl_Index index);
+
+
 /* reference counting interface */
 extern void sarl_relation_decr_ref(struct Sarl_Relation *);
 extern void sarl_relation_incr_ref(struct Sarl_Relation *);

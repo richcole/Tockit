@@ -22,7 +22,7 @@ extern struct Sarl_ContextIterator *
 (
 	struct SetIterator*      G_it,
   struct SetIterator*      M_it,
-  struct RelationIterator* I_it,
+  struct RelationIterator* I_it
 );
 
 extern struct Sarl_SetIterator *
