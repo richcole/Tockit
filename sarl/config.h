@@ -12,4 +12,7 @@
 #define SARL_ERROR 0
 #define SARL_OK    1
 
+#define SARL_DO_INCR_REF      1
+#define SARL_DONT_INCR_REF    0
+
 #endif

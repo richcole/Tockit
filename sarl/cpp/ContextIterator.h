@@ -59,7 +59,14 @@ private:
 private:
   Sarl_ContextIterator* mp_itRef;
 
-  ContextIterator(Sarl_ContextIterator* ap_itRef) {
+public:
+  ContextIterator(
+    Sarl_ContextIterator* ap_itRef, 
+    bool incr_ref = SARL_DONT_INCR_REF) 
+  {
+    if ( incr_ref != SARL_DONT_INCR_REF ) {
+      sarl_context_iterator_incr_ref(ap_itRef);
+    }
     mp_itRef = ap_itRef;
   };
 

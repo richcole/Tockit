@@ -413,4 +413,23 @@ struct Sarl_ContextIterator *
 };
 
   
+int
+sarl_context_iterator_down_arrow(
+  Sarl_ContextIterator* a_K_it, Sarl_Index g, Sarl_Index m) 
+{
+  ContextIterator K_it(a_K_it, SARL_INCR_REF); // wrap a_K_it
 
+  SetIterator cand = K_it.objects().minus(K_it.extent(m));
+  SetIterator g_i = K_it.intent(g);
+  
+  SARL_FOR(cand) {
+    if ( g_i.subseteq(cand.value()) ) {
+      break;
+    }
+  };
+
+  return ! cand.at_end();
+};
+
+
+  
