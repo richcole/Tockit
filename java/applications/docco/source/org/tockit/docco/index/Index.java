@@ -15,10 +15,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.lucene.index.IndexWriter;
 import org.tockit.docco.GlobalConstants;
+import org.tockit.docco.indexer.DocumentHandlerMapping;
 import org.tockit.docco.indexer.DocumentHandlerRegistry;
 import org.tockit.docco.indexer.Indexer;
 import org.tockit.docco.indexer.Indexer.CallbackRecipient;
@@ -154,10 +156,13 @@ public class Index {
 			out.println(this.baseDirectory.getPath());
 			out.close();
 			out = new PrintStream(new FileOutputStream(getMappingsFile()));
-			String[] mappings = this.fileMappings.getMappingStringsList();
-			for (int i = 0; i < mappings.length; i++) {
-				out.println(mappings[i]);
-			}
+			
+            List documentMappingList = this.fileMappings.getDocumentMappingList();
+            Iterator it = documentMappingList.iterator();
+            while (it.hasNext()) {
+            	DocumentHandlerMapping cur = (DocumentHandlerMapping) it.next();
+            	out.println(cur.getSerialization());
+            }
 			out.close();
 		} catch (IOException e) {
 			e.printStackTrace(); // nothing we could do, but throwing on shutdown is not nice either.
