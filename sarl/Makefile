@@ -50,7 +50,7 @@ main: $(PYTHON_SARL_LIB) $(JAVA_SARL_LIB)
 
 # Tests.
 
-test: test_base test_python test_java test_cpp
+test: libs test_base test_python test_java test_cpp
 
 test_base: $(TESTS) 
 .PHONY: test test_base test_java test_cpp
