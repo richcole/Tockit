@@ -20,5 +20,6 @@ class ConceptualFileParser extends CSCFileSectionParser {
 
 	public void parse(CSCTokenizer tokenizer, CSCFile targetFile) throws IOException, DataFormatException {
 		throw new SectionTypeNotSupportedException("parse() in " + this.getClass().getName() + " not yet implemented.");
+        //CSCParser.logger.log(Level.FINER, "Conceptual file added: '" + scale.getName() + "'");
 	}
 }

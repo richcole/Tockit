@@ -8,11 +8,13 @@
 package org.tockit.conscript.parser.sectionparsers;
 
 import java.io.IOException;
+import java.util.logging.Level;
 
 import org.tockit.conscript.model.AbstractScale;
 import org.tockit.conscript.model.CSCFile;
 import org.tockit.conscript.model.FormalContext;
 import org.tockit.conscript.model.LineDiagram;
+import org.tockit.conscript.parser.CSCParser;
 import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
@@ -55,5 +57,8 @@ class AbstractScaleParser extends CSCFileSectionParser {
         
         tokenizer.consumeToken(")", file);
         tokenizer.consumeToken(";", file);
+        
+        file.add(scale);
+        CSCParser.logger.log(Level.FINER, "Abstract scale added: '" + scale.getName() + "'");
 	}
 }

@@ -63,7 +63,7 @@ public class CSCParser {
      * Main method for testing.
      */
     public static void main(String[] args) throws FileNotFoundException, MalformedURLException, DataFormatException {
-//		logger.setLevel(java.util.logging.Level.ALL);
+		logger.setLevel(java.util.logging.Level.FINER);
 		File inputFile = new File(args[0]);
 		importCSCFile(inputFile.toURL(), null);    	
     }

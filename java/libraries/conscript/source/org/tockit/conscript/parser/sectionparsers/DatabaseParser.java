@@ -8,9 +8,11 @@
 package org.tockit.conscript.parser.sectionparsers;
 
 import java.io.IOException;
+import java.util.logging.Level;
 
 import org.tockit.conscript.model.CSCFile;
 import org.tockit.conscript.model.DatabaseDefinition;
+import org.tockit.conscript.parser.CSCParser;
 import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
@@ -34,8 +36,9 @@ class DatabaseParser extends CSCFileSectionParser {
         dbDefinition.setPrimaryKey(tokenizer.popCurrentToken());
         tokenizer.consumeToken(")", file);
 
-        file.add(dbDefinition);
-        
         tokenizer.consumeToken(";", file);
+
+        file.add(dbDefinition);
+        CSCParser.logger.log(Level.FINER, "Database definition added: " + dbDefinition.getName() + "'");
 	}
 }

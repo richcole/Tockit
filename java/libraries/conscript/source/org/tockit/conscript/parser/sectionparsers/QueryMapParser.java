@@ -8,9 +8,11 @@
 package org.tockit.conscript.parser.sectionparsers;
 
 import java.io.IOException;
+import java.util.logging.Level;
 
 import org.tockit.conscript.model.CSCFile;
 import org.tockit.conscript.model.QueryMap;
+import org.tockit.conscript.parser.CSCParser;
 import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
@@ -19,26 +21,29 @@ class QueryMapParser extends CSCFileSectionParser {
         return "QUERY_MAP";
     }
 
-    public void parse(CSCTokenizer tokenizer, CSCFile targetFile)
+    public void parse(CSCTokenizer tokenizer, CSCFile file)
         throws IOException, DataFormatException {
         String queryMapId = tokenizer.popCurrentToken();
-        QueryMap queryMap = new QueryMap(targetFile, queryMapId);
+        QueryMap queryMap = new QueryMap(file, queryMapId);
 
         int line = tokenizer.getCurrentLine();
-        tokenizer.consumeToken("=", targetFile);
+        tokenizer.consumeToken("=", file);
         while (tokenizer.getCurrentLine() == line) {
             tokenizer.advance(); // skip possible remarks
         }
 
         while (!tokenizer.getCurrentToken().equals(";")) {
-            tokenizer.consumeToken("(", targetFile);
+            tokenizer.consumeToken("(", file);
             String clause = tokenizer.popCurrentToken();
-            tokenizer.consumeToken(",", targetFile);
+            tokenizer.consumeToken(",", file);
             String id = tokenizer.popCurrentToken();
-            tokenizer.consumeToken(")", targetFile);
+            tokenizer.consumeToken(")", file);
             queryMap.addEntry(clause, id);
         }
 
-        tokenizer.consumeToken(";", targetFile);
+        tokenizer.consumeToken(";", file);
+
+        file.add(queryMap);
+        CSCParser.logger.log(Level.FINER, "Query map added: '" + queryMap.getName() + "'");
     }
 }

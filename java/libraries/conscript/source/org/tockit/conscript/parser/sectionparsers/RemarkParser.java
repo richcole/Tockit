@@ -19,6 +19,7 @@ class RemarkParser extends CSCFileSectionParser {
 	}
 
 	public void parse(CSCTokenizer tokenizer, CSCFile file) throws IOException, DataFormatException {
-        
+        throw new SectionTypeNotSupportedException("parse() in " + this.getClass().getName() + " not yet implemented.");
+        //CSCParser.logger.log(Level.FINER, "Remark added: " + scale.getName() + "'");
 	}
 }

@@ -8,8 +8,10 @@
 package org.tockit.conscript.parser.sectionparsers;
 
 import java.io.IOException;
+import java.util.logging.Level;
 
 import org.tockit.conscript.model.CSCFile;
+import org.tockit.conscript.parser.CSCParser;
 import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
@@ -20,5 +22,6 @@ class RealisedScaleParser extends CSCFileSectionParser {
 
 	public void parse(CSCTokenizer tokenizer, CSCFile targetFile) throws IOException, DataFormatException {
 		throw new SectionTypeNotSupportedException("parse() in " + this.getClass().getName() + " not yet implemented.");
+        //CSCParser.logger.log(Level.FINER, "Realised scale added :" + scale.getName() + "'");
 	}
 }

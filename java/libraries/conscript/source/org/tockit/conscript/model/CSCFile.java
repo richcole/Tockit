@@ -54,6 +54,9 @@ public class CSCFile {
         this.structures.put(DATABASE_DEFINITION, new Hashtable());
         this.structures.put(CONCEPTUAL_SCHEMA, new Hashtable());
         this.structures.put(CONCEPTUAL_FILE, new Hashtable());
+        if(parent != null) {
+            parent.includeFiles.add(this);
+        }
 	}
     
     public URL getLocation() {
@@ -247,5 +250,5 @@ public class CSCFile {
             }
         }
         return null;
-    }    
+    }
 }

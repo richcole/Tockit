@@ -32,6 +32,7 @@ class IncludeParser extends CSCFileSectionParser {
 		CSCFile includeFile = null;
         try {
             includeFile = CSCParser.importCSCFile(includeURL, file);
+
         } catch (FileNotFoundException e) {
             for (int i = 0; i < INCLUDE_DIRS.length; i++) {
                 String dir = INCLUDE_DIRS[i];
@@ -48,11 +49,6 @@ class IncludeParser extends CSCFileSectionParser {
             throw new DataFormatException("Can not find include file '" + includeLocation +
                                           "' referenced from file '" + file.getLocation() +"'");
         }
-        merge(file, includeFile);
+        CSCParser.logger.log(Level.FINER, "File included: '" + includeURL + "'");
 	}
-
-    private void merge(CSCFile targetFile, CSCFile includeFile) {
-        // @todo should merge here
-        System.out.println("to merge:\n" + includeFile.getLocation());
-    }
 }

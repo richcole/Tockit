@@ -11,10 +11,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.tockit.conscript.model.BinaryRelationImplementation;
 import org.tockit.conscript.model.CSCFile;
 import org.tockit.conscript.model.FormalContext;
+import org.tockit.conscript.parser.CSCParser;
 import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
@@ -97,6 +99,7 @@ class FormalContextParser extends CSCFileSectionParser {
         tokenizer.consumeToken(";", file);
         
         file.add(context);
+        CSCParser.logger.log(Level.FINER, "Formal context added: '" + context.getName() + "'");
 	}
 
 	public String getStartToken() {

@@ -10,10 +10,12 @@ package org.tockit.conscript.parser.sectionparsers;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.tockit.conscript.model.CSCFile;
 import org.tockit.conscript.model.ConceptualSchema;
 import org.tockit.conscript.model.ConcreteScale;
+import org.tockit.conscript.parser.CSCParser;
 import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
@@ -47,6 +49,9 @@ class ConceptualSchemaParser extends CSCFileSectionParser {
         schema.setConcreteScales((ConcreteScale[]) scales.toArray(new ConcreteScale[scales.size()]));
         tokenizer.consumeToken(")", file);
         tokenizer.consumeToken(";", file);
+
+        file.add(schema);
+        CSCParser.logger.log(Level.FINER, "Conceptual schema added: '" + schema.getName() + "'");
 	}
 
     private ConcreteScale findScale(CSCFile targetFile, String scaleId) {
