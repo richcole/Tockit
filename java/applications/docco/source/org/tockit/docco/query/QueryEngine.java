@@ -42,14 +42,14 @@ public class QueryEngine {
 		List queryTermsCombinations = this.queryDecomposer.breakQueryIntoTerms(queryString);
 		Iterator it = queryTermsCombinations.iterator();
 		while (it.hasNext()) {
-			Query cur = (Query) it.next();
-			QueryWithResult qwr = executeQuery(cur);
+			QueryDecomposer.LabeledQuery cur = (QueryDecomposer.LabeledQuery) it.next();
+			QueryWithResult qwr = executeQuery(cur.getQuery(), cur.getLabel());
 			queryResult.add(qwr);
 		}
 		return queryResult;
 	}
 	
-	private QueryWithResult executeQuery (Query query) throws IOException {
+	private QueryWithResult executeQuery (Query query, String label) throws IOException {
 		HitReferencesSet result = new HitReferencesSetImplementation();
 		Hits hits = searcher.search(query);
 		for (int i = 0; i < hits.length(); i++) {
@@ -57,7 +57,7 @@ public class QueryEngine {
 			HitReference hitRef = new HitReference(doc, hits.score(i));
 			result.add(hitRef);
 		}
-		return new QueryWithResult(query, result);
+		return new QueryWithResult(query, result, label);
 	}
 	
 	public void finishQueries() throws IOException {

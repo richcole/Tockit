@@ -15,10 +15,12 @@ public class QueryWithResult {
 
 	private Query query;
 	private HitReferencesSet resultSet;
+	private String label;
 	
-	public QueryWithResult (Query query, HitReferencesSet resultSet) {
+	public QueryWithResult (Query query, HitReferencesSet resultSet, String label) {
 		this.query = query;
 		this.resultSet = resultSet;
+		this.label = label;
 	}
 	
 	public Query getQuery() {
@@ -29,6 +31,10 @@ public class QueryWithResult {
 		return resultSet;
 	}
 	
+	public String getLabel() {
+		return label;
+	}
+
 	public String toString() {
 		String str = "QueryWithResult [query:" + query + ", result: " + resultSet + " ]";
 		return str;

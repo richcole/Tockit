@@ -260,7 +260,7 @@ public class DoccoMainFrame extends JFrame {
 				for (int j = 0; j < n; j++) {
 					int currentBit = 1<<j;
 					if (i == currentBit) {
-						concept.addAttribute(new Attribute(queryResults[j].getQuery()));
+						concept.addAttribute(new Attribute(queryResults[j].getLabel()));
 					}
 					HitReferencesSet currentHitReferences = queryResults[j].getResultSet();
 					if ((i & currentBit) == currentBit) {
