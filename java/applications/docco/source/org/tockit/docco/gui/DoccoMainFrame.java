@@ -379,7 +379,7 @@ public class DoccoMainFrame extends JFrame {
 			}
 			DefaultMutableTreeNode firstChild = (DefaultMutableTreeNode) childrenEnum.nextElement();
 			done = true;
-			if(!childrenEnum.hasMoreElements()) { // single child
+			if(!childrenEnum.hasMoreElements() && !(firstChild.getUserObject() instanceof HitReference)) { // single directory child
 				// we need to copy references to the grandchildren first, since modification
 				// of the children breaks the enumeration
 				MutableTreeNode[] grandchildren = new MutableTreeNode[firstChild.getChildCount()];
