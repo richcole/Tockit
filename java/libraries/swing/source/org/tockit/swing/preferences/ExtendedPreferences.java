@@ -245,6 +245,23 @@ public class ExtendedPreferences extends Preferences {
         return fullName.substring(fullName.lastIndexOf('.') + 1);
     }
 
+    /**
+     * Removes this node and all nodes below.
+     */
+    public static void removeBranch(Preferences node) throws BackingStoreException {
+        try {
+            for (int i = 0; i < node.childrenNames().length; i++) {
+                String childName = node.childrenNames()[i];
+                Preferences child = node.node(childName);
+                removeBranch(child);
+            }
+            node.removeNode();
+        } catch (IllegalStateException e) {
+            // we might get a remove multiple times, hard to avoid since it is hard to
+            // detect if a node is still there
+        }
+    }
+
     // from here on it is the implementation of the preferences API by delegation
     
     public void clear() throws BackingStoreException {
