@@ -26,6 +26,7 @@ import java.awt.event.WindowEvent;
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -89,7 +90,6 @@ import org.tockit.events.Event;
 import org.tockit.events.EventBroker;
 import org.tockit.events.EventBrokerListener;
 import org.tockit.plugin.PluginLoader;
-import org.tockit.plugin.PluginLoaderException;
 
 
 import org.tockit.docco.ConfigurationManager;
@@ -354,10 +354,9 @@ public class DoccoMainFrame extends JFrame {
 
 		String pluginsBaseDir = System.getProperty("user.dir") + File.separator;
 		
-		File[] pluginsBaseFiles = { new File(pluginsBaseDir + pluginsDirName)	};
 		
 		try {
-			PluginLoader.Error[] errors = PluginLoader.loadPlugins(pluginsBaseFiles);
+			PluginLoader.Error[] errors = PluginLoader.loadPlugins(new File(pluginsBaseDir + pluginsDirName));
 			if (errors.length > 0) {
 				String errorMsg = "";
 				for (int i = 0; i < errors.length; i++) {
@@ -373,8 +372,8 @@ public class DoccoMainFrame extends JFrame {
 											JOptionPane.WARNING_MESSAGE);
 			}
 		}
-		catch (PluginLoaderException e) {
-			//ErrorDialog.showError(this, e, "Error loading plugins");
+		catch (FileNotFoundException e) {
+			ErrorDialog.showError(this, e, "Error loading plugins");
 		}
 	}
 	
