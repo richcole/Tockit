@@ -15,9 +15,9 @@ import org.tockit.cgs.model.KnowledgeBase;
 import org.tockit.cgs.model.events.NewInstanceCreatedEvent;
 import org.tockit.events.Event;
 import org.tockit.events.EventBroker;
-import org.tockit.events.EventListener;
+import org.tockit.events.EventBrokerListener;
 
-public class InstanceListUpdateHandler implements EventListener {
+public class InstanceListUpdateHandler implements EventBrokerListener {
     private JList listView;
 
     public InstanceListUpdateHandler(JList listView, EventBroker eventBroker) {

@@ -26,9 +26,9 @@ import org.tockit.crepe.view.LineView;
 import org.tockit.crepe.view.LinkView;
 import org.tockit.events.Event;
 import org.tockit.events.EventBroker;
-import org.tockit.events.EventListener;
+import org.tockit.events.EventBrokerListener;
 
-public class LinkContextMenuHandler implements EventListener {
+public class LinkContextMenuHandler implements EventBrokerListener {
     private Canvas canvas;
 
     public LinkContextMenuHandler(Canvas canvas, EventBroker eventBroker) {

@@ -16,9 +16,9 @@ import org.tockit.cgs.model.events.NewTypeCreatedEvent;
 import org.tockit.crepe.gui.treeviews.TypeHierachyTreeNode;
 import org.tockit.events.Event;
 import org.tockit.events.EventBroker;
-import org.tockit.events.EventListener;
+import org.tockit.events.EventBrokerListener;
 
-public class TypeHierachyUpdateHandler implements EventListener {
+public class TypeHierachyUpdateHandler implements EventBrokerListener {
     private JTree treeview;
 
     public TypeHierachyUpdateHandler(JTree treeview, EventBroker eventBroker) {

@@ -13,7 +13,7 @@ import junit.framework.TestSuite;
 
 import org.tockit.events.Event;
 import org.tockit.events.EventBroker;
-import org.tockit.events.EventListener;
+import org.tockit.events.EventBrokerListener;
 
 import com.mockobjects.ExpectationCounter;
 
@@ -26,7 +26,7 @@ public class EventBrokerTest extends TestCase {
         return new TestSuite(EventBrokerTest.class);
     }
 
-    static class TestListener implements EventListener {
+    static class TestListener implements EventBrokerListener {
         public ExpectationCounter eventCounter = new ExpectationCounter("processEvents()");
 
         public TestListener() {

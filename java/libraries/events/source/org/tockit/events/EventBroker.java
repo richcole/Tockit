@@ -18,7 +18,7 @@ import java.util.List;
  * This is the central class of the Tockit event processing model. It takes
  * new events on the processEvent(Event) method and distributes them to
  * event listeners that are subscribed to this broker using
- * subscribe(EventListener, Class, Class).
+ * subscribe(EventBrokerListener, Class, Class).
  *
  * On subscription one can give two possible filter options, one to specify
  * which type of events one is interested in, the other specifies the type
@@ -40,7 +40,7 @@ import java.util.List;
  * (i.e. as reaction on the first event), the new event will be processed after
  * the processing of the first one has finished.
  */
-public class EventBroker implements EventListener {
+public class EventBroker implements EventBrokerListener {
     private class SubscriptionEvent extends StandardEvent {
         public SubscriptionEvent(Object subject) {
             super(subject);
@@ -89,7 +89,7 @@ public class EventBroker implements EventListener {
      * extends or implements the given subject type (given as class
      * or interface).
      */
-    public void subscribe(EventListener listener, Class eventType, Class subjectType) {
+    public void subscribe(EventBrokerListener listener, Class eventType, Class subjectType) {
         if (listener == this) {
             throw new RuntimeException("Trying to subscribe EventBroker to itself");
         }
@@ -112,7 +112,7 @@ public class EventBroker implements EventListener {
      *
      * Afterwards the listener will not receive any events anymore.
      */
-    public void removeSubscriptions(EventListener listener) {
+    public void removeSubscriptions(EventBrokerListener listener) {
         for (Iterator iterator = subscriptions.iterator(); iterator.hasNext();) {
             EventSubscription subscription = (EventSubscription) iterator.next();
             if (subscription.getListener().equals(listener)) {

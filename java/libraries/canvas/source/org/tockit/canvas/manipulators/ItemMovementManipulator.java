@@ -16,9 +16,9 @@ import org.tockit.canvas.events.CanvasItemDroppedEvent;
 import org.tockit.canvas.events.CanvasItemPickupEvent;
 import org.tockit.events.Event;
 import org.tockit.events.EventBroker;
-import org.tockit.events.EventListener;
+import org.tockit.events.EventBrokerListener;
 
-public class ItemMovementManipulator implements EventListener {
+public class ItemMovementManipulator implements EventBrokerListener {
     protected Canvas canvas;
 
     public ItemMovementManipulator(Canvas canvas, EventBroker eventBroker) {

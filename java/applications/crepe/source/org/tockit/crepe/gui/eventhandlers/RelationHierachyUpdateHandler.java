@@ -16,9 +16,9 @@ import org.tockit.cgs.model.events.NewRelationCreatedEvent;
 import org.tockit.crepe.gui.treeviews.RelationHierachyTreeNode;
 import org.tockit.events.Event;
 import org.tockit.events.EventBroker;
-import org.tockit.events.EventListener;
+import org.tockit.events.EventBrokerListener;
 
-public class RelationHierachyUpdateHandler implements EventListener {
+public class RelationHierachyUpdateHandler implements EventBrokerListener {
     private JTree treeview;
     private int arity;
 

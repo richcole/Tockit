@@ -17,7 +17,7 @@ class EventSubscription {
     /**
      * The listener interested in events.
      */
-    private EventListener listener;
+    private EventBrokerListener listener;
     /**
      * The type of event that should be passed.
      */
@@ -30,7 +30,7 @@ class EventSubscription {
     /**
      * Creates a new subscription object with the given parameters.
      */
-    public EventSubscription(EventListener listener, Class eventType, Class subjectType) {
+    public EventSubscription(EventBrokerListener listener, Class eventType, Class subjectType) {
         this.listener = listener;
         this.eventType = eventType;
         this.subjectType = subjectType;
@@ -39,7 +39,7 @@ class EventSubscription {
     /**
      * Returns the listener that shall receive the events.
      */
-    public EventListener getListener() {
+    public EventBrokerListener getListener() {
         return listener;
     }
 
