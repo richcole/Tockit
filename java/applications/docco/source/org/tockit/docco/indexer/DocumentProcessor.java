@@ -101,7 +101,10 @@ public class DocumentProcessor {
 		}
 		
 		if (docSummary.keywords != null) {
-			doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_KEYWORDS, docSummary.keywords));
+			for (Iterator iter = docSummary.keywords.iterator(); iter.hasNext();) {
+                String keyword = (String) iter.next();
+				doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_KEYWORDS, keyword));
+            }
 		}
 		
 		// @todo use paths relative to the base directory of the index

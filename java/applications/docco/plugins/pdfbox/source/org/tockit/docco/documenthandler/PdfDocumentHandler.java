@@ -15,6 +15,7 @@ import java.net.URL;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.pdfbox.cos.COSDocument;
@@ -45,7 +46,8 @@ public class PdfDocumentHandler implements DocumentHandler, Plugin {
 		docSummary.authors = getAuthors(info);
 		docSummary.contentReader = getDocumentContent(pdfParser, url);
 		docSummary.creationDate = getDate(info.getCreationDate());
-		docSummary.keywords = info.getKeywords();
+		docSummary.keywords = new ArrayList();
+		docSummary.keywords.add(info.getKeywords());
 		docSummary.modificationDate = getDate(info.getModificationDate());
 		docSummary.title = info.getTitle();
 		

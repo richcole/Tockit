@@ -15,7 +15,7 @@ public class DocumentSummary {
 	public String title;
 	public List authors;
 	public String summary;
-	public String keywords;
+	public List keywords;
 	public Date creationDate;
 	public Date modificationDate;
 	public String mimeType;

@@ -14,7 +14,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URL;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.poi.hdf.extractor.WordDocument;
@@ -60,7 +60,8 @@ public class MSWordDocumentHandler implements DocumentHandler, Plugin {
 			docSummary.authors = getAuthors(info);
 			docSummary.contentReader = getDocumentContent(inputStream);
 			docSummary.creationDate = info.getCreateDateTime();
-			docSummary.keywords = info.getKeywords();
+			docSummary.keywords = new ArrayList();
+			docSummary.keywords.add(info.getKeywords());
 			docSummary.modificationDate = info.getEditTime();
 			docSummary.title = info.getTitle();
 			
@@ -84,7 +85,7 @@ public class MSWordDocumentHandler implements DocumentHandler, Plugin {
 
 	private List getAuthors(SummaryInformation info) {
 		if (info.getAuthor() != null) {
-			List res = new LinkedList();
+			List res = new ArrayList();
 			res.add(info.getAuthor());
 			return res;
 		}

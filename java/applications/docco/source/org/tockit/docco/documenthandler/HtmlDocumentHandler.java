@@ -39,7 +39,7 @@ public class HtmlDocumentHandler implements DocumentHandler {
 		String metaDescription = "";
 		String metaSummary = "";
 		List metaAuthors = new LinkedList();
-		String metaKeywords = "";
+		List metaKeywords = new LinkedList();
 		Date metaDate;
 		String title = "";
 
@@ -82,7 +82,7 @@ public class HtmlDocumentHandler implements DocumentHandler {
 					return;
 				}
 				if (name.equalsIgnoreCase("keywords")) {
-					metaKeywords += content;
+					metaKeywords.add(content);
 					return;
 				}
 				if (name.equalsIgnoreCase("date")) {
