@@ -31,8 +31,9 @@
 		value here will be 'multivalent' -->
 	<property name="plugin.dist.dir.name" value="multivalent"/>
 	
-	<!-- where to find compiled classes from the main application -->
+	<!-- where to find compiled classes and the libraries (if needed) from the main application -->
 	<property name="mainApp.classes" value="../../build/dev"/>
+	<property name="mainApp.libs.dir" value="../../libs"/>
 
 	<!-- Shouldn't need to change anything from now on -->
 	
@@ -44,13 +45,18 @@
 	<property name="plugin.description.file" value="plugin.txt"/>
 
     <path id="plugin.class.path">
-        <pathelement path="${classpath}"/>
         <pathelement path="${plugin.build.dir}"/>
         <pathelement path="${mainApp.classes}"/>
         <fileset dir="${plugin.libs.dir}">
             <include name="**/*.jar"/>
         </fileset>
         <fileset dir="${plugin.libs.dir}">
+            <include name="**/*.zip"/>
+        </fileset>
+        <fileset dir="${mainApp.libs.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+        <fileset dir="${mainApp.libs.dir}">
             <include name="**/*.zip"/>
         </fileset>
     </path>

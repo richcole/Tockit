@@ -45,6 +45,7 @@
 			<property name="plugin.name" value="${plugin.dir.name}Plugin"/>
 			<property name="plugin.dist.dir.name" value="${plugin.dir.name}"/>
 			<property name="mainApp.classes" value="../${mainApp.classes}"/>
+			<property name="mainApp.libs.dir" value="../${mainApp.libs.dir}"/>
 		</ant>
 		<copy todir="${plugins.dist.dir}">
 			<fileset dir="${plugin.dir}/dist">
