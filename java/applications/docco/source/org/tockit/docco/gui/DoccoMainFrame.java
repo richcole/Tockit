@@ -382,10 +382,17 @@ public class DoccoMainFrame extends JFrame {
 			public String getToolTipText(MouseEvent me) {
 				Point2D canvasPos = getCanvasCoordinates(me.getPoint());
 				CanvasItem item = getCanvasItemAt(canvasPos);
-				if(!(item instanceof NodeView)) {
+				NodeView nodeView = null;
+				if(item instanceof NodeView) {
+					nodeView = (NodeView) item;
+				}
+				if(item instanceof LabelView) {
+					LabelView labelView = (LabelView) item;
+					nodeView = labelView.getNodeView();
+				}
+				if(nodeView == null) {
 					return null;
 				}
-				NodeView nodeView = (NodeView) item;
 				Concept concept = nodeView.getDiagramNode().getConcept();
 				StringBuffer tooltip = new StringBuffer();
 				Iterator it = concept.getIntentIterator();
