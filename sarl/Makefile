@@ -42,6 +42,8 @@ OBJECTS = \
 
 
 TESTS = \
+  test_input_stream_001 \
+  test_output_stream_001 \
   test_relation_005 \
   test_map_001 \
   test_set \
@@ -85,17 +87,12 @@ JAVA_SARL_LIB   =  java/libsarl_java.so
 
 export LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):$(SARL_ROOT)/lib_d
 
-test_base: libs $(TESTS:%=%.exe) 
-	LD_LIBRARY_PATH=`pwd`/lib_d:$$LD_LIBRARY_PATH; \
-	for x in $(TESTS:%=%.exe) ; do echo $$x:; ./$$x || exit -1 ; done
-
 # Main.
 
 main: $(PYTHON_SARL_LIB) $(JAVA_SARL_LIB)
 
 .PHONY: test base_test java_test cpp_test python_test
 .PHONY: clean base_clean python_clean java_clean cpp_clean 
-.PHONY: $(TESTS)
 
 # Test.
 
@@ -103,31 +100,28 @@ test: libs base_test python_test java_test cpp_test
 
 # Base.
 
-base_test: libs $(TESTS) 
+base_test: libs $(TESTS:%=%.run) 
 
 base_tools: context_sum.exe
-
-$(TESTS) : $(TESTS:%=%.exe)
-	echo LD_LIBRARY_PATH=$$LD_LIBRARY_PATH; echo ./$@.exe; ./$@.exe
 
 # Libs.
 
 libs: lib/libsarl.so lib_d/libsarl.so lib/libsarl++.so lib_d/libsarl++.so
 
 $(PYTHON_SARL_LIB): lib_d/libsarl.so lib_d/libsarl++.so python/sarl_wrap.o
-	$(CC) $(DEBUG) -shared -o $@ python/sarl_wrap.o \
+	$(CCC) $(DEBUG) -shared -o $@ python/sarl_wrap.o \
          -Llib_d -lstdc++ -lsarl++ -lsarl
 
 $(JAVA_SARL_LIB): lib_d/libsarl.so lib_d/libsarl++.so \
         $(OBJECTS:%=objs_d/%.o) java/sarl_wrap.o 
-	$(CC) $(DEBUG) -shared -o $@ $(OBJECTS:%=objs_d/%.o) java/sarl_wrap.o \
-          -Llib_d -lstdc++ -lsarl++ -lsarl
+	$(CCC) $(DEBUG) -shared -o $@ $(OBJECTS:%=objs_d/%.o) \
+          java/sarl_wrap.o -Llib_d -lstdc++ -lsarl++ -lsarl
 
 lib_d/libsarl.so: $(OBJECTS:%=objs_d/%.o) lib_d
-	$(CC) $(DEBUG) -shared -o $@ $(OBJECTS:%=objs_d/%.o) -lstdc++
+	$(CCC) $(DEBUG) -shared -o $@ $(OBJECTS:%=objs_d/%.o) -lstdc++
 
 lib/libsarl.so: $(OBJECTS:%=objs/%.o) lib
-	$(CC) $(OPTIM) -shared -o $@ $(OBJECTS:%=objs/%.o) -lstdc++
+	$(CCC) $(OPTIM) -shared -o $@ $(OBJECTS:%=objs/%.o) -lstdc++
 
 lib/libsarl++.so: lib 
 	$(MAKE) -C cpp ../$@
@@ -143,19 +137,19 @@ objs_d/%.o: %.cpp
 objs/%.o: %.cpp
 	$(CCC) $(OPTIM) -c -I../ -o $@ $< 
 
-%.exe: objs_d/%.o
-	$(CCC) $(DEBUG) -I../ -o $@ $^ -lstdc++ -Llib_d -lsarl
-
 java/%.class: java/%.java
 	cd java; $(JAVAC) ../$<
 
 %.gxl: %
 	$(CPPX) -g "-c -I../" $<
 
+# Rules for testing
 
-$(TESTS:%=%.exe) : $(TESTS:%=objs_d/%.o) $(OBJECTS:%=objs_d/%.o)
-	$(CCC) $(DEBUG) -I../ -o $@ -lstdc++ $(@:%.exe=objs_d/%.o) $(OBJECTS:%=objs_d/%.o)
+tests/%.exe: objs_d/%.o $(OBJECTS:%=objs_d/%.o)
+	$(CCC) $(DEBUG) -I../ -o $@ -lstdc++ $^
 
+%.run: tests/%.exe 
+	./$<
 
 # CPPX
 
@@ -241,5 +235,8 @@ bin:
 
 bin_d:
 	mkdir bin_d
+
+tests:
+	mkdir tests
 
 include depend.mak
