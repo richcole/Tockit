@@ -17,10 +17,6 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.tockit.docco.GlobalConstants;
 
-/**
- * @todo search for something doing file magic (as in the GNU "file" command). That would be
- *   way better than the extension-based stuff.
- */
 public class DocumentProcessor {
 	
 	private List documentMappings;

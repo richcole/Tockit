@@ -7,6 +7,10 @@
  */
 package org.tockit.docco.filefilter;
 
+/**
+ * @todo search for something doing file magic (as in the GNU "file" command). That would be
+ *   way better than the extension and reg-exp based stuff.
+ */
 public interface FileFilterFactory {
 	public DoccoFileFilter createNewFilter(String filterExpression);
 	public String getDisplayName();
