@@ -490,6 +490,8 @@ public class DoccoMainFrame extends JFrame {
 			if(!indexFile.canRead()) {
 				System.exit(1);
 			}
+		} else {
+			createQueryEngine();
 		}
 	}
 
@@ -597,6 +599,10 @@ public class DoccoMainFrame extends JFrame {
 		/// @todo add some better feedback here
 		new Indexer(fileDialog.getSelectedFile().getAbsolutePath());
 
+		createQueryEngine();
+    }
+
+	private void createQueryEngine() {
 		QueryDecomposer queryDecomposer = new QueryDecomposer(
 												GlobalConstants.FIELD_QUERY_BODY, 
 												GlobalConstants.DEFAULT_ANALYZER);
@@ -613,11 +619,13 @@ public class DoccoMainFrame extends JFrame {
 			ErrorDialog.showError(this, e1, "Index not found");
 			System.exit(1);
 		}
-
-		this.eventBroker.removeSubscriptions(this.queryEventHandler);
+		
+		if(this.queryEventHandler != null) {
+			this.eventBroker.removeSubscriptions(this.queryEventHandler);
+		}
 		this.queryEventHandler = new QueryEventHandler(eventBroker, queryEngine);
 		this.eventBroker.subscribe(this.queryEventHandler, QueryEvent.class, Object.class);
-    }
+	}
 	
 	private JComponent buildQueryViewComponent() {
 		JPanel queryPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
