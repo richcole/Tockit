@@ -46,8 +46,26 @@ extern Sarl_Index
     struct Sarl_String *s
   );
 
+extern struct Sarl_String *
+  sarl_string_obtain_ownership(
+    struct Sarl_String *s
+	);
+
+extern struct Sarl_String *
+  sarl_string_release_ownership(
+		struct Sarl_String *s
+	);
+
 /* reference counting interface */
-extern void sarl_string_decr_ref(struct Sarl_String *);
-extern void sarl_string_incr_ref(struct Sarl_String *);
+
+extern void 
+  sarl_string_decr_ref(
+    struct Sarl_String *s
+  );
+
+extern void 
+  sarl_string_incr_ref(
+		struct Sarl_String *s
+	);
 
 #endif

@@ -1,7 +1,7 @@
 CCC   = g++
 CC    = gcc
 JAVAC = javac
-DEBUG = -march=i686 -O3 -pg -ggdb # -ggdb
+DEBUG = -ggdb # -march=i686 -O3 -pg -ggdb # -ggdb
 
 # Sarl Root
 

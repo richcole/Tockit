@@ -185,3 +185,19 @@ void sarl_string_incr_ref(struct Sarl_String *s)
   sarl_ref_count_incr(&s->ref_count);
 };
 
+struct Sarl_String *
+  sarl_string_obtain_ownership(
+    struct Sarl_String *it
+  )
+{
+  return sarl_iterator_obtain_ownership(it, sarl_string_copy);
+};
+
+struct Sarl_String *
+  sarl_string_release_ownership(
+    struct Sarl_String *it
+  )
+{
+  return sarl_iterator_release_ownership(it);
+};
+

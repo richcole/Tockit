@@ -58,11 +58,14 @@ int
   sarl_concept_iterator_decr_ref(
     struct Sarl_ConceptIterator *it)
 {
-  if ( sarl_ref_count_decr(&it->ref_count) ) {
+	int ret_value = sarl_ref_count_decr(&it->ref_count);
+
+  if ( ret_value ) {
     sarl_set_iterator_decr_ref(it->intent);
     sarl_set_iterator_decr_ref(it->extent);
     delete it;
   }
+	return ret_value;
 };
 
 void
