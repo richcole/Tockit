@@ -7,6 +7,7 @@
  */
 package org.tockit.docco.filefilter;
 
-public abstract class DoccoFileFilter extends javax.swing.filechooser.FileFilter implements java.io.FileFilter {
-	public abstract String toSerializationString();
+public interface FileFilterFactory {
+	public DoccoFileFilter createNewFilter(String filterExpression);
+	public String getDisplayName();
 }

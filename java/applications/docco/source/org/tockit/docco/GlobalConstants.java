@@ -34,15 +34,6 @@ public class GlobalConstants {
 	 */
 	public static final String FIELD_DOC_PATH_WORDS = "path_words";
 	
-	/**
-	 * @todo
-	 * Not sure where these settings should be kept... It would be good to load them 
-	 * dynamically somehow (check for implementators of DoccoFileFilter?).
-	 */
-	public static final String[] FILE_FILTER_IMPLEMENTAIONS = {
-										"org.tockit.docco.filefilter.ExtensionFileFilter",
-										"org.tockit.docco.filefilter.RegularExpresionExtensionFileFilter"}; 
-
 	public static final String[] DEFAULT_DOC_HANDLER_IMPLEMENTATIONS = {
 										"org.tockit.docco.documenthandler.HtmlDocumentHandler",
 										"org.tockit.docco.documenthandler.XmlDocumentHandler",

@@ -7,7 +7,6 @@
  */
 package org.tockit.docco.indexer;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -18,16 +17,16 @@ import org.tockit.docco.documenthandler.HtmlDocumentHandler;
 import org.tockit.docco.documenthandler.PlainTextDocumentHandler;
 import org.tockit.docco.documenthandler.XmlDocumentHandler;
 import org.tockit.docco.filefilter.DoccoFileFilter;
-import org.tockit.docco.filefilter.ExtensionFileFilter;
-import org.tockit.docco.filefilter.RegularExpresionExtensionFileFilter;
+import org.tockit.docco.filefilter.FileFilterFactory;
+import org.tockit.docco.filefilter.ExtensionFileFilterFactory;
 
 public class DocumentHandlerRegistry {
 	private static final DocumentHandlerMapping[] DEFAULT_MAPPINGS = new DocumentHandlerMapping[]{
-		new DocumentHandlerMapping(new RegularExpresionExtensionFileFilter("html?"),
+		new DocumentHandlerMapping(new ExtensionFileFilterFactory().createNewFilter("html;htm"),
 								   new HtmlDocumentHandler()),
-		new DocumentHandlerMapping(new ExtensionFileFilter("txt"),
+		new DocumentHandlerMapping(new ExtensionFileFilterFactory().createNewFilter("txt"),
 								   new PlainTextDocumentHandler()),
-		new DocumentHandlerMapping(new ExtensionFileFilter("xml"),
+		new DocumentHandlerMapping(new ExtensionFileFilterFactory().createNewFilter("xml"),
 								   new XmlDocumentHandler())
 	};
 	
@@ -95,17 +94,13 @@ public class DocumentHandlerRegistry {
         	String fileFilterClassName = mapping.substring(firstColonIndex + 1, lastColonIndex);
         	String docHandlerClassName = mapping.substring(lastColonIndex + 1);			
         	try {
-        		Class fileFilterClass = Class.forName(fileFilterClassName);
+        		Class fileFilterFactoryClass = Class.forName(fileFilterClassName);
         		
-        		Class[] parameterTypes = { String.class };
-        		Constructor constructor = fileFilterClass.getConstructor(parameterTypes);
-        		
-        		Object[] args = { extension };
-        		DoccoFileFilter fileFilter = (DoccoFileFilter) constructor.newInstance(args);
+        		FileFilterFactory fileFilterFactory = (FileFilterFactory) fileFilterFactoryClass.newInstance();
         
         		DocumentHandler docHandler = (DocumentHandler) Class.forName(docHandlerClassName).newInstance();
         
-        		this.register(fileFilter, docHandler);
+        		this.register(fileFilterFactory.createNewFilter(extension), docHandler);
         	} catch(ClassCastException e) {
         		System.err.println("WARNING: class " + docHandlerClassName + " could not be loaded due to this error:");
         		e.printStackTrace();
@@ -119,8 +114,7 @@ public class DocumentHandlerRegistry {
 		int index = 0;
 		while (it.hasNext()) {
 			DocumentHandlerMapping cur = (DocumentHandlerMapping) it.next();
-			mappings[index] = cur.getFileFilter().getFilteringString() + 
-							  ":" + cur.getFileFilter().getClass().getName() + 
+			mappings[index] = cur.getFileFilter().toSerializationString() + 
 							  ":" + cur.getHandler().getClass().getName();
 			index++;
 		}

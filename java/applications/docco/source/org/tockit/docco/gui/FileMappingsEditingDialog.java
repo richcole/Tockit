@@ -63,15 +63,14 @@ public class FileMappingsEditingDialog extends JDialog {
 			super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 			
 			DocumentHandlerMapping mapping = (DocumentHandlerMapping) value;
-			String text = mapping.getFileFilter().getDisplayName() + 
-								" (" + mapping.getFileFilter().getFilteringString() + ") " + 
-								": " + mapping.getHandler().getDisplayName();
+			String text = mapping.getFileFilter().getDescription() + 
+								" -- " + mapping.getHandler().getDisplayName();
 			
 			setText(text);
 			
-			String tooltipText = "File Filter accepting: " + mapping.getFileFilter().getFilteringString() +
-								" is mapped to document handler: " + mapping.getHandler().getDisplayName();
-			setToolTipText(tooltipText);  
+//			String tooltipText = "File Filter accepting: " + mapping.getFileFilter().getFilteringString() +
+//								" is mapped to document handler: " + mapping.getHandler().getDisplayName();
+//			setToolTipText(tooltipText);  
 			return this;
 		}
 	}
@@ -304,7 +303,7 @@ public class FileMappingsEditingDialog extends JDialog {
 		
 		editingPanel.setBorder(BorderFactory.createTitledBorder(
 								BorderFactory.createEtchedBorder(),
-								" Edit File Filter Settings "));
+								"Edit File Filter Settings"));
 		return editingPanel;
 	}
 	
@@ -369,8 +368,7 @@ public class FileMappingsEditingDialog extends JDialog {
 	private void displayMappingDetails () {
 		if (this.jlist.getSelectedIndex() != -1) {
 			DocumentHandlerMapping mapping = (DocumentHandlerMapping) this.jlist.getSelectedValue();
-			this.fileFilterDisplayLabel.setText(mapping.getFileFilter().getDisplayName() 
-										+ ": " + mapping.getFileFilter().getFilteringString());
+			this.fileFilterDisplayLabel.setText(mapping.getFileFilter().toSerializationString());
 			this.docHandlerDisplayLabel.setText(mapping.getHandler().getDisplayName());
 		}
 		
