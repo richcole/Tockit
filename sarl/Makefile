@@ -100,7 +100,7 @@ test: libs base_test python_test java_test cpp_test
 
 # Base.
 
-base_test: libs $(TESTS:%=%.run) 
+base_test: libs $(TESTS:%=tests/%.exe)  $(TESTS:%=%.run) 
 
 base_tools: context_sum.exe
 
@@ -225,11 +225,11 @@ lib:
 lib_d:
 	mkdir lib_d
 
-obj:
-	mkdir obj
+objs:
+	mkdir objs
 
-obj_d: 
-	mkdir obj_d
+objs_d: 
+	mkdir objs_d
 
 bin:
 	mkdir bin
