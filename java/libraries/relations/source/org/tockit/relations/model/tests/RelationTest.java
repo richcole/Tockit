@@ -68,6 +68,27 @@ public abstract class RelationTest extends TestCase {
         stringRelation.addTuple(new String[]{"this", "one", "twice"});
         assertEquals("could add tuple twice by using convenience method", 8, stringRelation.getSize());
     }
+    
+    public void testContainmentTests() {
+        assertTrue(stringRelation.isRelated(new String[]{"1", "6", "1"}));
+        assertTrue(!stringRelation.isRelated(new String[]{"2", "1", "1"}));
+        assertTrue(!stringRelation.isRelated(new String[]{"5", "6", "7"}));
+
+        try {
+            stringRelation.isRelated(new Tuple(new String[]{"too", "short"}));
+            fail("could test containment for tuple of wrong size (too short)");
+        } catch (IllegalArgumentException e) {
+            // ignore
+        }
+        try {
+            stringRelation.isRelated(new Tuple(new String[]{"this", "is", "too", "long"}));
+            fail("could test containment for tuple of wrong size (too long)");
+        } catch (IllegalArgumentException e) {
+            // ignore
+        }
+
+        assertTrue(!objectRelation.isRelated(new String[]{"1", "1", "1", "4", "5"}));
+    }
 
     public void setUp() {
         Object o1 = new Object();

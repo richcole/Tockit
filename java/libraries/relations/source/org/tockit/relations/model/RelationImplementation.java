@@ -84,13 +84,16 @@ public class RelationImplementation implements Relation {
      * Implements Relation.isRelated(Tuple).
      */    
     public boolean isRelated(Tuple tuple) {
-        return false;
+        if(tuple.getLength() != this.dimensionNames.length) {
+            throw new IllegalArgumentException("Tuples have to have the same length as the relation's arity");
+        }
+        return this.tuples.contains(tuple);
     }
 
     /**
      * Implements Relation.isRelated(Object[]).
      */    
     public boolean isRelated(Object[] data) {
-        return false;
+        return isRelated(new Tuple(data));
     }
 }
