@@ -7,12 +7,19 @@
  */
 package org.tockit.docco.indexer;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
-import org.apache.lucene.document.Document;
+public class DocumentProcessingException extends Exception {
 
-public interface DocumentProcessor {
-	public Document getDocument (File file) throws FileNotFoundException, IOException;
+	public DocumentProcessingException(String message) {
+		super(message);
+
+	}
+
+	public DocumentProcessingException(String message, Throwable e) {
+		super(message, e);
+	}
+
+	public DocumentProcessingException(Throwable e) {
+		super(e);
+	}
 }

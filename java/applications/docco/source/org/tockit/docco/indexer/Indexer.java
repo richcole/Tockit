@@ -12,6 +12,7 @@ import org.apache.lucene.index.IndexWriter;
 import org.tockit.docco.GlobalConstants;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -81,8 +82,12 @@ public class Indexer {
 				docCount++;
 			}
 		}
-		catch (Exception e) {
+		catch (DocumentProcessingException e) {
+			//e.printStackTrace();
 			this.errorsList.add(e);
+		}
+		catch (IOException e) {
+			errorExit(e);
 		}
 	}
 
@@ -96,6 +101,11 @@ public class Indexer {
 				file.mkdir();
 			}
 		}
+	}
+	
+	private void errorExit (Exception e) {
+		e.printStackTrace();
+		System.exit(1);
 	}
 
 	public static void main(String[] args) {

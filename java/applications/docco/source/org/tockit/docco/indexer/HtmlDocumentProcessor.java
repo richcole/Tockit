@@ -9,65 +9,136 @@ package org.tockit.docco.indexer;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.Date;
+
+import javax.swing.text.MutableAttributeSet;
+import javax.swing.text.html.*;
+import javax.swing.text.html.parser.ParserDelegator;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.htmlparser.NodeReader;
-import org.htmlparser.Parser;
-import org.htmlparser.tags.MetaTag;
-import org.htmlparser.tags.TitleTag;
-import org.htmlparser.visitors.ObjectFindingVisitor;
-import org.htmlparser.visitors.TagFindingVisitor;
-import org.htmlparser.visitors.TextExtractingVisitor;
+
 import org.tockit.docco.GlobalConstants;
+
+
 
 public class HtmlDocumentProcessor implements DocumentProcessor {
 
-	public Document getDocument(File file) throws Exception {
-		Document doc = new Document();
+	/**
+	 * java sun example on parsing html can be found here:
+	 * http://java.sun.com/products/jfc/tsc/articles/bookmarks/index.html
+	 */
+	private class CallbackHandler extends HTMLEditorKit.ParserCallback {
 		
+		private boolean tagIsTitle = false;
+			
+		StringBuffer docTextContent = new StringBuffer();
+		String metaDescription = "";
+		String metaSummary = "";
+		String metaAuthor = "";
+		String metaKeywords = "";
+		Date metaDate;
+		String title = "";
+
+		public void handleText(char[] data, int pos) {
+			String text = new String(data);
+			docTextContent.append(text);
+			if (tagIsTitle) {
+				title = text;
+			}
+		}
+	
+		public void handleStartTag(HTML.Tag t, MutableAttributeSet a, int pos) {
+			if (t.equals(HTML.Tag.TITLE)) {
+				tagIsTitle = true;
+			}
+		}
+	
+		public void handleEndTag(HTML.Tag t, int pos) {
+			tagIsTitle = false;
+		}		
+		
+		public void handleSimpleTag(HTML.Tag t, MutableAttributeSet a, int pos) {
+			if (t.equals(HTML.Tag.META)) {
+				String name = (String) a.getAttribute(HTML.Attribute.NAME);
+				String content = (String) a.getAttribute(HTML.Attribute.CONTENT);
+				if ((name == null) || (content == null)) {
+					// case of <meta content="text/html; charset=ISO-8859-1"/>
+					return;
+				}
+				if (name.equalsIgnoreCase("description")) {
+					metaDescription += content;
+					return;
+				}
+				if (name.equalsIgnoreCase("summary")) {
+					metaSummary += content;
+					return;
+				}
+				if (name.equalsIgnoreCase("author")) {
+					// @todo handle metatags better when we have multiple
+					// entries for the same tag (for instance: author). At the
+					// moment we are just appending them together - could be nasty if
+					// we want to do something meaninfull with them
+					if (metaAuthor.length() > 0) {
+						metaAuthor += ", " + content;
+					}
+					else {
+						metaAuthor = content;
+					}
+					return;
+				}
+				if (name.equalsIgnoreCase("keywords")) {
+					metaKeywords += content;
+					return;
+				}
+				if (name.equalsIgnoreCase("date")) {
+					try {
+						metaDate = DateFormat.getDateInstance().parse(content);
+					} catch (ParseException e) {
+						// date is not formated well, just skip it
+					}
+					return;
+				}
+			}			
+		}
+		
+	}
+
+	public Document getDocument(File file) throws FileNotFoundException, IOException {
+		Document doc = new Document();
+	
 		FileReader fileReader = new FileReader(file);
 		BufferedReader br = new BufferedReader(fileReader);
-		NodeReader nodeReader = new NodeReader(br, 2048);
-		Parser parser = new Parser(nodeReader);
-		
-		TextExtractingVisitor visitor = new TextExtractingVisitor();
-		ObjectFindingVisitor metaTagVisitor = new ObjectFindingVisitor(MetaTag.class, true);
-		
-		ObjectFindingVisitor titleVisitor = new ObjectFindingVisitor(TitleTag.class, true);
+		CallbackHandler handler = new CallbackHandler();
+		new ParserDelegator().parse(br, handler, true);
 
-		String[] metaTags = {"META","TITLE"};
-		TagFindingVisitor tagVisitor = new TagFindingVisitor(metaTags,true);
+		doc.add(Field.Text(GlobalConstants.FIELD_DOC_TITLE, handler.title));
 
-		parser.registerScanners();
+		doc.add(Field.Text(GlobalConstants.FIELD_QUERY_BODY, handler.docTextContent.toString()));
+	
+		String summary = "";
+		if (handler.metaDescription.length() > 0 ) {
+			summary = handler.metaDescription;
+		}
+		if (handler.metaSummary.length() > 0) {
+			summary += "\n" + handler.metaSummary;
+		}
 
-		parser.visitAllNodesWith(visitor);
-		String extractedText = visitor.getExtractedText();
+		doc.add(Field.Text(GlobalConstants.FIELD_DOC_SUMMARY, summary));
 
-//		parser.visitAllNodesWith(metaTagVisitor);
-//		System.out.println("*********************");
-//		Node[] metaNodes = metaTagVisitor.getTags();
-//		for (int i=0; i < metaNodes.length; i++) {
-//		  MetaTag curTag = (MetaTag) metaNodes[i];
-//		  System.out.println("Meta tag: " + curTag);
-//		}		
-//		System.out.println("*********************");
-//
-//		parser.visitAllNodesWith(titleVisitor);
-//		Node[] titleNodes = titleVisitor.getTags();
-//		for (int i=0; i < titleNodes.length; i++) {
-//		  TitleTag curTag = (TitleTag) titleNodes[i];
-//		  System.out.println("Title tag: " + curTag);
-//		}
-//		
-//		parser.visitAllNodesWith(tagVisitor);
-//		Node[] tags = tagVisitor.getTags(0);
-//		System.out.println("meta tags: " + tags.length);
-//		Node[] tags2 = tagVisitor.getTags(1);
-//		System.out.println("title tags: " + tags.length);		
-
-		doc.add(Field.Text(GlobalConstants.FIELD_QUERY_BODY, extractedText));		
+		doc.add(Field.Text(GlobalConstants.FIELD_DOC_AUTHOR, handler.metaAuthor));
+	
+		if (handler.metaDate != null) {
+			doc.add(Field.Text(GlobalConstants.FIELD_DOC_DATE, handler.metaDate.toString()));
+		}
+	
+		doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_KEYWORDS, handler.metaKeywords));
+			
 		return doc;
 	}
 }

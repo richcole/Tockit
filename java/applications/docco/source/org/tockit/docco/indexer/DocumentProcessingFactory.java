@@ -8,6 +8,8 @@
 package org.tockit.docco.indexer;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Hashtable;
 
 import org.apache.lucene.document.DateField;
@@ -29,36 +31,60 @@ public class DocumentProcessingFactory {
 		this.docRegistry.put(fileExtension, docProcessor);
 	}
 
-	public Document processDocument(File file) throws Exception {
+	public Document processDocument(File file) throws DocumentProcessingException {
 
 		String fileExtension = getFileExtension(file);
 
 		DocumentProcessor docProcessor = (DocumentProcessor) this.docRegistry.get(fileExtension);
 
 		if (docProcessor != null) {
-			Document doc = docProcessor.getDocument(file);
-			doc.add(Field.Text(GlobalConstants.FIELD_DOC_PATH, file.getPath()));
-			doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_DATE,
-					  DateField.timeToString(file.lastModified())));
-			doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_SIZE, new Long(file.length()).toString()));
-			return doc;
+			try {
+				Document doc = docProcessor.getDocument(file);
+				doc.add(Field.Text(GlobalConstants.FIELD_DOC_PATH, file.getPath()));
+				if (doc.get(GlobalConstants.FIELD_DOC_DATE) == null) {
+					doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_DATE,
+							  DateField.timeToString(file.lastModified())));
+				}
+				doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_SIZE, new Long(file.length()).toString()));
+				//printDebug(doc);
+				return doc;								
+			} catch (FileNotFoundException e) {
+				throw new DocumentProcessingException(e);
+			} catch (IOException e) {
+				throw new DocumentProcessingException(e);
+			}
+			catch (Exception e) {
+				throw new RuntimeException(e);
+			}
 		}
 		else {
-			throw new Exception("Don't know how to process document with extension " + fileExtension +
+			throw new DocumentProcessingException(
+								"Don't know how to process document with extension " 
+								+ fileExtension +
 								" ( file: " + file.getPath() + ")");
 		}
 
 	}
 	
-	private String getFileExtension (File file) throws Exception {
+	private String getFileExtension (File file) throws DocumentProcessingException {
 		String fileName = file.getName();
 		int index = fileName.lastIndexOf(".") + 1;
 		if (index > 0) {
 			return fileName.substring(index, fileName.length());
 		}
 		else {
-			throw new Exception("Couldn't extract file extention for file " + file.getPath());
+			throw new DocumentProcessingException("Couldn't extract file extention for file " + file.getPath());
 		}
+	}
+	
+	private void printDebug (Document doc) {
+		System.out.println("DOCUMENT:: path = " + doc.get(GlobalConstants.FIELD_DOC_PATH) +
+						"\n\t date = " +  doc.get(GlobalConstants.FIELD_DOC_DATE) + 
+						"\n\t size = " +  doc.get(GlobalConstants.FIELD_DOC_SIZE) + 
+						"\n\t author = " + doc.get(GlobalConstants.FIELD_DOC_AUTHOR) + 
+						"\n\t summary = " + doc.get(GlobalConstants.FIELD_DOC_SUMMARY)+ 
+						"\n\t keywords = " + doc.get(GlobalConstants.FIELD_DOC_KEYWORDS));
+		
 	}
 
 }
