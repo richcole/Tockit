@@ -735,7 +735,7 @@ public class DoccoMainFrame extends JFrame {
             if(rv != JFileChooser.APPROVE_OPTION) {
             	return;
             }
-			this.lastDirectoryIndexed = fileDialog.getSelectedFile().getParentFile();
+			this.lastDirectoryIndexed = fileDialog.getSelectedFile();
 
             // @todo the next bit should be in the file chooser
 			String indexName = nameField.getText();
