@@ -10,6 +10,7 @@ struct SetIteratorFunctionTable {
   int   (*at_end)(struct SetIterator *);
   void  (*reset)(struct SetIterator *);
   void  (*decr_ref)(struct SetIterator *);
+  struct SetIterator*  (*copy)(struct SetIterator *);
 };
 
 struct SetIterator
@@ -25,5 +26,13 @@ struct PlainSetIterator : SetIterator
   Set*     mp_set;
   Iterator m_it;
 };
+
+inline void sarl_set_iterator_init(
+  struct SetIterator *it,
+  SetIteratorFunctionTable *ap_funcs)
+{
+  it->mp_funcs = ap_funcs;
+  sarl_ref_count_init(&it->m_ref_count);
+}
 
 #endif

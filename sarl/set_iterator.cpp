@@ -30,6 +30,9 @@ static void sarl_set_iterator_plain_reset(
 static void sarl_set_iterator_plain_decr_ref(
   struct SetIterator *it);
 
+static struct SetIterator* sarl_set_iterator_plain_copy(
+  struct SetIterator *it);
+
 /* function prototypes used in function table declaired below */
 
 struct SetIteratorFunctionTable s_plainIteratorTable = 
@@ -39,24 +42,20 @@ struct SetIteratorFunctionTable s_plainIteratorTable =
   sarl_set_iterator_plain_val,
   sarl_set_iterator_plain_at_end,
   sarl_set_iterator_plain_reset,
-  sarl_set_iterator_plain_decr_ref
+  sarl_set_iterator_plain_decr_ref,
+  sarl_set_iterator_plain_copy
 };
-
-
 
 /* constructive operations */
 struct SetIterator *sarl_set_iterator_create(struct Set *S)
 {
   PlainSetIterator* it  = new PlainSetIterator();
+  sarl_set_iterator_init(it, &s_plainIteratorTable);
 
-  sarl_ref_count_init(&it->m_ref_count);
-
-  it->mp_funcs = &s_plainIteratorTable;
   it->mp_set = S;
   sarl_set_incr_ref(it->mp_set);
   
   it->m_it = S->m_set.begin();
-
   return it;
 };
 
@@ -118,6 +117,22 @@ void sarl_set_iterator_plain_decr_ref(struct SetIterator *a_it)
   }
 }
 
+static struct SetIterator* sarl_set_iterator_plain_copy(
+  struct SetIterator *a_it)
+{
+  PlainSetIterator *org_it = static_cast<PlainSetIterator*>(a_it);
+  
+  PlainSetIterator* copy_it  = new PlainSetIterator();
+  sarl_set_iterator_init(copy_it, &s_plainIteratorTable);
+
+  copy_it->mp_set = org_it->mp_set;
+  sarl_set_incr_ref(copy_it->mp_set);
+  
+  copy_it->m_it = org_it->m_it;
+  return copy_it;
+}
+
+/* functions delegating to the function table */
 void  sarl_set_iterator_next_gte(
   struct SetIterator *it, 
   Index value)
@@ -154,6 +169,125 @@ void sarl_set_iterator_incr_ref(struct SetIterator *it)
 {
   sarl_ref_count_incr(&it->m_ref_count);
 };
+
+struct SetIterator* sarl_set_iterator_copy(
+  struct SetIterator *a_it)
+{
+  return a_it->mp_funcs->copy(a_it);
+};
+
+extern Index  sarl_set_iterator_count(struct SetIterator *a_it)
+{
+  SetIterator *it_copy = sarl_set_iterator_copy(a_it);
+  Index count = 0;
+  
+  SARL_SET_ITERATOR_FOR(it_copy) {
+    ++count;
+  }
+  
+  sarl_set_iterator_decr_ref(it_copy);
+  return count;
+};
+
+extern Index  sarl_set_iterator_count_remaining(struct SetIterator *a_it)
+{
+  SetIterator *it_copy = sarl_set_iterator_copy(a_it);
+  Index count = 0;
+  
+  while(! sarl_set_iterator_at_end(it_copy) ) {
+    ++count;
+    sarl_set_iterator_next(it_copy);
+  }
+  
+  sarl_set_iterator_decr_ref(it_copy);
+  return count;
+};
+
+/*
+ * X < Y iff first(X - Y) < first(Y - X)
+ *
+ * ret < 0 iff X < Y
+ * ret = 0 iff X = Y
+ * ret > 0 iff X > Y
+ */
+int sarl_set_iterator_lexical_compare(
+  struct SetIterator *x, struct SetIterator *y
+)
+{
+  SetIterator *u, *v, *w;
+  SetIterator *a, *b, *c;
+  int ret_val;
+
+  w = sarl_set_iterator_minus(
+    u = sarl_set_iterator_copy(x),
+    v = sarl_set_iterator_copy(y));
+
+  c = sarl_set_iterator_minus(
+    a = sarl_set_iterator_copy(y),
+    b = sarl_set_iterator_copy(x));
+
+  sarl_set_iterator_reset(c);
+  sarl_set_iterator_reset(w);
+  
+  if ( ! sarl_set_iterator_at_end(w) ) {
+    if ( ! sarl_set_iterator_at_end(c) ) {
+      ret_val = sarl_set_iterator_val(w) - 
+	sarl_set_iterator_val(c);
+    }
+    else {
+      ret_val = -1;
+    }
+  }
+  else {
+    if ( ! sarl_set_iterator_at_end(c) ) {
+      ret_val = 1;
+    }
+    else {
+      ret_val = 0;
+    }
+  }
+
+  sarl_set_iterator_decr_ref(u);
+  sarl_set_iterator_decr_ref(v);
+  sarl_set_iterator_decr_ref(w);
+
+  sarl_set_iterator_decr_ref(a);
+  sarl_set_iterator_decr_ref(b);
+  sarl_set_iterator_decr_ref(c);
+
+  return ret_val;
+};
+
+int sarl_set_iterator_subset(
+  struct SetIterator *x, struct SetIterator *y
+)
+{
+  int ret_val = 1;
+  SetIterator *u = sarl_set_iterator_copy(x);
+  SetIterator *v = sarl_set_iterator_copy(y);
+
+  sarl_set_iterator_reset(u);
+  sarl_set_iterator_reset(v);
+
+  SARL_SET_ITERATOR_FOR(u) {
+    Index val = sarl_set_iterator_val(u);
+    sarl_set_iterator_next_gte(v, val);
+    if ( sarl_set_iterator_val(v) != val ) {
+      ret_val = 0;
+      break;
+    }
+  }
+  
+  sarl_set_iterator_decr_ref(u);
+  sarl_set_iterator_decr_ref(v);
+  return ret_val;
+};
+
+  
+  
+  
+
+  
 
 
 

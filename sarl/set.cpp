@@ -18,6 +18,7 @@ struct Set *sarl_set_create()
 struct Set *sarl_set_copy(struct SetIterator *it)
 {
   struct Set *s = new Set();
+  sarl_ref_count_init(&s->m_ref_count);
   SARL_SET_ITERATOR_FOR(it) {
     sarl_set_insert(s, sarl_set_iterator_val(it));
   }

@@ -14,10 +14,11 @@ struct Set;
     sarl_set_iterator_next(x) \
   )
 
+/* copy operations */
+extern struct SetIterator *sarl_set_iterator_copy(struct SetIterator *);
+
 /* constructive operations */
 extern struct SetIterator *sarl_set_iterator_create(struct Set *);
-
-/* omit ---
 
 extern struct SetIterator *sarl_set_iterator_meet(
   struct SetIterator *, struct SetIterator *
@@ -31,21 +32,15 @@ extern struct SetIterator *sarl_set_iterator_minus(
   struct SetIterator *, struct SetIterator *
 );
 
---- omit */
-
 /* boolean operations */
 
-/* omit ---
-
-extern int sarl_set_iterator_lexical_less(
+extern int sarl_set_iterator_lexical_compare(
   struct SetIterator *, struct SetIterator *
 );
 
 extern int sarl_set_iterator_subset(
   struct SetIterator *, struct SetIterator *
 );
-
-*/
 
 extern int sarl_set_iterator_is_empty(
   struct SetIterator *
@@ -57,6 +52,24 @@ extern void  sarl_set_iterator_next(struct SetIterator *);
 extern Index sarl_set_iterator_val(struct SetIterator *);
 extern int   sarl_set_iterator_at_end(struct SetIterator *);
 extern void  sarl_set_iterator_reset(struct SetIterator *);
+
+/** return then number of elements in the sequence without regard to
+ *  the current location of the iterator. This doesn't move the
+ *  iterator.
+ *
+ *  This is an expensive operation because it involves copying the
+ *  iterator and iterating though the entire sequence.
+ */
+extern Index  sarl_set_iterator_count(struct SetIterator *);
+
+/** return then number of elements in the sequence counting from the
+ *  element currently refered to by the iterator to the end of the
+ *  sequence.
+ *
+ *  This is an expensive operation because it involves copying the
+ *  iterator and iterating though the remaining elements of the sequence.
+ */
+extern Index sarl_set_iterator_count_remaining(struct SetIterator *);
 
 /* reference counting interface */
 extern void sarl_set_iterator_decr_ref(struct SetIterator *);

@@ -1,10 +1,15 @@
 %module sarl
 %{
 #include <sarl/index.h>
+#include <sarl/pair.h>
 #include <sarl/set.h>
 #include <sarl/set_iterator.h>
+#include <sarl/relation.h>
+#include <sarl/relation_iterator.h>
 %}
 
 %include "index.h"
 %include "set.h"
 %include "set_iterator.h"
+%include "relation.h"
+%include "relation_iterator.h"

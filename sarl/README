@@ -1,0 +1,35 @@
+               Sarl - Sets and Relations Library
+
+1.0 Introduction.
+
+The purpose of this library is to provide a low level interface to the
+manipulation of sets and binary relations of integers. Although not
+currently designed within the interface there is the hope that triadic
+relations will also be supported.
+
+2.0 Compilation and Testing
+
+Currently only linux is supported, although we intend to also support
+MacOS and Win32. The current implementation requires a C++ compiler
+and the standard template library.
+
+  To compile the shared library:
+
+    > make
+
+  To compile and run the C interface tests:
+
+    > make test
+
+  To run the python interface test
+
+    > make
+    > cd python
+    > python py_sarl.py
+
+3.0 Documentation and Links
+
+Currently there is no documentation for sarl. A wiki for the Tockit
+project will hopefully be constructed within a week and most design
+discussion will take place there as well as the production of
+tutorials and interface documentation.

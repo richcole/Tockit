@@ -1,0 +1,29 @@
+Algorithm to form the intent:
+
+  intent(R, A)
+    vector<SetIterator> v;
+    for x in A:
+      v.push_back(intent(R,x))
+    if v.size() > 1:
+      construct_aggregate(v, 0, v.size(), meet)
+    else:
+      return x
+  
+  construct_aggregate(v, lower, upper, func):
+    if ( upper - lower == 3 ) {
+      return func(v[lower],construct_aggregate(v, lower+1, upper, func)
+    }
+    else if ( upper - lower == 2 ) {
+      return func(v[lower],v[lower+1])
+    }
+    else {
+      return func(
+        construct_aggregate(v, lower, (lower + upper)/2, func),
+	construct_aggregate(v, (lower + upper)/2, upper, func)
+      );
+    }
+
+The current design doesn't well accomodate either (i) forming an
+intent that changes when the set A from which it was formed changes,
+or (ii) constructing a vector like construct, i.e. one whose elements
+are addressible via integers.
