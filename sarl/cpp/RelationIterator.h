@@ -41,7 +41,9 @@ class RelationIterator {
   }
 
   virtual ~RelationIterator() {
-    sarl_relation_iterator_decr_ref(mp_itRef);
+    if ( mp_itRef != 0 ) {
+      sarl_relation_iterator_decr_ref(mp_itRef);
+    }
   };
 
   RelationIterator copy() {

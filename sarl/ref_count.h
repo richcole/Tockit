@@ -1,7 +1,8 @@
 #ifndef SARL_REF_COUNT_H
 #define SARL_REF_COUNT_H
 
-#include <stdio.h>
+#include <stdio.h>  // fprintf()
+#include <stdlib.h> // exit()
 
 struct RefCount {
   size_t count;
@@ -12,6 +13,7 @@ struct RefCounter {
   ~RefCounter() { 
     if ( this->count != 0 ) {
       fprintf(stderr, "Error, Reference Count=%d\n", this->count);
+      exit(-1);
     }
   }
   int count;

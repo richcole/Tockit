@@ -44,7 +44,7 @@ SWIG_INC = \
 
 target: python/sarlcmodule.so java/libsarl.so
 
-test: target test_base test_python test_java
+test: target test_base test_python test_java test_cpp
 
 test_base: $(TESTS:%=%.exe) 
 	bash execute_tests.sh $^
@@ -88,6 +88,9 @@ java/TestSarl.class: java/TestSarl.java
 
 test_java: java/TestSarl.class
 	cd java; java TestSarl
+
+test_cpp: 
+	cd cpp; make test
 
 clean: 
 	rm -f python/*.pyc python/sarl_wrap.* python/*.so

@@ -131,17 +131,18 @@ void  sarl_relation_iterator_join_advance(
   sarl_relation_iterator_next_gte(it->mp_first, sarl_pair(value.dom, 0));
   while( ! sarl_relation_iterator_at_end(it->mp_first) ) {
     
+    Sarl_Index dom_value = sarl_relation_iterator_val(it->mp_first).dom;
     /* search for the next value from value.dom to something
      * after value.rng 
      */
     sarl_set_iterator_next_gte(range_it, value.rng);
     while( ! sarl_set_iterator_at_end(range_it) ) {
+      
+      Sarl_Index rng_value = sarl_set_iterator_val(range_it);
+
       if ( sarl_relation_iterator_join_exists_pair(
 	     ap_it,
-	     sarl_pair(
-	       sarl_relation_iterator_val(it->mp_first).dom,
-	       sarl_set_iterator_val(range_it)
-	     ),
+	     sarl_pair(dom_value, rng_value),
 	     &join_value
 	   )) 
       {
@@ -149,18 +150,18 @@ void  sarl_relation_iterator_join_advance(
 	sarl_relation_iterator_next_gte(
 	  it->mp_first,
 	  sarl_pair(
-	    sarl_relation_iterator_val(it->mp_first).dom,
+	    dom_value,
 	    join_value
 	  )
 	);
 	
 	sarl_relation_iterator_reset(it->mp_second);
-	sarl_relation_iterator_next_gte(it->mp_second,
-	  sarl_pair(
-	    join_value, 
-	    sarl_set_iterator_val(range_it)
-	  )
+	sarl_relation_iterator_next_gte(
+	  it->mp_second,
+	  sarl_pair(join_value,rng_value)
 	);
+
+	sarl_set_iterator_decr_ref(range_it);
 	return;
       }
       sarl_set_iterator_next(range_it);
@@ -169,11 +170,11 @@ void  sarl_relation_iterator_join_advance(
     /* otherwise increment the domain of first */
     sarl_relation_iterator_next_gte(
       it->mp_first,
-      sarl_pair(
-	sarl_relation_iterator_val(it->mp_first).dom + 1,
-	0
-      )
+      sarl_pair(dom_value+1,0)
     );
+    /* and reset the search for the second */
+    sarl_set_iterator_reset(range_it);
+    value.rng = 0;
 
   } // [ while ! it->mp_first.at_end() ]
   

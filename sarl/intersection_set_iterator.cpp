@@ -91,7 +91,8 @@ static void  sarl_set_iterator_intersection_next_gte(
   struct Sarl_SetIterator *a_it, 
   Sarl_Index value)
 {
-  Sarl_IntersectionSetIterator *it = static_cast<Sarl_IntersectionSetIterator*>(a_it);
+  Sarl_IntersectionSetIterator *it = 
+    static_cast<Sarl_IntersectionSetIterator*>(a_it);
   sarl_set_iterator_next_gte(it->first, value);
   sarl_set_iterator_next_gte(it->second, value);
   sarl_set_iterator_intersection_advance(it);
@@ -99,27 +100,35 @@ static void  sarl_set_iterator_intersection_next_gte(
 
 static void  sarl_set_iterator_intersection_next(struct Sarl_SetIterator *a_it)
 {
-  Sarl_IntersectionSetIterator *it = static_cast<Sarl_IntersectionSetIterator*>(a_it);
+  Sarl_IntersectionSetIterator *it = 
+    static_cast<Sarl_IntersectionSetIterator*>(a_it);
   sarl_set_iterator_next(it->first);
   sarl_set_iterator_next(it->second);
   sarl_set_iterator_intersection_advance(it);
 }
 
-static Sarl_Index sarl_set_iterator_intersection_val(struct Sarl_SetIterator *a_it)
+static Sarl_Index sarl_set_iterator_intersection_val(
+  struct Sarl_SetIterator *a_it)
 {
-  Sarl_IntersectionSetIterator *it = static_cast<Sarl_IntersectionSetIterator*>(a_it);
+  Sarl_IntersectionSetIterator *it = 
+    static_cast<Sarl_IntersectionSetIterator*>(a_it);
   return sarl_set_iterator_val(it->first);
 }
 
-static int   sarl_set_iterator_intersection_at_end(struct Sarl_SetIterator *a_it)
+static int sarl_set_iterator_intersection_at_end(
+  struct Sarl_SetIterator *a_it)
 {
-  Sarl_IntersectionSetIterator *it = static_cast<Sarl_IntersectionSetIterator*>(a_it);
-  return sarl_set_iterator_at_end(it->first);
+  Sarl_IntersectionSetIterator *it = 
+    static_cast<Sarl_IntersectionSetIterator*>(a_it);
+  return sarl_set_iterator_at_end(it->first) ||
+    sarl_set_iterator_at_end(it->second);
 };
 
-static void  sarl_set_iterator_intersection_reset(struct Sarl_SetIterator *a_it) 
+static void  sarl_set_iterator_intersection_reset(
+  struct Sarl_SetIterator *a_it) 
 {
-  Sarl_IntersectionSetIterator *it = static_cast<Sarl_IntersectionSetIterator*>(a_it);
+  Sarl_IntersectionSetIterator *it = 
+    static_cast<Sarl_IntersectionSetIterator*>(a_it);
   sarl_set_iterator_reset(it->first);
   sarl_set_iterator_reset(it->second);
   sarl_set_iterator_intersection_advance(it);
@@ -128,7 +137,8 @@ static void  sarl_set_iterator_intersection_reset(struct Sarl_SetIterator *a_it)
 /* reference counting interface */
 void sarl_set_iterator_intersection_decr_ref(struct Sarl_SetIterator *a_it)
 {
-  Sarl_IntersectionSetIterator *it = static_cast<Sarl_IntersectionSetIterator*>(a_it);
+  Sarl_IntersectionSetIterator *it = 
+    static_cast<Sarl_IntersectionSetIterator*>(a_it);
   if ( sarl_ref_count_decr(&it->m_ref_count) ) {
     sarl_set_iterator_decr_ref(it->first);
     sarl_set_iterator_decr_ref(it->second);

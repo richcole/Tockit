@@ -4,7 +4,6 @@
 
 using namespace std;
 
-
 void main()
 {
   Relation s;
@@ -21,14 +20,14 @@ void main()
   s.insert(4,3);
   s.insert(5,4);
 
-  RelationIterator t = RelationIterator(s);
-  RelationIterator it = t.join(t);
-  
+  RelationIterator t1 = RelationIterator(s);
+  RelationIterator t2 = RelationIterator(s);
+  RelationIterator it = t1.join(t2);
+
   for(it.reset(); !it.at_end(); it.next()) {
     Sarl_Pair p = it.value();
     cerr << p.dom << "," << p.rng << endl;
   }
-    
 };
 
 

@@ -189,7 +189,8 @@ extern Sarl_Index  sarl_set_iterator_count(struct Sarl_SetIterator *a_it)
   return count;
 };
 
-extern Sarl_Index  sarl_set_iterator_count_remaining(struct Sarl_SetIterator *a_it)
+extern Sarl_Index  sarl_set_iterator_count_remaining(
+  struct Sarl_SetIterator *a_it)
 {
   Sarl_SetIterator *it_copy = sarl_set_iterator_copy(a_it);
   Sarl_Index count = 0;

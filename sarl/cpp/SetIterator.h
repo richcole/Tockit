@@ -42,7 +42,9 @@ class SetIterator {
   }
 
   virtual ~SetIterator() {
-    sarl_set_iterator_decr_ref(mp_itRef);
+    if ( mp_itRef != 0 ) {
+      sarl_set_iterator_decr_ref(mp_itRef);
+    }
   };
 
   SetIterator copy() {

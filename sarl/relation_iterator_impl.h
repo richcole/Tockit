@@ -30,9 +30,6 @@ struct Sarl_PlainRelationIterator : Sarl_RelationIterator
 
 struct Sarl_JoinRelationIterator : Sarl_RelationIterator
 {
-  RefCount m_ref_count;
-  Sarl_RelationIteratorFunctionTable *mp_funcs;
-
   Sarl_RelationIterator* mp_first;
   Sarl_RelationIterator* mp_second;
 };
