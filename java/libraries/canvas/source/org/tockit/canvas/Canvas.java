@@ -354,6 +354,7 @@ public class Canvas extends JPanel implements Printable {
      */
     public void clearCanvas() {
         this.canvasLayers.clear();
+        this.layerNameMapping.clear();
     }
 
     /**
@@ -431,6 +432,9 @@ public class Canvas extends JPanel implements Printable {
     	if(layerName.length() == 0) {
     		throw new IllegalLayerNameException("Layer name must not be empty");
     	}
+    	if(this.hasLayer(layerName)) {
+    		throw new IllegalLayerNameException("Layer name does already exist");
+    	}
     	List newLayer = new ArrayList();
     	this.canvasLayers.add(newLayer);
     	this.layerNameMapping.put(layerName, newLayer);
@@ -440,10 +444,17 @@ public class Canvas extends JPanel implements Printable {
      * Removes a whole layer from the canvas.
      */
     public void removeLayer(String layerName) {
-    	if(!this.layerNameMapping.containsKey(layerName)) {
+    	if(!this.hasLayer(layerName)) {
     		throw new NoSuchLayerException("Could not find layer named \"" + layerName + "\"");
     	}
     	Object removeLayer = this.layerNameMapping.remove(layerName);
     	this.canvasLayers.remove(removeLayer);
+    }
+    
+    /**
+     * Returns true if there is a layer with the given name.
+     */
+    public boolean hasLayer(String layerName) {
+    	return this.layerNameMapping.containsKey(layerName);
     }
 }
