@@ -617,7 +617,14 @@ public class DoccoMainFrame extends JFrame {
 					queryDecomposer);
 		} catch (IOException e1) {
 			ErrorDialog.showError(this, e1, "Index not found");
-			System.exit(1);
+			String[] options = new String[]{"Recreate Index", "Exit Program"};
+			Object result = JOptionPane.showInputDialog(this, "There seems to be some error with the existing index.\n" +
+										"It probably needs to be recreated.", "Index Problem",
+										JOptionPane.ERROR_MESSAGE, null, options, options[0]);
+			if(result != options[0]) {
+				System.exit(1);
+			}
+			createNewIndex();
 		}
 		
 		if(this.queryEventHandler != null) {
