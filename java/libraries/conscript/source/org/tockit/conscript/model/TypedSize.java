@@ -17,7 +17,11 @@ public class TypedSize {
 		this.type = type;
 	}
 
-	public String getType() {
+	public TypedSize(String string) {
+        //@todo parse string
+    }
+
+    public String getType() {
 		return type;
 	}
 

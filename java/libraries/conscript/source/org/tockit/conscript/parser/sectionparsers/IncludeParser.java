@@ -28,24 +28,30 @@ class IncludeParser extends CSCFileSectionParser {
         String includeLocation = tokenizer.popCurrentToken();
         tokenizer.consumeToken(";");
         URL includeURL = new URL(file.getLocation(), includeLocation);
-        CSCParser.logger.log(Level.FINER, "Including URL: '" + includeURL + "'");
-		CSCFile includeFile = null;
+        boolean includeOk = false;
         try {
-            includeFile = CSCParser.importCSCFile(includeURL, file);
-
+            if(!file.hasInclude(includeURL)) {
+                CSCParser.logger.log(Level.FINER, "Trying to include URL: '" + includeURL + "'");
+                CSCParser.importCSCFile(includeURL, file);
+            }
+            includeOk = true;
         } catch (FileNotFoundException e) {
             for (int i = 0; i < INCLUDE_DIRS.length; i++) {
                 String dir = INCLUDE_DIRS[i];
                 includeURL = new URL(file.getLocation(), dir + "/" + includeLocation);
                 try {
-                    includeFile = CSCParser.importCSCFile(includeURL, file);
+                    if(!file.hasInclude(includeURL)) {
+                        CSCParser.logger.log(Level.FINER, "Trying to include URL: '" + includeURL + "'");
+                        CSCParser.importCSCFile(includeURL, file);
+                    }
+                    includeOk = true;
                     break;
                 } catch (FileNotFoundException e2) {
                     // ignore. next
                 }
             }
         }
-        if(includeFile == null) {
+        if(!includeOk) {
             throw new DataFormatException("Can not find include file '" + includeLocation +
                                           "' referenced from file '" + file.getLocation() +"'");
         }

@@ -73,14 +73,16 @@ class FormalContextParser extends CSCFileSectionParser {
         
         int height = Integer.parseInt(tokenizer.popCurrentToken());
         if(height != context.getObjects().size()) {
-            throw new DataFormatException("Relation height does not match number of objects in context '" +
+            throw new DataFormatException("Relation height (" + height + ") does not match number of objects (" +
+                                          context.getObjects().size() +") in context '" +
                                           contextId + "', line " + tokenizer.getCurrentLine() + ", file '" +
                                           file.getLocation() + "'");
         }
         tokenizer.consumeToken(",");
         int width = Integer.parseInt(tokenizer.popCurrentToken());
         if(width != context.getAttributes().size()) {
-            throw new DataFormatException("Relation width does not match number of attributes in context '" +
+            throw new DataFormatException("Relation width (" + width + ") does not match number of attributes (" +
+                                          context.getAttributes().size() + ") in context '" +
                                           contextId + "', line " + tokenizer.getCurrentLine() + ", file '" +
                                           file.getLocation() + "'");
         }

@@ -8,9 +8,7 @@
 package org.tockit.conscript.parser.sectionparsers;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -36,6 +34,9 @@ class LineDiagramParser extends CSCFileSectionParser {
 	                        throws IOException, DataFormatException {
 		String identifier = tokenizer.popCurrentToken();
         LineDiagram diagram = getLineDiagram(file, identifier);
+        if(diagram.isInitialized()) {
+            throw new DataFormatException("Line diagram with name '" + diagram.getName() + "' defined twice.");
+        }
 
         tokenizer.consumeToken("=");
 
@@ -54,16 +55,16 @@ class LineDiagramParser extends CSCFileSectionParser {
 
 			double x = Double.parseDouble(tokenizer.popCurrentToken());
 			double y = Double.parseDouble(tokenizer.popCurrentToken());
-			points.put(id, new Point(id.longValue(), x, y, null, null));
+			Point point = new Point(id.longValue(), x, y, null, null);
+            points.put(id, point);
+            diagram.addPoint(point);
             while(!tokenizer.newLineHasStarted()) { // ignore optional format definitions
                 // @todo add parsing here
                 tokenizer.advance();
             }
 		}
-        diagram.setPoints((Point[]) points.values().toArray(new Point[points.size()]));
-		tokenizer.advance();
+		tokenizer.consumeToken("LINES");
 
-        List lines = new ArrayList();
 		while (!tokenizer.getCurrentToken().equals("OBJECTS")) {
             tokenizer.consumeToken("(");
             Long from = new Long(tokenizer.popCurrentToken());
@@ -83,11 +84,10 @@ class LineDiagramParser extends CSCFileSectionParser {
                                               to +" in LINE_DIAGRAM '" + diagram.getName() +
                                               "' in file '" + file.getLocation() +"', line " + tokenizer.getCurrentLine());
             }
-            lines.add(new Line(fromPoint, toPoint, null));
+            diagram.addLine(new Line(fromPoint, toPoint, null));
 		}
 		tokenizer.advance();
 
-        List objects = new ArrayList();
 		while (!tokenizer.getCurrentToken().equals("ATTRIBUTES")) {
             Long pointId = new Long(tokenizer.popCurrentToken());
             Point point = (Point) points.get(pointId);
@@ -103,18 +103,22 @@ class LineDiagramParser extends CSCFileSectionParser {
 			if (!tokenizer.newLineHasStarted()) {
                 String content = tokenizer.popCurrentToken();
                 StringFormat format = null;
-                if (!tokenizer.newLineHasStarted()) {
-                    format = new StringFormat(tokenizer.popCurrentToken());
+                try {
+                    if (!tokenizer.newLineHasStarted()) {
+                        format = new StringFormat(tokenizer.popCurrentToken());
+                    }
+                } catch(Exception e) {
+                    throw new DataFormatException("Can not parse string format " +
+                            " for object in LINE_DIAGRAM '" + diagram.getName() +
+                            "' in file '" + file.getLocation() +"', line " + tokenizer.getCurrentLine());
                 }
                 label = new FormattedString(content, format);
 			}
 			
-            objects.add(new FCAObject(point, id, label));
+            diagram.addObject(new FCAObject(point, id, label));
 		}
 		tokenizer.advance();
-        diagram.setObjects((FCAObject[]) objects.toArray(new FCAObject[objects.size()]));
 
-        List attributes = new ArrayList();
 		while (!tokenizer.getCurrentToken().equals("CONCEPTS")) {
             Long pointId = new Long(tokenizer.popCurrentToken());
             Point point = (Point) points.get(pointId);
@@ -136,10 +140,9 @@ class LineDiagramParser extends CSCFileSectionParser {
                 label = new FormattedString(content, format);
             }
             
-            attributes.add(new FCAAttribute(point, id, label));
+            diagram.addAttribute(new FCAAttribute(point, id, label));
 		}
 		tokenizer.advance();
-        diagram.setAttributes((FCAAttribute[]) attributes.toArray(new FCAAttribute[attributes.size()]));
 
 		while (!tokenizer.getCurrentToken().equals(";")) {
 			// we ignore the concept definitions 
@@ -149,75 +152,5 @@ class LineDiagramParser extends CSCFileSectionParser {
 
         diagram.setInitialized();
         CSCParser.logger.log(Level.FINER, "Line diagram added: '" + diagram.getName() + "'");
-	}
-
-	private String[] extractFormattingStringSegment(String formattingString) {
-		if (formattingString.length() == 0) {
-			return new String[] { null, "" };
-		}
-		String segment, rest;
-		if (formattingString.startsWith("(")) {
-			int parPos = formattingString.indexOf(')');
-			segment = formattingString.substring(1, parPos);
-			rest = formattingString.substring(parPos + 1);
-			int commaPos = rest.indexOf(',');
-			if (commaPos != -1) {
-				rest = rest.substring(commaPos + 1);
-			}
-		} else {
-			int commaPos = formattingString.indexOf(',');
-			if (commaPos == -1) {
-				segment = new String(formattingString);
-				rest = "";
-			} else {
-				segment = formattingString.substring(0, commaPos);
-				rest = formattingString.substring(commaPos + 1);
-			}
-		}
-		return new String[] { segment, rest };
-	}
-
-	private Object parseLabelInfo(String formattingString) {
-		//        	LabelInfo retVal = new LabelInfo();
-		String[] nextSplit = extractFormattingStringSegment(formattingString);
-		String fontName = nextSplit[0];
-		formattingString = nextSplit[1];
-		nextSplit = extractFormattingStringSegment(formattingString);
-		String fontStyleString = nextSplit[0];
-		formattingString = nextSplit[1];
-		nextSplit = extractFormattingStringSegment(formattingString);
-		String fontColorString = nextSplit[0];
-		formattingString = nextSplit[1];
-		nextSplit = extractFormattingStringSegment(formattingString);
-		String fontSizeString = nextSplit[0];
-		formattingString = nextSplit[1];
-		nextSplit = extractFormattingStringSegment(formattingString);
-		String offsetString = nextSplit[0];
-		formattingString = nextSplit[1];
-		nextSplit = extractFormattingStringSegment(formattingString);
-		String alignmentString = nextSplit[0];
-		formattingString = nextSplit[1];
-		nextSplit = extractFormattingStringSegment(formattingString);
-		String clipBoxString = nextSplit[0];
-		formattingString = nextSplit[1];
-		nextSplit = extractFormattingStringSegment(formattingString);
-
-		// we support only offset and alignment at the moment
-		if (offsetString != null && offsetString.length() != 0) {
-			int commaPos = offsetString.indexOf(',');
-			String xPart = offsetString.substring(0, commaPos);
-			String yPart = offsetString.substring(commaPos + 1);
-			//				retVal.setOffset(Double.parseDouble(xPart), -Double.parseDouble(yPart));
-		}
-
-		if (alignmentString.indexOf('l') != -1) {
-			//				retVal.setTextAlignment(LabelInfo.ALIGNLEFT);
-		} else if (alignmentString.indexOf('r') != -1) {
-			//                retVal.setTextAlignment(LabelInfo.ALIGNRIGHT);
-		} else if (alignmentString.indexOf('c') != -1) {
-			//                retVal.setTextAlignment(LabelInfo.ALIGNCENTER);
-		}
-
-		return null;
 	}
 }
