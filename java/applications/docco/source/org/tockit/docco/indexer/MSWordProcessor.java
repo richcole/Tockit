@@ -80,10 +80,13 @@ public class MSWordProcessor implements DocumentProcessor {
 			return new DocumentContent(docTextWriter.toString());
 		}
 		catch (ArrayIndexOutOfBoundsException e) {
-			System.err.println("ArrayIndexOutOfBoundsException on doc " + file.getPath());
+			System.err.println("ArrayIndexOutOfBoundsException while extracting content in " + file.getPath());
 		}
 		catch (NegativeArraySizeException e) {
-			System.err.println("NegativeArraySizeException on doc " + file.getPath());
+			System.err.println("NegativeArraySizeException while extracting content in " + file.getPath());
+		}
+		catch (NullPointerException e) {
+			System.err.println("NullPointerException while extracting content in " + file.getPath());
 		}
 		/// @todo this is dodgy - we should just bail out with an exception
 		return null;
