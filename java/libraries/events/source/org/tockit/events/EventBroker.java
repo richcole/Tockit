@@ -112,15 +112,33 @@ public class EventBroker implements EventBrokerListener {
      *
      * Afterwards the listener will not receive any events anymore.
      */
-    public void removeSubscriptions(EventBrokerListener listener) {
-        for (Iterator iterator = subscriptions.iterator(); iterator.hasNext();) {
-            EventSubscription subscription = (EventSubscription) iterator.next();
-            if (subscription.getListener().equals(listener)) {
-                this.eventQueue.add(new SubscriptionRemovalEvent(subscription));
-            }
-        }
-        processEvents();
-    }
+	public void removeSubscriptions(EventBrokerListener listener) {
+		for (Iterator iterator = subscriptions.iterator(); iterator.hasNext();) {
+			EventSubscription subscription = (EventSubscription) iterator.next();
+			if (subscription.getListener().equals(listener)) {
+				this.eventQueue.add(new SubscriptionRemovalEvent(subscription));
+			}
+		}
+		processEvents();
+	}
+
+	/**
+	 * Removes the given listener from getting events of the specified type.
+	 * 
+	 * If a subscription of this listener for the given eventType/subjectType is
+	 * found it will be removed.
+	 */
+	public void removeSubscription(EventBrokerListener listener, Class eventType, Class subjectType) {
+		for (Iterator iterator = subscriptions.iterator(); iterator.hasNext();) {
+			EventSubscription subscription = (EventSubscription) iterator.next();
+			if (subscription.getListener().equals(listener) &&
+					subscription.getEventType().equals(eventType) &&
+					subscription.getSubjectType().equals(subjectType)) {
+				this.eventQueue.add(new SubscriptionRemovalEvent(subscription));
+			}
+		}
+		processEvents();
+	}
 
     /**
      * Distributes a new event to the listeners.
