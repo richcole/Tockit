@@ -56,6 +56,7 @@ import net.sourceforge.toscanaj.model.lattice.Concept;
 import net.sourceforge.toscanaj.model.lattice.ConceptImplementation;
 import net.sourceforge.toscanaj.model.lattice.Lattice;
 import net.sourceforge.toscanaj.view.diagram.DiagramView;
+import net.sourceforge.toscanaj.view.diagram.LabelView;
 import net.sourceforge.toscanaj.view.diagram.NodeView;
 
 import org.tockit.canvas.CanvasItem;
@@ -277,9 +278,18 @@ public class DoccoMainFrame extends JFrame {
 		}
 	}	
 	
-	private class NodeSelectedEventHandler implements EventBrokerListener {
+	private class SelectionEventHandler implements EventBrokerListener {
 		public void processEvent(Event event) {
-			NodeView nodeView = (NodeView) event.getSubject();
+			Object subject = event.getSubject();
+			NodeView nodeView;
+			if(subject instanceof NodeView) {
+				nodeView = (NodeView) subject;
+			} else if(subject instanceof LabelView) {
+				LabelView labelView = (LabelView) subject;
+				nodeView = labelView.getNodeView();
+			} else {
+				throw new RuntimeException("Subscribed to unknown subject type");
+			}
 			DiagramNode node = nodeView.getDiagramNode();
 			Concept concept = node.getConcept();
 			resListModel.removeAllElements();
@@ -396,9 +406,12 @@ public class DoccoMainFrame extends JFrame {
 		this.diagramView.setQuery(AggregateQuery.COUNT_QUERY);
 		this.diagramView.setMinimumFontSize(12.0);
 		
-		this.diagramView.getController().getEventBroker().subscribe(new NodeSelectedEventHandler(),
+		this.diagramView.getController().getEventBroker().subscribe(new SelectionEventHandler(),
 									CanvasItemSelectedEvent.class,
 									NodeView.class);
+		this.diagramView.getController().getEventBroker().subscribe(new SelectionEventHandler(),
+									CanvasItemSelectedEvent.class,
+									LabelView.class);
 
 		JList resList = new JList(this.resListModel);
 		JScrollPane scrollPane = new JScrollPane(resList);
