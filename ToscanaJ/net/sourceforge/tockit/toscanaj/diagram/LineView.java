@@ -30,7 +30,7 @@ public class LineView extends CanvasItem {
     public void draw(ToscanajGraphics2D g) {
         ///@TODO Probably should throw a LineNotFoundException
         if(diagramLine != null) {
-            g.drawLine(diagramLine.getFromPoint(), diagramLine.getToPoint());
+            g.drawLine(diagramLine.getFromPosition(), diagramLine.getToPosition());
         }
     }
 

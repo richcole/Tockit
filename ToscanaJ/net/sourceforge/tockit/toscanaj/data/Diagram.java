@@ -32,20 +32,9 @@ public class Diagram implements DiagramObservable, Diagram2D
     private List nodes;
 
     /**
-     * The list of starting points of lines in the diagram.
-     *
-     * This has to be of the same size as lineEndPoints and has to refer to
-     * ints matching the numbers used in the nodes list.
+     * The list of lines in the diagram.
      */
-    private List lineStartPoints;
-
-    /**
-     * The list of ending points of lines in the diagram.
-     *
-     * This has to be of the same size as lineStartPoints and has to refer to
-     * ints matching the numbers used in the nodes vector.
-     */
-    private List lineEndPoints;
+    private List lines;
 
     /**
      * The default constructor creates a diagram with just nothing in it at all.
@@ -53,8 +42,7 @@ public class Diagram implements DiagramObservable, Diagram2D
     public Diagram() {
         title = "";
         nodes = new LinkedList();
-        lineStartPoints = new LinkedList();
-        lineEndPoints = new LinkedList();
+        lines = new LinkedList();
         diagramObserver = new LinkedList();
     }
 
@@ -100,7 +88,7 @@ public class Diagram implements DiagramObservable, Diagram2D
      * Returns the number of lines in the diagram.
      */
     public int getNumberOfLines() {
-        return this.lineStartPoints.size();
+        return this.lines.size();
     }
 
     /**
@@ -143,6 +131,13 @@ public class Diagram implements DiagramObservable, Diagram2D
     }
 
     /**
+     * Implements Diagram2D.getLine(int).
+     */
+    public DiagramLine getLine( int lineNumber ) {
+        return (DiagramLine)this.lines.get(lineNumber);
+    }
+
+    /**
      * Adds a point to the diagram (at the end of the list).
      */
     public void addNode( Point2D position ) {
@@ -155,9 +150,8 @@ public class Diagram implements DiagramObservable, Diagram2D
      * Numbers start with zero.
      */
     public Point2D getFromPosition( int lineNumber ) {
-        Integer num = (Integer)this.lineStartPoints.get( lineNumber );
-        DiagramNode node = (DiagramNode) this.nodes.get(num.intValue());
-        return node.getPosition();
+        DiagramLine line = (DiagramLine)this.lines.get(lineNumber);
+        return line.getFromPosition();
     }
 
     /**
@@ -166,9 +160,8 @@ public class Diagram implements DiagramObservable, Diagram2D
      * Numbers start with zero.
      */
     public Point2D getToPosition( int lineNumber ) {
-        Integer num = (Integer)this.lineEndPoints.get( lineNumber );
-        DiagramNode node = (DiagramNode) this.nodes.get(num.intValue());
-        return node.getPosition();
+        DiagramLine line = (DiagramLine)this.lines.get(lineNumber);
+        return line.getToPosition();
     }
 
     /**
@@ -178,8 +171,8 @@ public class Diagram implements DiagramObservable, Diagram2D
      * existing in the points list (not checked yet).
      */
     public void addLine( int from, int to ) {
-        this.lineStartPoints.add( new Integer(from) );
-        this.lineEndPoints.add( new Integer(to) );
+        this.lines.add( new DiagramLine( (DiagramNode)nodes.get(from),
+                                         (DiagramNode)nodes.get(to) ) );
     }
 
     /**

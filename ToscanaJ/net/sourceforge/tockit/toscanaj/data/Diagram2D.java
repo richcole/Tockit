@@ -46,6 +46,13 @@ public interface Diagram2D
     public Point2D getFromPosition( int lineNumber );
 
     /**
+     * Returns a line in the diagram.
+     *
+     * Numbers start with zero.
+     */
+    public DiagramLine getLine( int lineNumber );
+
+    /**
      * Returns the coordinates of an end point of a line.
      *
      * Numbers start with zero.

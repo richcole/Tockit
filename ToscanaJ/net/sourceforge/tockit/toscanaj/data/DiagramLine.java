@@ -3,94 +3,73 @@ package net.sourceforge.tockit.toscanaj.data;
 import java.awt.geom.Point2D;
 
 /**
- * class DiagramLine draws a line between two points
+ * This encapsulates all information about a line in a diagram.
+ *
+ * This is just the information which nodes the line connects.
  */
-
-import java.awt.Graphics2D;
-
 public class DiagramLine {
 
   /**
-   * Holds the coordinants of the first node in a Diagram
+   * Holds the starting node in the Diagram the line belongs to.
    */
-  Point2D fromPoint;
+  DiagramNode fromNode;
 
   /**
-   * Holds the coordinants of the second node in a Diagram
+   * Holds the ending node in the Diagram the line belongs to.
    */
-  Point2D toPoint;
+  DiagramNode toNode;
 
   /**
-   * Creates default DiagramLine, with fromPoint and toPoint variables holding 0 values
+   * Initialises a line between the given nodes.
    */
-  public DiagramLine() {
-    fromPoint = new Point2D.Double(0, 0);
-    toPoint = new Point2D.Double(0, 0);
+  public DiagramLine(DiagramNode fromNode, DiagramNode toNode) {
+    this.fromNode = fromNode;
+    this.toNode = toNode;
   }
 
   /**
-   * Creates DiagramLine object, initialising fromPoint and toPoint variables to required values
-   * indicating positions of 2 nodes in a Diagram
+   * Returns the starting node in a Diagram in which DiagramLine object will be connecting.
    */
-  public DiagramLine(Point2D fromPoint, Point2D toPoint) {
-    this.fromPoint = fromPoint;
-    this.toPoint = toPoint;
+  public DiagramNode getFromNode() {
+    return this.fromNode;
   }
 
   /**
-   * Returns coordinates of first node in a Diagram in which DiagramLine object will be connecting
+   * Returns the end node in a Diagram in which DiagramLine object will be connecting.
    */
-  public Point2D getFromPoint() {
-    return this.fromPoint;
-
+  public DiagramNode getToNode() {
+    return this.toNode;
   }
 
   /**
-   * Returns coordinates of second node in a Diagram in which DiagramLine object will be connecting
+   * Returns coordinates of first node in a Diagram in which DiagramLine object will be connecting.
+   *
+   * This is just a convenienced method to not having to get the node and then its position.
    */
-  public Point2D getToPoint() {
-    return this.toPoint;
+  public Point2D getFromPosition() {
+    return this.fromNode.getPosition();
   }
 
   /**
-   * Sets the fromPoint at the position of a node on a Diagram
+   * Returns coordinates of second node in a Diagram in which DiagramLine object will be connecting.
+   *
+   * This is just a convenienced method to not having to get the node and then its position.
    */
-  public void setFromPoint(Point2D fromPoint) {
-    this.fromPoint = fromPoint;
+  public Point2D getToPosition() {
+    return this.toNode.getPosition();
+  }
+
+  /**
+   * Sets the fromPoint to a node in a Diagram.
+   */
+  public void setFromPoint(DiagramNode fromNode) {
+    this.fromNode = fromNode;
   }
 
   /**
    * Sets the toPoint at the position of a node on a Diagram
    */
-  public void setToPoint(Point2D toPoint) {
-    this.toPoint = toPoint;
-  }
-
-  /**
-   * Returns the X coordinate of the fromPoint variable
-   */
-  public double getFromPointX() {
-    return this.fromPoint.getX();
-  }
-
-  /**
-   * Returns the Y coordinate of the fromPoint variable
-   */
-  public double getFromPointY() {
-    return this.fromPoint.getY();
-  }
-
-  /**
-   * Returns the X coordinate of the toPoint variable
-   */
-  public double getSecondPointX() {
-    return this.toPoint.getX();
-  }
-
-  /**
-   * Returns the Y coordinate of the toPoint variable
-   */
-  public double getSecondPointY() {
-    return this.toPoint.getY();
+  public void setToPoint(DiagramNode toNode) {
+    this.toNode = toNode;
   }
 }

@@ -176,7 +176,7 @@ public class DiagramView extends DrawingCanvas implements MouseListener, MouseMo
          newCanvasItemsList();
         // add all lines to the canvas
         for( int i = 0; i < _diagram.getNumberOfLines(); i++ ) {
-            DiagramLine dl = new DiagramLine( _diagram.getFromPosition( i ), _diagram.getToPosition( i ));
+            DiagramLine dl = _diagram.getLine(i);
             addCanvasItem( new LineView(dl) );
         }
         // add all points and labels to the canvas
