@@ -14,7 +14,13 @@
 		- plugin directory should contain source subdirectory will all 
 			plugin source files.
 		- plugin directory should contain libs subdirectory containing
-			all libs (jar or zip files) needed by this plugin. 
+			all libs (jar or zip files) needed by this plugin.
+			
+		The plugin files creates get a version number, which follows the
+		scheme "CVSbuild-{timestamp}" by default. To give specific version
+		numbers/names, add a file "version" into the main plugin dir and
+		set the property "plugin.version.name" in it (standard Java
+		property file format).
 	</description>
 
 	<!-- 
