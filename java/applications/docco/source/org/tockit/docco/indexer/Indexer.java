@@ -32,7 +32,7 @@ public class Indexer implements Runnable {
     private File baseDirectory;
     private File indexLocation;
 	private CallbackRecipient callbackRecipient;
-    private DocumentProcessingFactory docProcessingFactory;
+    private DocumentProcessor docProcessingFactory;
     private boolean shuttingDown = false;
 	
 	public Indexer(File indexLocation, File baseDirectory, List documentMappings, CallbackRecipient output) {
@@ -40,7 +40,7 @@ public class Indexer implements Runnable {
 		this.baseDirectory = baseDirectory;
 		this.callbackRecipient = output;
 		try {
-            this.docProcessingFactory = new DocumentProcessingFactory(documentMappings);
+            this.docProcessingFactory = new DocumentProcessor(documentMappings);
 		}
 		catch (Exception e) {
 			e.printStackTrace();

@@ -56,5 +56,4 @@ public class DocumentHandlerMapping {
 						" to " + this.docHandler.getDisplayName();
 		return str;
 	}
-
 }

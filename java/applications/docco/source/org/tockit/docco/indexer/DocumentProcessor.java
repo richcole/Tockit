@@ -23,11 +23,11 @@ import org.tockit.docco.filefilter.NotFoundFileExtensionException;
  * @todo search for something doing file magic (as in the GNU "file" command). That would be
  *   way better than the extension-based stuff.
  */
-public class DocumentProcessingFactory {
+public class DocumentProcessor {
 	
 	private List documentMappings;
 	
-	public DocumentProcessingFactory(List documentMappings) {
+	public DocumentProcessor(List documentMappings) {
 		this.documentMappings = documentMappings;
 	}
 
