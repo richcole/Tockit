@@ -21,13 +21,16 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
@@ -41,6 +44,7 @@ import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 
 import net.sourceforge.toscanaj.controller.fca.ConceptInterpretationContext;
+import net.sourceforge.toscanaj.controller.fca.ConceptInterpreter;
 import net.sourceforge.toscanaj.controller.fca.DiagramHistory;
 import net.sourceforge.toscanaj.controller.fca.DirectConceptInterpreter;
 import net.sourceforge.toscanaj.model.context.Attribute;
@@ -77,6 +81,7 @@ public class DoccoMainFrame extends JFrame {
 	private JTextField queryField = new JTextField(20);
 	private JButton searchButton = new JButton("Submit");
 	private JTextArea resultArea = new JTextArea(40, 80);
+	private JCheckBox showPhantomNodesCheckBox = new JCheckBox("Show phantom nodes");
 	
 	private DefaultListModel resListModel = new DefaultListModel();
 	
@@ -108,7 +113,7 @@ public class DoccoMainFrame extends JFrame {
 			diagramView.showDiagram(diagram);
 		}
 
-		/**
+        /**
 		 * Creates base vectors as described in Frank Vogt's book on page 61.
 		 * 
 		 * $w_m:=(2^i-2^{n-i-1},-2^i-2^{n-i-1})$ 
@@ -130,37 +135,82 @@ public class DoccoMainFrame extends JFrame {
 			return baseVectors;
 		}
 
-		public WriteableDiagram2D createDiagram(
-			Concept[] concepts,
-			Point2D[] baseVectors) {
+		public WriteableDiagram2D createDiagram(Concept[] concepts,	Point2D[] baseVectors) {
 			WriteableDiagram2D diagram = new SimpleLineDiagram();
 			DiagramNode[] nodes = new DiagramNode[concepts.length];
-			for (int i = 0; i < concepts.length; i++) {
-				double x = 0;
-				double y = 0;
-				for (int j = 0; j < baseVectors.length; j++) {
-					int currentBit = 1<<j;
-					if ((i & currentBit) == currentBit) {
-						x += baseVectors[j].getX();
-						y += baseVectors[j].getY();
+			List realizedConcepts = new ArrayList();
+			if(!showPhantomNodesCheckBox.isSelected()) {
+				outerLoop: for (int i = 0; i < concepts.length; i++) {
+					Concept concept = concepts[i];
+					// we assume top-down order
+					for (int j = i + 1; j < concepts.length; j++) {
+						ConceptImplementation subconcept = (ConceptImplementation) concepts[j];
+                    	if(concept.getExtentSize() == subconcept.getExtentSize()) { // not realized
+                    		// move attribute contingent down. We know there is an infimum on the
+                    		// set of concepts with the same extent, so that is ok.
+                    		Iterator it = concept.getAttributeContingentIterator();
+                    		while(it.hasNext()) {
+                    			Attribute attribute = (Attribute) it.next();
+                    			subconcept.addAttribute(attribute);
+                    		}
+                    		continue outerLoop;
+                    	}
 					}
+					realizedConcepts.add(concept);
 				}
-				Point2D pos = new Point2D.Double(x,y);
-				nodes[i] = new DiagramNode(diagram, String.valueOf(i), pos, concepts[i],
-													new LabelInfo(), new LabelInfo(), null);
-				diagram.addNode(nodes[i]);
+			}
+			for (int i = 0; i < concepts.length; i++) {
+				if(nodeIsShown(concepts[i])) {
+					if(!showPhantomNodesCheckBox.isSelected())  {
+						concepts[i].getUpset().retainAll(realizedConcepts);
+						concepts[i].getDownset().retainAll(realizedConcepts);
+					}
+					double x = 0;
+					double y = 0;
+					for (int j = 0; j < baseVectors.length; j++) {
+						int currentBit = 1<<j;
+						if ((i & currentBit) == currentBit) {
+							x += baseVectors[j].getX();
+							y += baseVectors[j].getY();
+						}
+					}
+					Point2D pos = new Point2D.Double(x,y);
+					nodes[i] = new DiagramNode(diagram, String.valueOf(i), pos, concepts[i],
+														new LabelInfo(), new LabelInfo(), null);
+					diagram.addNode(nodes[i]);
+				}
 			}
 			
 			for (int i = 0; i < concepts.length - 1; i++) {
+				if(!nodeIsShown(concepts[i])) {
+					continue;
+				}
 				for (int j = 0; j < baseVectors.length; j++) {
 					int currentBit = 1<<j;
 					if( (i | currentBit ) != i ) {
+						if(!nodeIsShown(concepts[i | currentBit])) {
+							continue;
+						}
 						diagram.addLine(nodes[i], nodes[i | currentBit]);
 					}
 				}
 			}
+			
 			return diagram;
 		}
+
+        private boolean nodeIsShown(Concept concept) {
+            if(showPhantomNodesCheckBox.isSelected()) {
+            	return true;
+            } else {
+				ConceptInterpreter interpreter = new DirectConceptInterpreter();
+				ConceptInterpretationContext interpretationContext = new ConceptInterpretationContext(new DiagramHistory(), new EventBroker());
+            	if(interpreter.isRealized(concept, interpretationContext)) {
+            		return true;
+            	}
+            }
+            return false;
+        }
 		
 		public Concept[] createConcepts(QueryWithResultSet queryResultSet) {
 			HitReferencesSet allObjects = new HitReferencesSetImplementation();
@@ -345,7 +395,10 @@ public class DoccoMainFrame extends JFrame {
 	
 	private JComponent buildQueryViewComponent() {
 		JPanel queryPanel = new JPanel(new FlowLayout());
-		
+
+		/**
+		 * @todo check if this could be done more elegant, e.g. by listening to properties
+		 */		
 		this.queryField.addKeyListener(new KeyListener() {
 			public void keyTyped(KeyEvent arg0) {
 				setSearchEnabledStatus();
@@ -369,9 +422,12 @@ public class DoccoMainFrame extends JFrame {
 			}
 		});
 		
+		this.showPhantomNodesCheckBox.setSelected(true);
+		
 		queryPanel.add(new JLabel("Search: "));
 		queryPanel.add(this.queryField);
 		queryPanel.add(this.searchButton);
+		queryPanel.add(this.showPhantomNodesCheckBox);
 		return queryPanel;
 	}
 	
