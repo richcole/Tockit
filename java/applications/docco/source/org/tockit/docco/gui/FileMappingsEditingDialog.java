@@ -40,8 +40,8 @@ import org.tockit.docco.indexer.filefilter.DoccoFileFilter;
 
 public class FileMappingsEditingDialog extends JDialog {
 	
-	private DocHandlersRegisteryListModel model;
-	private DocumentHandlerRegistry docHandlersRegistery;
+	private DocHandlersRegistryListModel model;
+	private DocumentHandlerRegistry docHandlersRegistry;
 	
 	private JButton upButton = new JButton("Move Up");
 	private JButton downButton = new JButton("Move Down");
@@ -74,14 +74,14 @@ public class FileMappingsEditingDialog extends JDialog {
 		}
 	}
 	
-	private class DocHandlersRegisteryListModel extends AbstractListModel {
+	private class DocHandlersRegistryListModel extends AbstractListModel {
 		private DocumentHandlerRegistry copyRegistry;
 		
-		public DocHandlersRegisteryListModel (DocumentHandlerRegistry registery) {
+		public DocHandlersRegistryListModel (DocumentHandlerRegistry registry) {
 			/// @todo this should be done using a copy constructor
 			copyRegistry = new DocumentHandlerRegistry();
 
-			Iterator it = registery.getDocumentMappingList().iterator();
+			Iterator it = registry.getDocumentMappingList().iterator();
 			while (it.hasNext()) {
 				DocumentHandlerMapping cur = (DocumentHandlerMapping) it.next();
 				copyRegistry.register(cur.getFileFilter(), cur.getHandler());
@@ -119,7 +119,7 @@ public class FileMappingsEditingDialog extends JDialog {
 			fireIntervalAdded(copyRegistry.getMappingAt(getSize() - 1), 0, getSize());
 		}
 		
-		public DocumentHandlerRegistry getRegistery () {
+		public DocumentHandlerRegistry getRegistry () {
 			return copyRegistry;
 		}
 	}
@@ -128,8 +128,8 @@ public class FileMappingsEditingDialog extends JDialog {
 	public FileMappingsEditingDialog(Frame parent, DocumentHandlerRegistry registry) 
 													throws HeadlessException {
 		super(parent, "Edit File Mappings Configuration", true);
-		this.docHandlersRegistery = registry;
-		this.model = new DocHandlersRegisteryListModel(registry);
+		this.docHandlersRegistry = registry;
+		this.model = new DocHandlersRegistryListModel(registry);
 		
 		getContentPane().add(createMainPanel(), BorderLayout.CENTER);
 		getContentPane().add(createButtonsPanel(), BorderLayout.SOUTH);
@@ -181,8 +181,15 @@ public class FileMappingsEditingDialog extends JDialog {
 		
 		removeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-					model.removeMappingAt(jlist.getSelectedIndex());
-					setButtonsStatus();
+				int selectedIndex = jlist.getSelectedIndex();
+				model.removeMappingAt(selectedIndex);
+				setButtonsStatus();
+				if (selectedIndex >= model.getSize()) {
+					jlist.setSelectedIndex(model.getSize() - 1);
+				}
+				else {
+					jlist.setSelectedIndex(selectedIndex);
+				}
 			}
 		});
 
@@ -325,7 +332,7 @@ public class FileMappingsEditingDialog extends JDialog {
 		okButton.setToolTipText("Save changes and exit this dialog");
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				docHandlersRegistery.setDocumentMappingList(model.getRegistery().getDocumentMappingList());
+				docHandlersRegistry.setDocumentMappingList(model.getRegistry().getDocumentMappingList());
 				setVisible(false);
 			}
 		});
