@@ -7,17 +7,18 @@
  */
 package org.tockit.cernatoXML.model;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import org.tockit.context.model.BinaryRelation;
+import org.tockit.context.model.Context;
 
 
-public class ViewContext {
+public class ViewContext implements Context {
     private CernatoTable context;
     private ScalingRelation relation;
-    private Collection attributes;
+    private Set attributes;
     private String name;
 
     private class ScalingRelation implements BinaryRelation {
@@ -46,11 +47,11 @@ public class ViewContext {
         this.name = view.getName();
     }
 
-    public Collection getObjects() {
+    public Set getObjects() {
         return context.getObjects();
     }
 
-    public Collection getAttributes() {
+    public Set getAttributes() {
         return attributes;
     }
 

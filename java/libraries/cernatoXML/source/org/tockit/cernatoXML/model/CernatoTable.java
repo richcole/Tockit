@@ -7,14 +7,15 @@
  */
 package org.tockit.cernatoXML.model;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Hashtable;
-import java.util.List;
+import java.util.Set;
+
+import org.tockit.util.ListSet;
+import org.tockit.util.ListSetImplementation;
 
 public class CernatoTable {
-    private List objects = new ArrayList();
-    private List properties = new ArrayList();
+    private ListSet objects = new ListSetImplementation();
+    private ListSet properties = new ListSetImplementation();
     private Hashtable relation = new Hashtable();
 
     public CernatoTable() {
@@ -25,7 +26,7 @@ public class CernatoTable {
         relation.put(object, new Hashtable());
     }
 
-    public Collection getObjects() {
+    public Set getObjects() {
         return objects;
     }
 
@@ -33,7 +34,7 @@ public class CernatoTable {
         properties.add(property);
     }
 
-    public Collection getAttributes() {
+    public Set getAttributes() {
         return properties;
     }
 
