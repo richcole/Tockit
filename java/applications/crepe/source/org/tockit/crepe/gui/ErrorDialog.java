@@ -7,9 +7,10 @@
  */
 package org.tockit.crepe.gui;
 
-import org.tockit.canvas.imagewriter.ImageGenerationException;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
-import javax.swing.*;
+import org.tockit.canvas.imagewriter.ImageGenerationException;
 
 
 /**

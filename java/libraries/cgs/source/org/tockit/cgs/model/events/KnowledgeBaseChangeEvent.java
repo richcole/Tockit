@@ -7,8 +7,8 @@
  */
 package org.tockit.cgs.model.events;
 
-import org.tockit.events.Event;
 import org.tockit.cgs.model.KnowledgeBase;
+import org.tockit.events.Event;
 
 public class KnowledgeBaseChangeEvent implements Event {
     private KnowledgeBase knowledgeBase;

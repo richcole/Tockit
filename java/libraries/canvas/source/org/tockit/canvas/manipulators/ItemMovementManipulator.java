@@ -7,11 +7,16 @@
  */
 package org.tockit.canvas.manipulators;
 
-import org.tockit.events.*;
-import org.tockit.canvas.events.*;
-import org.tockit.canvas.*;
-
 import java.awt.geom.Point2D;
+
+import org.tockit.canvas.Canvas;
+import org.tockit.canvas.MovableCanvasItem;
+import org.tockit.canvas.events.CanvasItemDraggedEvent;
+import org.tockit.canvas.events.CanvasItemDroppedEvent;
+import org.tockit.canvas.events.CanvasItemPickupEvent;
+import org.tockit.events.Event;
+import org.tockit.events.EventBroker;
+import org.tockit.events.EventListener;
 
 public class ItemMovementManipulator implements EventListener {
     protected Canvas canvas;
@@ -21,7 +26,7 @@ public class ItemMovementManipulator implements EventListener {
     }
 
     public ItemMovementManipulator(Canvas canvas, Class itemType, EventBroker eventBroker) {
-        if(! eventBroker.extendsOrImplements(itemType, MovableCanvasItem.class) ){
+        if(! EventBroker.extendsOrImplements(itemType, MovableCanvasItem.class) ){
             throw new RuntimeException("ItemMovementManipulator can only be subscribed to MovableCanvasItem or subtypes");
         }
         eventBroker.subscribe(this, CanvasItemDraggedEvent.class, itemType);

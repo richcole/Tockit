@@ -7,18 +7,25 @@
  */
 package org.tockit.canvas;
 
-import org.tockit.canvas.controller.CanvasController;
-import org.tockit.events.EventBroker;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Set;
+
+import javax.swing.JPanel;
+
+import org.tockit.canvas.controller.CanvasController;
+import org.tockit.events.EventBroker;
 
 /**
  * A generic drawing canvas with z-order and controller structure.

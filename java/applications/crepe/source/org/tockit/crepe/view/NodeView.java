@@ -7,12 +7,16 @@
  */
 package org.tockit.crepe.view;
 
-import org.tockit.cgs.model.*;
-import org.tockit.canvas.MovableCanvasItem;
-
-import java.awt.*;
+import java.awt.Color;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+
+import org.tockit.canvas.MovableCanvasItem;
+import org.tockit.cgs.model.Instance;
+import org.tockit.cgs.model.Node;
+import org.tockit.cgs.model.Type;
 
 public class NodeView extends MovableCanvasItem {
     private static final double defaultWidth = 130;

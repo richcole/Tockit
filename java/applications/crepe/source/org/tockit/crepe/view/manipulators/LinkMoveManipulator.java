@@ -7,14 +7,18 @@
  */
 package org.tockit.crepe.view.manipulators;
 
-import org.tockit.canvas.manipulators.ItemMovementManipulator;
-import org.tockit.canvas.events.CanvasItemDraggedEvent;
-import org.tockit.events.EventBroker;
-import org.tockit.crepe.view.*;
-
-import java.util.*;
 import java.awt.geom.Point2D;
-import java.awt.event.InputEvent;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+
+import org.tockit.canvas.events.CanvasItemDraggedEvent;
+import org.tockit.canvas.manipulators.ItemMovementManipulator;
+import org.tockit.crepe.view.GraphView;
+import org.tockit.crepe.view.LineView;
+import org.tockit.crepe.view.LinkView;
+import org.tockit.crepe.view.NodeView;
+import org.tockit.events.EventBroker;
 
 abstract public class LinkMoveManipulator extends ItemMovementManipulator {
     public LinkMoveManipulator(GraphView graphView, EventBroker eventBroker) {

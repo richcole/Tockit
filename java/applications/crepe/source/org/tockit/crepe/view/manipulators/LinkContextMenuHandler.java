@@ -7,19 +7,26 @@
  */
 package org.tockit.crepe.view.manipulators;
 
-import org.tockit.events.*;
-import org.tockit.events.EventListener;
-import org.tockit.canvas.events.CanvasItemEventWithPosition;
-import org.tockit.canvas.events.CanvasItemContextMenuRequestEvent;
-import org.tockit.canvas.Canvas;
-import org.tockit.cgs.model.*;
-import org.tockit.crepe.view.*;
-
-import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+
+import org.tockit.canvas.Canvas;
+import org.tockit.canvas.events.CanvasItemContextMenuRequestEvent;
+import org.tockit.canvas.events.CanvasItemEventWithPosition;
+import org.tockit.cgs.model.Link;
+import org.tockit.cgs.model.Relation;
+import org.tockit.crepe.view.LineView;
+import org.tockit.crepe.view.LinkView;
+import org.tockit.events.Event;
+import org.tockit.events.EventBroker;
+import org.tockit.events.EventListener;
 
 public class LinkContextMenuHandler implements EventListener {
     private Canvas canvas;

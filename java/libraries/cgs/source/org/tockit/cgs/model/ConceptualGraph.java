@@ -7,9 +7,10 @@
  */
 package org.tockit.cgs.model;
 
-import org.jdom.Element;
+import java.util.Iterator;
+import java.util.List;
 
-import java.util.*;
+import org.jdom.Element;
 
 public class ConceptualGraph {
     private Element element = null;

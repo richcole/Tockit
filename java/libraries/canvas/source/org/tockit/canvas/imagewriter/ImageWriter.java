@@ -7,9 +7,9 @@
  */
 package org.tockit.canvas.imagewriter;
 
-import org.tockit.canvas.Canvas;
-
 import java.io.File;
+
+import org.tockit.canvas.Canvas;
 
 /**
  * Interface for implementing image writers.

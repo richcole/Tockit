@@ -7,19 +7,28 @@
  */
 package org.tockit.crepe.view.manipulators;
 
-import org.tockit.canvas.manipulators.ItemMovementManipulator;
-import org.tockit.canvas.*;
-import org.tockit.canvas.Canvas;
-import org.tockit.canvas.MovableCanvasItem;
-import org.tockit.canvas.events.*;
-import org.tockit.events.EventBroker;
-import org.tockit.crepe.view.*;
-import org.tockit.cgs.model.Node;
-import org.tockit.cgs.model.Link;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
-import java.awt.geom.*;
-import java.awt.*;
-import java.util.*;
+import org.tockit.canvas.Canvas;
+import org.tockit.canvas.CanvasItem;
+import org.tockit.canvas.MovableCanvasItem;
+import org.tockit.canvas.events.CanvasItemDraggedEvent;
+import org.tockit.canvas.events.CanvasItemDroppedEvent;
+import org.tockit.canvas.events.CanvasItemPickupEvent;
+import org.tockit.canvas.manipulators.ItemMovementManipulator;
+import org.tockit.cgs.model.Link;
+import org.tockit.cgs.model.Node;
+import org.tockit.crepe.view.LineView;
+import org.tockit.crepe.view.NodeView;
+import org.tockit.events.EventBroker;
 
 public class NodeMoveManipulator extends ItemMovementManipulator {
     private class InvalidSymbol extends MovableCanvasItem {

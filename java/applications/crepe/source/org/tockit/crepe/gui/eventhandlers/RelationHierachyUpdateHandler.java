@@ -7,14 +7,16 @@
  */
 package org.tockit.crepe.gui.eventhandlers;
 
-import org.tockit.events.*;
-import org.tockit.events.Event;
-import org.tockit.cgs.model.events.NewRelationCreatedEvent;
-import org.tockit.cgs.model.*;
-import org.tockit.crepe.gui.treeviews.RelationHierachyTreeNode;
-
-import javax.swing.*;
+import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
+
+import org.tockit.cgs.model.KnowledgeBase;
+import org.tockit.cgs.model.Relation;
+import org.tockit.cgs.model.events.NewRelationCreatedEvent;
+import org.tockit.crepe.gui.treeviews.RelationHierachyTreeNode;
+import org.tockit.events.Event;
+import org.tockit.events.EventBroker;
+import org.tockit.events.EventListener;
 
 public class RelationHierachyUpdateHandler implements EventListener {
     private JTree treeview;

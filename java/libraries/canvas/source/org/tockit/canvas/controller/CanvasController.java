@@ -7,17 +7,24 @@
  */
 package org.tockit.canvas.controller;
 
-import org.tockit.canvas.Canvas;
-import org.tockit.canvas.CanvasItem;
-import org.tockit.canvas.events.*;
-import org.tockit.events.EventBroker;
-
-import java.awt.*;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 import java.util.Timer;
+
+import org.tockit.canvas.Canvas;
+import org.tockit.canvas.CanvasItem;
+import org.tockit.canvas.events.CanvasItemActivatedEvent;
+import org.tockit.canvas.events.CanvasItemClickedEvent;
+import org.tockit.canvas.events.CanvasItemContextMenuRequestEvent;
+import org.tockit.canvas.events.CanvasItemDraggedEvent;
+import org.tockit.canvas.events.CanvasItemDroppedEvent;
+import org.tockit.canvas.events.CanvasItemMouseMovementEvent;
+import org.tockit.canvas.events.CanvasItemPickupEvent;
+import org.tockit.canvas.events.CanvasItemPointedEvent;
+import org.tockit.events.EventBroker;
 
 public class CanvasController implements MouseListener, MouseMotionListener {
 

@@ -7,9 +7,11 @@
  */
 package org.tockit.crepe.gui.datatransfer;
 
-import org.tockit.cgs.model.*;
-
 import java.awt.datatransfer.DataFlavor;
+
+import org.tockit.cgs.model.Instance;
+import org.tockit.cgs.model.Relation;
+import org.tockit.cgs.model.Type;
 
 public class CGFlavors {
     public static final DataFlavor TypeFlavor = new DataFlavor(Type.class, "Type");

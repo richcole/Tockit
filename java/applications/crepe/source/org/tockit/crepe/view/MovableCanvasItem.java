@@ -7,9 +7,9 @@
  */
 package org.tockit.crepe.view;
 
-import org.tockit.canvas.CanvasItem;
-
 import java.awt.geom.Point2D;
+
+import org.tockit.canvas.CanvasItem;
 
 public abstract class MovableCanvasItem extends CanvasItem {
     public abstract void setPosition(Point2D newPosition);

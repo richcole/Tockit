@@ -7,17 +7,21 @@
  */
 package org.tockit.canvas.imagewriter;
 
-import com.sun.jimi.core.*;
-
-import org.tockit.canvas.Canvas;
-
-import java.awt.*;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
-import org.tockit.canvas.imagewriter.GraphicFormat;
+import org.tockit.canvas.Canvas;
+
+import com.sun.jimi.core.Jimi;
+import com.sun.jimi.core.JimiException;
+import com.sun.jimi.core.JimiWriter;
 
 /**
  * This class can be used to save a Canvas to a bitmap file.

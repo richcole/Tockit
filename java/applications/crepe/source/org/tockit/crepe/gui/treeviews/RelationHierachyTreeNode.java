@@ -7,11 +7,12 @@
  */
 package org.tockit.crepe.gui.treeviews;
 
+import java.util.Enumeration;
+
+import javax.swing.tree.TreeNode;
+
 import org.tockit.cgs.model.Relation;
 import org.tockit.cgs.model.Type;
-
-import javax.swing.tree.*;
-import java.util.Enumeration;
 
 import com.sun.jimi.util.ArrayEnumeration;
 

@@ -7,13 +7,15 @@
  */
 package org.tockit.events.tests;
 
-import com.mockobjects.ExpectationCounter;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.tockit.events.Event;
 import org.tockit.events.EventBroker;
 import org.tockit.events.EventListener;
+
+import com.mockobjects.ExpectationCounter;
 
 public class EventBrokerTest extends TestCase {
     public EventBrokerTest(String s) {

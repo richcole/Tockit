@@ -7,10 +7,12 @@
  */
 package org.tockit.crepe.gui.datatransfer;
 
-import org.tockit.cgs.model.Instance;
-
-import java.awt.datatransfer.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
+
+import org.tockit.cgs.model.Instance;
 
 public class InstanceTransferable implements Transferable {
     private Instance instance;

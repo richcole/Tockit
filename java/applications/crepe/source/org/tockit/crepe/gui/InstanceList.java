@@ -7,18 +7,29 @@
  */
 package org.tockit.crepe.gui;
 
-import org.tockit.crepe.gui.datatransfer.*;
-import org.tockit.crepe.gui.treeviews.RelationHierachyTreeNode;
-import org.tockit.cgs.model.Type;
-import org.tockit.cgs.model.Instance;
-
-import javax.swing.*;
-import javax.swing.tree.TreePath;
-import java.awt.dnd.*;
+import java.awt.Point;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.*;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DragGestureEvent;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragSource;
+import java.awt.dnd.DragSourceDragEvent;
+import java.awt.dnd.DragSourceDropEvent;
+import java.awt.dnd.DragSourceEvent;
+import java.awt.dnd.DragSourceListener;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
 import java.io.IOException;
+
+import javax.swing.JList;
+
+import org.tockit.cgs.model.Instance;
+import org.tockit.cgs.model.Type;
+import org.tockit.crepe.gui.datatransfer.CGFlavors;
+import org.tockit.crepe.gui.datatransfer.InstanceTransferable;
 
 public class InstanceList extends JList  implements DropTargetListener, DragSourceListener, DragGestureListener{
     private DragSource dragSource;

@@ -7,9 +7,12 @@
  */
 package org.tockit.cgs.model;
 
-import org.jdom.Element;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
 
-import java.util.*;
+import org.jdom.Element;
 
 public class Relation {
     private Element element = null;

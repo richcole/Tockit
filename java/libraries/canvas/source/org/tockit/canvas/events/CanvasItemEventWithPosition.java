@@ -7,9 +7,9 @@
  */
 package org.tockit.canvas.events;
 
-import org.tockit.canvas.CanvasItem;
-
 import java.awt.geom.Point2D;
+
+import org.tockit.canvas.CanvasItem;
 
 /**
  * A superclass for canvas item events that store a single position.

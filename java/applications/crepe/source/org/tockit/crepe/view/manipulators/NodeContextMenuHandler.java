@@ -7,20 +7,35 @@
  */
 package org.tockit.crepe.view.manipulators;
 
-import org.tockit.events.*;
-import org.tockit.events.EventListener;
-import org.tockit.canvas.events.CanvasItemEventWithPosition;
-import org.tockit.canvas.events.CanvasItemContextMenuRequestEvent;
-import org.tockit.canvas.Canvas;
-import org.tockit.cgs.model.*;
-import org.tockit.crepe.view.*;
-import org.tockit.crepe.gui.*;
-
-import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+
+import org.tockit.canvas.Canvas;
+import org.tockit.canvas.events.CanvasItemContextMenuRequestEvent;
+import org.tockit.canvas.events.CanvasItemEventWithPosition;
+import org.tockit.cgs.model.Instance;
+import org.tockit.cgs.model.KnowledgeBase;
+import org.tockit.cgs.model.Link;
+import org.tockit.cgs.model.Node;
+import org.tockit.cgs.model.Type;
+import org.tockit.crepe.gui.InstanceChooser;
+import org.tockit.crepe.gui.InstanceCreator;
+import org.tockit.crepe.gui.TypeCreator;
+import org.tockit.crepe.view.LineView;
+import org.tockit.crepe.view.LinkView;
+import org.tockit.crepe.view.NodeView;
+import org.tockit.events.Event;
+import org.tockit.events.EventBroker;
+import org.tockit.events.EventListener;
 
 public class NodeContextMenuHandler implements EventListener {
     private Canvas canvas;

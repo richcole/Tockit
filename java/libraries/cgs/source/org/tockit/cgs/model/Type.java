@@ -7,9 +7,11 @@
  */
 package org.tockit.cgs.model;
 
-import org.jdom.Element;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
-import java.util.*;
+import org.jdom.Element;
 
 /**
  * In any place where references to this type are used, a null reference is supposed to refer to the top (universal)

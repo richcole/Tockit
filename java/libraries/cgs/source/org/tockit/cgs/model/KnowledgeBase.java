@@ -8,12 +8,18 @@
  */
 package org.tockit.cgs.model;
 
-import org.jdom.Element;
-import org.tockit.util.IdPool;
-import org.tockit.cgs.model.events.*;
-import org.tockit.events.EventBroker;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Set;
 
-import java.util.*;
+import org.jdom.Element;
+import org.tockit.cgs.model.events.NewInstanceCreatedEvent;
+import org.tockit.cgs.model.events.NewRelationCreatedEvent;
+import org.tockit.cgs.model.events.NewTypeCreatedEvent;
+import org.tockit.events.EventBroker;
+import org.tockit.util.IdPool;
 
 public class KnowledgeBase {
     private Element element = null; // root element

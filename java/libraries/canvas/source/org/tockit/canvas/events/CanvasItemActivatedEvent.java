@@ -7,9 +7,9 @@
  */
 package org.tockit.canvas.events;
 
-import org.tockit.canvas.CanvasItem;
-
 import java.awt.geom.Point2D;
+
+import org.tockit.canvas.CanvasItem;
 
 /**
  * This event is emitted whenever an canvas item was activated (e.g. by double-clicking).

@@ -7,10 +7,13 @@
  */
 package org.tockit.crepe.view;
 
-import org.tockit.canvas.CanvasItem;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
-import java.awt.*;
-import java.awt.geom.*;
+import org.tockit.canvas.CanvasItem;
 
 /**
  * @todo add option to use arrows

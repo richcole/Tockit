@@ -7,14 +7,16 @@
  */
 package org.tockit.crepe.gui.eventhandlers;
 
-import org.tockit.events.*;
-import org.tockit.cgs.model.events.NewTypeCreatedEvent;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultTreeModel;
+
 import org.tockit.cgs.model.KnowledgeBase;
 import org.tockit.cgs.model.Type;
+import org.tockit.cgs.model.events.NewTypeCreatedEvent;
 import org.tockit.crepe.gui.treeviews.TypeHierachyTreeNode;
-
-import javax.swing.*;
-import javax.swing.tree.DefaultTreeModel;
+import org.tockit.events.Event;
+import org.tockit.events.EventBroker;
+import org.tockit.events.EventListener;
 
 public class TypeHierachyUpdateHandler implements EventListener {
     private JTree treeview;

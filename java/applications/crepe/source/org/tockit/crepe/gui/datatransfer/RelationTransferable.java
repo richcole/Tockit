@@ -7,10 +7,12 @@
  */
 package org.tockit.crepe.gui.datatransfer;
 
-import org.tockit.cgs.model.Relation;
-
-import java.awt.datatransfer.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
+
+import org.tockit.cgs.model.Relation;
 
 public class RelationTransferable implements Transferable {
     private Relation relation;

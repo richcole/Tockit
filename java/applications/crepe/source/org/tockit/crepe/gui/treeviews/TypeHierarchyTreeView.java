@@ -7,17 +7,30 @@
  */
 package org.tockit.crepe.gui.treeviews;
 
-import org.tockit.cgs.model.Type;
-import org.tockit.crepe.gui.datatransfer.TypeTransferable;
-import org.tockit.crepe.gui.datatransfer.CGFlavors;
+import java.awt.Point;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DragGestureEvent;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragSource;
+import java.awt.dnd.DragSourceDragEvent;
+import java.awt.dnd.DragSourceDropEvent;
+import java.awt.dnd.DragSourceEvent;
+import java.awt.dnd.DragSourceListener;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
+import java.io.IOException;
 
-import javax.swing.*;
+import javax.swing.JTree;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
-import java.awt.dnd.*;
-import java.awt.datatransfer.*;
-import java.awt.*;
-import java.io.IOException;
+
+import org.tockit.cgs.model.Type;
+import org.tockit.crepe.gui.datatransfer.CGFlavors;
+import org.tockit.crepe.gui.datatransfer.TypeTransferable;
 
 public class TypeHierarchyTreeView extends JTree implements DropTargetListener, DragSourceListener, DragGestureListener {
 

@@ -7,11 +7,15 @@
  */
 package org.tockit.crepe.view;
 
-import org.tockit.cgs.model.Link;
-import org.tockit.canvas.MovableCanvasItem;
+import java.awt.Color;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
-import java.awt.*;
-import java.awt.geom.*;
+import org.tockit.canvas.MovableCanvasItem;
+import org.tockit.cgs.model.Link;
 
 public class LinkView extends MovableCanvasItem {
     private Ellipse2D ellipse = new Ellipse2D.Double(0,0,130,40);

@@ -7,18 +7,30 @@
  */
 package org.tockit.crepe.view;
 
-import org.tockit.canvas.Canvas;
-import org.tockit.events.EventBroker;
-import org.tockit.cgs.model.*;
-import org.tockit.crepe.view.manipulators.*;
-import org.tockit.crepe.gui.eventhandlers.GraphViewDragHandler;
-
-import java.awt.*;
-import java.awt.dnd.*;
-import java.awt.geom.Rectangle2D;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.dnd.DropTarget;
 import java.awt.geom.Point2D;
-import java.util.*;
+import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
+
+import org.tockit.canvas.Canvas;
+import org.tockit.cgs.model.ConceptualGraph;
+import org.tockit.cgs.model.Link;
+import org.tockit.cgs.model.Node;
+import org.tockit.crepe.gui.eventhandlers.GraphViewDragHandler;
+import org.tockit.crepe.view.manipulators.LinkContextMenuHandler;
+import org.tockit.crepe.view.manipulators.LinkMoveConnectedManipulator;
+import org.tockit.crepe.view.manipulators.LinkMoveINCManipulator;
+import org.tockit.crepe.view.manipulators.LinkMoveImmediateManipulator;
+import org.tockit.crepe.view.manipulators.NodeContextMenuHandler;
+import org.tockit.crepe.view.manipulators.NodeMoveManipulator;
+import org.tockit.events.EventBroker;
 
 public class GraphView extends Canvas {
     private ConceptualGraph graphShown;

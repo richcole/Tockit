@@ -7,9 +7,9 @@
  */
 package org.tockit.canvas.events;
 
-import org.tockit.canvas.CanvasItem;
-
 import java.awt.geom.Point2D;
+
+import org.tockit.canvas.CanvasItem;
 
 /**
  * Indicates that a context menu request was made on a canvas item.

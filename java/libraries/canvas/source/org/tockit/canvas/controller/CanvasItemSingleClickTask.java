@@ -7,12 +7,12 @@
  */
 package org.tockit.canvas.controller;
 
+import java.awt.geom.Point2D;
+import java.util.TimerTask;
+
 import org.tockit.canvas.CanvasItem;
 import org.tockit.canvas.events.CanvasItemSelectedEvent;
 import org.tockit.events.EventBroker;
-
-import java.awt.geom.Point2D;
-import java.util.TimerTask;
 
 class CanvasItemSingleClickTask extends TimerTask {
     /**

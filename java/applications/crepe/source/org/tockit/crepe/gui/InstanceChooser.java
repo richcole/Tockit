@@ -7,13 +7,33 @@
  */
 package org.tockit.crepe.gui;
 
-import org.tockit.cgs.model.*;
-import org.tockit.crepe.controller.ConfigurationManager;
-
-import javax.swing.*;
-import java.awt.event.*;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Collection;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
+import org.tockit.cgs.model.Instance;
+import org.tockit.cgs.model.KnowledgeBase;
+import org.tockit.cgs.model.Type;
+import org.tockit.crepe.controller.ConfigurationManager;
 
 public class InstanceChooser extends JDialog {
     private static InstanceChooser dialog = null;

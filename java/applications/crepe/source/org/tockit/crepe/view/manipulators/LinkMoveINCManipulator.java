@@ -8,16 +8,16 @@
  */
 package org.tockit.crepe.view.manipulators;
 
-import org.tockit.crepe.view.GraphView;
-import org.tockit.crepe.view.LinkView;
-import org.tockit.crepe.view.LineView;
-import org.tockit.events.EventBroker;
-import org.tockit.canvas.events.CanvasItemDraggedEvent;
-
-import java.util.HashSet;
-import java.util.Collection;
-import java.util.Iterator;
 import java.awt.event.InputEvent;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+
+import org.tockit.canvas.events.CanvasItemDraggedEvent;
+import org.tockit.crepe.view.GraphView;
+import org.tockit.crepe.view.LineView;
+import org.tockit.crepe.view.LinkView;
+import org.tockit.events.EventBroker;
 
 public class LinkMoveINCManipulator extends LinkMoveManipulator {
     public LinkMoveINCManipulator(GraphView graphView, EventBroker eventBroker) {

@@ -7,7 +7,8 @@
  */
 package org.tockit.cgs.model.events;
 
-import org.tockit.cgs.model.*;
+import org.tockit.cgs.model.Instance;
+import org.tockit.cgs.model.KnowledgeBase;
 
 public class NewInstanceCreatedEvent extends KnowledgeBaseChangeEvent {
     private Instance instance;

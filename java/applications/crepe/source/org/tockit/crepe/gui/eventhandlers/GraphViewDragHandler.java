@@ -7,16 +7,28 @@
  */
 package org.tockit.crepe.gui.eventhandlers;
 
-import org.tockit.crepe.view.*;
-import org.tockit.crepe.gui.datatransfer.CGFlavors;
-import org.tockit.cgs.model.*;
-
-import java.awt.dnd.*;
+import java.awt.Point;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.*;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
 import java.awt.geom.Point2D;
 import java.io.IOException;
+
+import org.tockit.cgs.model.ConceptualGraph;
+import org.tockit.cgs.model.Instance;
+import org.tockit.cgs.model.Link;
+import org.tockit.cgs.model.Node;
+import org.tockit.cgs.model.Relation;
+import org.tockit.cgs.model.Type;
+import org.tockit.crepe.gui.datatransfer.CGFlavors;
+import org.tockit.crepe.view.GraphView;
+import org.tockit.crepe.view.LineView;
+import org.tockit.crepe.view.LinkView;
+import org.tockit.crepe.view.NodeView;
 
 public class GraphViewDragHandler implements DropTargetListener {
     private final GraphView graphView;

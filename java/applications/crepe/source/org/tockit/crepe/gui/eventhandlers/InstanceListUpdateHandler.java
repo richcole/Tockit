@@ -7,14 +7,15 @@
  */
 package org.tockit.crepe.gui.eventhandlers;
 
-import org.tockit.events.*;
-import org.tockit.cgs.model.events.NewInstanceCreatedEvent;
-import org.tockit.cgs.model.KnowledgeBase;
-import org.tockit.cgs.model.Instance;
-
-import javax.swing.*;
 import java.util.Collection;
-import java.util.Iterator;
+
+import javax.swing.JList;
+
+import org.tockit.cgs.model.KnowledgeBase;
+import org.tockit.cgs.model.events.NewInstanceCreatedEvent;
+import org.tockit.events.Event;
+import org.tockit.events.EventBroker;
+import org.tockit.events.EventListener;
 
 public class InstanceListUpdateHandler implements EventListener {
     private JList listView;

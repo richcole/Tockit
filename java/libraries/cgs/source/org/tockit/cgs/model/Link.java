@@ -7,10 +7,10 @@
  */
 package org.tockit.cgs.model;
 
-import org.jdom.Element;
-
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
+
+import org.jdom.Element;
 
 public class Link {
     private Element element = null;

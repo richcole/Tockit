@@ -8,8 +8,9 @@
  */
 package org.tockit.canvas.events;
 
-import org.tockit.canvas.CanvasItem;
 import java.awt.geom.Point2D;
+
+import org.tockit.canvas.CanvasItem;
 
 public class CanvasItemMouseMovementEvent extends CanvasItemEventWithPosition {
     public CanvasItemMouseMovementEvent(CanvasItem item, int modifiers,
