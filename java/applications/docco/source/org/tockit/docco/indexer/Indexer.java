@@ -87,7 +87,12 @@ public class Indexer extends Thread {
 	}
 	
 	synchronized public void enqueue(File file) {
-		this.fileQueue.add(file);
+		/// @todo check what the story is with the exception here -- what can go wrong?
+		try {
+			this.fileQueue.add(file.getCanonicalFile());
+		} catch (IOException e) {
+			this.fileQueue.add(file);
+		}
 	}
 	
 	private void indexDocs(File file) {
@@ -104,7 +109,7 @@ public class Indexer extends Thread {
 						return; 
 					}
 					for (int i = 0; i < files.length; i++) {
-						this.fileQueue.add(new File(file, files[i]));
+						enqueue(new File(file, files[i]));
 					}
 				}
 				else {
