@@ -8,6 +8,7 @@
 package org.tockit.plugin;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -49,7 +50,7 @@ import java.util.logging.Logger;
  *  </ul>
  * </p>
  */
-public class PluginLoader {
+public class PluginLoader extends LoaderBase {
 
 	private static final Logger logger = Logger.getLogger(PluginLoader.class.getName());
 	private static final String pluginDescriptorFileName = "plugin.txt";
@@ -94,12 +95,12 @@ public class PluginLoader {
 	 * @return errors that occured during plugin loading so they can be reported to a user.
 	 * </p>
 	 */
-	public static PluginLoader.Error[] loadPlugins (File[] pluginsBaseFiles) throws PluginLoaderException {
+	public static PluginLoader.Error[] loadPlugins (File pluginDirectory) throws FileNotFoundException {
 		logger.setLevel(Level.FINER);
 
-		File[] pluginDirs = LoaderUtil.listBaseDirs(pluginsBaseFiles);
+		File[] pluginDirs = findSubDirectories(pluginDirectory);
 		if (pluginDirs == null) {
-			throw new PluginLoaderException("Didn't find any plugins in specified plugins directories: " + pluginDirs);
+			throw new FileNotFoundException("Didn't find specified plugins directory: " + pluginDirs);
 		}
 		logger.fine("STARTING to load plugins. Found " + pluginDirs.length + " plugins");
 
@@ -107,16 +108,9 @@ public class PluginLoader {
 			File curPluginDir = pluginDirs[i];
 			try {
 				logger.fine("Loading class loader for " + curPluginDir);
-				Class[] foundPlugins = LoaderUtil.findClassesInDir(curPluginDir, pluginDescriptorFileName, Plugin.class, logger);
+				Class[] foundPlugins = findClassesInDir(curPluginDir, pluginDescriptorFileName, Plugin.class, logger);
 				loadPluginClasses(foundPlugins);
 				logger.fine("Finished loading plugins in " + curPluginDir);
-			}
-			catch (ClassCastException e) {
-				String errMsg = "Expected implementation of org.tockit.plugin.Plugin " + 
-								"interface in " + e.getMessage();
-				errors.add( new PluginLoader.Error(
-							curPluginDir, 
-							new PluginLoaderException(errMsg, e)));
 			} catch (Exception e) {
 				errors.add( new PluginLoader.Error(curPluginDir, e));
 			}

@@ -7,13 +7,13 @@
  */
 package org.tockit.plugin;
 
-public class PluginLoaderException extends Exception {
+public class PluginLoadFailedException extends Exception {
 
-	public PluginLoaderException(String message) {
+	public PluginLoadFailedException(String message) {
 		super(message);
 	}
 
-	public PluginLoaderException(String message, Throwable cause) {
+	public PluginLoadFailedException(String message, Throwable cause) {
 		super(message, cause);
 	}
 

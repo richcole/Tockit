@@ -21,16 +21,20 @@ import java.util.List;
 import java.util.logging.Logger;
 
 
-public final class LoaderUtil {
+public abstract class LoaderBase {
 
 	protected static List loadPluginDescriptorSpecifedClasses(
-									File curPluginDir,
-									PluginClassLoader classLoader,
-									String descriptorFileName,
-									Logger logger)
-									throws FileNotFoundException, 
-									IOException, ClassNotFoundException {
-	
+											File curPluginDir,
+											PluginClassLoader classLoader,
+											String descriptorFileName,
+											Class interfaceClass,
+											Logger logger)
+											throws
+												FileNotFoundException,
+												IOException,
+												ClassNotFoundException,
+												PluginLoadFailedException {
+
 		File descriptorFile = new File(curPluginDir, descriptorFileName);
 		List descriptorClasses = new ArrayList();
 		if (descriptorFile.exists()) {
@@ -39,43 +43,50 @@ public final class LoaderUtil {
 			Reader reader = new InputStreamReader(fileInStream);
 			BufferedReader br = new BufferedReader(reader);
 			String line;
-			while ( (line = br.readLine()) != null ) {
+			while ((line = br.readLine()) != null) {
 				logger.finer("Looking for class with name: '" + line + "'");
 				Class className = classLoader.findClass(line.trim());
+				if (!interfaceClass.isAssignableFrom(className)) {
+					throw new PluginLoadFailedException(
+						"Expected implementation of "
+							+ interfaceClass
+							+ " interface in "
+							+ className);
+				}
 				descriptorClasses.add(className);
 			}
 		}
 		return descriptorClasses;
 	}
 
-	protected static File[] listBaseDirs(File[] pluginsBaseFiles) {
-		File[] pluginDirs = null;
-		for (int i = 0; i < pluginsBaseFiles.length; i++) {
-			File file = pluginsBaseFiles[i];
-			if (file.exists()) {
-				pluginDirs = file.listFiles( new FileFilter () {
-					public boolean accept(File pathname) {
-						return pathname.isDirectory();
-					}
-				});
-				break; 
+	protected static File[] findSubDirectories(File parentDirectory) {
+		return parentDirectory.listFiles( new FileFilter () {
+			public boolean accept(File file) {
+				return file.isDirectory();
 			}
-		}
-		return pluginDirs;
+		});
 	}
 
-	protected static Class[] findClassesInDir(File curPluginDir, String pluginDescriptorFileName, Class interfaceClass, Logger logger)
-											throws
-												FileNotFoundException,
-												IOException,
-												ClassNotFoundException,
-												NoClassDefFoundError {
+
+	protected static Class[] findClassesInDir(
+									File curPluginDir,
+									String pluginDescriptorFileName,
+									Class interfaceClass,
+									Logger logger)
+									throws
+										FileNotFoundException,
+										IOException,
+										ClassNotFoundException,
+										NoClassDefFoundError,
+										PluginLoadFailedException {
+
 		PluginClassLoader classLoader = new PluginClassLoader(curPluginDir);
-		
-		List descriptorClasses = 
-				LoaderUtil.loadPluginDescriptorSpecifedClasses(
-							curPluginDir, classLoader, 
-							pluginDescriptorFileName, logger);
+		List descriptorClasses = LoaderBase.loadPluginDescriptorSpecifedClasses(
+											curPluginDir,
+											classLoader,
+											pluginDescriptorFileName,
+											interfaceClass,
+											logger);
 		Class[] foundPlugins = null;
 		if (descriptorClasses.size() > 0) {
 			foundPlugins = (Class[]) descriptorClasses.toArray(new Class[descriptorClasses.size()]);
@@ -85,4 +96,5 @@ public final class LoaderUtil {
 		}
 		return foundPlugins;
 	}
+
 }
