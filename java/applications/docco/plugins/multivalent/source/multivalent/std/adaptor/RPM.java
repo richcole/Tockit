@@ -194,21 +194,18 @@ System.out.println("magic # = "+Integer.toOctalString(magic)+" vs "+Integer.toOc
 		// for now scan for magic (070701)
 		int skip = 0;
 		for ( ; true; skip++) {
-			int c;
-			if ((c=isz_.read())!='0') continue;
-			if ((c=isz_.read())!='7') continue;
-			if ((c=isz_.read())!='0') continue;
-			if ((c=isz_.read())!='7') continue;
-			if ((c=isz_.read())!='0') continue;
-			if ((c=isz_.read())!='1') continue;
+			if ((isz_.read())!='0') continue;
+			if ((isz_.read())!='7') continue;
+			if ((isz_.read())!='0') continue;
+			if ((isz_.read())!='7') continue;
+			if ((isz_.read())!='0') continue;
+			if ((isz_.read())!='1') continue;
 			break;
 		}
 		System.out.println("skip = "+skip);
 
-		int ino=readhex8(), mode=readhex8(), uid=readhex8(), gid=readhex8(), nlink=readhex8(),
-			mtime=readhex8(), filesize=readhex8(),
-			dev_major=readhex8(), dev_min=readhex8(), rdev_major=readhex8(), rdev_min=readhex8(),
-			namesize=readhex8(), chksum=readhex8();
+		int mtime=readhex8(), filesize=readhex8(),
+			namesize=readhex8();
 System.out.println("namesize="+namesize+", filesize="+filesize); //if (5>4)break;
 		fsb.setLength(0); for (int i=0,imax=namesize-1; i<imax; i++) fsb.append((char)isz_.read());
 		isz_.read(); // trailing null

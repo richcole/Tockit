@@ -797,7 +797,7 @@ public class RobustHyperlink /* not a Behavior--utility, like Location *//*imple
 
 		// handle A HREF, FRAME SRC, BASE HREF, ...
 		int lasti=0; char ch;
-		for (int i=0,imax=str.length(),ie; (i=str.indexOf('<', i))!=-1; i++) {
+		for (int i=0,ie; (i=str.indexOf('<', i))!=-1; i++) {
 			// dump text up to start of tag
 			i++;
 			if (i>lasti) { out.print(str.substring(lasti,i)); lasti=i; }
@@ -1005,7 +1005,6 @@ infoseek - <b><a href="/redirect
 			String result = new String(buf, 0,len);
 //System.out.println("result len = "+len);
 
-			String quality = "exact match";
 			String hit = "not indexed (yet?)";
 			String searchfor = URIs.encode(targeturl.getHost()+targeturl.getFile());
 //System.out.println("search for |"+searchfor+"|");
@@ -1013,15 +1012,14 @@ infoseek - <b><a href="/redirect
 			if (filename.indexOf('/')!=-1) filename=filename.substring(filename.lastIndexOf(',')+1);
 			int inx=result.indexOf(searchfor);
 			if (inx==-1) {
-				quality="moved on same site"; searchfor=targeturl.getHost();
+				searchfor=targeturl.getHost();
 				inx=result.indexOf(searchfor);
 			}
 			if (inx==-1 && filename.length()>=5) {
-				quality="same file on different site";
 				searchfor = filename;
 				inx=result.indexOf(searchfor);
 			}
-			if (inx==-1) { quality="not indexed (yet?)"; }
+			if (inx==-1) { }
 //System.out.println("\tfound "+searchfor+" @ "+inx);
 
 			// rank

@@ -16,12 +16,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.regex.*;
 
 import multivalent.*;
 import multivalent.node.LeafAscii;
-import multivalent.node.Fixed;
 import multivalent.node.FixedI;
 import multivalent.node.FixedIHBox;
 import multivalent.node.FixedLeafAscii;
@@ -448,11 +446,10 @@ public class PDF extends multivalent.std.adaptor.MediaAdaptorRandom {
 	Line2D pathline = null;
 	//boolean lastS = false, firstS=true;
 
-	boolean /*fshowtext = (getHints() & MediaAdaptor.HINT_NO_TEXT) == 0,*/ fshowshape = (getHints() & MediaAdaptor.HINT_NO_SHAPE) == 0,
-		fexact = (getHints() & MediaAdaptor.HINT_EXACT) != 0;
+	boolean /*fshowtext = (getHints() & MediaAdaptor.HINT_NO_TEXT) == 0,*/ fshowshape = (getHints() & MediaAdaptor.HINT_NO_SHAPE) == 0;
 
 	// metrics
-	int cmdcnt=0, hunkcnt=0, leafcnt=0, spancnt=0, vspancnt=0, concatcnt=0;
+	int cmdcnt=0, leafcnt=0, spancnt=0, vspancnt=0, concatcnt=0;
 	int pathcnt=0, pathlen=0; int[] pathlens=new int[5000];
 	long start = System.currentTimeMillis();
 
@@ -1661,77 +1658,12 @@ System.out.println(ctm+": "+img.getWidth()+"x"+img.getHeight()+" => @"+left+","+
   /** Check that all leaves are valid and bbox.equals(ibbox). */
   private boolean checkTree(String id, INode pageroot) {
 	for (Leaf l = pageroot.getFirstLeaf(), endl = (l!=null? pageroot.getLastLeaf().getNextLeaf(): null); l!=endl; l=l.getNextLeaf()) {
-		Fixed f = (Fixed)l;
 		assert l.isValid() || !(l instanceof FixedLeafAsciiKern): id+": "+l+" "+l.getClass().getName()+" "+l.getBbox();    // not images
 		//assert l.bbox!=f.getIbbox(): l;
 		//assert l.bbox.equals(f.getIbbox()): l.bbox+" vs "+f.getIbbox();
 	}
 
 	return true;    // OK
-  }
-
-
-
-// works except screws up spans.  keep around in case clever in the future
-  private static final Comparator YCOMP = new Comparator() {
-	public int compare(Object o1, Object o2) {
-		int y1 = ((Fixed)((Node)o1).getFirstLeaf()).getIbbox().y;
-		int y2 = ((Fixed)((Node)o2).getFirstLeaf()).getIbbox().y;
-		return y1 - y2;
-	}
-  };
-
-  /** Sort lines by increasing Y. */
-  // problem cases: two columns within same BT..ET
-  private void sortY(INode textp) {
-	if (!DEBUG) return;
-	int size = textp.size(); if (size<=1) return;
-
-	Node[] children = new Node[size];
-	for (int i=0; i<size; i++) children[i] = textp.childAt(i);
-	Node[] c0 = (Node[])children.clone();   // see if makes a difference (most PDFs written in top-to-bottom reading order?)
-
-	Arrays.sort(children, YCOMP);
-
-	if (Arrays.equals(children, c0)) return;
-System.out.println("inc Y on "+textp.getFirstLeaf());
-
-	// collect spans
-	List ends=new ArrayList(10), starts=new ArrayList(10), swaps=new ArrayList(10);
-	for (Leaf l=textp.getFirstLeaf(), endl=textp.getLastLeaf().getNextLeaf(); l!=endl; l=l.getNextLeaf()) {
-		for (int i=0,imax=l.sizeSticky(); i<imax; i++) {
-			Mark m = l.getSticky(i);
-			Object o = m.getOwner();
-			if (o instanceof Span) {
-				Span span = (Span)o;
-				INode linep = l.getParentNode();  assert "line".equals(linep.getName()): linep.getName();
-				if (m == span.getStart()) {
-					Mark end = span.getEnd();
-					if (linep.contains(end.leaf)) {} // ok as is
-					else if (textp.contains(end.leaf)) swaps.add(span);
-					else { starts.add(span); System.out.println(span+ " starts @ "+m.leaf.getName()); }
-
-				} else {    // end
-					Mark start = span.getStart();
-					if (linep.contains(start.leaf)) {} // ok as is (already saw this earlier in loop)
-					else if (textp.contains(start.leaf)) swaps.add(span);
-					else { ends.add(span); System.out.println(span+" ends @ "+m.leaf.getName()); }
-				}
-			}
-		}
-	}
-
-
-	// re-set children
-//	textp.removeAllChildren();
-//	for (int i=0; i<size; i++) textp.appendChild(children[i]);
-
-
-	// reattach spans
-	// 1. ok as is: include subtree but without transition within it, or contained within same line
-	// 2. cauterize and replicate: spans that start or end within subtree
-	// 3. swap endpoints: spans that start and end in different line
-System.out.println("ends="+ends.size()+", starts="+starts.size()+", swaps="+swaps.size());
   }
 
 
@@ -1781,7 +1713,6 @@ System.out.println("ends="+ends.size()+", starts="+starts.size()+", swaps="+swap
 	pdfr.refresh();   // may have regenerated
 
 
-	Encrypt e = pdfr.getEncrypt();
 	if (!isAuthorized()) {
 		// have to ask user before continuing -- LATER
 		// put up password dialog
@@ -1898,7 +1829,6 @@ fail.printStackTrace(); System.out.println(fail);
   public boolean formatAfter(Node node) {
 //System.out.println(node.bbox+" => "+cropbox_);
 	//node.bbox.setBounds(cropbox_);
-	Rectangle bbox = node.bbox;
 	//bbox.width = Math.max(bbox.width, cropbox_.width);
 	//bbox.height = Math.max(bbox.height, cropbox_.height);
 	node.bbox.setBounds(0,0, Math.max(node.bbox.x+node.bbox.width, cropbox_.x+cropbox_.width), Math.max(node.bbox.y+node.bbox.height, cropbox_.y+cropbox_.height));

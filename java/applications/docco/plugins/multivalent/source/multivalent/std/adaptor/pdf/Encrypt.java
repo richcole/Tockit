@@ -149,7 +149,6 @@ public class Encrypt {
 	//sh.init(edict, pdfr);
 
 	// null password is automatic
-	boolean auth = sh.authOwner("") || sh.authUser("");
 	// fast enough to automatically try all 1- and, if 40-bit, 2-letter passwords, without needing to ask
 	//for (int letter=0; letter<256 && !encrypt_.isAuthorized(); letter++) setPassword(Character.toString((char)letter));
 

@@ -437,11 +437,10 @@ public class Xdoc extends multivalent.std.adaptor.MediaAdaptorByte {
 	int c; char ch, cmd;
 	int x=0,y=0,w=0,h=0,tmp;
 	//int bb=0; // bx,by,bw,bh
-	int rowcnt=0, colcnt=0;
+	int colcnt=0;
 	StringBuffer sb = new StringBuffer(30);
 	String word=null;
 	char styletag = 'p';
-	int tilt=0, untilt=0;
 	String dotxdc = " must start with \"[a;...]\" -- is it an .xdc file?";
 
 	int wordcnt=0, regcnt=0, tblcnt=0, imgcnt=0; char recmode='?', pageorient='?';
@@ -574,7 +573,7 @@ public class Xdoc extends multivalent.std.adaptor.MediaAdaptorByte {
 				break;
 
 			case 'g': // page information
-				tilt = readIntParam();		// cosecant of angular tilt
+				readIntParam();		// cosecant of angular tilt
 				readIntParam(); readIntParam();	// (x,y) of top left corner
 				readIntParam(); readIntParam();	// (x,y) of bottom right corner
 				// tilt about center wrt upperleft
@@ -613,7 +612,7 @@ public class Xdoc extends multivalent.std.adaptor.MediaAdaptorByte {
 				readIntParam();	// right
 				readIntParam();	// bottom
 				colcnt = readIntParam(); // number of columns
-				rowcnt = readIntParam(); // number of rows
+				readIntParam(); // number of rows
 				readIntParam();	// position of table on page
 				for (int i=0; i<colcnt; i++) {
 					if (!checkParm()) break;
@@ -716,7 +715,7 @@ if (!checkParm()) System.out.println("v12.0 without top,bottom in table");
 					readIntParam();	// image skew
 				}
 				// untilt about center w/r/t center
-				untilt = readIntParam(); // page untilt -- cosecant of angular correction already applied
+				readIntParam(); // page untilt -- cosecant of angular correction already applied
 				if (xdocvers>=12.0) {
 					readIntParam(); readIntParam(); // x, y resolution
 				}
@@ -1121,14 +1120,14 @@ for (int i=0; i<=regionmax; i++) System.out.print(" "+regiony[i].bbox.y); System
 	As application, accept URI of XDOC file => report pages with lotsa questionable characters
   */
   public static void main(String argv[]) {
-	boolean dump=false, debug=false;
+	boolean debug=false;
 	double percentbad = 0.80;
 
 	int argi=0;
 	// command line arguments
 	for ( ; argi<argv.length && argv[argi].charAt(0)=='-'; argi++) {
 	  String arg = argv[argi].substring(1); // chop off '-'
-	  if (arg.equals("dump")) dump=true;
+	  if (arg.equals("dump")) ;
 	  else if (arg.equals("DEBUG")) debug=true;
 	  else if (arg.equals("bad")) {
 		percentbad = Double.valueOf(argv[++argi]).doubleValue();
@@ -1155,9 +1154,8 @@ for (int i=0; i<=regionmax; i++) System.out.print(" "+regiony[i].bbox.y); System
 	  System.out.println(filename);
 
 	  // => call parseXdoc with URI constructed relative to /elib/data/disk
-	  URI uri=null;
 	  try {
-		uri = new URI("file:/elib/data/disk").resolve(filename);
+		new URI("file:/elib/data/disk").resolve(filename);
 	  } catch (URISyntaxException e) {
 	  } catch (IllegalArgumentException e) {
 		//error(""+e);

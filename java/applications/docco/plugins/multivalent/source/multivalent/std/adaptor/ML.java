@@ -246,7 +246,6 @@ public abstract class ML extends MediaAdaptorReader {
 	In other words, they're expanded on read, shortened on write, and getAttr()!=null can test for existence.
   */
   protected ESISNode getTag(/*ESISNode tag,*/ char ch) throws IOException {
-	char ch1, ch2;
 
 	// NAME
 	StringBuffer sb = new StringBuffer(20);
