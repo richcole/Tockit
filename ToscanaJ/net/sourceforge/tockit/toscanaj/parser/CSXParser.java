@@ -1,5 +1,8 @@
 package net.sourceforge.tockit.toscanaj.parser;
 
+import net.sourceforge.tockit.toscanaj.data.*;
+import net.sourceforge.tockit.toscanaj.db.DBConnection;
+
 import java.awt.Color;
 import java.awt.geom.Point2D;
 
@@ -10,8 +13,6 @@ import org.jdom.*;
 import org.jdom.adapters.DOMAdapter;
 import org.jdom.input.DOMBuilder;
 import org.jdom.output.XMLOutputter;
-
-import net.sourceforge.tockit.toscanaj.data.*;
 
 /**
  * This class reads a CSX file and does nothing with it except complaining.
@@ -26,6 +27,12 @@ public class CSXParser
      * This is done to easily split the parse code in separate parts.
      */
     private static ConceptualSchema _Schema;
+
+    /**
+     * The database connection is created here and attached to each concept
+     * if a database is used.
+     */
+    private static DBConnection _DatabaseConnection = null;
 
     /**
      * Stores the JDOM document used.
@@ -97,6 +104,7 @@ public class CSXParser
      * Parses the database section of the file.
      */
     private static void parseDatabaseInformation()
+        throws DataFormatException
     {
         // check if database should be used and fetch the data if needed
         Attribute askDB = _Document.getRootElement()
@@ -106,7 +114,13 @@ public class CSXParser
             if( askDB.getValue().compareTo("true") == 0 )
             {
                 _Schema.setUseDatabase( true );
-                // TODO: fetch DB info here
+                DatabaseInfo dbInfo = new DatabaseInfo();
+                _Schema.setDatabaseInformation(dbInfo);
+                Element dbElem = _Document.getRootElement().getChild("database");
+                if( dbElem != null ) {
+                    parseDBInfo(dbInfo, dbElem);
+                    _DatabaseConnection = new DBConnection(dbInfo.getSource());
+                }
             }
         }
     }
@@ -185,51 +199,39 @@ public class CSXParser
                           "Position of some concept does not contain double." );
                 }
 
-                // create the concept
-                MemoryMappedConcept concept = new MemoryMappedConcept();
-
-                // get the object contingent
-                Element contElem = conceptElem.getChild( "objectContingent" );
-                List contingent = contElem.getChildren( "objectRef" );
-                Iterator it3 = contingent.iterator();
-                while( it3.hasNext() )
-                {
-                    Element ref = (Element) it3.next();
-                    concept.addObject((String) _Objects.get( ref.getText() ));
+                // create the concept for DB or in-memory access
+                Concept concept;
+                if( _Schema.usesDatabase() ) {
+                    concept = parseDBConcept(conceptElem);
+                }
+                else {
+                    concept = parseInMemoryConcept(conceptElem);
                 }
 
-                // parse the label layout information
+                // parse the label layout information if needed
                 LabelInfo objLabel;
-                if(contingent.isEmpty()) {
+                // don't use the Concept.getObjectContingentSize() method here, it might cause DB calls
+                if(conceptElem.getChild("objectContingent").getChildren("objectRef").size() == 0) {
                     objLabel = null;
                 }
                 else {
                     objLabel = new ObjectLabelInfo();
-                    Element style = contElem.getChild( "labelStyle" );
+                    Element style = conceptElem.getChild("objectContingent").
+                                                getChild( "labelStyle" );
                     if( style != null )
                     {
                         parseLabelStyle(objLabel, style);
                     }
                 }
 
-                // get the attribute contingent
-                contElem = conceptElem.getChild( "attributeContingent" );
-                contingent = contElem.getChildren( "attributeRef" );
-                it3 = contingent.iterator();
-                while( it3.hasNext() )
-                {
-                    Element ref = (Element) it3.next();
-                    concept.addAttribute((String) _Attributes.get( ref.getText() ));
-                }
-
-                // parse the label layout information
                 LabelInfo attrLabel;
-                if(contingent.isEmpty()) {
+                if(conceptElem.getChild("attributeContingent").getChildren("attributeRef").size() == 0) {
                     attrLabel = null;
                 }
                 else {
                     attrLabel = new AttributeLabelInfo();
-                    Element style = contElem.getChild( "labelStyle" );
+                    Element style = conceptElem.getChild( "attributeContingent" ).
+                                                getChild( "labelStyle" );
                     if( style != null )
                     {
                         parseLabelStyle(attrLabel, style);
@@ -260,12 +262,82 @@ public class CSXParser
                 DiagramNode to   = (DiagramNode) nodes.get(
                                     edge.getAttribute( "to" ).getValue());
                 diagram.addLine( from, to );
+                /// @TODO create filter/ideal here
             }
 
             _Schema.addDiagram( diagram );
         }
     }
 
+    /**
+     * Creates a concept for DB access from the information in the given
+     * XML element.
+     */
+    private static Concept parseDBConcept(Element conceptElem) {
+        // create the concept
+        DatabaseConnectedConcept concept =
+                    new DatabaseConnectedConcept(_Schema.getDatabaseInfo(),
+                                                 _DatabaseConnection);
+
+        // get the object contingent
+        Element contElem = conceptElem.getChild( "objectContingent" );
+        List contingent = contElem.getChildren( "objectRef" );
+        Iterator it3 = contingent.iterator();
+        String query = null;
+        if( it3.hasNext() ) {
+            query = "";
+        }
+        while( it3.hasNext() )
+        {
+            Element ref = (Element) it3.next();
+            query = query + "(" + (String) _Objects.get( ref.getText() ) + ")";
+            if( it3.hasNext() ) {
+                query = query + " OR ";
+            }
+        }
+        concept.setObjectClause(query);
+
+        // get the attribute contingent
+        contElem = conceptElem.getChild( "attributeContingent" );
+        contingent = contElem.getChildren( "attributeRef" );
+        it3 = contingent.iterator();
+        while( it3.hasNext() )
+        {
+            Element ref = (Element) it3.next();
+            concept.addAttribute((String) _Attributes.get( ref.getText() ));
+        }
+        return concept;
+    }
+
+    /**
+     * Creates a concept to be stored in memory from the information in the given
+     * XML element.
+     */
+    private static Concept parseInMemoryConcept(Element conceptElem) {
+        // create the concept
+        MemoryMappedConcept concept = new MemoryMappedConcept();
+
+        // get the object contingent
+        Element contElem = conceptElem.getChild( "objectContingent" );
+        List contingent = contElem.getChildren( "objectRef" );
+        Iterator it3 = contingent.iterator();
+        while( it3.hasNext() )
+        {
+            Element ref = (Element) it3.next();
+            concept.addObject((String) _Objects.get( ref.getText() ));
+        }
+
+        // get the attribute contingent
+        contElem = conceptElem.getChild( "attributeContingent" );
+        contingent = contElem.getChildren( "attributeRef" );
+        it3 = contingent.iterator();
+        while( it3.hasNext() )
+        {
+            Element ref = (Element) it3.next();
+            concept.addAttribute((String) _Attributes.get( ref.getText() ));
+        }
+        return concept;
+    }
 
     /**
      * Parses the information for a single label in a diagram.
@@ -325,6 +397,51 @@ public class CSXParser
                 /** @TODO: give more info here */
                 throw new DataFormatException("Unknown text alignment");
             }
+        }
+    }
+
+    /**
+     * Parses all database related information from within the given element.
+     *
+     * The element is supposed to be a <database> element according to the
+     * XML Schema.
+     */
+    private static void parseDBInfo(DatabaseInfo dbInfo, Element dbElement)
+        throws DataFormatException
+    {
+        // try to find a DSN first
+        Element elem = dbElement.getChild("dsn");
+        if( elem != null ) {
+            // we have DSN, set it
+            dbInfo.setDSN(elem.getText());
+        }
+        else {
+            // look for path information
+            elem = dbElement.getChild("path");
+            if( elem == null ) {
+                // since <database> was given we expected one of the two
+                throw new DataFormatException("Either <dsn> or <path> expected in <database> element");
+            }
+            dbInfo.setDatabaseFile(elem.getText());
+        }
+        // let's try to find the query
+        elem = dbElement.getChild("query");
+        if( elem != null ) {
+            // found query
+            dbInfo.setQuery(elem.getText());
+        }
+        else {
+            // need table and key
+            elem = dbElement.getChild("table");
+            if( elem == null ) {
+                throw new DataFormatException("Neither <query> nor <table> given for <database>");
+            }
+            String table = elem.getText();
+            elem = dbElement.getChild("key");
+            if( elem == null ) {
+                throw new DataFormatException("<table> but not <key> given in <database> element");
+            }
+            dbInfo.setQuery(table, elem.getText());
         }
     }
 }

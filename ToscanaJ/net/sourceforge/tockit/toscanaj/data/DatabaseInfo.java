@@ -26,7 +26,7 @@ public class DatabaseInfo
     /**
      * The type of the database -- either TYPE_DSN or TYPE_FILE.
      */
-    private int _type;
+    private int _type = TYPE_UNDEFINED;
 
     /**
      * The source where the database can be found.
@@ -34,15 +34,17 @@ public class DatabaseInfo
      * If type is TYPE_DSN this is the name of a data source that should be
      * defined in the system. Otherwise it is a filename.
      */
-    private String _source;
+    private String _source = null;
 
     /**
-     * The query string used for getting the objects.
-     *
-     * This should be always of the form "SELECT x FROM y" where x is the key
-     * and y the table used. The where clauses will be added at the end.
+     * The table (or view) queried in the database.
      */
-    private String _query;
+    private String _table = null;
+
+    /**
+     * The key used for the object names.
+     */
+    private String _key = null;
 
     /**
      * Creates an empty instance.
@@ -51,9 +53,6 @@ public class DatabaseInfo
      */
     public DatabaseInfo()
     {
-        _type = TYPE_UNDEFINED;
-        _source = null;
-        _query = null;
     }
 
     /**
@@ -86,7 +85,18 @@ public class DatabaseInfo
      */
     public String getQuery()
     {
-        return _query;
+        return "SELECT [" + _key + "] FROM [" + _table + "] ";
+    }
+
+    /**
+     * Returns the query string used for counting the objects.
+     *
+     * This should be always of the form "SELECT count(x) FROM y" where x is the key
+     * and y the table used. The where clauses will be added at the end.
+     */
+    public String getCountQuery()
+    {
+        return "SELECT count(" + " [" + _key + "] ) FROM [" + _table + "] ";
     }
 
     /**
@@ -115,7 +125,9 @@ public class DatabaseInfo
      */
     public void setQuery( String sql )
     {
-        _query = sql;
+        _table = "not yet";
+        _key = "implemented";
+        /// @TODO Implement something that calculates table and key from the query string
     }
 
     /**
@@ -123,7 +135,8 @@ public class DatabaseInfo
      */
     public void setQuery( String table, String key )
     {
-        _query = "SELECT " + key + " FROM " + table;
+        _table = table;
+        _key = key;
     }
 
     /**
@@ -136,12 +149,12 @@ public class DatabaseInfo
         if( _type == TYPE_DSN )
         {
             result += "(DSN): " + _source + "\n" +
-                      "\t" + "query: " + _query;
+                      "\t" + "key/table: " + _key + "/" +_table;
         }
         else if( _type == TYPE_FILE )
         {
             result += "(File): " + _source + "\n" +
-                      "\t" + "query: " + _query;
+                      "\t" + "key/table: " + _key + "/" +_table;
         }
         else if( _type == TYPE_UNDEFINED )
         {

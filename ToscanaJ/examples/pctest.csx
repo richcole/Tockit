@@ -1,87 +1,86 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <conceptualSchema version="1.0" askDatabase="true" xmlns:xsi="http://www.w3.org/2000/10/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://meganesia.int.gu.edu.au/projects/ToscanaJ/schemas/csx.xsd">
         <database>
-                <dsn>PCTEST20</dsn>
-                <table>[PC-Daten]</table>
+                <dsn>PCTEST80</dsn>
+                <table>PC-Test</table>
                 <key>PCBezeichnung</key>
         </database>
         <context>
-                <object id="1">g1</object>
-                <object id="2">Bustyp="ISA"</object>
-                <object id="3">Bustyp="EISA"</object>
-                <object id="4">Bustyp="MCA"</object>
-                <object id="5">DISKmark&gt;0 and DISKmark&lt;=15 AND Graphics&gt;0 and Graphics&lt;=5|DISKmark&gt;0 and DISKmark&lt;=15 AND DOSmark&gt;=0 and DOSmark&lt;40</object>
-                <object id="6">DISKmark&gt;0 and DISKmark&lt;=15 AND Graphics&gt;5 and Graphics&lt;=10|DISKmark&gt;0 and DISKmark&lt;=15 AND DOSmark&gt;=40 and DOSmark&lt;50</object>
-                <object id="7">DISKmark&gt;0 and DISKmark&lt;=15 AND Graphics&gt;10 and Graphics&lt;=15|DISKmark&gt;0 and DISKmark&lt;=15 AND DOSmark&gt;=50 and DOSmark&lt;60</object>
-                <object id="8">DISKmark&gt;0 and DISKmark&lt;=15 AND Graphics&gt;15 and Graphics&lt;=20|DISKmark&gt;0 and DISKmark&lt;=15 AND DOSmark&gt;=60 and DOSmark&lt;70</object>
-                <object id="9">DISKmark&gt;0 and DISKmark&lt;=15 AND Graphics&gt;20 and Graphics&lt;=30|DISKmark&gt;0 and DISKmark&lt;=15 AND DOSmark&gt;=70 and DOSmark&lt;80</object>
-                <object id="10">DISKmark&gt;0 and DISKmark&lt;=15 AND Graphics&gt;30 and Graphics&lt;=40|DISKmark&gt;0 and DISKmark&lt;=15 AND DOSmark&gt;=80 and DOSmark&lt;90</object>
-                <object id="11">DISKmark&gt;0 and DISKmark&lt;=15 AND Graphics&gt;40|DISKmark&gt;0 and DISKmark&lt;=15 AND DOSmark&gt;=90</object>
-                <object id="12">DISKmark&gt;15 and DISKmark&lt;=30 AND Graphics&gt;0 and Graphics&lt;=5|DISKmark&gt;15 and DISKmark&lt;=30 AND DOSmark&gt;=0 and DOSmark&lt;40</object>
-                <object id="13">DISKmark&gt;30 and DISKmark&lt;=45 AND Graphics&gt;0 and Graphics&lt;=5|DISKmark&gt;30 and DISKmark&lt;=45 AND DOSmark&gt;=0 and DOSmark&lt;40</object>
-                <object id="14">DISKmark&gt;45 and DISKmark&lt;=60 AND Graphics&gt;0 and Graphics&lt;=5|DISKmark&gt;45 and DISKmark&lt;=60 AND DOSmark&gt;=0 and DOSmark&lt;40</object>
-                <object id="15">DISKmark&gt;60 and DISKmark&lt;=90 AND Graphics&gt;0 and Graphics&lt;=5|DISKmark&gt;60 and DISKmark&lt;=90 AND DOSmark&gt;=0 and DOSmark&lt;40</object>
-                <object id="16">DISKmark&gt;90 and DISKmark&lt;=120 AND Graphics&gt;0 and Graphics&lt;=5|DISKmark&gt;90 and DISKmark&lt;=120 AND DOSmark&gt;=0 and DOSmark&lt;40</object>
-                <object id="17">DISKmark&gt;120 AND Graphics&gt;0 and Graphics&lt;=5|DISKmark&gt;120 AND DOSmark&gt;=0 and DOSmark&lt;40</object>
-                <object id="18">DISKmark&gt;15 and DISKmark&lt;=30 AND Graphics&gt;5 and Graphics&lt;=10|DISKmark&gt;15 and DISKmark&lt;=30 AND DOSmark&gt;=40 and DOSmark&lt;50</object>
-                <object id="19">DISKmark&gt;15 and DISKmark&lt;=30 AND Graphics&gt;10 and Graphics&lt;=15|DISKmark&gt;15 and DISKmark&lt;=30 AND DOSmark&gt;=50 and DOSmark&lt;60</object>
-                <object id="20">DISKmark&gt;15 and DISKmark&lt;=30 AND Graphics&gt;15 and Graphics&lt;=20|DISKmark&gt;15 and DISKmark&lt;=30 AND DOSmark&gt;=60 and DOSmark&lt;70</object>
-                <object id="21">DISKmark&gt;15 and DISKmark&lt;=30 AND Graphics&gt;20 and Graphics&lt;=30|DISKmark&gt;15 and DISKmark&lt;=30 AND DOSmark&gt;=70 and DOSmark&lt;80</object>
-                <object id="22">DISKmark&gt;15 and DISKmark&lt;=30 AND Graphics&gt;30 and Graphics&lt;=40|DISKmark&gt;15 and DISKmark&lt;=30 AND DOSmark&gt;=80 and DOSmark&lt;90</object>
-                <object id="23">DISKmark&gt;15 and DISKmark&lt;=30 AND Graphics&gt;40|DISKmark&gt;15 and DISKmark&lt;=30 AND DOSmark&gt;=90</object>
-                <object id="24">DISKmark&gt;30 and DISKmark&lt;=45 AND Graphics&gt;5 and Graphics&lt;=10|DISKmark&gt;30 and DISKmark&lt;=45 AND DOSmark&gt;=40 and DOSmark&lt;50</object>
-                <object id="25">DISKmark&gt;45 and DISKmark&lt;=60 AND Graphics&gt;5 and Graphics&lt;=10|DISKmark&gt;45 and DISKmark&lt;=60 AND DOSmark&gt;=40 and DOSmark&lt;50</object>
-                <object id="26">DISKmark&gt;60 and DISKmark&lt;=90 AND Graphics&gt;5 and Graphics&lt;=10|DISKmark&gt;60 and DISKmark&lt;=90 AND DOSmark&gt;=40 and DOSmark&lt;50</object>
-                <object id="27">DISKmark&gt;90 and DISKmark&lt;=120 AND Graphics&gt;5 and Graphics&lt;=10|DISKmark&gt;90 and DISKmark&lt;=120 AND DOSmark&gt;=40 and DOSmark&lt;50</object>
-                <object id="28">DISKmark&gt;120 AND Graphics&gt;5 and Graphics&lt;=10|DISKmark&gt;120 AND DOSmark&gt;=40 and DOSmark&lt;50</object>
-                <object id="29">DISKmark&gt;30 and DISKmark&lt;=45 AND Graphics&gt;10 and Graphics&lt;=15|DISKmark&gt;30 and DISKmark&lt;=45 AND DOSmark&gt;=50 and DOSmark&lt;60</object>
-                <object id="30">DISKmark&gt;30 and DISKmark&lt;=45 AND Graphics&gt;15 and Graphics&lt;=20|DISKmark&gt;30 and DISKmark&lt;=45 AND DOSmark&gt;=60 and DOSmark&lt;70</object>
-                <object id="31">DISKmark&gt;30 and DISKmark&lt;=45 AND Graphics&gt;20 and Graphics&lt;=30|DISKmark&gt;30 and DISKmark&lt;=45 AND DOSmark&gt;=70 and DOSmark&lt;80</object>
-                <object id="32">DISKmark&gt;30 and DISKmark&lt;=45 AND Graphics&gt;30 and Graphics&lt;=40|DISKmark&gt;30 and DISKmark&lt;=45 AND DOSmark&gt;=80 and DOSmark&lt;90</object>
-                <object id="33">DISKmark&gt;30 and DISKmark&lt;=45 AND Graphics&gt;40|DISKmark&gt;30 and DISKmark&lt;=45 AND DOSmark&gt;=90</object>
-                <object id="34">DISKmark&gt;45 and DISKmark&lt;=60 AND Graphics&gt;10 and Graphics&lt;=15|DISKmark&gt;45 and DISKmark&lt;=60 AND DOSmark&gt;=50 and DOSmark&lt;60</object>
-                <object id="35">DISKmark&gt;60 and DISKmark&lt;=90 AND Graphics&gt;10 and Graphics&lt;=15|DISKmark&gt;60 and DISKmark&lt;=90 AND DOSmark&gt;=50 and DOSmark&lt;60</object>
-                <object id="36">DISKmark&gt;90 and DISKmark&lt;=120 AND Graphics&gt;10 and Graphics&lt;=15|DISKmark&gt;90 and DISKmark&lt;=120 AND DOSmark&gt;=50 and DOSmark&lt;60</object>
-                <object id="37">DISKmark&gt;120 AND Graphics&gt;10 and Graphics&lt;=15|DISKmark&gt;120 AND DOSmark&gt;=50 and DOSmark&lt;60</object>
-                <object id="38">DISKmark&gt;45 and DISKmark&lt;=60 AND Graphics&gt;15 and Graphics&lt;=20|DISKmark&gt;45 and DISKmark&lt;=60 AND DOSmark&gt;=60 and DOSmark&lt;70</object>
-                <object id="39">DISKmark&gt;45 and DISKmark&lt;=60 AND Graphics&gt;20 and Graphics&lt;=30|DISKmark&gt;45 and DISKmark&lt;=60 AND DOSmark&gt;=70 and DOSmark&lt;80</object>
-                <object id="40">DISKmark&gt;45 and DISKmark&lt;=60 AND Graphics&gt;30 and Graphics&lt;=40|DISKmark&gt;45 and DISKmark&lt;=60 AND DOSmark&gt;=80 and DOSmark&lt;90</object>
-                <object id="41">DISKmark&gt;45 and DISKmark&lt;=60 AND Graphics&gt;40|DISKmark&gt;45 and DISKmark&lt;=60 AND DOSmark&gt;=90</object>
-                <object id="42">DISKmark&gt;60 and DISKmark&lt;=90 AND Graphics&gt;15 and Graphics&lt;=20|DISKmark&gt;60 and DISKmark&lt;=90 AND DOSmark&gt;=60 and DOSmark&lt;70</object>
-                <object id="43">DISKmark&gt;90 and DISKmark&lt;=120 AND Graphics&gt;15 and Graphics&lt;=20|DISKmark&gt;90 and DISKmark&lt;=120 AND DOSmark&gt;=60 and DOSmark&lt;70</object>
-                <object id="44">DISKmark&gt;120 AND Graphics&gt;15 and Graphics&lt;=20|DISKmark&gt;120 AND DOSmark&gt;=60 and DOSmark&lt;70</object>
-                <object id="45">DISKmark&gt;60 and DISKmark&lt;=90 AND Graphics&gt;20 and Graphics&lt;=30|DISKmark&gt;60 and DISKmark&lt;=90 AND DOSmark&gt;=70 and DOSmark&lt;80</object>
-                <object id="46">DISKmark&gt;60 and DISKmark&lt;=90 AND Graphics&gt;30 and Graphics&lt;=40|DISKmark&gt;60 and DISKmark&lt;=90 AND DOSmark&gt;=80 and DOSmark&lt;90</object>
-                <object id="47">DISKmark&gt;60 and DISKmark&lt;=90 AND Graphics&gt;40|DISKmark&gt;60 and DISKmark&lt;=90 AND DOSmark&gt;=90</object>
-                <object id="48">DISKmark&gt;90 and DISKmark&lt;=120 AND Graphics&gt;20 and Graphics&lt;=30|DISKmark&gt;90 and DISKmark&lt;=120 AND DOSmark&gt;=70 and DOSmark&lt;80</object>
-                <object id="49">DISKmark&gt;120 AND Graphics&gt;20 and Graphics&lt;=30|DISKmark&gt;120 AND DOSmark&gt;=70 and DOSmark&lt;80</object>
-                <object id="50">DISKmark&gt;90 and DISKmark&lt;=120 AND Graphics&gt;30 and Graphics&lt;=40|DISKmark&gt;90 and DISKmark&lt;=120 AND DOSmark&gt;=80 and DOSmark&lt;90</object>
-                <object id="51">DISKmark&gt;90 and DISKmark&lt;=120 AND Graphics&gt;40|DISKmark&gt;90 and DISKmark&lt;=120 AND DOSmark&gt;=90</object>
-                <object id="52">DISKmark&gt;120 AND Graphics&gt;30 and Graphics&lt;=40|DISKmark&gt;120 AND DOSmark&gt;=80 and DOSmark&lt;90</object>
-                <object id="53">DISKmark&gt;120 AND Graphics&gt;40|DISKmark&gt;120 AND DOSmark&gt;=90</object>
+                <object id="2">Bustyp='ISA'</object>
+                <object id="3">Bustyp='EISA'</object>
+                <object id="4">Bustyp='MCA'</object>
+                <object id="5">(DISKmark&gt;0 and DISKmark&lt;=15 AND Graphics&gt;0 and Graphics&lt;=5 ) OR ( DISKmark&gt;0 and DISKmark&lt;=15 AND DOSmark&gt;=0 and DOSmark&lt;40)</object>
+                <object id="6">(DISKmark&gt;0 and DISKmark&lt;=15 AND Graphics&gt;5 and Graphics&lt;=10) OR (DISKmark&gt;0 and DISKmark&lt;=15 AND DOSmark&gt;=40 and DOSmark&lt;50)</object>
+                <object id="7">(DISKmark&gt;0 and DISKmark&lt;=15 AND Graphics&gt;10 and Graphics&lt;=15) OR (DISKmark&gt;0 and DISKmark&lt;=15 AND DOSmark&gt;=50 and DOSmark&lt;60)</object>
+                <object id="8">(DISKmark&gt;0 and DISKmark&lt;=15 AND Graphics&gt;15 and Graphics&lt;=20) OR (DISKmark&gt;0 and DISKmark&lt;=15 AND DOSmark&gt;=60 and DOSmark&lt;70)</object>
+                <object id="9">(DISKmark&gt;0 and DISKmark&lt;=15 AND Graphics&gt;20 and Graphics&lt;=30) OR (DISKmark&gt;0 and DISKmark&lt;=15 AND DOSmark&gt;=70 and DOSmark&lt;80)</object>
+                <object id="10">(DISKmark&gt;0 and DISKmark&lt;=15 AND Graphics&gt;30 and Graphics&lt;=40) OR (DISKmark&gt;0 and DISKmark&lt;=15 AND DOSmark&gt;=80 and DOSmark&lt;90)</object>
+                <object id="11">(DISKmark&gt;0 and DISKmark&lt;=15 AND Graphics&gt;40) OR (DISKmark&gt;0 and DISKmark&lt;=15 AND DOSmark&gt;=90)</object>
+                <object id="12">(DISKmark&gt;15 and DISKmark&lt;=30 AND Graphics&gt;0 and Graphics&lt;=5) OR (DISKmark&gt;15 and DISKmark&lt;=30 AND DOSmark&gt;=0 and DOSmark&lt;40)</object>
+                <object id="13">(DISKmark&gt;30 and DISKmark&lt;=45 AND Graphics&gt;0 and Graphics&lt;=5) OR (DISKmark&gt;30 and DISKmark&lt;=45 AND DOSmark&gt;=0 and DOSmark&lt;40)</object>
+                <object id="14">(DISKmark&gt;45 and DISKmark&lt;=60 AND Graphics&gt;0 and Graphics&lt;=5) OR (DISKmark&gt;45 and DISKmark&lt;=60 AND DOSmark&gt;=0 and DOSmark&lt;40)</object>
+                <object id="15">(DISKmark&gt;60 and DISKmark&lt;=90 AND Graphics&gt;0 and Graphics&lt;=5) OR (DISKmark&gt;60 and DISKmark&lt;=90 AND DOSmark&gt;=0 and DOSmark&lt;40)</object>
+                <object id="16">(DISKmark&gt;90 and DISKmark&lt;=120 AND Graphics&gt;0 and Graphics&lt;=5) OR (DISKmark&gt;90 and DISKmark&lt;=120 AND DOSmark&gt;=0 and DOSmark&lt;40)</object>
+                <object id="17">(DISKmark&gt;120 AND Graphics&gt;0 and Graphics&lt;=5) OR (DISKmark&gt;120 AND DOSmark&gt;=0 and DOSmark&lt;40)</object>
+                <object id="18">(DISKmark&gt;15 and DISKmark&lt;=30 AND Graphics&gt;5 and Graphics&lt;=10) OR (DISKmark&gt;15 and DISKmark&lt;=30 AND DOSmark&gt;=40 and DOSmark&lt;50)</object>
+                <object id="19">(DISKmark&gt;15 and DISKmark&lt;=30 AND Graphics&gt;10 and Graphics&lt;=15) OR (DISKmark&gt;15 and DISKmark&lt;=30 AND DOSmark&gt;=50 and DOSmark&lt;60)</object>
+                <object id="20">(DISKmark&gt;15 and DISKmark&lt;=30 AND Graphics&gt;15 and Graphics&lt;=20) OR (DISKmark&gt;15 and DISKmark&lt;=30 AND DOSmark&gt;=60 and DOSmark&lt;70)</object>
+                <object id="21">(DISKmark&gt;15 and DISKmark&lt;=30 AND Graphics&gt;20 and Graphics&lt;=30) OR (DISKmark&gt;15 and DISKmark&lt;=30 AND DOSmark&gt;=70 and DOSmark&lt;80)</object>
+                <object id="22">(DISKmark&gt;15 and DISKmark&lt;=30 AND Graphics&gt;30 and Graphics&lt;=40) OR (DISKmark&gt;15 and DISKmark&lt;=30 AND DOSmark&gt;=80 and DOSmark&lt;90)</object>
+                <object id="23">(DISKmark&gt;15 and DISKmark&lt;=30 AND Graphics&gt;40) OR (DISKmark&gt;15 and DISKmark&lt;=30 AND DOSmark&gt;=90)</object>
+                <object id="24">(DISKmark&gt;30 and DISKmark&lt;=45 AND Graphics&gt;5 and Graphics&lt;=10) OR (DISKmark&gt;30 and DISKmark&lt;=45 AND DOSmark&gt;=40 and DOSmark&lt;50)</object>
+                <object id="25">(DISKmark&gt;45 and DISKmark&lt;=60 AND Graphics&gt;5 and Graphics&lt;=10) OR (DISKmark&gt;45 and DISKmark&lt;=60 AND DOSmark&gt;=40 and DOSmark&lt;50)</object>
+                <object id="26">(DISKmark&gt;60 and DISKmark&lt;=90 AND Graphics&gt;5 and Graphics&lt;=10) OR (DISKmark&gt;60 and DISKmark&lt;=90 AND DOSmark&gt;=40 and DOSmark&lt;50)</object>
+                <object id="27">(DISKmark&gt;90 and DISKmark&lt;=120 AND Graphics&gt;5 and Graphics&lt;=10) OR (DISKmark&gt;90 and DISKmark&lt;=120 AND DOSmark&gt;=40 and DOSmark&lt;50)</object>
+                <object id="28">(DISKmark&gt;120 AND Graphics&gt;5 and Graphics&lt;=10) OR (DISKmark&gt;120 AND DOSmark&gt;=40 and DOSmark&lt;50)</object>
+                <object id="29">(DISKmark&gt;30 and DISKmark&lt;=45 AND Graphics&gt;10 and Graphics&lt;=15) OR (DISKmark&gt;30 and DISKmark&lt;=45 AND DOSmark&gt;=50 and DOSmark&lt;60)</object>
+                <object id="30">(DISKmark&gt;30 and DISKmark&lt;=45 AND Graphics&gt;15 and Graphics&lt;=20) OR (DISKmark&gt;30 and DISKmark&lt;=45 AND DOSmark&gt;=60 and DOSmark&lt;70)</object>
+                <object id="31">(DISKmark&gt;30 and DISKmark&lt;=45 AND Graphics&gt;20 and Graphics&lt;=30) OR (DISKmark&gt;30 and DISKmark&lt;=45 AND DOSmark&gt;=70 and DOSmark&lt;80)</object>
+                <object id="32">(DISKmark&gt;30 and DISKmark&lt;=45 AND Graphics&gt;30 and Graphics&lt;=40) OR (DISKmark&gt;30 and DISKmark&lt;=45 AND DOSmark&gt;=80 and DOSmark&lt;90)</object>
+                <object id="33">(DISKmark&gt;30 and DISKmark&lt;=45 AND Graphics&gt;40) OR (DISKmark&gt;30 and DISKmark&lt;=45 AND DOSmark&gt;=90)</object>
+                <object id="34">(DISKmark&gt;45 and DISKmark&lt;=60 AND Graphics&gt;10 and Graphics&lt;=15) OR (DISKmark&gt;45 and DISKmark&lt;=60 AND DOSmark&gt;=50 and DOSmark&lt;60)</object>
+                <object id="35">(DISKmark&gt;60 and DISKmark&lt;=90 AND Graphics&gt;10 and Graphics&lt;=15) OR (DISKmark&gt;60 and DISKmark&lt;=90 AND DOSmark&gt;=50 and DOSmark&lt;60)</object>
+                <object id="36">(DISKmark&gt;90 and DISKmark&lt;=120 AND Graphics&gt;10 and Graphics&lt;=15) OR (DISKmark&gt;90 and DISKmark&lt;=120 AND DOSmark&gt;=50 and DOSmark&lt;60)</object>
+                <object id="37">(DISKmark&gt;120 AND Graphics&gt;10 and Graphics&lt;=15) OR (DISKmark&gt;120 AND DOSmark&gt;=50 and DOSmark&lt;60)</object>
+                <object id="38">(DISKmark&gt;45 and DISKmark&lt;=60 AND Graphics&gt;15 and Graphics&lt;=20) OR (DISKmark&gt;45 and DISKmark&lt;=60 AND DOSmark&gt;=60 and DOSmark&lt;70)</object>
+                <object id="39">(DISKmark&gt;45 and DISKmark&lt;=60 AND Graphics&gt;20 and Graphics&lt;=30) OR (DISKmark&gt;45 and DISKmark&lt;=60 AND DOSmark&gt;=70 and DOSmark&lt;80)</object>
+                <object id="40">(DISKmark&gt;45 and DISKmark&lt;=60 AND Graphics&gt;30 and Graphics&lt;=40) OR (DISKmark&gt;45 and DISKmark&lt;=60 AND DOSmark&gt;=80 and DOSmark&lt;90)</object>
+                <object id="41">(DISKmark&gt;45 and DISKmark&lt;=60 AND Graphics&gt;40) OR (DISKmark&gt;45 and DISKmark&lt;=60 AND DOSmark&gt;=90)</object>
+                <object id="42">(DISKmark&gt;60 and DISKmark&lt;=90 AND Graphics&gt;15 and Graphics&lt;=20) OR (DISKmark&gt;60 and DISKmark&lt;=90 AND DOSmark&gt;=60 and DOSmark&lt;70)</object>
+                <object id="43">(DISKmark&gt;90 and DISKmark&lt;=120 AND Graphics&gt;15 and Graphics&lt;=20) OR (DISKmark&gt;90 and DISKmark&lt;=120 AND DOSmark&gt;=60 and DOSmark&lt;70)</object>
+                <object id="44">(DISKmark&gt;120 AND Graphics&gt;15 and Graphics&lt;=20) OR (DISKmark&gt;120 AND DOSmark&gt;=60 and DOSmark&lt;70)</object>
+                <object id="45">(DISKmark&gt;60 and DISKmark&lt;=90 AND Graphics&gt;20 and Graphics&lt;=30) OR (DISKmark&gt;60 and DISKmark&lt;=90 AND DOSmark&gt;=70 and DOSmark&lt;80)</object>
+                <object id="46">(DISKmark&gt;60 and DISKmark&lt;=90 AND Graphics&gt;30 and Graphics&lt;=40) OR (DISKmark&gt;60 and DISKmark&lt;=90 AND DOSmark&gt;=80 and DOSmark&lt;90)</object>
+                <object id="47">(DISKmark&gt;60 and DISKmark&lt;=90 AND Graphics&gt;40) OR (DISKmark&gt;60 and DISKmark&lt;=90 AND DOSmark&gt;=90)</object>
+                <object id="48">(DISKmark&gt;90 and DISKmark&lt;=120 AND Graphics&gt;20 and Graphics&lt;=30) OR (DISKmark&gt;90 and DISKmark&lt;=120 AND DOSmark&gt;=70 and DOSmark&lt;80)</object>
+                <object id="49">(DISKmark&gt;120 AND Graphics&gt;20 and Graphics&lt;=30) OR (DISKmark&gt;120 AND DOSmark&gt;=70 and DOSmark&lt;80)</object>
+                <object id="50">(DISKmark&gt;90 and DISKmark&lt;=120 AND Graphics&gt;30 and Graphics&lt;=40) OR (DISKmark&gt;90 and DISKmark&lt;=120 AND DOSmark&gt;=80 and DOSmark&lt;90)</object>
+                <object id="51">(DISKmark&gt;90 and DISKmark&lt;=120 AND Graphics&gt;40) OR (DISKmark&gt;90 and DISKmark&lt;=120 AND DOSmark&gt;=90)</object>
+                <object id="52">(DISKmark&gt;120 AND Graphics&gt;30 and Graphics&lt;=40) OR (DISKmark&gt;120 AND DOSmark&gt;=80 and DOSmark&lt;90)</object>
+                <object id="53">(DISKmark&gt;120 AND Graphics&gt;40) OR (DISKmark&gt;120 AND DOSmark&gt;=90)</object>
                 <object id="54">Festplatte &lt; 200</object>
                 <object id="55">Festplatte Between 200 And 399</object>
                 <object id="56">Festplatte &gt;= 400</object>
-                <object id="57">[Gehäusetyp]="Desktop"</object>
-                <object id="58">[Gehäusetyp]="Slimline"</object>
-                <object id="59">[Gehäusetyp]="Small-footprint"</object>
-                <object id="60">[Gehäusetyp]="Tower"</object>
-                <object id="61">[Gehäusetyp]="Minitower"</object>
-                <object id="62">Graphikkarte="ISA"</object>
-                <object id="63">Graphikkarte="EISA"</object>
-                <object id="64">Graphikkarte="Local Bus"</object>
-                <object id="65">Graphikkarte="Motherboard"</object>
-                <object id="66">Graphikkarte="MCA"</object>
-                <object id="67">Graphikkarte="VESA Local Bus"</object>
-                <object id="68">Graphikkarte="Proprietary Local Bus"</object>
-                <object id="69">Graphikkarte="UBSA Local Bus"</object>
-                <object id="70">Preis&gt;=5000|Festplatte&gt;=500|Video&gt;=9000</object>
-                <object id="71">(Preis&lt;5000 and Preis&gt;=4500)|(Festplatte&lt;500 and Festplatte&gt;=450)|(Video between 7500 and 8999)</object>
-                <object id="72">(Preis&lt;4500 and Preis&gt;=4000)|(Festplatte&lt;450 and Festplatte&gt;=400)|(Video between 6000 and 7499)</object>
-                <object id="73">(Preis&lt;4000 and Preis&gt;=3500)|(Festplatte&lt;400 and Festplatte&gt;=350)|(Video between 4500 and 5999)</object>
-                <object id="74">(Preis&lt;3500 and Preis&gt;=3000)|(Festplatte&lt;350 and Festplatte&gt;=300)|(Video between 3000 and 4499)</object>
-                <object id="75">(Preis&lt;3000 and Preis&gt;=2500)|(Festplatte&lt;250 and Festplatte&gt;=225)|(Video between 1500 and 2999)</object>
-                <object id="76">Preis&lt;2500|Festplatte&lt;225|Video&lt;1500</object>
+                <object id="57">[Gehäusetyp]='Desktop'</object>
+                <object id="58">[Gehäusetyp]='Slimline'</object>
+                <object id="59">[Gehäusetyp]='Small-footprint'</object>
+                <object id="60">[Gehäusetyp]='Tower'</object>
+                <object id="61">[Gehäusetyp]='Minitower'</object>
+                <object id="62">Graphikkarte='ISA'</object>
+                <object id="63">Graphikkarte='EISA'</object>
+                <object id="64">Graphikkarte='Local Bus'</object>
+                <object id="65">Graphikkarte='Motherboard'</object>
+                <object id="66">Graphikkarte='MCA'</object>
+                <object id="67">Graphikkarte='VESA Local Bus'</object>
+                <object id="68">Graphikkarte='Proprietary Local Bus'</object>
+                <object id="69">Graphikkarte='UBSA Local Bus'</object>
+                <object id="70">(Preis&gt;=5000) OR (Festplatte&gt;=500) OR (Video&gt;=9000)</object>
+                <object id="71">((Preis&lt;5000 and Preis&gt;=4500)) OR ((Festplatte&lt;500 and Festplatte&gt;=450)) OR ((Video between 7500 and 8999))</object>
+                <object id="72">((Preis&lt;4500 and Preis&gt;=4000)) OR ((Festplatte&lt;450 and Festplatte&gt;=400)) OR ((Video between 6000 and 7499))</object>
+                <object id="73">((Preis&lt;4000 and Preis&gt;=3500)) OR ((Festplatte&lt;400 and Festplatte&gt;=350)) OR ((Video between 4500 and 5999))</object>
+                <object id="74">((Preis&lt;3500 and Preis&gt;=3000)) OR ((Festplatte&lt;350 and Festplatte&gt;=300)) OR ((Video between 3000 and 4499))</object>
+                <object id="75">((Preis&lt;3000 and Preis&gt;=2500)) OR ((Festplatte&lt;250 and Festplatte&gt;=225)) OR ((Video between 1500 and 2999))</object>
+                <object id="76">((Preis&lt;2500) OR (Festplatte&lt;225) OR (Video&lt;1500))</object>
                 <object id="77">[Freie Laufwerksschächte]=00</object>
                 <object id="78">[Freie Laufwerksschächte]=01</object>
                 <object id="79">[Freie Laufwerksschächte]=02</object>
@@ -174,32 +173,32 @@
                 <object id="166">Netzteil between 200 and 249 and [Netzteilanschlüsse]=2</object>
                 <object id="167">Netzteil between 250 and 299 and [Netzteilanschlüsse]=2</object>
                 <object id="168">Netzteil&gt;=300 and [Netzteilanschlüsse]=2</object>
-                <object id="169">Ports="Keine"</object>
-                <object id="170">Ports="1,1,0"</object>
-                <object id="171">Ports="1,1,1"</object>
-                <object id="172">Ports="1,2,0"</object>
-                <object id="173">Ports="1,2,1"</object>
-                <object id="174">Ports="2,1,0"</object>
-                <object id="175">Ports="2,1,1"</object>
+                <object id="169">Ports='Keine'</object>
+                <object id="170">Ports='1,1,0'</object>
+                <object id="171">Ports='1,1,1'</object>
+                <object id="172">Ports='1,2,0'</object>
+                <object id="173">Ports='1,2,1'</object>
+                <object id="174">Ports='2,1,0'</object>
+                <object id="175">Ports='2,1,1'</object>
                 <object id="176">Direktvertrieb=Yes and [Händler]=No</object>
                 <object id="177">Direktvertrieb=No and [Händler]=Yes</object>
                 <object id="178">Direktvertrieb=Yes and [Händler]=Yes</object>
                 <attribute id="1">ISA-Bus</attribute>
                 <attribute id="2">EISA-Bus</attribute>
                 <attribute id="3">MCA-Bus</attribute>
-                <attribute id="4">Disk WinMark &gt; 0, Graphics WinMark &gt; 0|Disk WinMark &gt; 0, DOSmark &gt;= 0</attribute>
-                <attribute id="5">&gt; 5|&gt;= 40</attribute>
-                <attribute id="6">&gt; 10|&gt;= 50</attribute>
-                <attribute id="7">&gt; 15|&gt;= 60</attribute>
-                <attribute id="8">&gt; 20|&gt;= 70</attribute>
-                <attribute id="9">&gt; 30|&gt;= 80</attribute>
-                <attribute id="10">&gt; 40|&gt;= 90</attribute>
-                <attribute id="11">&gt; 15|&gt; 15</attribute>
-                <attribute id="12">&gt; 30|&gt; 30</attribute>
-                <attribute id="13">&gt; 45|&gt; 45</attribute>
-                <attribute id="14">&gt; 60|&gt; 60</attribute>
-                <attribute id="15">&gt; 90|&gt; 90</attribute>
-                <attribute id="16">&gt; 120|&gt; 120</attribute>
+                <attribute id="4">(Disk WinMark &gt; 0, Graphics WinMark &gt; 0) OR (Disk WinMark &gt; 0, DOSmark &gt;= 0)</attribute>
+                <attribute id="5">(&gt; 5) OR (&gt;= 40)</attribute>
+                <attribute id="6">(&gt; 10) OR (&gt;= 50)</attribute>
+                <attribute id="7">(&gt; 15) OR (&gt;= 60)</attribute>
+                <attribute id="8">(&gt; 20) OR (&gt;= 70)</attribute>
+                <attribute id="9">(&gt; 30) OR (&gt;= 80)</attribute>
+                <attribute id="10">(&gt; 40) OR (&gt;= 90)</attribute>
+                <attribute id="11">(&gt; 15) OR (&gt; 15)</attribute>
+                <attribute id="12">(&gt; 30) OR (&gt; 30)</attribute>
+                <attribute id="13">(&gt; 45) OR (&gt; 45)</attribute>
+                <attribute id="14">(&gt; 60) OR (&gt; 60)</attribute>
+                <attribute id="15">(&gt; 90) OR (&gt; 90)</attribute>
+                <attribute id="16">(&gt; 120) OR (&gt; 120)</attribute>
                 <attribute id="17">&gt;=200MB</attribute>
                 <attribute id="18">&gt;=400MB</attribute>
                 <attribute id="19">Desktop</attribute>
@@ -217,18 +216,18 @@
                 <attribute id="31">UBSA Local BUS</attribute>
                 <attribute id="32">&lt;=7</attribute>
                 <attribute id="33">&gt;=1</attribute>
-                <attribute id="34">&gt;=2500$|&gt;=225MB|&gt;=1500</attribute>
-                <attribute id="35">&gt;=3000$|&gt;=250MB|&gt;=3000</attribute>
-                <attribute id="36">&gt;=3500$|&gt;=350MB|&gt;=4500</attribute>
-                <attribute id="37">&gt;=4000$|&gt;=400MB|&gt;=6000</attribute>
-                <attribute id="38">&gt;=4500$|&gt;=450MB|&gt;=7500</attribute>
-                <attribute id="39">&gt;=5000$|&gt;=500MB|&gt;=9000</attribute>
-                <attribute id="40">&lt;5000$|&lt;500MB|&lt;9000</attribute>
-                <attribute id="41">&lt;4500$|&lt;450MB|&lt;7500</attribute>
-                <attribute id="42">&lt;4000$|&lt;400MB|&lt;6000</attribute>
-                <attribute id="43">&lt;3500$|&lt;350MB|&lt;4500</attribute>
-                <attribute id="44">&lt;3000$|&lt;250MB|&lt;3000</attribute>
-                <attribute id="45">&lt;2500$|&lt;225MB|&lt;1500</attribute>
+                <attribute id="34">&gt;=2500$ OR &gt;=225MB OR &gt;=1500</attribute>
+                <attribute id="35">&gt;=3000$ OR &gt;=250MB OR &gt;=3000</attribute>
+                <attribute id="36">&gt;=3500$ OR &gt;=350MB OR &gt;=4500</attribute>
+                <attribute id="37">&gt;=4000$ OR &gt;=400MB OR &gt;=6000</attribute>
+                <attribute id="38">&gt;=4500$ OR &gt;=450MB OR &gt;=7500</attribute>
+                <attribute id="39">&gt;=5000$ OR &gt;=500MB OR &gt;=9000</attribute>
+                <attribute id="40">&lt;5000$ OR &lt;500MB OR &lt;9000</attribute>
+                <attribute id="41">&lt;4500$ OR &lt;450MB OR &lt;7500</attribute>
+                <attribute id="42">&lt;4000$ OR &lt;400MB OR &lt;6000</attribute>
+                <attribute id="43">&lt;3500$ OR &lt;350MB OR &lt;4500</attribute>
+                <attribute id="44">&lt;3000$ OR &lt;250MB OR &lt;3000</attribute>
+                <attribute id="45">&lt;2500$ OR &lt;225MB OR &lt;1500</attribute>
                 <attribute id="46">kein 5¼" Schacht</attribute>
                 <attribute id="47">kein 3½" Schacht</attribute>
                 <attribute id="48">ein 3½" Schacht</attribute>
@@ -306,7 +305,6 @@
                                         <offset x="0.000000" y="-5.000000"/>
                                         <textAlignment>center</textAlignment>
                                 </labelStyle>
-                                <objectRef>1</objectRef>
                         </objectContingent>
                         <attributeContingent>
                         </attributeContingent>

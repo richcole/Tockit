@@ -64,8 +64,7 @@ public class DBConnection
     }
 
     /**
-     * Return a String array containing the column names for the
-     * specified table.
+     * Execute a query and return the results.
      */
     public ResultSet query(String statement)
     {
