@@ -10,7 +10,7 @@ package org.tockit.relations.operations;
 import org.tockit.relations.model.Relation;
 import org.tockit.relations.operations.util.AbstractUnaryRelationOperation;
 
-public class IdentityRelationOperation extends AbstractUnaryRelationOperation {
+public class IdentityOperation extends AbstractUnaryRelationOperation {
 	public Relation apply(Relation input) {
 		return input;
 	}

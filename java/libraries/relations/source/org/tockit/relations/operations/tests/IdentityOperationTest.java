@@ -13,21 +13,21 @@ import junit.framework.TestSuite;
 import org.tockit.relations.model.Relation;
 import org.tockit.relations.model.Tuple;
 import org.tockit.relations.model.tests.RelationImplementationTest;
-import org.tockit.relations.operations.IdentityRelationOperation;
+import org.tockit.relations.operations.IdentityOperation;
 import org.tockit.relations.operations.RelationOperation;
 
 
-public class IdentityTest extends AbstractRelationOperationTest {
-    public IdentityTest(String s) {
+public class IdentityOperationTest extends AbstractRelationOperationTest {
+    public IdentityOperationTest(String s) {
         super(s);
     }
 
 	public static Test suite() {
-		return new TestSuite(IdentityTest.class);
+		return new TestSuite(IdentityOperationTest.class);
 	}
 
     protected RelationOperation getOperation() {
-        return new IdentityRelationOperation();
+        return new IdentityOperation();
     }
 
     protected int getExpectedArity() {

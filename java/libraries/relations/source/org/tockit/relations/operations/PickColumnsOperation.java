@@ -21,15 +21,15 @@ import org.tockit.relations.operations.util.AbstractUnaryRelationOperation;
  * The operation takes an int[] as defining parameter, which denotes the columns to pick
  * from the input relation. Any order is possible, repetitions are allowed. 
  */
-public class PermuteProjectRelationOperation extends AbstractUnaryRelationOperation {
+public class PickColumnsOperation extends AbstractUnaryRelationOperation {
 	private int[] columnsToPick;
 	private String name;
 	
-	public PermuteProjectRelationOperation(int[] columnsToPick) {
+	public PickColumnsOperation(int[] columnsToPick) {
 		this(columnsToPick, "Permute and project");
 	}
 	
-    public PermuteProjectRelationOperation(int[] columnsToPick, String name) {
+    public PickColumnsOperation(int[] columnsToPick, String name) {
     	this.columnsToPick = columnsToPick;
     	this.name = name;
     }

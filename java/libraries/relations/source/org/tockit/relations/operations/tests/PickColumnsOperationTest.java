@@ -13,21 +13,21 @@ import junit.framework.TestSuite;
 import org.tockit.relations.model.Relation;
 import org.tockit.relations.model.Tuple;
 import org.tockit.relations.model.tests.RelationImplementationTest;
-import org.tockit.relations.operations.PermuteProjectRelationOperation;
+import org.tockit.relations.operations.PickColumnsOperation;
 import org.tockit.relations.operations.RelationOperation;
 
 
-public class PermuteProjectRelationOperationTest extends AbstractRelationOperationTest {
-    public PermuteProjectRelationOperationTest(String s) {
+public class PickColumnsOperationTest extends AbstractRelationOperationTest {
+    public PickColumnsOperationTest(String s) {
         super(s);
     }
 
 	public static Test suite() {
-		return new TestSuite(PermuteProjectRelationOperationTest.class);
+		return new TestSuite(PickColumnsOperationTest.class);
 	}
 
     protected RelationOperation getOperation() {
-        return new PermuteProjectRelationOperation(new int[]{1,2,1,2});
+        return new PickColumnsOperation(new int[]{1,2,1,2});
     }
 
     protected int getExpectedArity() {
