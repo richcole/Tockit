@@ -103,6 +103,9 @@ public class DocumentProcessingFactory {
 
 			doc.add(Field.Text(GlobalConstants.FIELD_DOC_PATH, file.getPath()));
 			doc.add(Field.Text(GlobalConstants.FIELD_DOC_PATH_WORDS, file.getPath().replace(File.separatorChar, ' ')));
+			doc.add(Field.Text(GlobalConstants.FIELD_DOC_EXTENSION,fileExtension));
+			String fileNameWithoutExtension = file.getName().substring(0,file.getName().length() - fileExtension.length() - 1);
+			doc.add(Field.Text(GlobalConstants.FIELD_DOC_NAME,fileNameWithoutExtension));
 			if (doc.get(GlobalConstants.FIELD_DOC_MODIFICATION_DATE) == null) {
 				doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_MODIFICATION_DATE,new Date(file.lastModified())));
 			}
@@ -111,6 +114,7 @@ public class DocumentProcessingFactory {
 			return doc;								
 		}
 		else {
+			/// @todo shall we add all files at least as files?
 			throw new UnknownFileExtensionException(
 								"Don't know how to process document with extension " 
 								+ fileExtension +
