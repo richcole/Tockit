@@ -243,6 +243,7 @@ public class PluginClassLoader extends ClassLoader {
 	 	if (this.loadedClassesMap.containsKey(resource.getRelativePath())) {
 	 		return (Class) this.loadedClassesMap.get(resource.getRelativePath());
 	 	}
+	 	// @todo Use getResource here instead of loading class.
 //	 	try {
 //	 		String className = resource.getRelativePath().replace('/','.').replaceAll(".class", "");
 //	 		Class resClass = this.getClass().getClassLoader().loadClass(className);
