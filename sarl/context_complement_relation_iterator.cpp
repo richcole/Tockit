@@ -10,10 +10,11 @@ extern "C" {
   
 }
 
-#include <iostream>
-
 #include <sarl/relation_impl.h>
 #include <sarl/relation_iterator_impl.h>
+
+#include <iostream>
+using namespace std;
 
 void  sarl_relation_iterator_context_complement_advance(
   struct Sarl_RelationIterator *ap_it, 
