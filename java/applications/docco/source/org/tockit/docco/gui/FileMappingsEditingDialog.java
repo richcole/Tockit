@@ -19,6 +19,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Iterator;
 
+import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -31,21 +32,29 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import org.tockit.docco.indexer.DocumentHandlerMapping;
 import org.tockit.docco.indexer.DocumentHandlersRegistery;
 
 public class FileMappingsEditingDialog extends JDialog {
 
-	DocumentHandlersRegistery docHandlersRegistery;	
+	private DocumentHandlersRegistery docHandlersRegistery;	
 	
 	private DefaultListModel model = new DefaultListModel();
+	
 	private JButton upButton = new JButton("Move Up");
 	private JButton downButton = new JButton("Move Down");
 	private JButton addButton = new JButton("Add");
 	private JButton removeButton = new JButton("Remove");
+
+	private JList jlist;
+	
 	private JLabel fileFilterDisplayLabel = new JLabel();
 	private JLabel docHandlerDisplayLabel = new JLabel();
+	
+	
 	
 	private class MappingsListCellRenderer extends DefaultListCellRenderer {
 		public Component getListCellRendererComponent(JList list, Object value, 
@@ -59,8 +68,29 @@ public class FileMappingsEditingDialog extends JDialog {
 								": " + mapping.getHandler().getDisplayName();
 			
 			setText(text);
+			
+			String tooltipText = "File Filter accepting: " + mapping.getFileFilter().getDisplayString() +
+								" is mapped to document handler: " + mapping.getHandler().getDisplayName();
+			setToolTipText(tooltipText);  
 			return this;
 		}
+	}
+	
+	private class DocHandlersRegisteryListModel extends AbstractListModel {
+		private DocumentHandlersRegistery registery;
+		
+		public DocHandlersRegisteryListModel (DocumentHandlersRegistery registery) {
+			this.registery = registery;
+		}
+
+		public int getSize() {
+			return registery.getDocumentMappingCollection().size();
+		}
+
+		public Object getElementAt(int index) {
+			return null;
+		}
+		
 	}
 
 	
@@ -69,7 +99,7 @@ public class FileMappingsEditingDialog extends JDialog {
 		super(parent, "Edit File Mappins Configuration", true);
 		this.docHandlersRegistery = registery;
 		
-		Iterator it = this.docHandlersRegistery.getDocumentMappingIterator();
+		Iterator it = this.docHandlersRegistery.getDocumentMappingCollection().iterator();
 		while (it.hasNext()) {
 			DocumentHandlerMapping curMapping = (DocumentHandlerMapping) it.next();
 			this.model.addElement(curMapping);
@@ -77,6 +107,8 @@ public class FileMappingsEditingDialog extends JDialog {
 		
 		getContentPane().add(createMainPanel(), BorderLayout.CENTER);
 		getContentPane().add(createButtonsPanel(), BorderLayout.SOUTH);
+		
+		setButtonsStatus();
 		
 		pack();
 		setLocationRelativeTo(parent);
@@ -87,13 +119,34 @@ public class FileMappingsEditingDialog extends JDialog {
 		
 		JPanel mainPanel = new JPanel(new BorderLayout());
 		
-		JList jlist = new JList(this.model);
+		upButton.setToolTipText("Move selected mapping up in the list");
+		downButton.setToolTipText("Move selected mapping down in the list");
+		addButton.setToolTipText("Add new mapping");
+		removeButton.setToolTipText("Remove selected mapping");
+		
+		upButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int index = jlist.getSelectedIndex();
+				if (index >= 1) {
+					DocumentHandlerMapping mapping = (DocumentHandlerMapping) model.get(index);
+				}
+			}
+		});
+
+		jlist = new JList(this.model);
 		jlist.setCellRenderer(new MappingsListCellRenderer());
+		jlist.addListSelectionListener(new ListSelectionListener(){
+			public void valueChanged(ListSelectionEvent e) {
+				setButtonsStatus();
+				displayMappingDetails();
+			}
+		});
 		
 		JScrollPane scrollPane = new JScrollPane(jlist);
 		Dimension d = new Dimension(150, 200);
 		scrollPane.setPreferredSize(d);
 		scrollPane.setMinimumSize(d);
+
 
 		JPanel editingPanel = new JPanel(new GridBagLayout());
 		
@@ -178,7 +231,7 @@ public class FileMappingsEditingDialog extends JDialog {
 		displayDetailsPanel.add(fileFilterDisplayLabel,new GridBagConstraints(1, row, 
 										GridBagConstraints.REMAINDER, 1, 
 										0, 0,
-										GridBagConstraints.CENTER,
+										GridBagConstraints.NORTHWEST,
 										GridBagConstraints.NONE,
 										new Insets(10, 5, 1, 5),
 										0, 0
@@ -196,7 +249,7 @@ public class FileMappingsEditingDialog extends JDialog {
 		displayDetailsPanel.add(docHandlerDisplayLabel,new GridBagConstraints(1, row, 
 											GridBagConstraints.REMAINDER, 1, 
 											0, 0,
-											GridBagConstraints.CENTER,
+											GridBagConstraints.NORTHWEST,
 											GridBagConstraints.NONE,
 											new Insets(1, 5, 10, 5),
 											0, 0
@@ -214,13 +267,7 @@ public class FileMappingsEditingDialog extends JDialog {
 	
 	private JPanel createButtonsPanel () {
 		JPanel panel = new JPanel();
-		JButton okButton = new JButton("Save");
-		okButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				saveMappings();
-			}
-		});
-		
+			
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -231,8 +278,6 @@ public class FileMappingsEditingDialog extends JDialog {
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 		panel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
 		panel.add(Box.createHorizontalGlue());
-		panel.add(okButton);
-		panel.add(Box.createRigidArea(new Dimension(10, 0)));
 		panel.add(cancelButton);
 		
 		return panel;
@@ -244,5 +289,30 @@ public class FileMappingsEditingDialog extends JDialog {
 		// @todo store changed info in config manager?
 
 	}	
+	
+	private void setButtonsStatus() {
+		if (this.jlist.getSelectedIndex() == -1) {
+			this.upButton.setEnabled(false);
+			this.downButton.setEnabled(false);
+			this.removeButton.setEnabled(false);
+		}
+		else {
+			this.upButton.setEnabled(true);
+			this.downButton.setEnabled(true);
+			this.removeButton.setEnabled(true);			
+		}
+		this.addButton.setEnabled(true);
+	}
+	
+	
+	private void displayMappingDetails () {
+		
+		if (this.jlist.getSelectedIndex() != -1) {
+			DocumentHandlerMapping mapping = (DocumentHandlerMapping) this.jlist.getSelectedValue();
+			this.fileFilterDisplayLabel.setText(mapping.getFileFilter().getDisplayString());
+			this.docHandlerDisplayLabel.setText(mapping.getHandler().getDisplayName());
+		}
+		
+	}
 
 }

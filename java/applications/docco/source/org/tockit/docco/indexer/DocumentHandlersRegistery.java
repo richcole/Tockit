@@ -8,6 +8,7 @@
 package org.tockit.docco.indexer;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -49,8 +50,8 @@ public class DocumentHandlersRegistery {
 		docHandlersList.add(destinationPositionIndex, mapping);
 	}
 	
-	public Iterator getDocumentMappingIterator () {
-		return docHandlersList.iterator(); 	
+	public Collection getDocumentMappingCollection () {
+		return docHandlersList; 	
 	}
 	
 	private void loadDocumentHandlersRegistery()
