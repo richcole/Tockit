@@ -42,11 +42,7 @@ import net.sourceforge.tockit.toscanaj.diagram.DiagramView;
 import net.sourceforge.tockit.toscanaj.gui.DatabaseChooser;
 import net.sourceforge.tockit.toscanaj.parser.*;
 
-// debugging
-import net.sourceforge.tockit.toscanaj.data.*;
-import java.awt.geom.*;
-//import org.jdom.*;
-import org.jdom.DataConversionException;
+import net.sourceforge.tockit.toscanaj.data.Diagram;
 
 public class MainPanel extends JFrame implements ActionListener {
 
@@ -89,7 +85,7 @@ public class MainPanel extends JFrame implements ActionListener {
   private JRadioButtonMenuItem spDocMenuItem		= null;
   private JRadioButtonMenuItem allDocMenuItem	= null;
   private JMenuItem numDocMenuItem	= null;
-  private JMenuItem persDistMenuItem	= null;
+  private JMenuItem percDistMenuItem	= null;
   private JMenuItem listDocMenuItem	= null;
   private JMenuItem moveLabMenuItem	= null;
 
@@ -122,45 +118,58 @@ public class MainPanel extends JFrame implements ActionListener {
   // enabled
   public boolean fileIsOpen = false;
 
-  /**
-   *  default constructor
-   */
-
+    /**
+     * Simple initialisation constructor.
+     */
     public MainPanel() {
-      super("ToscanaJ 0.1");
-      buildPanel();
+        super("ToscanaJ 0.1");
+        buildPanel();
+        // try to set Windows LnF
+        try {
+            javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+        }
+        catch( Exception e ) {
+            // we don't really care if it fails -- just print message on stderr
+            System.err.println("Warning: could not set Windows Look and Feel");
+        }
     }
 
-
-     // constructor used for debuging
-    public MainPanel(String schemaFile) {
-      super("ToscanaJ 0.1");
-      buildPanel();
-      // parse it
-      try {
-        conceptualSchema = CSXParser.parse(new File(schemaFile));
-      }
-      catch( FileNotFoundException e) {
-        JOptionPane.showMessageDialog( this,
-        "Couldn't access the file.",
-        "File error",
-        JOptionPane.ERROR_MESSAGE );
-        System.err.println( e.getMessage() );
-      }
-      catch(IOException ioe){}
-      catch(DataFormatException dfe){}
-      // if there is at least one diagram, open the first
-      if( conceptualSchema.getNumberOfDiagrams() != 0 ) {
-        currentSelectedIndex = 0;
-        diagramView.showDiagram( conceptualSchema.getDiagram( 0 ) );
-      }
+    /**
+     * This constructor opens the file given as url in the parameter.
+     *
+     * Used when opening ToscanaJ with a file name on the command line.
+     */
+    public MainPanel( String schemaFileURL ) {
+        // do the normal initialisation first
+        this();
+        // open the file
+        openSchemaFile( new File(schemaFileURL) );
+        /*
+        // parse the input
+        try {
+           conceptualSchema = CSXParser.parse(new File(schemaFile));
+        }
+        catch( FileNotFoundException e) {
+            JOptionPane.showMessageDialog( this,
+            "Couldn't access the file.",
+            "File error",
+            JOptionPane.ERROR_MESSAGE );
+            System.err.println( e.getMessage() );
+        }
+        /// TODO: produce error messages
+        catch(IOException ioe) {}
+        catch(DataFormatException dfe) {}
+        // if there is at least one diagram, open the first
+        if( conceptualSchema.getNumberOfDiagrams() != 0 ) {
+            currentSelectedIndex = 0;
+            diagramView.showDiagram( conceptualSchema.getDiagram( 0 ) );
+        }*/
     }
 
 
     /**
-     *  build the GUI
+     * Build the GUI.
      */
-
     private void buildPanel() {
 
 		buildMenuBar();
@@ -214,43 +223,8 @@ public class MainPanel extends JFrame implements ActionListener {
 		openMenuItem.addActionListener(this);
 		fileMenu.add(openMenuItem);
 
-		// menu item CLOSE
-		/*
-	 	closeMenuItem = new JMenuItem("Close",
-						new ImageIcon(IMAGE_PATH + CLEAR_ICON));
-		closeMenuItem.setMnemonic(KeyEvent.VK_C);
-		closeMenuItem.setAccelerator(KeyStroke.getKeyStroke(
-                 KeyEvent.VK_W, ActionEvent.CTRL_MASK));
-		closeMenuItem.setEnabled(fileIsOpen);
-		closeMenuItem.addActionListener(this);
-		fileMenu.add(closeMenuItem);
-		*/
-
 		// separator
 		fileMenu.addSeparator();
-
-		/*
-
-		// menu item SAVE
-	 	saveMenuItem = new JMenuItem("Save",
-						new ImageIcon(IMAGE_PATH + SAVE_ICON));
-		saveMenuItem.setMnemonic(KeyEvent.VK_S);
-		saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(
-                 KeyEvent.VK_S, ActionEvent.CTRL_MASK));
-		saveMenuItem.addActionListener(this);
-		saveMenuItem.setEnabled(fileIsOpen);
-		fileMenu.add(saveMenuItem);
-
-		// menu item SAVE AS
-	 	saveAsMenuItem = new JMenuItem("Save As",
-						new ImageIcon(IMAGE_PATH + CLEAR_ICON));
-		saveAsMenuItem.addActionListener(this);
-		saveAsMenuItem.setEnabled(fileIsOpen);
-		fileMenu.add(saveAsMenuItem);
-
-		// separator
-		fileMenu.addSeparator();
-		*/
 
 		// menu item PRINT PREVIEW
 	 	printPrevMenuItem = new JMenuItem("Print Preview");
@@ -372,31 +346,16 @@ public class MainPanel extends JFrame implements ActionListener {
         diagrMenu.add(numDocMenuItem);
 
 		// radio button menu item PERCEPTUAL DISTRIBUTION
-        persDistMenuItem = new JRadioButtonMenuItem("Perceptual Distribution");
-        persDistMenuItem.addActionListener(this);
-        diagrGroup2.add(persDistMenuItem);
-        diagrMenu.add(persDistMenuItem);
+        percDistMenuItem = new JRadioButtonMenuItem("Percentual Distribution");
+        percDistMenuItem.addActionListener(this);
+        diagrGroup2.add(percDistMenuItem);
+        diagrMenu.add(percDistMenuItem);
 
 		// radio button menu item LIST OF DOCUMENTS
         listDocMenuItem = new JRadioButtonMenuItem("List Of Documents");
         listDocMenuItem.addActionListener(this);
         diagrGroup2.add(listDocMenuItem);
         diagrMenu.add(listDocMenuItem);
-
-		/*
-		// separator
-		diagrMenu.addSeparator();
-
-		// menu item MOVE LABELS
-	 	moveLabMenuItem = new JMenuItem("Move Labels");
-		moveLabMenuItem.addActionListener(this);
-		//moveLabMenuItem.setEnabled(fileIsOpen);
-		diagrMenu.add(moveLabMenuItem);
-		*/
-
-
-
-
     }
 
 
@@ -466,7 +425,7 @@ public class MainPanel extends JFrame implements ActionListener {
 		spDocMenuItem.setEnabled (isOpen);
 		allDocMenuItem.setEnabled (isOpen);
 		numDocMenuItem.setEnabled (isOpen);
-		persDistMenuItem.setEnabled (isOpen);
+		percDistMenuItem.setEnabled (isOpen);
 		listDocMenuItem.setEnabled (isOpen);
 		//moveLabMenuItem.setEnabled (isOpen);
 
@@ -492,7 +451,7 @@ public class MainPanel extends JFrame implements ActionListener {
 			System.out.println("Action for new button");	//stub
 		}
 		if (actionSource == openButton) {
-			openSchemaFile();
+			openSchema();
 		}
 		if (actionSource == saveButton) {
 			System.out.println("Action for save button"); // stub
@@ -508,7 +467,7 @@ public class MainPanel extends JFrame implements ActionListener {
 			System.out.println("Action for menu item: new "); // stub
 		}
 		if (actionSource == openMenuItem) {
-			openSchemaFile();
+			openSchema();
 		}
 		if (actionSource == closeMenuItem) {
 			System.out.println("Action for menu item: close "); // stub
@@ -569,8 +528,8 @@ public class MainPanel extends JFrame implements ActionListener {
 		if (actionSource == numDocMenuItem) {
 			System.out.println("Acton for menu group: Number Of Documents ");
 		}
-		if (actionSource == persDistMenuItem) {
-			System.out.println("Acton for menu group: Perceptual Distribution");
+		if (actionSource == percDistMenuItem) {
+			System.out.println("Acton for menu group: Percentual Distribution");
 		}
 		if (actionSource == listDocMenuItem) {
 			System.out.println("Acton for menu group: List Of Documents ");
@@ -583,11 +542,9 @@ public class MainPanel extends JFrame implements ActionListener {
 	}
 
     /**
-     * Open a file and parse it to create ConceptualSchema.
+     * Open a schema using the file open dialog.
      */
-    protected void openSchemaFile() {
-        // get file containing schema
-        File schemaFile;
+    protected void openSchema() {
         final JFileChooser openDialog =
                         new JFileChooser( System.getProperty( "user.dir" ) );
         int rv=openDialog.showOpenDialog( this );
@@ -595,8 +552,13 @@ public class MainPanel extends JFrame implements ActionListener {
         {
             return;
         }
-        schemaFile = openDialog.getSelectedFile();
+        openSchemaFile( openDialog.getSelectedFile() );
+    }
 
+    /**
+     * Open a file and parse it to create ConceptualSchema.
+     */
+    protected void openSchemaFile(File schemaFile) {
         // parse it
         try
         {
