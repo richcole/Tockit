@@ -23,7 +23,12 @@ import org.tockit.docco.indexer.DocumentHandlerRegistry;
 import org.tockit.docco.indexer.Indexer;
 
 public class Index {
-	private File indexLocation;
+	/**
+	 * Indicates wether this index is used for querying at the moment.
+	 */
+	private boolean active = true;
+	
+    private File indexLocation;
 	private File baseDirectory;
 	private Indexer indexer;
 	private Thread indexThread;
@@ -158,5 +163,13 @@ public class Index {
     	} else {
     		return false;
     	}
+    }
+
+    public boolean isActive() {
+        return this.active;
+    }
+    
+    public void setActive(boolean active) {
+    	this.active = active;
     }
 }
