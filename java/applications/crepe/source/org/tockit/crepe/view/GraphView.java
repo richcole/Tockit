@@ -38,24 +38,26 @@ public class GraphView extends Canvas {
 
     public void showGraph(ConceptualGraph graph) {
         this.clearCanvas();
-        if(graph == null) {
+         if(graph == null) {
             return;
         }
 
         Hashtable nodemap = new Hashtable();
-        for (Iterator iterator = graph.getNodes().iterator(); iterator.hasNext();) {
-            Node node = (Node) iterator.next();
+        Node[] nodes = graph.getNodes();
+        for (int i = 0; i < nodes.length; i++) {
+            Node node = nodes[i];
             NodeView nodeView = new NodeView(node);
             nodemap.put(node,nodeView);
         }
 
-        for (Iterator iterator = graph.getLinks().iterator(); iterator.hasNext();) {
-            Link link = (Link) iterator.next();
+        Link[] links = graph.getLinks();
+        for (int i = 0; i < links.length; i++) {
+            Link link = links[i];
             LinkView linkView = new LinkView(link);
             Node[] references = link.getReferences();
-            for (int i = 0; i < references.length; i++) {
-                Node node = references[i];
-                this.addCanvasItem(new LineView(linkView, (NodeView) nodemap.get(node), i + 1));
+            for (int j = 0; j < references.length; j++) {
+                Node node = references[j];
+                this.addCanvasItem(new LineView(linkView, (NodeView) nodemap.get(node), j + 1));
             }
             this.addCanvasItem(linkView);
         }
@@ -64,5 +66,7 @@ public class GraphView extends Canvas {
             NodeView nodeView = (NodeView) iterator.next();
             this.addCanvasItem(nodeView);
         }
+
+        repaint();
     }
 }

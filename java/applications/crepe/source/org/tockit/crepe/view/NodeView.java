@@ -8,6 +8,7 @@
 package org.tockit.crepe.view;
 
 import org.tockit.cgs.model.Node;
+import org.tockit.cgs.model.Instance;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -32,8 +33,14 @@ public class NodeView extends MovableCanvasItem {
         g.draw(rect);
 
         /// @todo use font metrics to center
-        g.drawString(node.getType().getName() + ": " + node.getReferent().getIdentifier(),
-                     (float)rect.getX() + 5, (float)rect.getY() + 20);
+        Instance referent = node.getReferent();
+        if (referent != null) {
+            g.drawString(node.getType().getName() + ": " + referent.getIdentifier(),
+                         (float)rect.getX() + 5, (float)rect.getY() + 20);
+        } else {
+            g.drawString(node.getType().getName(),
+                         (float)rect.getX() + 5, (float)rect.getY() + 20);
+        }
     }
 
     public boolean containsPoint(Point2D point) {

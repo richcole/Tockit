@@ -26,7 +26,25 @@ public class LineView extends CanvasItem {
 
     public void draw(Graphics2D g) {
         g.setPaint(Color.black);
-        g.draw(new Line2D.Double(nodeView.getPosition(), linkView.getPosition()));
+        Point2D nodePos = nodeView.getPosition();
+        Point2D linkPos = linkView.getPosition();
+        g.draw(new Line2D.Double(nodePos, linkPos));
+        double xDiff = nodePos.getX() - linkPos.getX();
+        double yDiff = nodePos.getY() - linkPos.getY();
+        double lengthSq = xDiff * xDiff + yDiff * yDiff;
+        float diff = 10;
+        if(xDiff != 0) {
+            diff = (float)(10 * yDiff*yDiff/lengthSq);
+        }
+        if ((xDiff > 0) == (yDiff > 0)) {
+            g.drawString(String.valueOf(this.number),
+                         (float)(nodePos.getX() + linkPos.getX())/2 + diff,
+                         (float)(nodePos.getY() + linkPos.getY())/2);
+        } else {
+            g.drawString(String.valueOf(this.number),
+                         (float)(nodePos.getX() + linkPos.getX())/2 - diff,
+                         (float)(nodePos.getY() + linkPos.getY())/2);
+        }
     }
 
     public boolean containsPoint(Point2D point) {

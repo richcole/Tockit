@@ -13,6 +13,11 @@ import org.tockit.crepe.controller.ConfigurationManager;
 import org.tockit.crepe.Crepe;
 import org.tockit.crepe.view.GraphView;
 import org.tockit.cgs.model.*;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.adapters.DOMAdapter;
+import org.jdom.input.DOMBuilder;
+import org.jdom.output.XMLOutputter;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -47,6 +52,8 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
 
     // the actions used in the UI
     private Action openFileAction;
+    private Action saveFileAction;
+    private Action saveFileAsAction;
     private Action exportGraphAction;
 
     // menu items list
@@ -63,9 +70,9 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
     private List mruList = new LinkedList();
 
     /**
-     * Stores the file name of the currently open file.
+     * Stores the file of the currently open file.
      */
-    private String currentFile = null;
+    private File currentFile = null;
 
     /**
      * Stores the last file where an image was exported to.
@@ -78,6 +85,7 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
     private PageFormat pageFormat = new PageFormat();
     private DiagramExportSettings diagramExportSettings;
     private GraphView graphView;
+    private KnowledgeBase knowledgeBase;
 
     /**
      * Simple initialisation constructor.
@@ -99,8 +107,6 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
         }
         // then build the panel (order is important for checking if we want export options)
         buildPanel();
-
-        showTestGraph();
 
         // restore the old MRU list
         mruList = ConfigurationManager.fetchStringList("CrepeMainPanel", "mruFiles", MaxMruFiles);
@@ -126,26 +132,52 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
         });
     }
 
-    private void showTestGraph() {
-        Type person = new Type("Person");
-        Type city = new Type("City");
-        Type vehicle = new Type("Vehicle");
-        Type bus = new Type("Bus");
-        bus.addSupertype(vehicle);
-        Instance john = new Instance("John", person);
-        Instance boston = new Instance("Boston", city);
-        Instance greyhound = new Instance("Greyhound", bus);
-        Node johnNode = new Node(person, john, null);
-        Node bostonNode = new Node(city, boston, null);
-        Node busNode = new Node(bus, greyhound, null);
-        Relation go = new Relation("go", new Type[]{person, city, vehicle});
-        Link goLink = new Link(go, new Node[]{johnNode, bostonNode, busNode});
-        ConceptualGraph graph = new ConceptualGraph();
-        graph.addNode(johnNode);
-        graph.addNode(bostonNode);
-        graph.addNode(busNode);
-        graph.addLink(goLink);
+    private void showTestGraph(int number) {
+        knowledgeBase = new KnowledgeBase();
+        ConceptualGraph graph = new ConceptualGraph(knowledgeBase);
 
+        //create canon
+        Type person = new Type(knowledgeBase, "Person");
+        Type place = new Type(knowledgeBase, "Place");
+        Type city = new Type(knowledgeBase, "City");
+        city.addSupertype(place);
+        Type bus = new Type(knowledgeBase, "Bus");
+        Type rock = new Type(knowledgeBase, "Rock");
+        Type hard = new Type(knowledgeBase, "Hard");
+        Instance john = new Instance(knowledgeBase, "John", person);
+        Instance boston = new Instance(knowledgeBase, "Boston", city);
+        Relation go = new Relation(knowledgeBase, "go", new Type[]{person, city, bus});
+        Relation between = new Relation(knowledgeBase, "between", new Type[]{person, rock, place});
+        Relation attribute = new Relation(knowledgeBase, "attribute", new Type[]{place, hard});
+
+        switch(number) {
+            case 1:
+                Node johnNode = new Node(knowledgeBase, person, john, null);
+                Node bostonNode = new Node(knowledgeBase, city, boston, null);
+                Node busNode = new Node(knowledgeBase, bus, null, null);
+                Link goLink = new Link(knowledgeBase, go, new Node[]{johnNode, bostonNode, busNode});
+                graph.addNode(johnNode);
+                graph.addNode(bostonNode);
+                graph.addNode(busNode);
+                graph.addLink(goLink);
+                break;
+            case 2:
+                Node personNode = new Node(knowledgeBase, person, null, null);
+                Node rockNode = new Node(knowledgeBase, rock, null, null);
+                Node placeNode = new Node(knowledgeBase, place, null, null);
+                Node hardNode = new Node(knowledgeBase, hard, null, null);
+                Link betweenLink = new Link(knowledgeBase, between, new Node[]{personNode,rockNode,placeNode});
+                Link attributeLink = new Link(knowledgeBase, attribute, new Node[]{placeNode,hardNode});
+                graph.addNode(personNode);
+                graph.addNode(rockNode);
+                graph.addNode(placeNode);
+                graph.addNode(hardNode);
+                graph.addLink(betweenLink);
+                graph.addLink(attributeLink);
+                break;
+            default:
+                throw new RuntimeException("no such graph");
+        }
         graphView.showGraph(graph);
     }
 
@@ -191,11 +223,60 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
         this.openFileAction.putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_O));
         this.openFileAction.putValue(Action.ACCELERATOR_KEY,
                 KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
+        this.saveFileAction = new AbstractAction("Save") {
+            public void actionPerformed(ActionEvent e) {
+                saveKnowledgeBase(false);
+            }
+        };
+        this.saveFileAction.putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_S));
+        this.saveFileAction.putValue(Action.ACCELERATOR_KEY,
+                KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
+        this.saveFileAsAction = new AbstractAction("Save As...") {
+            public void actionPerformed(ActionEvent e) {
+                saveKnowledgeBase(true);
+            }
+        };
+        this.saveFileAsAction.putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_A));
         this.exportGraphAction = new AbstractAction("Export Diagram...") {
             public void actionPerformed(ActionEvent e) {
                 exportImage();
             }
         };
+    }
+
+    private void saveKnowledgeBase(boolean forceDialog) {
+        //@todo disable save action as long as knowledgeBase is null
+        if( forceDialog || this.currentFile == null ) {
+            final JFileChooser saveDialog;
+            if (this.currentFile != null) {
+                // use position of last file for dialog
+                saveDialog = new JFileChooser(this.currentFile);
+            } else {
+                saveDialog = new JFileChooser();
+            }
+            if(saveDialog.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+                this.currentFile = saveDialog.getSelectedFile();
+            }
+            else {
+                return;
+            }
+        }
+        Document doc = new Document(this.knowledgeBase.getXMLElement());
+
+        XMLOutputter serializer = new XMLOutputter();
+
+        serializer.setIndent("  "); // use two space indent
+        serializer.setNewlines(false);
+
+        try {
+            FileOutputStream out = new FileOutputStream(this.currentFile);
+            serializer.output(doc, out);
+            out.flush();
+            out.close();
+        }
+        catch (IOException e)   {
+            System.err.println(e);
+        }
     }
 
     /**
@@ -215,9 +296,12 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
 
         menubar.add(fileMenu);
         fileMenu.add(this.openFileAction);
+        fileMenu.add(this.saveFileAction);
+        fileMenu.add(this.saveFileAsAction);
 
         // we add the export options only if we can export at all
         if (this.diagramExportSettings != null) {
+            fileMenu.addSeparator();
             fileMenu.add(exportGraphAction);
 
             // create the export diagram save options submenu
@@ -277,6 +361,28 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
         exitMenuItem.addActionListener(this);
         fileMenu.add(exitMenuItem);
 
+        JMenu examplesMenu = new JMenu("Examples");
+        examplesMenu.setMnemonic(KeyEvent.VK_E);
+
+        JMenuItem exampleItem;
+        exampleItem = new JMenuItem("John goes to Boston by bus");
+        exampleItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                showTestGraph(1);
+            }
+        });
+        examplesMenu.add(exampleItem);
+
+        exampleItem = new JMenuItem("Person between rock and hard place");
+        exampleItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                showTestGraph(2);
+            }
+        });
+        examplesMenu.add(exampleItem);
+
+        menubar.add(examplesMenu);
+
         // create a help menu
         JMenu helpMenu = new JMenu("Help");
         helpMenu.setMnemonic(KeyEvent.VK_H);
@@ -301,6 +407,8 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
         toolbar = new JToolBar();
         toolbar.setFloatable(true);
         toolbar.add(this.openFileAction);
+        toolbar.add(this.saveFileAction);
+        toolbar.add(this.saveFileAsAction);
     }
 
     /**
@@ -333,7 +441,7 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
             // use position of last file for dialog
             openDialog = new JFileChooser(this.currentFile);
         } else {
-            openDialog = new JFileChooser(System.getProperty("user.dir"));
+            openDialog = new JFileChooser();
         }
         int rv = openDialog.showOpenDialog(this);
         if (rv != JFileChooser.APPROVE_OPTION) {
@@ -345,18 +453,39 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
     /**
      * Open a file and parse it to create ConceptualSchema.
      */
-    protected void openKnowledgeBase(File schemaFile) {
+    protected void openKnowledgeBase(File kbFile) {
         // store current file
-        try {
-            this.currentFile = schemaFile.getCanonicalPath();
-        } catch (IOException e) { // could not resolve canonical path
-            e.printStackTrace();
-            this.currentFile = schemaFile.getAbsolutePath();
-            /// @todo what could be done here?
-        }
+        this.currentFile = kbFile;
         // recreate the menus
         buildMenuBar();
         recreateMruMenu();
+
+        try {
+            FileInputStream in;
+            in = new FileInputStream(this.currentFile);
+
+            // parse schema with Xerxes
+            DOMAdapter domAdapter = new org.jdom.adapters.XercesDOMAdapter();
+            org.w3c.dom.Document w3cdoc = domAdapter.getDocument(in, false);
+
+            // create JDOM document
+            DOMBuilder builder =
+                    new DOMBuilder("org.jdom.adapters.XercesDOMAdapter");
+            Document document = builder.build(w3cdoc);
+
+            Element rootElement = document.getRootElement();
+            rootElement.detach();
+            this.knowledgeBase = new KnowledgeBase(rootElement);
+
+            Iterator graphIds = this.knowledgeBase.getGraphIds().iterator();
+            if(graphIds.hasNext()) {
+                ConceptualGraph graph = this.knowledgeBase.getGraph(graphIds.next().toString());
+                this.graphView.showGraph(graph);
+            }
+        } catch (Exception e) {
+            ///@todo give feedback
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -437,7 +566,7 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
      */
     protected void showImageExportOptions() {
         if (this.diagramExportSettings.usesAutoMode()) {
-            this.diagramExportSettings.setImageSize(this.graphView.getWidth(), this.graphView.getHeight());
+//            this.diagramExportSettings.setImageSize(this.diagramView.getWidth(), this.diagramView.getHeight());
         }
         DiagramExportSettingsDialog.initialize(this, this.diagramExportSettings);
         DiagramExportSettings rv = DiagramExportSettingsDialog.showDialog(this);

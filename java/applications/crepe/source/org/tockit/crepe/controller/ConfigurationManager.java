@@ -15,8 +15,8 @@ import java.util.List;
 /**
  * Handles all persistent configuration information.
  *
- * @todo document
- * @todo what do to with exceptions? At the moment they are caught and the default
+// * @todo document
+// * @todo what do to with exceptions? At the moment they are caught and the default
  *       value is returned.
  */
 public class ConfigurationManager {
@@ -30,7 +30,7 @@ public class ConfigurationManager {
      */
     static {
         try {
-            FileInputStream in = new FileInputStream("toscanaj.prop");
+            FileInputStream in = new FileInputStream("Crepe.prop");
             properties.load(in);
             in.close();
         } catch (FileNotFoundException e) {
@@ -52,8 +52,8 @@ public class ConfigurationManager {
      */
     static public void saveConfiguration() {
         try {
-            FileOutputStream out = new FileOutputStream("toscanaj.prop");
-            properties.store(out, "--- ToscanaJ settings ---");
+            FileOutputStream out = new FileOutputStream("Crepe.prop");
+            properties.store(out, "--- Crepe settings ---");
             out.close();
         } catch (Exception e) {
             // nothing useful we can do here, just print the stack trace
