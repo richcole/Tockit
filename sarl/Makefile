@@ -25,12 +25,25 @@ PUBLIC_HEADERS = \
   relation.h \
   relation_iterator.h 
 
-target: python/sarlmodule.so 
+JAVA_INC   = \
+  /usr/java/j2sdk1.4.0/include \
+  /usr/java/j2sdk1.4.0/include/linux
+
+PYTHON_INC = \
+  /usr/include/python1.5/
+
+SWIG_INC = \
+  /usr/local/include
+
+target: python/sarlmodule.so java/libsarl.so
 
 test: $(TESTS:%=%.exe) 
 	bash execute_tests.sh $^
 
 python/sarlmodule.so: $(OBJECTS:%=%.o) python/sarl_wrap.o 
+	$(CC) $(DEBUG) -shared -o $@ $^ -lstdc++
+
+java/libsarl.so: $(OBJECTS:%=%.o) java/sarl_wrap.o 
 	$(CC) $(DEBUG) -shared -o $@ $^ -lstdc++
 
 sarl.so: $(OBJECTS:%=%.o) 
@@ -46,13 +59,28 @@ sarl.so: $(OBJECTS:%=%.o)
 	$(CCC) $(DEBUG) -I../ -o $@ $^ -lstdc++ 
 
 python/sarl_wrap.o: python/sarl_wrap.c
-	$(CC) -c -I../ -I/usr/include/python1.5/ -o $@ $^
+	$(CC) -c -I../ $(SWIG_INC:%=-I%) $(PYTHON_INC:%=-I%) -o $@ $^
 
-python/sarl_wrap.c: $(PUBLIC_HEADERS) python/sarl.input
-	swig -o $@ -python python/sarl.input 
+python/sarl_wrap.c: $(PUBLIC_HEADERS) sarl.input
+	swig -o $@ -python sarl.input 
+
+java/sarl_wrap.o: java/sarl_wrap.c
+	$(CC) -c -I../ $(SWIG_INC:%=-I%) $(JAVA_INC:%=-I%) -o $@ $^
+
+java/sarl_wrap.c: index.h set.h set_iterator.h sarl.input
+	swig -o $@ -java sarl.input
+	mv sarl.java java
+
+java/test_sarl.class: java/test_sarl.java
+	javac -sourcepath ./java java/test_sarl.java
+
+test_java: java/test_sarl.class
+	cd java
+	java test_sarl
 
 clean: 
 	rm -f python/*.pyc python/sarl_wrap.* python/*.so
+	rm -f java/*.class java/sarl.java java/*.so
 	rm -f *.o *.so *.exe depend.mak.bak
 
 depend:
