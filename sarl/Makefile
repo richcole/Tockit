@@ -50,7 +50,7 @@ test: test_base test_python test_java test_cpp
 test_base: $(TESTS) 
 .PHONY: test test_base test_java test_cpp
 .PHONY: $(TESTS)
-$(TESTS) : 
+$(TESTS) : $(TESTS:%=%.exe)
 	./$@.exe
 
 # Libs.
