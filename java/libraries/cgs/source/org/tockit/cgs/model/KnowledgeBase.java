@@ -10,6 +10,8 @@ package org.tockit.cgs.model;
 
 import org.jdom.Element;
 import org.tockit.cgs.util.IdPool;
+import org.tockit.cgs.model.events.*;
+import org.tockit.events.EventBroker;
 
 import java.util.*;
 
@@ -24,13 +26,17 @@ public class KnowledgeBase {
     private IdPool nodeIdPool = new IdPool();
     private IdPool linkIdPool = new IdPool();
     private IdPool graphIdPool = new IdPool();
+    private EventBroker eventBroker;
 
-    public KnowledgeBase() {
+    public KnowledgeBase(EventBroker eventBroker) {
+        this.eventBroker = eventBroker;
         this.element = new Element("knowledgeBase");
         Type.setDefaultKnowledgeBase(this);
+        Relation.setDefaultKnowledgeBase(this);
     }
 
-    public KnowledgeBase(Element element) {
+    public KnowledgeBase(Element element, EventBroker eventBroker) {
+        this.eventBroker = eventBroker;
         this.element = element;
 
         Iterator it = element.getChildren("conceptualGraph").iterator();
@@ -69,6 +75,7 @@ public class KnowledgeBase {
             new Relation(this, relationElem);
         }
         Type.setDefaultKnowledgeBase(this);
+        Relation.setDefaultKnowledgeBase(this);
     }
 
     public void addGraph(ConceptualGraph graph, boolean addXML) {
@@ -95,6 +102,7 @@ public class KnowledgeBase {
         if (addXML) {
             this.element.addContent(type.getElement());
         }
+        this.eventBroker.processEvent(new NewTypeCreatedEvent(this,type));
     }
 
     public Type getType(String typeId) {
@@ -109,6 +117,7 @@ public class KnowledgeBase {
         if (addXML) {
             this.element.addContent(instance.getElement());
         }
+        this.eventBroker.processEvent(new NewInstanceCreatedEvent(this,instance));
     }
 
     public Instance getInstance(String instanceId) {
@@ -128,6 +137,7 @@ public class KnowledgeBase {
         if (addXML) {
             this.element.addContent(relation.getElement());
         }
+        this.eventBroker.processEvent(new NewRelationCreatedEvent(this,relation));
     }
 
     public Relation getRelation(String relationName) {

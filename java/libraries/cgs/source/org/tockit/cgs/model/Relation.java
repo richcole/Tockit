@@ -14,11 +14,37 @@ import java.util.*;
 public class Relation {
     private Element element = null;
     private KnowledgeBase knowledgeBase = null;
+    private static Vector universal = new Vector();
+    private static KnowledgeBase defaultKB = null;
+
+    private static class UniversalRelation extends Relation {
+        public UniversalRelation(KnowledgeBase knowledgeBase, String name, int arity) {
+            super(knowledgeBase, name, new Type[arity]);
+        }
+
+        public Relation[] getDirectSupertypes() {
+            return new Relation[0];
+        }
+    }
+
+    public static void setDefaultKnowledgeBase(KnowledgeBase knowledgeBase) {
+        defaultKB = knowledgeBase;
+    }
 
     public Relation(KnowledgeBase knowledgeBase, Element element) {
         this.knowledgeBase = knowledgeBase;
         this.element = element;
         this.knowledgeBase.addRelation(this, false);
+    }
+
+    public static Relation getUniversal(int arity) {
+        while(universal.size() < arity) {
+            int newArity = universal.size() + 1;
+            Relation newUniversal = new UniversalRelation(defaultKB, "[universal(" + String.valueOf(newArity) + ")]", newArity);
+            universal.setSize(arity);
+            universal.set(newArity - 1, newUniversal);
+        }
+        return (Relation) universal.get(arity - 1);
     }
 
     public Relation(KnowledgeBase knowledgeBase, String name, Type[] signature) {
@@ -28,7 +54,9 @@ public class Relation {
         for (int i = 0; i < signature.length; i++) {
             Type type = signature[i];
             Element typeElem = new Element("type");
-            typeElem.addContent(type.getName());
+            if (type != null) {
+                typeElem.setAttribute("name", type.getName());
+            }
             this.element.addContent(typeElem);
         }
         this.knowledgeBase.addRelation(this, true);
@@ -48,7 +76,7 @@ public class Relation {
         int pos = 0;
         for (Iterator iterator = signatureChildren.iterator(); iterator.hasNext();) {
             Element typeElem = (Element) iterator.next();
-            Type type = this.knowledgeBase.getType(typeElem.getTextNormalize());
+            Type type = this.knowledgeBase.getType(typeElem.getAttributeValue("name"));
             retVal[pos] = type;
             pos++;
         }

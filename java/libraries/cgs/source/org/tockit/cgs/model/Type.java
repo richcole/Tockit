@@ -55,9 +55,19 @@ public class Type {
     }
 
     public Type(KnowledgeBase knowledgeBase, String name) {
+        this(knowledgeBase, name, null);
+    }
+
+    public Type(KnowledgeBase knowledgeBase, String name, Type[] directSupertypes) {
         this.knowledgeBase = knowledgeBase;
         element = new Element("type");
         element.setAttribute("name", name);
+        if(directSupertypes != null) {
+            for (int i = 0; i < directSupertypes.length; i++) {
+                Type supertype = directSupertypes[i];
+                this.addDirectSupertype(supertype);
+            }
+        }
         knowledgeBase.addType(this, true);
     }
 
@@ -65,6 +75,14 @@ public class Type {
         this.knowledgeBase = knowledgeBase;
         this.element = element;
         knowledgeBase.addType(this, false);
+    }
+
+    public static Type getUniversal() {
+        return UNIVERSAL;
+    }
+
+    public static Type getAbsurd() {
+        return ABSURD;
     }
 
     public String getName() {

@@ -11,6 +11,7 @@ import org.tockit.events.EventBroker;
 import org.tockit.canvas.imagewriter.*;
 import org.tockit.crepe.controller.ConfigurationManager;
 import org.tockit.crepe.Crepe;
+import org.tockit.crepe.gui.eventhandlers.*;
 import org.tockit.crepe.view.GraphView;
 import org.tockit.cgs.model.*;
 import org.tockit.cgs.util.IdPool;
@@ -21,6 +22,7 @@ import org.jdom.input.DOMBuilder;
 import org.jdom.output.XMLOutputter;
 
 import javax.swing.*;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.border.BevelBorder;
 import java.awt.event.*;
 import java.awt.print.PageFormat;
@@ -44,6 +46,8 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
      * The maximum number of files in the most recently used files list.
      */
     static private final int MaxMruFiles = 8;
+
+    public static final int MaxArity = 3;
 
     /**
      * Our toolbar.
@@ -95,7 +99,10 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
 
     private DiagramExportSettings diagramExportSettings;
     private GraphView graphView;
-    private KnowledgeBase knowledgeBase = new KnowledgeBase();
+    private KnowledgeBase knowledgeBase;
+    private JSplitPane rightLowerSplitPane;
+    private JSplitPane rightSplitPane;
+    private JSplitPane mainSplitPane;
 
     /**
      * Simple initialisation constructor.
@@ -103,6 +110,7 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
     public CrepeMainPanel() {
         super("Crepe");
         eventBroker = new EventBroker();
+        knowledgeBase = new KnowledgeBase(eventBroker);
 
         // register all image writers we want to support
         org.tockit.canvas.imagewriter.BatikImageWriter.initialize();
@@ -143,14 +151,13 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
     }
 
     private void showTestGraph(int number) {
-        knowledgeBase = new KnowledgeBase();
+        knowledgeBase = new KnowledgeBase(this.eventBroker);
         ConceptualGraph graph = new ConceptualGraph(knowledgeBase);
 
         //create canon
         Type person = new Type(knowledgeBase, "Person");
         Type place = new Type(knowledgeBase, "Place");
-        Type city = new Type(knowledgeBase, "City");
-        city.addDirectSupertype(place);
+        Type city = new Type(knowledgeBase, "City", new Type[]{place});
         Type bus = new Type(knowledgeBase, "Bus");
         Type rock = new Type(knowledgeBase, "Rock");
         Type hard = new Type(knowledgeBase, "Hard");
@@ -188,7 +195,7 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
             default:
                 throw new RuntimeException("no such graph");
         }
-        graphView.showGraph(graph);
+        showKnowledgeBase();
     }
 
     /**
@@ -217,13 +224,45 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
         contentPane.setLayout(new BorderLayout());
         graphView = new GraphView(eventBroker);
         graphView.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-        graphView.showGraph(new ConceptualGraph(knowledgeBase));
+
+        JTree typeHierarchyView = new JTree(new Object[]{});
+        new TypeHierachyUpdateHandler(typeHierarchyView, this.eventBroker);
+
+        JTabbedPane tabPane = new JTabbedPane();
+        JTree[] relationHierarchyViews = new JTree[MaxArity];
+        for (int i = 0; i < MaxArity; i++) {
+            relationHierarchyViews[i] = new JTree(new Object[]{});
+            tabPane.add(String.valueOf(i + 1) + "-ary", relationHierarchyViews[i]);
+            new RelationHierachyUpdateHandler(relationHierarchyViews[i], i + 1, this.eventBroker);
+        }
+
+        JList instanceListView = new JList();
+        new InstanceListUpdateHandler(instanceListView, this.eventBroker);
+
+        rightLowerSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, tabPane, instanceListView);
+        rightLowerSplitPane.setResizeWeight(0);
+        int div = ConfigurationManager.fetchInt("CrepeMainPanel", "lowerRightDivider", 200);
+        rightLowerSplitPane.setDividerLocation(div);
+
+        rightSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, typeHierarchyView, rightLowerSplitPane);
+        rightSplitPane.setResizeWeight(0);
+        div = ConfigurationManager.fetchInt("CrepeMainPanel", "upperRightDivider", 200);
+        rightSplitPane.setDividerLocation(div);
+
+        mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, graphView, rightSplitPane);
+        mainSplitPane.setOneTouchExpandable(true);
+        mainSplitPane.setResizeWeight(1);
+        div = ConfigurationManager.fetchInt("CrepeMainPanel", "mainDivider", 400);
+        mainSplitPane.setDividerLocation(div);
+
         contentPane.add(this.toolbar, BorderLayout.NORTH);
-        contentPane.add(graphView, BorderLayout.CENTER);
+        contentPane.add(mainSplitPane, BorderLayout.CENTER);
         setContentPane(contentPane);
 
         // restore old position
         ConfigurationManager.restorePlacement("CrepeMainPanel", this, new Rectangle(10, 10, 600, 450));
+
+        showKnowledgeBase();
     }
 
     private void createActions() {
@@ -658,6 +697,9 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
     private void closeMainPanel() {
         // store current position
         ConfigurationManager.storePlacement("CrepeMainPanel", this);
+        ConfigurationManager.storeInt("CrepeMainPanel", "mainDivider", mainSplitPane.getDividerLocation());
+        ConfigurationManager.storeInt("CrepeMainPanel", "upperRightDivider", rightSplitPane.getDividerLocation());
+        ConfigurationManager.storeInt("CrepeMainPanel", "lowerRightDivider", rightLowerSplitPane.getDividerLocation());
         // save the MRU list
         ConfigurationManager.storeStringList("CrepeMainPanel", "mruFiles", this.mruList);
         // store last image export position
@@ -716,20 +758,26 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
 
             Element rootElement = document.getRootElement();
             rootElement.detach();
-            this.knowledgeBase = new KnowledgeBase(rootElement);
+            this.knowledgeBase = new KnowledgeBase(rootElement, this.eventBroker);
 
-            Iterator graphIds = this.knowledgeBase.getGraphIds().iterator();
-            if (graphIds.hasNext()) {
-                ConceptualGraph graph = this.knowledgeBase.getGraph(graphIds.next().toString());
-                this.graphView.showGraph(graph);
-            }
-            else {
-                this.graphView.showGraph(new ConceptualGraph(knowledgeBase));
-            }
+            showKnowledgeBase();
             ///@todo we have to remember the file in the MRU menu
+
         } catch (Exception e) {
             ///@todo give feedback
             e.printStackTrace();
+        }
+    }
+
+    private void showKnowledgeBase() {
+        Iterator graphIds = this.knowledgeBase.getGraphIds().iterator();
+        if (graphIds.hasNext()) {
+            ConceptualGraph graph = this.knowledgeBase.getGraph(graphIds.next().toString());
+            this.graphView.showGraph(graph);
+        }
+        else {
+            ConceptualGraph graph = new ConceptualGraph(knowledgeBase);
+            this.graphView.showGraph(graph);
         }
     }
 

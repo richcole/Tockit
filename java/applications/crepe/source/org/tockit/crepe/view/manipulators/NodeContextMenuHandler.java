@@ -210,10 +210,7 @@ public class NodeContextMenuHandler implements EventListener {
                     return;
                 }
             } while (knowledgeBase.getType(newName) != null);
-            Type newType = new Type(knowledgeBase, newName);
-            if(type != Type.UNIVERSAL) {
-                newType.addDirectSupertype(type);
-            }
+            Type newType = new Type(knowledgeBase, newName, new Type[]{type});
             node.setType(newType);
             canvas.repaint();
         }
