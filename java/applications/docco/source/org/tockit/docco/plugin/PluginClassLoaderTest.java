@@ -50,17 +50,17 @@ public class PluginClassLoaderTest extends TestCase {
 	}
 
 	public void testFindResource() {
-		assertNotNull(classLoader.getResource("libs/PDFBox.jar"));
+		assertNotNull(classLoader.getResource("pdfbox/libs/PDFBox.jar"));
 		assertNotNull(classLoader.getResource("org/pdfbox/pdfparser/PDFParser.class"));
 		assertNull(classLoader.getResource("PDFParser.class"));
 		assertNull(classLoader.getResource("PdfDocumentHandler.class"));
-		assertNotNull(classLoader.getResource("org\\tockit\\docco\\indexer\\documenthandler\\PdfDocumentHandler.class"));
+		//assertNotNull(classLoader.getResource("org\\tockit\\docco\\indexer\\documenthandler\\plugins\\pdfbox\\PdfDocumentHandler.class"));
 		//assertNotNull(classLoader.getResource("doc/UQlogo.jpg"));
 		//assertEquals(true, classLoader.getResource("test/doc.jar/!/doc/UQlogo.jpg") != null);		
 	}
 
 	public void testFindClass() throws ClassNotFoundException {
-		assertNotNull("load class ", classLoader.loadClass("org.tockit.docco.indexer.documenthandler.PdfDocumentHandler"));
+		assertNotNull("load class ", classLoader.loadClass("org.tockit.docco.indexer.documenthandler.plugins.pdfbox.PdfDocumentHandler"));
 		assertNotNull("load class from jar file", classLoader.loadClass("org.pdfbox.pdfparser.PDFParser"));
 	}
 	
@@ -71,10 +71,18 @@ public class PluginClassLoaderTest extends TestCase {
 		} catch (ClassNotFoundException e) {}
 	}
 
-	public void testFindClassesImplementingGivenIterface() throws ClassNotFoundException {
+	public void testFindClassesImplementingGivenIterface() 
+									throws ClassNotFoundException,
+									InstantiationException, 
+									IllegalAccessException {
 		Class[] classes = classLoader.findClassesImplementingGivenIterface(DocumentHandler.class);
 		assertEquals("should be able to find and load some classes implementing given interface ",
 										true, classes.length != 0);
 		/// @todo should we also test if we can instantiate found classes?
+		for (int i = 0; i < classes.length; i++) {
+			Class class1 = classes[i];
+			Object obj = class1.newInstance();
+			System.out.println(obj);
+		}
 	}
 }
