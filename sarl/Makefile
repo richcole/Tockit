@@ -102,6 +102,8 @@ test: libs base_test python_test java_test cpp_test
 
 base_test: libs $(TESTS) 
 
+base_tools: context_sum.exe
+
 $(TESTS) : $(TESTS:%=%.exe)
 	echo LD_LIBRARY_PATH=$$LD_LIBRARY_PATH; echo ./$@.exe; ./$@.exe
 

@@ -43,4 +43,7 @@ extern struct Sarl_InputStream*
 extern void
   sarl_input_stream_decr_ref(Sarl_InputStream*);
 
+extern void
+  sarl_input_stream_incr_ref(Sarl_InputStream*);
+
 #endif

@@ -10,6 +10,8 @@ OBJECTS = \
   RefCount
 
 TEST = \
+  test_input_stream \
+  test_context_reader \
   test_dictionary \
   test_map \
   test_string \

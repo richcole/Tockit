@@ -20,6 +20,9 @@ class String {
 
   friend class Dictionary;
   friend class OutputStream;
+  friend class InputStream;
+  friend class InputFileStream;
+  friend class ContextReader;
 
 protected:
   inline Sarl_Index string_length(Sarl_Char const* s) 

@@ -9,6 +9,8 @@ extern "C" {
 
 class OutputStream {
 
+  friend class ContextReader;
+
 public: 
 
   inline OutputStream(String& string);
@@ -16,40 +18,40 @@ public:
   inline OutputStream& operator=(OutputStream const& it);
   
   virtual ~OutputStream() {
-    sarl_output_stream_decr_ref(mp_outputstreamRef);
+    sarl_output_stream_decr_ref(mp_outRef);
   };
 
   inline void write_line(String const& s) {
-    sarl_output_stream_write_line(mp_outputstreamRef, s.mp_stringRef);
+    sarl_output_stream_write_line(mp_outRef, s.mp_stringRef);
   }
 
  private:
-  Sarl_OutputStream* mp_outputstreamRef;
+  Sarl_OutputStream* mp_outRef;
 
   OutputStream(Sarl_OutputStream* ap_ref) {
-    mp_outputstreamRef = ap_ref;
+    mp_outRef = ap_ref;
   }
 };
 
 inline OutputStream::OutputStream(String &s)
 {
-  mp_outputstreamRef = sarl_output_stream_create_from_string(s.mp_stringRef);
+  mp_outRef = sarl_output_stream_create_from_string(s.mp_stringRef);
 };
 
 inline OutputStream::OutputStream(OutputStream const& out) {
-  mp_outputstreamRef = out.mp_outputstreamRef;
-  sarl_output_stream_incr_ref(mp_outputstreamRef);
+  mp_outRef = out.mp_outRef;
+  sarl_output_stream_incr_ref(mp_outRef);
 };
 
 inline OutputStream& OutputStream::operator=(OutputStream const& out) {
-  if ( this == &out || mp_outputstreamRef == out.mp_outputstreamRef) {
+  if ( this == &out || mp_outRef == out.mp_outRef) {
     return *this;
   }
-  if ( mp_outputstreamRef != 0 ) {
-    sarl_output_stream_decr_ref(mp_outputstreamRef);
+  if ( mp_outRef != 0 ) {
+    sarl_output_stream_decr_ref(mp_outRef);
   }
-  mp_outputstreamRef = out.mp_outputstreamRef;
-  sarl_output_stream_incr_ref(mp_outputstreamRef);
+  mp_outRef = out.mp_outRef;
+  sarl_output_stream_incr_ref(mp_outRef);
   return *this;
 };
 

@@ -139,3 +139,9 @@ sarl_input_stream_decr_ref(Sarl_InputStream *input)
   }
 };
 
+void
+sarl_input_stream_incr_ref(Sarl_InputStream *input)
+{
+  sarl_ref_count_incr(&input->ref_count);
+};
+

@@ -21,23 +21,21 @@ public:
   };
 
  private:
-  Sarl_InputFileStream* mp_inRef;
-
-  InputFileStream(Sarl_Input_Stream* ap_ref) {
-    mp_inRef = ap_ref;
-  }
+  InputFileStream(Sarl_InputStream* ap_ref) : InputStream(ap_ref) 
+  {
+  };
 };
-
-#include <sarl/cpp/InputFileStreamIterator.h>
 
 inline InputFileStream::InputFileStream(String &s)
+    : InputStream(
+        sarl_input_stream_create_from_file_name(s.mp_stringRef)
+    )
 {
-  mp_inRef = sarl_input_stream_create_from_file_name(s.mp_stringRef);
 };
 
-inline InputFileStream::InputFileStream(InputFileStream const& out) {
-  mp_inRef = out.mp_inRef;
-  sarl_input_stream_incr_ref(mp_inRef);
+inline InputFileStream::InputFileStream(InputFileStream const& out) 
+    : InputStream(out)
+{
 };
 
 inline InputFileStream& InputFileStream::operator=(InputFileStream const& out) {

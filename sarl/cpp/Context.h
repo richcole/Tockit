@@ -18,6 +18,7 @@ class LatticeIterator;
 class Context {
 
   friend class ContextIterator;
+  friend class ContextReader;
 
 public: 
 

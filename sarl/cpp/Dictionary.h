@@ -10,6 +10,9 @@ extern "C" {
 #include <sarl/cpp/SetIterator.h>
 
 class Dictionary {
+  friend class ContextReader;
+  
+
 public: 
 
   inline Dictionary();
