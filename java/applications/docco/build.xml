@@ -123,9 +123,7 @@
     </target>
 	<target name="dist" depends="_makeReleaseJar,_copyFiles,_zipFile">
 	</target>
-	<target name="fullDist" depends="_makeReleaseJar,_copyFiles,_makeReleasePlugins,_zipFile">
-	</target>
-	<target name="fullDebugDist" depends="_makeDebugJar,_copyFiles,_makeDebugPlugins,_zipFile">
+	<target name="fullDist" depends="_makeReleaseJar,_copyFiles,pluginsReleaseDist,_zipFile">
 	</target>
 	<target name="_zipFile">
 		<zip destfile="${dist.dir}.zip">
@@ -140,19 +138,19 @@
 		</java>
 	</target>
 
-	<target name="_makeReleasePlugins" depends="_compileRelease">
+	<target name="pluginsReleaseDist" depends="_compileRelease">
 		<ant antfile="build.xml" dir="plugins" target="dist">
-			<property name="docco.libs.dir" value="../${libs.dir}"/>
-			<property name="docco.classes" value="../${build.release.dir}"/>
-			<property name="docco.dist.dir" value="../${dist.base.dir}"/>
+			<property name="mainApp.libs.dir" value="../${libs.dir}"/>
+			<property name="mainApp.classes" value="../${build.release.dir}"/>
+			<property name="mainApp.dist.dir" value="../${dist.base.dir}"/>
 		</ant>
 	</target>
 
-	<target name="_makeDebugPlugins" depends="compile">
+	<target name="pluginsDebugDist" depends="compile">
 		<ant antfile="build.xml" dir="plugins" target="dist">
-			<property name="docco.libs.dir" value="../${libs.dir}"/>
-			<property name="docco.classes" value="../${build.dev.dir}"/>
-			<property name="docco.dist.dir" value="../${dist.base.dir}"/>
+			<property name="mainApp.libs.dir" value="../${libs.dir}"/>
+			<property name="mainApp.classes" value="../${build.dev.dir}"/>
+			<property name="mainApp.dist.dir" value="../${dist.base.dir}"/>
 		</ant>
 	</target>
 	
