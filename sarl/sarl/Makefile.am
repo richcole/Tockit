@@ -148,3 +148,9 @@ libsarl_la_SOURCES =           \
 
 libsarl_la_LDFLAGS = @VERSION_INFO@
 
+#
+# Tests
+#
+check_PROGRAMS = test_relation_005
+
+test_relation_005_SOURCES = test_relation_005.cpp
