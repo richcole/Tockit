@@ -7,11 +7,29 @@
  */
 package org.tockit.docco.filefilter;
 
-// @todo this is just a quick hack to get things going
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class FileFilterFactoryRegistry {
-	public static FileFilterFactory[] registry = new FileFilterFactory[]{
-		new ExtensionFileFilterFactory(),
-		new MatchNameRegExpFileFilterFactory(),
-		new MatchPathRegExpFileFilterFactory()
-	};
+	
+	private static List fileFilterFactories = new ArrayList();
+
+	static  {
+		registerFileFilter(new ExtensionFileFilterFactory());
+		registerFileFilter(new MatchNameRegExpFileFilterFactory());
+		registerFileFilter(new MatchPathRegExpFileFilterFactory());
+	}
+	
+	private FileFilterFactoryRegistry () {
+	}
+	
+	
+	public static void registerFileFilter (FileFilterFactory fileFilterFactory) {
+		fileFilterFactories.add(fileFilterFactory);
+	}
+	
+	public static List getFileFilters() {
+		return Collections.unmodifiableList(fileFilterFactories);
+	}	
 }

@@ -19,6 +19,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -130,7 +131,11 @@ public class CreateNewFileMappingDialog extends JDialog {
 	private JPanel createFileFilterPanel () {
 		JPanel fileFilterPanel = new JPanel(new GridBagLayout());
 		
-		fileFilterFactoryChooser = new JComboBox(FileFilterFactoryRegistry.registry);
+		Collection fileFilterFactoriesCollection = FileFilterFactoryRegistry.getFileFilters(); 
+		FileFilterFactory[] fileFilterFactories = (FileFilterFactory[]) fileFilterFactoriesCollection.toArray(
+									new FileFilterFactory[fileFilterFactoriesCollection.size()]);
+		
+		fileFilterFactoryChooser = new JComboBox(fileFilterFactories);
 		fileFilterFactoryChooser.setRenderer(new FileFilterComboBoxCellRenderer());
 		
 		extensionField = new JTextField(5);
