@@ -21,6 +21,7 @@ import org.jdom.input.DOMBuilder;
 import org.jdom.output.XMLOutputter;
 
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
 import java.awt.event.*;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
@@ -214,6 +215,7 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
         JPanel contentPane = new JPanel();
         contentPane.setLayout(new BorderLayout());
         graphView = new GraphView(eventBroker);
+        graphView.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
         graphView.showGraph(new ConceptualGraph(knowledgeBase));
         contentPane.add(this.toolbar, BorderLayout.NORTH);
         contentPane.add(graphView, BorderLayout.CENTER);

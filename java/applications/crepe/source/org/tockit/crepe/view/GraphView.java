@@ -27,7 +27,7 @@ public class GraphView extends Canvas {
 
     public GraphView(EventBroker eventBroker) {
         super(eventBroker);
-        getBackgroundItem().setPaint(Color.LIGHT_GRAY);
+        getBackgroundItem().setPaint(getBackground());
         new NodeMoveManipulator(this, eventBroker);
         new LinkMoveManipulator(this, eventBroker);
         new NodeContextMenuHandler(this, eventBroker);
@@ -37,7 +37,7 @@ public class GraphView extends Canvas {
 
     public void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setPaint(Color.lightGray);
+        g2d.setPaint(getBackground());
         g2d.fill(new Rectangle2D.Double(0, 0, getWidth(), getHeight()));
         g2d.setPaint(Color.black);
 
