@@ -584,6 +584,8 @@ public class DoccoMainFrame extends JFrame {
 			if(result != JOptionPane.OK_OPTION) {
 				return;
 			}
+			
+			indexFile.delete();
 		}
 		JFileChooser fileDialog = new JFileChooser();
 		fileDialog.setDialogTitle("Select directory to index");
