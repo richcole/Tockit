@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 import net.sourceforge.tockit.toscanaj.canvas.CanvasItem;
+import net.sourceforge.tockit.toscanaj.canvas.DrawingCanvas;
 import net.sourceforge.tockit.toscanaj.data.Diagram;
 import net.sourceforge.tockit.toscanaj.data.Diagram2D;
 import net.sourceforge.tockit.toscanaj.data.LabelInfo;
@@ -26,22 +27,8 @@ import net.sourceforge.tockit.toscanaj.gui.ToscanajGraphics2D;
  * This class paints a diagram defined by the Diagram class.
  */
 
-public class DiagramView extends JComponent implements MouseListener, MouseMotionListener, DiagramObserver
+public class DiagramView extends DrawingCanvas implements MouseListener, MouseMotionListener, DiagramObserver
 {
-    /**
-     * A list of all canvas items to draw.
-     */
-    List canvasItems;
-
-    /**
-     * Stores the drawing context used for scaling.
-     *
-     * This is created any time the diagram is drawn and is needed for mapping
-     * a point on the screen back into the coordinate system for the diagram
-     * whenever a mouse event occurs.
-     */
-    ToscanajGraphics2D graphics = null;
-
     /**
      * The minimum size for drawing.
      *
@@ -173,97 +160,7 @@ public class DiagramView extends JComponent implements MouseListener, MouseMotio
         //store updated ToscanajGraphics2D
         graphics = new ToscanajGraphics2D(g2d, new Point2D.Double( xOrigin, yOrigin ), xScale, yScale );
         // paint all items on canvas
-        Iterator it = this.canvasItems.iterator();
-        while( it.hasNext() ) {
-            CanvasItem cur = (CanvasItem) it.next();
-            cur.draw(graphics);
-        }
-    }
-
-    /**
-     * Not used yet.
-     */
-    public void mouseClicked(MouseEvent e){
-      //System.out.println("mouseClicked");
-    }
-
-    /**
-     * Resets the diagram from dragging mode back into normal mode.
-     */
-    public void mouseReleased(MouseEvent e) {
-        dragMode = false;
-        selectedLabel = null;
-    }
-
-    /**
-     * Not used yet.
-     */
-    public void mouseEntered(MouseEvent e) {
-      //System.out.println("mouseEntered");
-    }
-
-    /**
-     * Not used yet.
-     */
-    public void mouseExited(MouseEvent e) {
-      //System.out.println("mouseExited");
-    }
-
-    /**
-     * Handles dragging the labels.
-     */
-    public void mouseDragged(MouseEvent e) {
-        if(selectedLabel != null && (dragMode || ((getDistance(lastMousePos.getX(), lastMousePos.getY(), e.getX(), e.getY()) >= dragMin)))) {
-            selectedLabel.moveBy(graphics.inverseScaleX(e.getX() - lastMousePos.getX()),
-                                 graphics.inverseScaleY(e.getY() - lastMousePos.getY()));
-            lastMousePos = new Point2D.Double(e.getX(), e.getY());
-            dragMode = true;
-        }
-    }
-
-    /**
-     * Not used yet.
-     */
-    public void mouseMoved(MouseEvent e) {
-      //System.out.println("mouseMoved");
-    }
-
-    /**
-     * Starts the process of dragging a label.
-     */
-    public void mousePressed(MouseEvent e) {
-        ListIterator it = this.canvasItems.listIterator(this.canvasItems.size());
-        while(it.hasPrevious()) {
-            CanvasItem cur = (CanvasItem) it.previous();
-            Point2D point = this.graphics.inverseProject(e.getPoint());
-            if(cur.containsPoint(point)) {
-                if(cur instanceof LabelView) {
-                    // store the information needed for moving the label
-                    this.selectedLabel = (LabelView) cur;
-                    this.lastMousePos = e.getPoint();
-                    // raise the label
-                    it.remove();
-                    this.canvasItems.add(cur);
-                    // redraw the raised label (needed if it will not be moved)
-                    repaint();
-                    break;
-                }
-            }
-        }
-    }
-
-    /**
-     * Calculates the distance between the two points.
-     */
-    private double getDistance(double x1, double y1, double x2, double y2){
-      return Math.abs(Math.sqrt(sqr(x2 - x1) + sqr(y2 - y1)));
-    }
-
-    /**
-     * Returns the square of the input.
-     */
-    private double sqr(double x) {
-      return x * x;
+        paintCanvasItems(graphics);
     }
 
     /**
@@ -271,24 +168,21 @@ public class DiagramView extends JComponent implements MouseListener, MouseMotio
      *
      * This will automatically cause a repaint of the view.
      */
-    public void showDiagram( Diagram diagram )
-    {
+    public void showDiagram( Diagram diagram ) {
         _diagram = diagram;
         ((Diagram)_diagram).addObserver(this);
-        this.canvasItems = new LinkedList();
+         newCanvasItemsList();
         // add all lines to the canvas
-        for( int i = 0; i < _diagram.getNumberOfLines(); i++ )
-        {
-            this.canvasItems.add( new DiagramLine( _diagram.getFromPoint( i ), _diagram.getToPoint( i )) );
+        for( int i = 0; i < _diagram.getNumberOfLines(); i++ ) {
+            addCanvasItem( new DiagramLine( _diagram.getFromPoint( i ), _diagram.getToPoint( i )) );
         }
         // add all points and labels to the canvas
-        for( int i = 0; i < _diagram.getNumberOfNodes(); i++ )
-        {
+        for( int i = 0; i < _diagram.getNumberOfNodes(); i++ ) {
             DiagramNode node = new DiagramNode(_diagram.getNodePosition(i));
-            this.canvasItems.add( node );
-            this.canvasItems.add( new LabelView( this, node, LabelView.ABOVE, _diagram.getAttributeLabel( i ) ) );
-            this.canvasItems.add( new LabelView( this, node, LabelView.BELOW, _diagram.getObjectLabel( i ) ) );
+            addCanvasItem( node );
+            addCanvasItem( new LabelView( this, node, LabelView.ABOVE, _diagram.getAttributeLabel( i ) ) );
+            addCanvasItem( new LabelView( this, node, LabelView.BELOW, _diagram.getObjectLabel( i ) ) );
         }
-       repaint();
+        repaint();
     }
 }
