@@ -17,7 +17,7 @@ import net.sourceforge.toscanaj.gui.dialog.ErrorDialog;
 import org.tockit.docco.gui.DoccoMainFrame;
 
 import com.jgoodies.plaf.plastic.PlasticLookAndFeel;
-import com.jgoodies.plaf.plastic.theme.ExperienceBlue;
+import com.jgoodies.plaf.plastic.theme.SkyBlue;
 
 public class Docco {
 	public static void main (String[] args) {
@@ -47,7 +47,7 @@ public class Docco {
             }
 		} else {
 			try {
-				ExperienceBlue theme = new ExperienceBlue(){
+				SkyBlue theme = new SkyBlue(){
 					protected ColorUIResource getSecondary3() {
 						 return new ColorUIResource(214,212,206);
 					}
@@ -66,6 +66,9 @@ public class Docco {
 					public ColorUIResource getFocusColor() {
 						return new ColorUIResource(50,50,80);
 					}
+					public ColorUIResource getHighlightedTextColor() {
+                        return new ColorUIResource(255,255,255);
+                    }
 				};
 				PlasticLookAndFeel.setMyCurrentTheme(theme);
 				UIManager.setLookAndFeel(new PlasticLookAndFeel());

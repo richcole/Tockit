@@ -56,7 +56,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.JTree;
-import javax.swing.border.BevelBorder;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import javax.swing.event.TreeSelectionEvent;
@@ -307,7 +306,6 @@ public class DoccoMainFrame extends JFrame {
 		
 		JComponent viewsComponent = buildViewsComponent();
 		this.documentDisplayPane = new DocumentDisplayPane();
-		this.documentDisplayPane.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 		
 		JPanel mainPane = new JPanel(new BorderLayout());
 		mainPane.add(viewsComponent, BorderLayout.CENTER);
@@ -905,7 +903,6 @@ public class DoccoMainFrame extends JFrame {
 		this.diagramView.getController().getEventBroker().subscribe(new SelectionEventHandler(),
 									CanvasItemSelectedEvent.class,
 									CanvasBackground.class);
-		this.diagramView.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 
 		// create a JTree with some model containing at least two elements. Otherwise the layout
 		// is broken. True even for the JTree(Object[]) constructor. And the default constructor
