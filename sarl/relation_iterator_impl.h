@@ -16,7 +16,7 @@ struct Sarl_RelationIteratorFunctionTable {
 
 struct Sarl_RelationIterator : Sarl_Iterator
 {
-  Sarl_RelationIteratorFunctionTable *mp_funcs;
+  Sarl_RelationIteratorFunctionTable *funcs;
 };
 
 struct Sarl_PlainRelationIterator : Sarl_RelationIterator
@@ -46,9 +46,9 @@ inline void sarl_relation_iterator_init(
   struct Sarl_RelationIterator *it,
   Sarl_RelationIteratorFunctionTable *ap_funcs)
 {
-  it->mp_funcs = ap_funcs;
-  it->m_ownership = SARL_HAS_OWNER;
-  sarl_ref_count_init(&it->m_ref_count);
+  it->funcs = ap_funcs;
+  it->ownership = SARL_HAS_OWNER;
+  sarl_ref_count_init(&it->ref_count);
 }
 
 #endif

@@ -146,9 +146,6 @@ java_clean:
 lib_clean:
 	rm -f lib/*.so lib_d/*.so
 
-python_clean:
-	rm -f python/*.pyc python/sarl_wrap.* python/*.so
-
 depend:
 	makedepend -Y../ *.cpp -fdepend.mak 
 

@@ -8,8 +8,8 @@ extern "C" {
 
 struct Sarl_Iterator
 {
-  Sarl_RefCount                  m_ref_count;
-  Sarl_Ownership                 m_ownership;
+  Sarl_RefCount                  ref_count;
+  Sarl_Ownership                 ownership;
 };
 
 #endif

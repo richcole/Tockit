@@ -202,7 +202,7 @@ struct Sarl_SetIterator *sarl_relation_iterator_aggregate(
 
   i = 0;
   SARL_SET_ITERATOR_FOR(s) {
-    v[i] = op(r, sarl_set_iterator_val(s));
+    v[i] = op(r, sarl_set_iterator_value(s));
     sarl_set_iterator_release_ownership(v[i]);
     ++i;
   }
@@ -290,7 +290,7 @@ extern struct Sarl_RelationIterator *
 {
   Sarl_RelationIterator *result;
   
-  if ( it->m_ownership == SARL_HAS_NO_OWNER ) {
+  if ( it->ownership == SARL_HAS_NO_OWNER ) {
     result = it;
     sarl_relation_iterator_incr_ref(it);
   }
@@ -299,8 +299,8 @@ extern struct Sarl_RelationIterator *
     sarl_relation_iterator_release_ownership(result);
   };
   
-  SARL_TEST_ASSERT_EQ(result->m_ownership, SARL_HAS_NO_OWNER);
-  result->m_ownership = SARL_HAS_OWNER;
+  SARL_TEST_ASSERT_EQ(result->ownership, SARL_HAS_NO_OWNER);
+  result->ownership = SARL_HAS_OWNER;
   return result;
 };
 
@@ -309,8 +309,8 @@ void
     struct Sarl_RelationIterator *it
   )
 {
-  SARL_TEST_ASSERT_EQ(it->m_ownership, SARL_HAS_OWNER);
-  it->m_ownership = SARL_HAS_NO_OWNER;
+  SARL_TEST_ASSERT_EQ(it->ownership, SARL_HAS_OWNER);
+  it->ownership = SARL_HAS_NO_OWNER;
 };
 
 

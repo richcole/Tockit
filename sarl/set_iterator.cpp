@@ -295,7 +295,7 @@ struct Sarl_SetIterator *
 {
   Sarl_SetIterator *result;
   
-  if ( it->m_ownership == SARL_HAS_NO_OWNER ) {
+  if ( it->ownership == SARL_HAS_NO_OWNER ) {
     result = it;
     sarl_set_iterator_incr_ref(it);
   }
@@ -304,8 +304,8 @@ struct Sarl_SetIterator *
     sarl_set_iterator_release_ownership(result);
   };
   
-  SARL_TEST_ASSERT_EQ(result->m_ownership, SARL_HAS_NO_OWNER);
-  result->m_ownership = SARL_HAS_OWNER;
+  SARL_TEST_ASSERT_EQ(result->ownership, SARL_HAS_NO_OWNER);
+  result->ownership = SARL_HAS_OWNER;
   return result;
 };
 
@@ -315,8 +315,8 @@ struct Sarl_SetIterator *
     struct Sarl_SetIterator *it
   )
 {
-  SARL_TEST_ASSERT_EQ(it->m_ownership, SARL_HAS_OWNER);
-  it->m_ownership = SARL_HAS_NO_OWNER;
+  SARL_TEST_ASSERT_EQ(it->ownership, SARL_HAS_OWNER);
+  it->ownership = SARL_HAS_NO_OWNER;
   return it;
 };
 

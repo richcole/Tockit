@@ -17,15 +17,15 @@ struct Sarl_SetIteratorFunctionTable {
 
 struct Sarl_SetIterator : Sarl_Iterator
 {
-  Sarl_SetIteratorFunctionTable* mp_funcs;
+  Sarl_SetIteratorFunctionTable* funcs;
 };
 
 struct Sarl_PlainSetIterator : Sarl_SetIterator
 {
   typedef std::set<Sarl_Index>::const_iterator Iterator;
 
-  Sarl_Set*     set;
-  Iterator it;
+  Sarl_Set*  set;
+  Iterator   it;
 };
 
 struct Sarl_IntentSetIterator : Sarl_SetIterator
@@ -38,9 +38,9 @@ inline void sarl_set_iterator_init(
   struct Sarl_SetIterator *it,
   Sarl_SetIteratorFunctionTable *ap_funcs)
 {
-  it->mp_funcs = ap_funcs;
-  it->m_ownership = SARL_HAS_OWNER;
-  sarl_ref_count_init(&it->m_ref_count);
+  it->funcs = ap_funcs;
+  it->ownership = SARL_HAS_OWNER;
+  sarl_ref_count_init(&it->ref_count);
 }
 
 #endif
