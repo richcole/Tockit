@@ -17,6 +17,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
@@ -35,6 +36,13 @@ import java.util.zip.ZipFile;
  * @see findClass(String name) 
  * @see findResource(String name)
  * @see loadClass(Resource resource)   
+ * 
+ * Some info on class loaders:
+ * http://developer.java.sun.com/developer/TechTips/2000/tt1027.html#tip1
+ * http://forum.java.sun.com/thread.jsp?forum=37&thread=160773&tstart=0&trange=15
+ * 
+ * Java hotswap technology:
+ * http://developers.sun.com/dev/coolstuff/hotswap/more.html
  */
 public class PluginClassLoader extends ClassLoader {
 
@@ -43,6 +51,12 @@ public class PluginClassLoader extends ClassLoader {
 	private File pluginsDirLocation;
 
 	private List foundResources = new ArrayList();
+	
+	/**
+	 * keys - fully qualified class names
+	 * values - classes
+	 */
+	private Hashtable loadedClasses = new Hashtable();
 	
 	private interface Resource {
 		public byte[] getData() throws IOException;
@@ -153,11 +167,6 @@ public class PluginClassLoader extends ClassLoader {
 		}
 		
 		listAllFiles(file);	
-		System.out.println("\nPluginClassLoader: " + this);
-		System.out.println("default class loader: " + this.getClass().getClassLoader());
-		System.out.println("parent class loader: " + this.getParent());
-		System.out.println("system class loader: " + ClassLoader.getSystemClassLoader());
-		
 
 		logger.exiting("PluginClassLoader", "Constructor", "found num of resources: " + this.foundResources.size());
 	}
@@ -170,7 +179,6 @@ public class PluginClassLoader extends ClassLoader {
 			Resource curResource = (Resource) it.next();
 			String name = curResource.getRelativePath();
 			if (name.endsWith(".class")) {
-				System.out.println(name);
 				Class curClass = loadClass(curResource);
 				Class[] interfaces = curClass.getInterfaces();
 				for (int i = 0; i < interfaces.length; i++) {
@@ -222,6 +230,8 @@ public class PluginClassLoader extends ClassLoader {
 	 * found will be returned. At this stage there is no way to inforce
 	 * the order in which we search for classes, therefore there is no
 	 * way to predict which one of the duplicates would be found first.
+	 * Classes defined in classpath are loaded by default class loader 
+	 * and take precedence to classes found in plugins path.
 	 */
 	public Class findClass(String name) throws ClassNotFoundException {
 		logger.entering("PluginClassLoader", "findClass", name);
@@ -238,52 +248,40 @@ public class PluginClassLoader extends ClassLoader {
 	  * 	plugin. In the case of duplicate class definitions we just
 	  * 	use the first class found.
 	  * - Class definitions found in the classpath by default 
-	  * 	class loader cannot be overriden, therefore
+	  * 	class loader are not overriden, therefore
 	  * 	they will be preferred.
 	  */
 	 private Class loadClass (Resource resource) 
 	 								throws ClassNotFoundException, 
 	 								NoClassDefFoundError {
 	 	Class resClass = null;
-	 	// @todo Use getResource here instead of loading class.
-	 	// @todo should we rather use a different approach to figure out if 
-	 	// a class is already loaded: try to load it via define method and 
-	 	// check if we get LinkageError (check for error message "duplicate...")
-	 	// see commented out below.
-	 	try {
-	 		String className = resource.getRelativePath().replace('/','.').replaceAll(".class", "");
-	 		resClass = this.getClass().getClassLoader().loadClass(className);
-	 	}
-	 	catch (ClassNotFoundException e) {
-			try {
-				byte [] b = resource.getData();
-				resClass = defineClass(null, b, 0, b.length);
-			} catch (IOException exc) {
-				throw new ClassNotFoundException("Couldn't find resource " + resource.getRelativePath(), exc);			
+		logger.fine("Trying to load class for resource " + resource);
+		try {
+			byte [] b = resource.getData();
+			resClass = defineClass(null, b, 0, b.length);
+		}
+		catch (LinkageError e) {
+			if (e.getMessage().startsWith("duplicate class definition: ")) {
+				String className = resource.getRelativePath().replace('/','.').replaceAll(".class", "");
+				logger.fine("DUPLICATE class def for " + className);
+				if (this.loadedClasses.containsKey(className)) {
+					resClass = (Class) this.loadedClasses.get(className);
+					logger.fine("Class " + className + " is loaded using " + this.getClass().getName());
+				}
+				else {
+					resClass = this.getClass().getClassLoader().loadClass(className);
+					logger.fine("Class " + className + " is loaded using " + this.getClass().getClassLoader().getClass().getName());
+				}
 			}
+		} catch (IOException exc) {
+			throw new ClassNotFoundException("Couldn't find resource " + resource.getRelativePath(), exc);			
 		}
 		
-//		try {
-//			byte [] b = resource.getData();
-//			resClass = defineClass(null, b, 0, b.length);
-//		}
-//		catch (LinkageError e) {
-//			if (e.getMessage().startsWith("duplicate class definition: ")) {
-//				String className = resource.getRelativePath().replace('/','.').replaceAll(".class", "");
-//				try {
-//					// load class from this class loader?
-//					// still need loaded classes hashmap
-//				} 
-//				catch (LinkageError err) {
-//					if (err.getMessage().startsWith("duplicate class definition: ")) {
-//						// try/catch here as well?
-//						resClass = this.getClass().getClassLoader().loadClass(className);
-//					}
-//				}
-//			}
-//		}
+		if (resClass == null) {
+			throw new ClassNotFoundException("Couldn't find and load class " + resource.getRelativePath());
+		}
 		
-		System.out.println("--Class = " + resClass.getName());
+		this.loadedClasses.put(resClass.getName(), resClass);
 		return resClass;
 	 }
 
