@@ -330,9 +330,51 @@ public class FileMappingsEditingDialog extends JDialog {
 								BorderFactory.createEtchedBorder(),
 								" File Type Details: "));
 
-		mainPanel.add(editingPanel, BorderLayout.CENTER);
-		mainPanel.add(displayDetailsPanel, BorderLayout.SOUTH);
+
+		JPanel buttonsPanel = new JPanel();
+		applyButton = new JButton("Apply");
+		applyButton.setToolTipText("Save changes");
+		applyButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				docHandlersRegistry.setDocumentMappingList(model.getRegistry().getDocumentMappingList());
+				setSaveButtonsStatus(false);
+			}
+		});
 		
+		JButton restoreDefault = new JButton("Restore Default");
+		restoreDefault.setToolTipText("Overwrite cuurently displayed mappings with default mapping settings.");
+		restoreDefault.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				model.restoreDefaultMappings();
+				docHandlersRegistry.setDocumentMappingList(model.getRegistry().getDocumentMappingList());
+			}
+		});
+					
+
+		buttonsPanel.setLayout(new GridBagLayout());
+		buttonsPanel.add(applyButton,new GridBagConstraints(0, 0, 
+											1, 1, 
+											0, 0,
+											GridBagConstraints.EAST,
+											GridBagConstraints.NONE,
+											new Insets(10, 5, 10, 5),
+											0, 0
+											)); 
+		buttonsPanel.add(restoreDefault,new GridBagConstraints(1, 0, 
+											1, 1, 
+											0, 0,
+											GridBagConstraints.WEST,
+											GridBagConstraints.NONE,
+											new Insets(10, 5, 10, 5),
+											0, 0
+											)); 
+
+		buttonsPanel.setBorder(BorderFactory.createEtchedBorder());
+
+		mainPanel.add(editingPanel, BorderLayout.NORTH);
+		mainPanel.add(displayDetailsPanel, BorderLayout.CENTER);
+		mainPanel.add(buttonsPanel, BorderLayout.SOUTH);
+
 		return mainPanel;
 	}
 	
@@ -348,24 +390,6 @@ public class FileMappingsEditingDialog extends JDialog {
 			}
 		});
 		
-		applyButton = new JButton("Apply");
-		applyButton.setToolTipText("Save changes");
-		applyButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				docHandlersRegistry.setDocumentMappingList(model.getRegistry().getDocumentMappingList());
-				setSaveButtonsStatus(false);
-			}
-		});
-		
-		JButton restoreDefault = new JButton("Restore Default");
-		restoreDefault.setToolTipText("Ovewrite mappings with default mapping settings.");
-		restoreDefault.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				model.restoreDefaultMappings();
-				docHandlersRegistry.setDocumentMappingList(model.getRegistry().getDocumentMappingList());
-			}
-		});
-					
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.setToolTipText("Close dialog without saving any changes that may have been made");
 		cancelButton.addActionListener(new ActionListener() {
@@ -378,10 +402,6 @@ public class FileMappingsEditingDialog extends JDialog {
 		panel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
 		panel.add(Box.createHorizontalGlue());
 		panel.add(okButton);
-		panel.add(Box.createRigidArea(new Dimension(10, 0)));
-		panel.add(applyButton);
-		panel.add(Box.createRigidArea(new Dimension(10, 0)));
-		panel.add(restoreDefault);
 		panel.add(Box.createRigidArea(new Dimension(10, 0)));
 		panel.add(cancelButton);
 		
