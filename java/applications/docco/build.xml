@@ -8,9 +8,10 @@
 		<property name="dist.name" value="Docco-CVSbuild-${timestamp}"/>
   	</target>
   	
-  	<!-- IMPORTANT! We assume a build version of ToscanaJ in these spots. -->
-  	<property name="toscanaj.build.dev.dir" value="../build/dev"/>
-  	<property name="toscanaj.build.release.dir" value="../build/release"/>
+  	<!-- IMPORTANT! We assume the source and libs of ToscanaJ in these spots. -->
+  	<!-- BIG TODO: move all resued code into Tockit -->
+  	<property name="toscanaj.src.dir" value="../source"/>
+  	<property name="toscanaj.libs.dir" value="../libs"/>
 
 	<property name="app.name" value="Docco"/>
 	<property name="build.dev.dir" value="build/dev"/>
@@ -23,22 +24,38 @@
     <path id="project.dev.class.path">
         <pathelement path="${classpath}"/>
         <pathelement path="${build.dev.dir}"/>
-        <pathelement path="${toscanaj.build.dev.dir}"/>
         <fileset dir="${libs.dir}">
             <include name="**/*.jar"/>
         </fileset>
         <fileset dir="${libs.dir}">
             <include name="**/*.zip"/>
         </fileset>
+        <fileset dir="${toscanaj.libs.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+        <fileset dir="${toscanaj.libs.dir}">
+            <include name="**/*.zip"/>
+        </fileset>
+        <fileset dir="${toscanaj.libs.dir}/testing">
+            <include name="**/*.zip"/>
+        </fileset>
     </path>
     <path id="project.release.class.path">
         <pathelement path="${classpath}"/>
         <pathelement path="${build.release.dir}"/>
-        <pathelement path="${toscanaj.build.release.dir}"/>
         <fileset dir="${libs.dir}">
             <include name="**/*.jar"/>
         </fileset>
         <fileset dir="${libs.dir}">
+            <include name="**/*.zip"/>
+        </fileset>
+        <fileset dir="${toscanaj.libs.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+        <fileset dir="${toscanaj.libs.dir}">
+            <include name="**/*.zip"/>
+        </fileset>
+        <fileset dir="${toscanaj.libs.dir}/testing">
             <include name="**/*.zip"/>
         </fileset>
     </path>
@@ -52,11 +69,17 @@
 		<delete dir="${dist.dir}"/>
 	</target>
 	<target name="compile" depends="prepare">
+		<javac srcdir="${toscanaj.src.dir}" destdir="${build.dev.dir}" debug="on" optimize="off" deprecation="on">
+			<classpath refid="project.dev.class.path"/>
+		</javac>
 		<javac srcdir="${src.dir}" destdir="${build.dev.dir}" debug="on" optimize="off" deprecation="on">
 			<classpath refid="project.dev.class.path"/>
 		</javac>
 	</target>
 	<target name="compileRelease" depends="prepare">
+		<javac srcdir="${toscanaj.src.dir}" destdir="${build.release.dir}" debug="off" optimize="on" deprecation="off">
+			<classpath refid="project.release.class.path"/>
+		</javac>
 		<javac srcdir="${src.dir}" destdir="${build.release.dir}" debug="off" optimize="on" deprecation="off">
 			<classpath refid="project.release.class.path"/>
 		</javac>
