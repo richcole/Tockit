@@ -8,6 +8,7 @@
         <section name="Docco" sourceDir="docco" targetDir="docco" type="normal">
             <homepage name="Overview" sourceFile="index.xhtml" targetFile="index.html" type="xhtml" id="Docco"/>
             <entry name="Screenshots" sourceFile="screenshots.xhtml" targetFile="screenshots.html" type="xhtml"/>
+            <entry name="Credits" sourceFile="acknowledgements.xhtml" targetFile="acknowledgements.html" type="xhtml"/>
             <file sourceFile="docco01.png" targetFile="docco01.png" type="copy"/>
             <file sourceFile="docco02.png" targetFile="docco02.png" type="copy"/>
         </section>
