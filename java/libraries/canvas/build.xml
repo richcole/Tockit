@@ -3,6 +3,7 @@
     <property name="libTesting.dir"   value="${basedir}/../../thirdParty/unitTesting"/>
     <property name="libBatik.dir"   value="${basedir}/thirdParty/batik"/>
     <property name="libJimi.dir"   value="${basedir}/thirdParty/jimi"/>
+    <property name="libIText.dir"   value="${basedir}/thirdParty/itext"/>
     <property name="build.dir"   value="${basedir}/build"/>
     <property name="jars.dir"   value="${basedir}/../jars"/>
 
@@ -18,6 +19,9 @@
         </fileset>
         <fileset dir="${libJimi.dir}">
             <include name="**/*.zip"/>
+        </fileset>
+        <fileset dir="${libIText.dir}">
+            <include name="**/*.jar"/>
         </fileset>
         <fileset dir="${jars.dir}">
             <include name="**/*.jar"/>
