@@ -38,6 +38,7 @@ import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -91,7 +92,11 @@ import org.tockit.events.EventBrokerListener;
 import org.tockit.docco.GlobalConstants;
 import org.tockit.docco.events.QueryEvent;
 import org.tockit.docco.events.QueryFinishedEvent;
+import org.tockit.docco.handlers.QueryEventHandler;
+import org.tockit.docco.indexer.Indexer;
 import org.tockit.docco.query.HitReference;
+import org.tockit.docco.query.QueryDecomposer;
+import org.tockit.docco.query.QueryEngine;
 import org.tockit.docco.query.QueryWithResult;
 import org.tockit.docco.query.util.HitReferencesSet;
 import org.tockit.docco.query.util.HitReferencesSetImplementation;
@@ -445,9 +450,9 @@ public class DoccoMainFrame extends JFrame {
 	}
 	
 
-	public DoccoMainFrame (EventBroker eventBroker) {
+	public DoccoMainFrame() {
 		super("Docco");
-		this.eventBroker = eventBroker;
+		this.eventBroker = new EventBroker();
 		
 		this.eventBroker.subscribe(new QueryFinishedEventHandler(), 
 									QueryFinishedEvent.class, 
@@ -477,6 +482,33 @@ public class DoccoMainFrame extends JFrame {
 				System.exit(0);
 			}
 		});
+
+		File indexFile = new File(GlobalConstants.DEFAULT_INDEX_LOCATION);
+		if(!indexFile.canRead()) {
+			createNewIndex();
+			if(!indexFile.canRead()) {
+				System.exit(1);
+			}
+		}
+
+		QueryDecomposer queryDecomposer = new QueryDecomposer(
+												GlobalConstants.FIELD_QUERY_BODY, 
+												GlobalConstants.DEFAULT_ANALYZER);
+			
+		QueryEngine queryEngine = null;
+        try {
+            queryEngine =
+                new QueryEngine(
+                    GlobalConstants.DEFAULT_INDEX_LOCATION,
+                    GlobalConstants.FIELD_QUERY_BODY,
+                    GlobalConstants.DEFAULT_ANALYZER,
+                    queryDecomposer);
+        } catch (IOException e1) {
+        	ErrorDialog.showError(this, e1, "Index not found");
+        	System.exit(1);
+        }
+
+		this.eventBroker.subscribe(new QueryEventHandler(eventBroker, queryEngine), QueryEvent.class, Object.class);
 	}
 
     private JMenu createHelpMenu() {
@@ -541,16 +573,44 @@ public class DoccoMainFrame extends JFrame {
         JMenu fileMenu = new JMenu("File");
         fileMenu.setMnemonic('f');
         
-        JMenuItem exitItem = new JMenuItem("Exit");
-        exitItem.setMnemonic('x');
-        exitItem.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e) {
-            	System.exit(0);
-            }
-        });
-                
-        fileMenu.add(exitItem);
+		JMenuItem newIndexItem = new JMenuItem("Create New Index...");
+		newIndexItem.setMnemonic('n');
+		newIndexItem.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				createNewIndex();
+			}
+		});
+		fileMenu.add(newIndexItem);
+
+		JMenuItem exitItem = new JMenuItem("Exit");
+		exitItem.setMnemonic('x');
+		exitItem.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
+		fileMenu.add(exitItem);
+
         return fileMenu;
+    }
+    
+    private void createNewIndex(){
+		File indexFile = new File(GlobalConstants.DEFAULT_INDEX_LOCATION);
+		if(indexFile.canRead()) {
+			int result = JOptionPane.showConfirmDialog(this, "An index already exists. Overwrite?", "Overwrite Index?",
+			                                           JOptionPane.OK_CANCEL_OPTION);
+			if(result != JOptionPane.OK_OPTION) {
+				return;
+			}
+		}
+		JFileChooser fileDialog = new JFileChooser();
+		fileDialog.setDialogTitle("Select directory to index");
+		fileDialog.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		int rv = fileDialog.showDialog(null, "Index Directory");
+		if(rv != JFileChooser.APPROVE_OPTION) {
+			return;
+		}
+		new Indexer(fileDialog.getSelectedFile().getAbsolutePath());
     }
 	
 	private JComponent buildQueryViewComponent() {

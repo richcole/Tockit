@@ -6,55 +6,16 @@
  * $Id$
  */
 package org.tockit.docco;
-import java.io.File;
-import java.io.IOException;
-
-import javax.swing.JFileChooser;
 
 import net.sourceforge.toscanaj.gui.dialog.ErrorDialog;
 
-import org.tockit.docco.events.QueryEvent;
 import org.tockit.docco.gui.DoccoMainFrame;
-import org.tockit.docco.handlers.QueryEventHandler;
-import org.tockit.docco.indexer.Indexer;
-import org.tockit.docco.query.QueryDecomposer;
-import org.tockit.docco.query.QueryEngine;
-import org.tockit.events.EventBroker;
 
 public class Docco {
-	private EventBroker eventBroker = new EventBroker();
-	
 	public Docco () {
-		File indexFile = new File(GlobalConstants.DEFAULT_INDEX_LOCATION);
-		if(!indexFile.canRead()) {
-			JFileChooser fileDialog = new JFileChooser();
-			fileDialog.setDialogTitle("Select directory to index");
-			fileDialog.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-			int rv = fileDialog.showDialog(null, "Index Directory");
-			if(rv != JFileChooser.APPROVE_OPTION) {
-				return;
-			}
-			new Indexer(fileDialog.getSelectedFile().getAbsolutePath());
-		}
 		try {
-			QueryDecomposer queryDecomposer = new QueryDecomposer(
-													GlobalConstants.FIELD_QUERY_BODY, 
-													GlobalConstants.DEFAULT_ANALYZER);
-			
-			QueryEngine queryEngine = new QueryEngine(
-													GlobalConstants.DEFAULT_INDEX_LOCATION, 
-													GlobalConstants.FIELD_QUERY_BODY, 
-													GlobalConstants.DEFAULT_ANALYZER,
-													queryDecomposer);
-
-			this.eventBroker.subscribe(new QueryEventHandler(eventBroker, queryEngine), QueryEvent.class, Object.class);
-		
-			DoccoMainFrame mainFrame = new DoccoMainFrame(this.eventBroker);
+			DoccoMainFrame mainFrame = new DoccoMainFrame();
 			mainFrame.setVisible(true);
-		}
-		catch (IOException e) {
-			ErrorDialog.showError(null, e, "Error", "\nPlease check if you have created an index using docsearcher.\n" + 
-							" Index name should be '" + GlobalConstants.DEFAULT_INDEX_LOCATION + "'");
 		}
 		catch (Exception e) {
 			ErrorDialog.showError(null, e, "Error");

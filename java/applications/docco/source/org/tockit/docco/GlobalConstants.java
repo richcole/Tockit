@@ -12,7 +12,7 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 
 public class GlobalConstants {
 	private static final String INDEX_DIR = System.getProperty("user.dir") + System.getProperty("file.separator") + ".doccoIndex";	
-	private static final String DEFAULT_INDEX_NAME = "test";
+	private static final String DEFAULT_INDEX_NAME = "default";
 
 	public static final String DEFAULT_INDEX_LOCATION = INDEX_DIR + System.getProperty("file.separator") + DEFAULT_INDEX_NAME;
 	public static final Analyzer DEFAULT_ANALYZER = new StandardAnalyzer();
