@@ -8,11 +8,8 @@
 package org.tockit.docco.indexer;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Date;
-import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.Iterator;
 
 import org.apache.lucene.document.Document;
@@ -27,39 +24,23 @@ import org.tockit.docco.indexer.filefilter.FileExtensionExtractor;
  *   way better than the extension-based stuff.
  */
 public class DocumentProcessingFactory {
-
-	/**
-	 * keys - file extension
-	 * values - corresponding DocumentProcessor
-	 * @todo plan was to have this registry searchable for regular expressions
-	 * and ordered. HashTable is not suited for this purposes. will need to reimplement.
-	 */
-	private Hashtable docRegistry = new Hashtable();
-
-	public void registerExtension (FileFilter fileFilter, Class docProcessorClass) {
-		this.docRegistry.put(fileFilter, docProcessorClass);
+	
+	private DocumentHandlersRegistery docHandlersRegistery;
+	
+	public DocumentProcessingFactory(DocumentHandlersRegistery docHandlersRegistery) {
+		this.docHandlersRegistery = docHandlersRegistery;
 	}
 
 	public Document processDocument(File file) throws DocumentHandlerException, 
 													NotFoundFileExtensionException,
-													UnknownFileExtensionException, 
+													UnknownFileExtensionException,
 													InstantiationException, 
 													IllegalAccessException, 
 													IOException {
-		
-		Class docProcessorClass = null;
-		Enumeration enum = this.docRegistry.keys();
-		while (enum.hasMoreElements()) {
-			FileFilter curFileFilter = (FileFilter) enum.nextElement();
-			if (curFileFilter.accept(file)) {
-				docProcessorClass = (Class) this.docRegistry.get(curFileFilter);
-			}
-		}
+		try {
+			DocumentHandler docHandler = this.docHandlersRegistery.getHandler(file);
 
-		if (docProcessorClass != null) {
-
-			DocumentHandler docProcessor = (DocumentHandler) docProcessorClass.newInstance();
-			DocumentSummary docSummary = docProcessor.parseDocument(file);
+			DocumentSummary docSummary = docHandler.parseDocument(file);
 			
 			/// @todo check what else we can get from the JDK side. Every feature we can get from the File API should be
 			/// worthwhile keeping
@@ -127,12 +108,9 @@ public class DocumentProcessingFactory {
 			//printDebug(doc);
 			return doc;								
 		}
-		else {
+		catch (UnknownFileExtensionException e) {
 			/// @todo shall we add all files at least as files?
-			throw new UnknownFileExtensionException(
-								"Don't know how to process document with extension " 
-								+ FileExtensionExtractor.getExtension(file) +
-								" ( file: " + file.getPath() + ")");
+			throw e;
 		}
 	}
 	
