@@ -187,7 +187,7 @@ public class KnowledgeBase {
     }
 
     public void remove(Node node) {
-        this.nodeDict.remove(node);
+        this.nodeDict.remove(node.getId());
         Collection graphs = this.graphDict.values();
         for (Iterator iterator = graphs.iterator(); iterator.hasNext();) {
             ConceptualGraph graph = (ConceptualGraph) iterator.next();
@@ -196,7 +196,7 @@ public class KnowledgeBase {
     }
 
     public void remove(Link link) {
-        this.linkDict.remove(link);
+        this.linkDict.remove(link.getId());
         Collection graphs = this.graphDict.values();
         for (Iterator iterator = graphs.iterator(); iterator.hasNext();) {
             ConceptualGraph graph = (ConceptualGraph) iterator.next();
