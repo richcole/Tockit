@@ -443,7 +443,7 @@ public class DoccoMainFrame extends JFrame {
 	private void doQuery() {
 		if (this.searchButton.isEnabled()) {
 			this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-			this.eventBroker.processEvent(new QueryEvent(this.queryField.getText(), true));
+			this.eventBroker.processEvent(new QueryEvent(this.queryField.getText()));
 			this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}
 	}

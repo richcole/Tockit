@@ -13,7 +13,6 @@ import org.apache.lucene.queryParser.ParseException;
 import org.tockit.docco.events.QueryEvent;
 import org.tockit.docco.events.QueryFinishedEvent;
 import org.tockit.docco.query.QueryEngine;
-import org.tockit.docco.query.QueryWithResult;
 import org.tockit.docco.query.util.QueryWithResultSet;
 import org.tockit.docco.query.util.QueryWithResultSetImplementation;
 import org.tockit.events.Event;
@@ -40,13 +39,7 @@ public class QueryEventHandler implements EventBrokerListener {
 		String queryString = (String) event.getSubject();
 		QueryWithResultSet queryResult = new QueryWithResultSetImplementation();
 		try {
-			if (queryEvent.useDecomposer()) {
-				queryResult = queryEngine.executeQueryUsingDecomposer(queryString);
-			}
-			else {
-				QueryWithResult qwr = this.queryEngine.executeQuery(queryString);
-				queryResult.add(qwr);
-			}
+			queryResult = queryEngine.executeQueryUsingDecomposer(queryString);
 			this.eventBroker.processEvent(new QueryFinishedEvent(queryResult));
 		}
 		catch (ParseException e) {

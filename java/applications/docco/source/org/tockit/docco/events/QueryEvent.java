@@ -11,18 +11,12 @@ import org.tockit.events.Event;
 
 public class QueryEvent implements Event{
 	private String queryString;
-	private boolean useDecomposer;
 	
-	public QueryEvent(String queryString, boolean useDecomposer) {
+	public QueryEvent(String queryString) {
 		this.queryString = queryString;
-		this.useDecomposer = useDecomposer;
 	}
 
 	public Object getSubject() {
 		return queryString;
-	}
-	
-	public boolean useDecomposer() {
-		return this.useDecomposer;
 	}
 }
