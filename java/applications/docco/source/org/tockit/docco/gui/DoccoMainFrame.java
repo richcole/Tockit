@@ -369,9 +369,9 @@ public class DoccoMainFrame extends JFrame {
 				String errorMsg = "";
 				for (int i = 0; i < errors.length; i++) {
 					PluginLoader.Error error = errors[i];
-					errorMsg += "Plugin location: " + error.getPluginLocation().getAbsolutePath();
+					errorMsg += "Plugin location:\n\t" + error.getPluginLocation().getAbsolutePath();
 					errorMsg += "\n";
-					errorMsg += "Error: " + error.getException().getMessage();
+					errorMsg += "Error:\n\t" + error.getException().getMessage();
 					errorMsg += "\n\n";
 					error.getException().printStackTrace();
 				}

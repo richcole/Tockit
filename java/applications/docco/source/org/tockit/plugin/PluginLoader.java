@@ -11,6 +11,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -75,39 +77,57 @@ public class PluginLoader {
 
 				PluginClassLoader classLoader = new PluginClassLoader(curPluginDir);
 				
-				File pluginDescriptorFile = new File(curPluginDir, pluginDescriptorFileName);
-				List descriptorClasses = new ArrayList();
-				if (pluginDescriptorFile.exists()) {
-					logger.finer("Found plugin descriptor file");
-					InputStream fileInStream = new FileInputStream(pluginDescriptorFile);
-					Reader reader = new InputStreamReader(fileInStream);
-					BufferedReader br = new BufferedReader(reader);
-					String line;
-					while ( (line = br.readLine()) != null ) {
-						logger.finer("Looking for plugin with name: '" + line + "'");
-						Class pluginClass = classLoader.findClass(line.trim());
-						descriptorClasses.add(pluginClass);
-					}
-				}
-
+				List descriptorClasses = 
+						loadPluginDescriptorSpecifedClasses(curPluginDir, classLoader);
+				Class[] foundPlugins = null;
 				if (descriptorClasses.size() > 0) {
-					loadPluginClasses((Class[]) descriptorClasses.toArray(new Class[descriptorClasses.size()]));
+					foundPlugins = (Class[]) descriptorClasses.toArray(new Class[descriptorClasses.size()]);
 				}
 				else {
-					Class[] foundPlugins = classLoader.findClassesImplementingGivenIterface(Plugin.class);
-					loadPluginClasses(foundPlugins);
+					foundPlugins = classLoader.findClassesImplementingGivenIterface(Plugin.class);
 				}
+
+				loadPluginClasses(foundPlugins);
 
 				logger.fine("Finished loading plugins in " + curPluginDir);
 			}
-			catch (Exception e) {
-				errors.add(new PluginLoader.Error(curPluginDir, e));
+			catch (ClassCastException e) {
+				String errMsg = "Expected implementation of org.tockit.plugin.Plugin " + 
+								"interface in " + e.getMessage();
+				errors.add( new PluginLoader.Error(
+							curPluginDir, 
+							new PluginLoaderException(errMsg, e)));
+			} catch (Exception e) {
+				errors.add( new PluginLoader.Error(curPluginDir, e));
 			}
 		}
 		
 		logger.fine("FINISHED loading plugins with " + errors.size() + " error(s)");
 		PluginLoader.Error[] res = (PluginLoader.Error[]) errors.toArray(new PluginLoader.Error[errors.size()]);
 		return res;
+	}
+
+	private static List loadPluginDescriptorSpecifedClasses(
+									File curPluginDir,
+									PluginClassLoader classLoader)
+									throws FileNotFoundException, 
+									IOException, ClassNotFoundException {
+
+		File pluginDescriptorFile = new File(curPluginDir, pluginDescriptorFileName);
+		List descriptorClasses = new ArrayList();
+		if (pluginDescriptorFile.exists()) {
+			logger.finer("Found plugin descriptor file");
+			InputStream fileInStream = new FileInputStream(pluginDescriptorFile);
+			Reader reader = new InputStreamReader(fileInStream);
+			BufferedReader br = new BufferedReader(reader);
+			String line;
+			while ( (line = br.readLine()) != null ) {
+				logger.finer("Looking for plugin with name: '" + line + "'");
+				Class pluginClass = classLoader.findClass(line.trim());
+				descriptorClasses.add(pluginClass);
+			}
+		}
+		return descriptorClasses;
 	}
 	
 	
