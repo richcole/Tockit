@@ -5,12 +5,6 @@
 	<property name="docco.libs.dir" value="../libs"/>
 	<property name="docco.build.dir" value="../build/dev"/>
 	<property name="plugins.dist.dir" value="../pluginJars"/>
-	
-	<path id="all.plugins.antfiles">
-		<fileset dir="${basedir}">
-		  <include name="**/build.xml"/>
-		</fileset>
-	</path>
 
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 	  <classpath>
@@ -18,59 +12,53 @@
 	  </classpath>
 	</taskdef>
 
+	<path id="${plugins.paths}">
+        <dirset dir="${basedir}">
+			<patternset>
+				<include name="*"/>
+			</patternset>	        
+        </dirset>
+	</path>	
+
 	<target name="cleanPlugins">
 		<delete dir="${plugins.dist.dir}"/>
 	    <foreach target="cleanPlugin" param="param">
-			<path>
-		        <dirset dir="${basedir}">
-					<patternset>
-						<include name="*"/>
-					</patternset>	        
-		        </dirset>
-			</path>	
+	    	<path refid="${plugins.paths}"/>
 		</foreach>
 	</target>
 	
 	<target name="makePluginsDist">
 		<mkdir dir="${plugins.dist.dir}"/>
 	    <foreach target="pluginDist" param="param">
-			<path>
-		        <dirset dir="${basedir}">
-					<patternset>
-						<include name="*"/>
-					</patternset>	        
-		        </dirset>
-			</path>	
+	    	<path refid="${plugins.paths}"/>
 	    </foreach>
 	</target>
 	
+	<!-- TODO need to check if docco is compiled so we can refer to its source -->	
 	<target name="makeJars">
 	    <foreach target="makePluginJar" param="param">
-			<path>
-		        <dirset dir="${basedir}">
-					<patternset>
-						<include name="*"/>
-					</patternset>	        
-		        </dirset>
-			</path>	
+	    	<path refid="${plugins.paths}"/>
 	    </foreach>
 	</target>
 
 	<target name="makePluginJar">
-		<ant antfile="${param}/build.xml" dir="${param}" target="makeJar" inheritall="false"/>
+		<echo>makePluginJar for file ${param}</echo>
+		<ant antfile="${basedir}/buildPlugin.xml" dir="${param}" target="makeJar" inheritall="false">
+			<property name="plugin.name" value="${param}Plugin"/>
+			<property name="docco.build.dir" value="../${docco.build.dir}"/>
+		</ant>
 	</target>
 	
 	<target name="pluginDist">
-		<ant antfile="${param}/build.xml" dir="${param}" target="makeJar" inheritall="false"/>
-		<copy todir="${plugins.dist.dir}">
-			<fileset dir="${param}">
-		        <include name="*.jar"/>
-            </fileset>
-		</copy>
+		<ant antfile="build.xml" target="makePluginJar"/>
+		<copy file="${param}Plugin.jar" todir="${plugins.dist.dir}"/>
 	</target>
 
 	<target name="cleanPlugin">
-		<ant antfile="${param}/build.xml" dir="${param}" target="clean"/>
+		<ant antfile="${basedir}/buildPlugin.xml" dir="${param}" target="clean">
+			<property name="plugin.name" value="${param}Plugin"/>
+			<property name="docco.build.dir" value="../${docco.build.dir}"/>		
+		</ant>
 	</target>	
 
 </project>
