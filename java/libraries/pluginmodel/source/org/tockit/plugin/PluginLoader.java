@@ -13,7 +13,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -98,8 +97,6 @@ public class PluginLoader extends LoaderBase {
 	 * </p>
 	 */
 	public static PluginLoader.Error[] loadPlugins (File pluginDirectory) throws FileNotFoundException {
-		logger.setLevel(Level.FINER);
-
 		File[] pluginDirs = findSubDirectories(pluginDirectory);
 		if (pluginDirs == null) {
 			throw new FileNotFoundException("Didn't find specified plugins directory: " + pluginDirs);
@@ -121,7 +118,7 @@ public class PluginLoader extends LoaderBase {
 			}
 		}
 		
-		logger.warning("FINISHED loading plugins with " + errors.size() + " error(s)");
+		logger.fine("FINISHED loading plugins with " + errors.size() + " error(s)");
 		PluginLoader.Error[] res = (PluginLoader.Error[]) errors.toArray(new PluginLoader.Error[errors.size()]);
 		return res;
 	}
