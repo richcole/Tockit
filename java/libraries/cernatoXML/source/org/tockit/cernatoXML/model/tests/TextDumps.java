@@ -18,7 +18,7 @@ import org.tockit.context.model.BinaryRelation;
 public class TextDumps {
     public static final void dump(CernatoTable context, PrintStream stream) {
         Collection objects = context.getObjects();
-        Collection properties = context.getAttributes();
+        Collection properties = context.getProperties();
         stream.print("\t");
         for (Iterator iterator = properties.iterator(); iterator.hasNext();) {
             Property property = (Property) iterator.next();

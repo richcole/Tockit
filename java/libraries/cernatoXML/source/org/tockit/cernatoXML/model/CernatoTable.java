@@ -34,7 +34,7 @@ public class CernatoTable {
         properties.add(property);
     }
 
-    public Set getAttributes() {
+    public Set getProperties() {
         return properties;
     }
 
