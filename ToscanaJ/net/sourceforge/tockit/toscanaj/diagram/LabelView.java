@@ -138,7 +138,7 @@ public class LabelView extends JComponent implements LabelObserver
         float[] dashstyle = { 4, 4 };
         graphics.setStroke( new BasicStroke( 1, BasicStroke.CAP_BUTT,
                                     BasicStroke.JOIN_BEVEL, 1, dashstyle, 0 ) );
-        graphics.draw( new Line2D.Double( x, y, lx + lw/2, ly + lh ) );
+        graphics.draw( new Line2D.Double( x, y, lx + lw/2,  y + scInfo.scaleY( _labelInfo.getOffset().getY() ) ) );
         graphics.setStroke( oldStroke );
 
         // draw the label itself
