@@ -8,17 +8,19 @@
 package org.tockit.crepe.view.manipulators;
 
 import org.tockit.events.*;
+import org.tockit.events.EventListener;
 import org.tockit.canvas.events.CanvasItemEventWithPosition;
 import org.tockit.canvas.events.CanvasItemContextMenuRequestEvent;
 import org.tockit.canvas.Canvas;
-import org.tockit.cgs.model.Node;
-import org.tockit.cgs.model.Type;
-import org.tockit.crepe.view.NodeView;
+import org.tockit.cgs.model.*;
+import org.tockit.crepe.view.*;
+import org.tockit.crepe.gui.*;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
+import java.util.*;
 
 public class NodeContextMenuHandler implements EventListener {
     private Canvas canvas;
@@ -50,15 +52,63 @@ public class NodeContextMenuHandler implements EventListener {
         // create the menu
         JPopupMenu popupMenu = new JPopupMenu();
         Node node = nodeView.getNode();
+        /// @todo restricted type has to match instance!
         createRestrictTypeMenu(popupMenu, node, node.getType());
-        createInstantiateMenu(popupMenu, node);
-        JMenuItem menuItem = new JMenuItem("Remove");
-        menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                ///@todo check if there are no links pointing to node, then remove
+        if(node.getReferent() == null) {
+            createInstantiateMenu(popupMenu, node);
+        }
+        Collection lineViews = canvas.getCanvasItemsByType(LineView.class);
+        final Set connectedLineViews = new HashSet();
+        for (Iterator iterator = lineViews.iterator(); iterator.hasNext();) {
+            LineView lineView = (LineView) iterator.next();
+            if(lineView.getConnectedNodeView() == nodeView) {
+                connectedLineViews.add(lineView);
             }
-        });
-        popupMenu.add(menuItem);
+        }
+        JMenuItem menuItem;
+        if (connectedLineViews.size() == 0) {
+            menuItem = new JMenuItem("Remove");
+            menuItem.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    nodeView.getNode().destroy();
+                    canvas.removeCanvasItem(nodeView);
+                    canvas.repaint();
+                }
+            });
+            popupMenu.add(menuItem);
+        }
+        if (connectedLineViews.size() > 1) {
+            menuItem = new JMenuItem("Duplicate");
+            menuItem.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    Iterator it = connectedLineViews.iterator();
+                    it.next();
+                    double x = nodeView.getPosition().getX();
+                    double y = nodeView.getPosition().getY();
+                    while(it.hasNext()) {
+                        LineView lineView = (LineView) it.next();
+                        LinkView linkView = lineView.getConnectedLinkView();
+                        Link link = linkView.getLink();
+                        Node newNode = new Node(nodeView.getNode());
+                        NodeView newNodeView = new NodeView(newNode);
+                        x+=20;
+                        newNodeView.setPosition(new Point2D.Double(x,y));
+                        canvas.addCanvasItem(newNodeView);
+                        lineView.setConnectedNodeView(newNodeView);
+                        Node[] refs = link.getReferences();
+                        for (int i = 0; i < refs.length; i++) {
+                            Node node = refs[i];
+                            if(node == nodeView.getNode()) {
+                                refs[i] = newNode;
+                            }
+                        }
+                        link.setReferences(refs);
+                    }
+                    canvas.repaint();
+                }
+            });
+            popupMenu.add(menuItem);
+        }
         popupMenu.show(this.canvas, (int) screenPosition.getX(), (int) screenPosition.getY());
     }
 
@@ -68,14 +118,26 @@ public class NodeContextMenuHandler implements EventListener {
         menuItem = new JMenuItem("New instance");
         menuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                /// @todo open dialog to enter name, check that it does not exist yet, put on node
+                String newId;
+                KnowledgeBase knowledgeBase = node.getKnowledgeBase();
+                do {
+                    newId = InstanceCreator.createNewInstanceName(canvas);
+                    if(newId == null) {
+                        return;
+                    }
+                } while (knowledgeBase.getInstance(newId) != null);
+                Instance newInstance = new Instance(knowledgeBase, newId, node.getType());
+                node.setReferent(newInstance);
+                canvas.repaint();
             }
         });
         instantiateMenu.add(menuItem);
         menuItem = new JMenuItem("Existing instance");
         menuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                /// @todo open dialog to choose instance, put on node
+                Instance instance = InstanceChooser.chooseInstance(canvas, node.getKnowledgeBase(), node.getType());
+                node.setReferent(instance);
+                canvas.repaint();
             }
         });
         instantiateMenu.add(menuItem);
@@ -86,11 +148,7 @@ public class NodeContextMenuHandler implements EventListener {
         JMenuItem menuItem;
         JMenu restrictTypeMenu = new JMenu("Restrict Type");
         menuItem = new JMenuItem("New type");
-        menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                ///@todo open dialog to enter type name, check it is unique, add it as subtype of type and as type of node
-            }
-        });
+        menuItem.addActionListener(new CreateNewTypeListener(node, type));
         restrictTypeMenu.add(menuItem);
         Type[] directSubtypes = type.getDirectSubtypes();
         if(directSubtypes.length != 0) {
@@ -116,11 +174,7 @@ public class NodeContextMenuHandler implements EventListener {
         });
         parentMenu.add(menuItem);
         menuItem = new JMenuItem("New type");
-        menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                ///@todo open dialog to enter type name, check it is unique, add it as subtype of type and as type of node
-            }
-        });
+        menuItem.addActionListener((new CreateNewTypeListener(node, type)));
         parentMenu.add(menuItem);
         Type[] directSubtypes = type.getDirectSubtypes();
         if(directSubtypes.length != 0) {
@@ -131,6 +185,33 @@ public class NodeContextMenuHandler implements EventListener {
             JMenu subMenu = new JMenu(directSubtype.getName());
             createRestrictTypeSubMenu(subMenu, node, directSubtype);
             parentMenu.add(subMenu);
+        }
+    }
+
+    private class CreateNewTypeListener implements ActionListener {
+        private final Node node;
+        private final Type type;
+
+        public void actionPerformed(ActionEvent e) {
+            String newName;
+            KnowledgeBase knowledgeBase = node.getKnowledgeBase();
+            do {
+                newName = TypeCreator.createNewTypeName(canvas);
+                if(newName == null) {
+                    return;
+                }
+            } while (knowledgeBase.getType(newName) != null);
+            Type newType = new Type(knowledgeBase, newName);
+            if(type != Type.UNIVERSAL) {
+                newType.addDirectSupertype(type);
+            }
+            node.setType(newType);
+            canvas.repaint();
+        }
+
+        public CreateNewTypeListener(Node node, Type type) {
+            this.node = node;
+            this.type = type;
         }
     }
 }

@@ -8,17 +8,18 @@
 package org.tockit.crepe.view.manipulators;
 
 import org.tockit.events.*;
+import org.tockit.events.EventListener;
 import org.tockit.canvas.events.CanvasItemEventWithPosition;
 import org.tockit.canvas.events.CanvasItemContextMenuRequestEvent;
 import org.tockit.canvas.Canvas;
 import org.tockit.cgs.model.*;
-import org.tockit.crepe.view.NodeView;
-import org.tockit.crepe.view.LinkView;
+import org.tockit.crepe.view.*;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
+import java.util.*;
 
 public class LinkContextMenuHandler implements EventListener {
     private Canvas canvas;
@@ -56,7 +57,16 @@ public class LinkContextMenuHandler implements EventListener {
         JMenuItem menuItem = new JMenuItem("Remove");
         menuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                ///@todo remove link and lines
+                linkView.getLink().destroy();
+                canvas.removeCanvasItem(linkView);
+                Collection lineViews = canvas.getCanvasItemsByType(LineView.class);
+                for (Iterator iterator = lineViews.iterator(); iterator.hasNext();) {
+                    LineView lineView = (LineView) iterator.next();
+                    if(lineView.getConnectedLinkView() == linkView) {
+                        canvas.removeCanvasItem(lineView);
+                    }
+                }
+                canvas.repaint();
             }
         });
         popupMenu.add(menuItem);

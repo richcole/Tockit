@@ -46,4 +46,9 @@ public class Instance {
     public Element getElement() {
         return this.element;
     }
+
+    public String toString() {
+        return this.getType().getName() + ": " + this.getIdentifier();
+    }
+
 }

@@ -40,6 +40,25 @@ public class Node {
         knowledgeBase.addNode(this);
     }
 
+    public Node(Node otherNode) {
+        this.knowledgeBase = otherNode.knowledgeBase;
+        this.element = new Element("node");
+        element.setAttribute("id", knowledgeBase.createNewNodeId());
+        Type type = otherNode.getType();
+        if (type != Type.UNIVERSAL) {
+            element.setAttribute("type", type.getName());
+        }
+        Instance referent = otherNode.getReferent();
+        if(referent != null) {
+            element.setAttribute("referent", referent.getIdentifier());
+        }
+        ConceptualGraph descriptor = otherNode.getDescriptor();
+        if(descriptor != null) {
+            element.addContent(descriptor.getElement());
+        }
+        knowledgeBase.addNode(this);
+    }
+
     public String getId() {
         return element.getAttributeValue("id");
     }
@@ -81,6 +100,9 @@ public class Node {
 
     public ConceptualGraph getDescriptor() {
         String descriptorId = element.getAttributeValue("conceptualGraph");
+        if(descriptorId == null) {
+            return null;
+        }
         return knowledgeBase.getGraph(descriptorId);
     }
 
@@ -135,5 +157,9 @@ public class Node {
 
     public void destroy() {
         this.knowledgeBase.remove(this);
+    }
+
+    public KnowledgeBase getKnowledgeBase() {
+        return knowledgeBase;
     }
 }

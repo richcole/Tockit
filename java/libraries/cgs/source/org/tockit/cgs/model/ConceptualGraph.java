@@ -91,4 +91,15 @@ public class ConceptualGraph {
         }
         ///@todo recurse into descriptors
     }
+
+    public void remove(Link link) {
+        List linkChildren = this.element.getChildren("link");
+        for (Iterator iterator = linkChildren.iterator(); iterator.hasNext();) {
+            Element element = (Element) iterator.next();
+            if(element.getAttributeValue("id").equals(link.getId())) {
+                element.detach();
+            }
+        }
+        ///@todo recurse into descriptors
+    }
 }

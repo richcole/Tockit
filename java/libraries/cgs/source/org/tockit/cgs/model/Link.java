@@ -70,4 +70,8 @@ public class Link {
     Element getElement() {
         return this.element;
     }
+
+    public void destroy() {
+        this.knowledgeBase.remove(this);
+    }
 }

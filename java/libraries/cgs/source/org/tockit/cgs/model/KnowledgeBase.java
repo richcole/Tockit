@@ -167,6 +167,10 @@ public class KnowledgeBase {
         return this.relationDict.keySet();
     }
 
+    public Collection getInstanceIdentifiers() {
+        return this.instanceDict.keySet();
+    }
+
     public Collection getTypeNames() {
         return this.typeDict.keySet();
     }
@@ -185,6 +189,15 @@ public class KnowledgeBase {
         for (Iterator iterator = graphs.iterator(); iterator.hasNext();) {
             ConceptualGraph graph = (ConceptualGraph) iterator.next();
             graph.remove(node);
+        }
+    }
+
+    public void remove(Link link) {
+        this.linkDict.remove(link);
+        Collection graphs = this.graphDict.values();
+        for (Iterator iterator = graphs.iterator(); iterator.hasNext();) {
+            ConceptualGraph graph = (ConceptualGraph) iterator.next();
+            graph.remove(link);
         }
     }
 
@@ -224,5 +237,17 @@ public class KnowledgeBase {
 
     private Collection getRelations() {
         return this.relationDict.values();
+    }
+
+    public Collection getInstancesForType(Type type) {
+        Collection retVal = new HashSet();
+        Iterator it = this.instanceDict.values().iterator();
+        while (it.hasNext()) {
+            Instance instance = (Instance) it.next();
+            if(instance.getType().hasSupertype(type)) {
+                retVal.add(instance);
+            }
+        }
+        return retVal;
     }
 }

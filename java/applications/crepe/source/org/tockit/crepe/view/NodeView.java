@@ -36,6 +36,7 @@ public class NodeView extends MovableCanvasItem {
         g.setPaint(Color.black);
         g.draw(rect);
 
+        ///@todo add line break if text is too long, if that doesn't help, add dots at the end.
         Instance referent = node.getReferent();
         Type type = node.getType();
         String text;
