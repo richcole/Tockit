@@ -17,6 +17,22 @@ extern "C" {
 
 using namespace std;
 
+void sarl_trace_set(Sarl_SetIterator *S) 
+{
+  std::cerr << "(";
+  sarl_set_iterator_reset(S);
+  while( ! sarl_set_iterator_at_end(S) ) {
+      std::cerr << sarl_set_iterator_value(S);
+      sarl_set_iterator_next(S);
+      if ( ! sarl_set_iterator_at_end(S) ) {
+        std::cerr << ",";
+      }
+    }
+  std::cerr << ")";
+  sarl_set_iterator_reset(S);
+};
+
+
 struct Sarl_SetIterator* sarl_relation_iterator_return_empty_set(
   Sarl_RelationIterator* r_it)
 {
@@ -82,7 +98,7 @@ struct Sarl_Lattice* sarl_lattice_copy(
       );
     };
 
-    // determine upper cover
+    // determine downset
     sarl_set_iterator_reset(intent);
     sarl_set_iterator_release_ownership(intent);
 
@@ -97,8 +113,8 @@ struct Sarl_Lattice* sarl_lattice_copy(
       sarl_transitive_relation_insert(
         lattice->order, sarl_set_iterator_value(down_set), concept
       );
-      cerr << "insert_ordering: " << sarl_set_iterator_value(down_set);
-      cerr << " < " << concept << endl;
+      std::cerr << "insert_ordering: " << sarl_set_iterator_value(down_set);
+      std::cerr << " < " << concept << std::endl;
     };
 
     sarl_set_iterator_decr_ref(intent);
@@ -110,39 +126,39 @@ struct Sarl_Lattice* sarl_lattice_copy(
     ++concept;
   };
 
-  // calculate the contingents
-  
-  Sarl_RelationIterator* intent_it = 
-    sarl_relation_iterator_create(lattice->intent);
-
-  Sarl_SetIterator* c_it = sarl_relation_domain(lattice->intent);
-
+  // calculate the attribute contingents
+  Sarl_SetIterator* c_it = sarl_lattice_concepts(lattice);
+  Sarl_RelationIterator* intent_it = sarl_lattice_intent(lattice);
   SARL_SET_ITERATOR_FOR(c_it) {
+
     Sarl_SetIterator *upper_covers;
     Sarl_SetIterator *upper_intents;
     Sarl_SetIterator *intent;
     Sarl_SetIterator *contingent;
 
-    upper_covers = sarl_transitive_relation_upper_covers(
-      lattice->order,
-      sarl_set_iterator_value(c_it)
-    );
+    concept = sarl_set_iterator_value(c_it);
+
+    upper_covers = 
+      sarl_transitive_relation_upper_covers(lattice->order, concept);
     sarl_set_iterator_release_ownership(upper_covers);
       
     upper_intents = 
       sarl_relation_iterator_intent_union(intent_it, upper_covers);
-    sarl_set_iterator_release_ownership(upper_intents);
 
-    intent =
-      sarl_relation_iterator_intent(intent_it, sarl_set_iterator_value(c_it));
-    
+    sarl_set_iterator_release_ownership(upper_intents);
+    intent = sarl_lattice_concept_intent(lattice, concept);
+
+    sarl_set_iterator_release_ownership(intent);
     contingent = sarl_set_iterator_minus(intent, upper_intents);
+
+    std::cerr << ", contingent=";
+    sarl_trace_set(contingent);
+    std::cerr << std::endl;
 
     SARL_SET_ITERATOR_FOR(contingent) {
       sarl_relation_insert(
         lattice->intent_contingent, 
-        sarl_set_iterator_value(c_it), 
-        sarl_set_iterator_value(contingent)
+        concept, sarl_set_iterator_value(contingent)
       );
     };
 
@@ -153,29 +169,47 @@ struct Sarl_Lattice* sarl_lattice_copy(
   };
   sarl_relation_iterator_decr_ref(intent_it);
   
+
+  // calculate the object contingents
   Sarl_RelationIterator* extent_it = 
-    sarl_relation_iterator_create(lattice->intent);
+    sarl_relation_iterator_create(lattice->extent);
 
   SARL_SET_ITERATOR_FOR(c_it) {
+    Sarl_Index concept = sarl_set_iterator_value(c_it);
+
     Sarl_SetIterator *lower_covers;
     Sarl_SetIterator *lower_extents;
     Sarl_SetIterator *extent;
     Sarl_SetIterator *contingent;
 
-    lower_covers = sarl_transitive_relation_lower_covers(
-      lattice->order,
-      sarl_set_iterator_value(c_it)
-    );
-    sarl_set_iterator_release_ownership(lower_covers);
-      
-    lower_extents = 
-      sarl_relation_iterator_extent_union(extent_it, lower_covers);
-    sarl_set_iterator_release_ownership(lower_extents);
+    lower_covers = 
+      sarl_transitive_relation_lower_covers(lattice->order, concept);
 
+    std::cerr << "concept=" << concept << ", lower_covers=";
+    sarl_trace_set(lower_covers);
+
+    sarl_set_iterator_release_ownership(lower_covers);
+    lower_extents = 
+      sarl_relation_iterator_intent_union(extent_it, lower_covers);
+
+    std::cerr << ", lower_extents=";
+    sarl_trace_set(lower_extents);
+
+    sarl_set_iterator_release_ownership(lower_extents);
     extent =
-      sarl_relation_iterator_intent(extent_it, sarl_set_iterator_value(c_it));
+      sarl_relation_iterator_intent(
+        extent_it, 
+        sarl_set_iterator_value(c_it)
+      );
     
+    std::cerr << ", extent=";
+    sarl_trace_set(extent);
+
+    sarl_set_iterator_release_ownership(extent);
     contingent = sarl_set_iterator_minus(extent, lower_extents);
+
+    std::cerr << ", contingent=";
+    sarl_trace_set(contingent);
 
     SARL_SET_ITERATOR_FOR(contingent) {
       sarl_relation_insert(
@@ -184,6 +218,8 @@ struct Sarl_Lattice* sarl_lattice_copy(
         sarl_set_iterator_value(contingent)
       );
     };
+
+    std::cerr << endl;
 
     sarl_set_iterator_decr_ref(lower_covers);
     sarl_set_iterator_decr_ref(lower_extents);
@@ -251,43 +287,62 @@ sarl_lattice_concepts(struct Sarl_Lattice* L)
   return result;
 };
 
-extern struct Sarl_RelationIterator *
+struct Sarl_RelationIterator *
 sarl_lattice_ordering(struct Sarl_Lattice *L)
 {
   return sarl_transitive_relation_ordering(L->order);
 };
 
-extern struct Sarl_RelationIterator *
+struct Sarl_RelationIterator *
 sarl_lattice_covering(struct Sarl_Lattice *L)
 {
   return sarl_transitive_relation_covering(L->order);
 };
 
-extern struct Sarl_RelationIterator *
+struct Sarl_RelationIterator *
 sarl_lattice_extent(struct Sarl_Lattice *L)
 {
   return sarl_relation_iterator_create(L->extent);
 };
 
 
-extern struct Sarl_RelationIterator *
+struct Sarl_RelationIterator *
 sarl_lattice_intent(struct Sarl_Lattice *L)
 {
   return sarl_relation_iterator_create(L->intent);
 };
 
 
-extern struct Sarl_RelationIterator *
+struct Sarl_RelationIterator *
 sarl_lattice_object_contingent(struct Sarl_Lattice *L)
+{
+  return sarl_relation_iterator_create(L->extent_contingent);
+};
+
+
+struct Sarl_RelationIterator *
+sarl_lattice_attribute_contingent(struct Sarl_Lattice *L)
 {
   return sarl_relation_iterator_create(L->intent_contingent);
 };
 
-
-extern struct Sarl_RelationIterator *
-sarl_lattice_attribute_contingent(struct Sarl_Lattice *L)
+struct Sarl_SetIterator *
+sarl_lattice_concept_extent(struct Sarl_Lattice* L, Sarl_Index concept)
 {
-  return sarl_relation_iterator_create(L->extent_contingent);
+  Sarl_RelationIterator *r_it = sarl_lattice_extent(L);
+  Sarl_SetIterator* result = sarl_relation_iterator_intent(r_it, concept);
+  sarl_relation_iterator_decr_ref(r_it);
+  return result;
+};
+
+
+struct Sarl_SetIterator *
+sarl_lattice_concept_intent(struct Sarl_Lattice* L, Sarl_Index concept)
+{
+  Sarl_RelationIterator *r_it = sarl_lattice_intent(L);
+  Sarl_SetIterator* result = sarl_relation_iterator_intent(r_it, concept);
+  sarl_relation_iterator_decr_ref(r_it);
+  return result;
 };
 
 

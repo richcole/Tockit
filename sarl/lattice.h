@@ -24,6 +24,12 @@ extern struct Sarl_RelationIterator *
 extern struct Sarl_RelationIterator *
   sarl_lattice_intent(struct Sarl_Lattice* );
 
+extern struct Sarl_SetIterator *
+  sarl_lattice_concept_extent(struct Sarl_Lattice* L, Sarl_Index concept);
+
+extern struct Sarl_SetIterator *
+  sarl_lattice_concept_intent(struct Sarl_Lattice* L, Sarl_Index concept);
+
 extern struct Sarl_RelationIterator *
   sarl_lattice_object_contingent(struct Sarl_Lattice* );
 
