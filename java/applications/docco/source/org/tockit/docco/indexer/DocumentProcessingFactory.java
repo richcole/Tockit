@@ -36,6 +36,7 @@ public class DocumentProcessingFactory {
 	}
 
 	public Document processDocument(File file) throws DocumentProcessingException, 
+													NotFoundFileExtensionException,
 													UnknownFileExtensionException, 
 													InstantiationException, 
 													IllegalAccessException, 
@@ -104,14 +105,14 @@ public class DocumentProcessingFactory {
 		}
 	}
 	
-	private String getFileExtension (File file) throws DocumentProcessingException {
+	private String getFileExtension (File file) throws NotFoundFileExtensionException {
 		String fileName = file.getName();
 		int index = fileName.lastIndexOf(".") + 1;
 		if (index > 0) {
 			return fileName.substring(index, fileName.length());
 		}
 		else {
-			throw new DocumentProcessingException("Couldn't extract file extention for file " + file.getPath());
+			throw new NotFoundFileExtensionException("Couldn't extract file extention for file " + file.getPath());
 		}
 	}
 	

@@ -47,6 +47,8 @@ public class Indexer {
 
 			this.docProcessingFactory.registerExtension("doc", MSWordProcessor.class);
 
+			this.docProcessingFactory.registerExtension("xls", MSExcelDocProcessor.class);
+
 
 			File f = new File(GlobalConstants.DEFAULT_INDEX_LOCATION);
 			createDirPath(f);
@@ -64,7 +66,7 @@ public class Indexer {
 
 			Date end = new Date();
 
-			System.out.println("total processed documents: " + this.docCount);
+			System.out.println("\ntotal processed documents: " + this.docCount);
 			System.out.print(end.getTime() - start.getTime());
 			System.out.println(" total milliseconds");
 
@@ -93,6 +95,8 @@ public class Indexer {
 				System.out.print(".");
 				docCount++;
 			}
+		}
+		catch (NotFoundFileExtensionException e) {
 		}
 		catch (UnknownFileExtensionException e) {
 		}
