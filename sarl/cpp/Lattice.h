@@ -65,7 +65,7 @@ public:
 
   inline RelationIterator attribute_contingent() const {
     RelationIterator result(
-      sarl_lattice_object_contingent(mp_latticeRef)
+      sarl_lattice_attribute_contingent(mp_latticeRef)
     );
     return result.retn();
   }
