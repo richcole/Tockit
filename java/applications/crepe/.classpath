@@ -7,5 +7,6 @@
 	<classpathentry kind="lib" path="libs/tockit-events.jar"/>
 	<classpathentry kind="lib" path="libs/tockit-cgs.jar"/>
 	<classpathentry kind="lib" path="libs/tockit-utils.jar"/>
+	<classpathentry kind="lib" path="libs/tockit-swing.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
