@@ -10,6 +10,11 @@ package org.tockit.docco.filefilter;
 import java.io.FileFilter;
 
 
+/**
+ * @todo Refactoring task: use factory to init these objects
+ * @todo Perhaps this class should be an abstract class and
+ * extend swing FileFilter, implementing io.FileFilter
+ */
 public interface DoccoFileFilter  extends FileFilter {
 
 	public String getFilteringString();
