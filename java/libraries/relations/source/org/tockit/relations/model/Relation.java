@@ -42,6 +42,7 @@ public class Relation {
     /**
      * Adds a tuple into the relation.
      * 
+     * @see addTuple(Object[])
      * @param tuple a Tuple matching the relation's arity
      * @throws IllegalArgumentException if the arity is not matched
      */
@@ -50,6 +51,20 @@ public class Relation {
             throw new IllegalArgumentException("Tuples have to have the same length as the relation's arity");
         }
         this.tuples.add(tuple);
+    }
+    
+    /**
+     * Adds an array of objects as Tuple into the relation.
+     * 
+     * This is a convenience method equilvalent to calling addTuple(new Tuple(data)).
+     * Note that the contents of the getTuple() set will always be Tuple objects.
+     * 
+     * @see addTuple(Tuple) 
+     * @param data an Object[] matching the relation's arity
+     * @throws IllegalArgumentException if the arity is not matched
+     */
+    public void addTuple(Object[] data) {
+        addTuple(new Tuple(data));
     }
 
 	/**

@@ -64,6 +64,9 @@ public class RelationTest extends TestCase {
 
         stringRelation.addTuple(new Tuple(new String[]{"this", "one", "twice"}));
         assertEquals("could add tuple twice", 8, stringRelation.getSize());
+
+        stringRelation.addTuple(new String[]{"this", "one", "twice"});
+        assertEquals("could add tuple twice by using convenience method", 8, stringRelation.getSize());
     }
 
     public void setUp() {
