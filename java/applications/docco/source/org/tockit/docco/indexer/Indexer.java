@@ -35,6 +35,7 @@ public class Indexer {
 			
 			this.docProcessingFactory.registerExtension("html", new HtmlDocumentProcessor());
 			this.docProcessingFactory.registerExtension("txt", new PlainTextDocumentProcessor());
+			this.docProcessingFactory.registerExtension("pdf", new PdfDocumentProcessor());
 
 
 			File f = new File(GlobalConstants.DEFAULT_INDEX_LOCATION);
@@ -58,7 +59,8 @@ public class Indexer {
 
 			Date end = new Date();
 
-			System.out.println("total documents: " + this.docCount);
+			System.out.println("total processed documents: " + this.docCount);
+			System.out.println("skipped documents: " + this.errorsList.size());
 			System.out.print(end.getTime() - start.getTime());
 			System.out.println(" total milliseconds");
 
