@@ -6,7 +6,7 @@
  * To change template for new class use 
  * Code Style | Class Templates options (Tools | IDE Options).
  */
-package org.tockit.cgs.util;
+package org.tockit.util;
 
 import java.util.HashSet;
 

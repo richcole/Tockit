@@ -15,7 +15,7 @@ import org.tockit.crepe.gui.eventhandlers.*;
 import org.tockit.crepe.gui.treeviews.*;
 import org.tockit.crepe.view.GraphView;
 import org.tockit.cgs.model.*;
-import org.tockit.cgs.util.IdPool;
+import org.tockit.util.IdPool;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.adapters.DOMAdapter;

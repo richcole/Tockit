@@ -9,7 +9,7 @@
 package org.tockit.cgs.model;
 
 import org.jdom.Element;
-import org.tockit.cgs.util.IdPool;
+import org.tockit.util.IdPool;
 import org.tockit.cgs.model.events.*;
 import org.tockit.events.EventBroker;
 
