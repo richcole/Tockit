@@ -31,6 +31,7 @@
 	<property name="plugin.libs.dir" value="libs"/>
 	<property name="plugin.dist.dir" value="dist"/>
 	<property name="plugin.jar.name" value="${plugin.name}.jar"/>
+	<property name="plugin.description.file" value="plugin.txt"/>
 
     <path id="plugin.class.path">
         <pathelement path="${classpath}"/>
@@ -67,6 +68,7 @@
 			<fileset dir="${basedir}">
 		        <include name="libs/**"/>
 		        <include name="${plugin.jar.name}"/>
+	        	<include name="${plugin.description.file}"/>
             </fileset>
 		</copy>
 	</target>
