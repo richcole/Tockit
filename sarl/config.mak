@@ -2,6 +2,10 @@ CCC   = g++
 JAVAC = javac
 DEBUG = -ggdb 
 
+# Sarl Root
+
+SARL_ROOT  := $(shell pwd)
+
 # Java.
 
 JAVA_INC   = \
