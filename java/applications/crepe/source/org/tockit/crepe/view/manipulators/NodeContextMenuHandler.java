@@ -55,9 +55,7 @@ public class NodeContextMenuHandler implements EventListener {
         if(node.getReferent() == null || node.getReferent().getType() != node.getType()) {
             createRestrictTypeMenu(popupMenu, node, node.getType());
         }
-        if(node.getReferent() == null) {
-            createInstantiateMenu(popupMenu, node);
-        }
+        createInstantiateMenu(popupMenu, node);
         Collection lineViews = canvas.getCanvasItemsByType(LineView.class);
         final Set connectedLineViews = new HashSet();
         for (Iterator iterator = lineViews.iterator(); iterator.hasNext();) {
