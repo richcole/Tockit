@@ -26,7 +26,7 @@ class IncludeParser extends CSCFileSectionParser {
 
 	public void parse(CSCTokenizer tokenizer, CSCFile file) throws IOException, DataFormatException {
         String includeLocation = tokenizer.popCurrentToken();
-        tokenizer.consumeToken(";", file);
+        tokenizer.consumeToken(";");
         URL includeURL = new URL(file.getLocation(), includeLocation);
         CSCParser.logger.log(Level.FINER, "Including URL: '" + includeURL + "'");
 		CSCFile includeFile = null;

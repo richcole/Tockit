@@ -10,7 +10,6 @@ package org.tockit.conscript.parser;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Logger;
@@ -24,7 +23,7 @@ public class CSCParser {
     public static CSCFile importCSCFile(URL mainInput, CSCFile parent) throws FileNotFoundException, DataFormatException {
         try {
         	CSCFile mainFile = new CSCFile(mainInput, parent);
-            CSCTokenizer tokenizer = new CSCTokenizer(new InputStreamReader(mainInput.openStream()));
+            CSCTokenizer tokenizer = new CSCTokenizer(mainInput);
             
             CSCFileSectionParser currentSectionParser = null;
             while(! tokenizer.done()) {

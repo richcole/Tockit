@@ -23,20 +23,20 @@ class DatabaseParser extends CSCFileSectionParser {
 
 	public void parse(CSCTokenizer tokenizer, CSCFile file) throws IOException, DataFormatException {
         String name = tokenizer.popCurrentToken();
-        tokenizer.consumeToken("=", file);
+        tokenizer.consumeToken("=");
 
         DatabaseDefinition dbDefinition = new DatabaseDefinition(file, name);
         parseTitleRemarkSpecials(tokenizer, dbDefinition);
         
-        tokenizer.consumeToken("(", file);
+        tokenizer.consumeToken("(");
         dbDefinition.setDatabaseName(tokenizer.popCurrentToken());
-        tokenizer.consumeToken(",", file);
+        tokenizer.consumeToken(",");
         dbDefinition.setTable(tokenizer.popCurrentToken());
-        tokenizer.consumeToken(",", file);
+        tokenizer.consumeToken(",");
         dbDefinition.setPrimaryKey(tokenizer.popCurrentToken());
-        tokenizer.consumeToken(")", file);
+        tokenizer.consumeToken(")");
 
-        tokenizer.consumeToken(";", file);
+        tokenizer.consumeToken(";");
 
         file.add(dbDefinition);
         CSCParser.logger.log(Level.FINER, "Database definition added: " + dbDefinition.getName() + "'");

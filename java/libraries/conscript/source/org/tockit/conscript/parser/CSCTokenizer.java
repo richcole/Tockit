@@ -8,10 +8,9 @@ package org.tockit.conscript.parser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.Reader;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.logging.Level;
-
-import org.tockit.conscript.model.CSCFile;
 
 public class CSCTokenizer {
     private BufferedReader inputReader;
@@ -20,9 +19,11 @@ public class CSCTokenizer {
     private boolean newLineStarted = true;
     private int characterWaiting = -1;
     private boolean currentTokenIsString = false;
+    private URL inputUrl;
 
-	public CSCTokenizer(Reader in) throws IOException, DataFormatException {
-	    this.inputReader = new BufferedReader(in);
+	public CSCTokenizer(URL input) throws IOException, DataFormatException {
+	    this.inputReader = new BufferedReader(new InputStreamReader(input.openStream()));
+        this.inputUrl = input;
 	    advance();
 	}
 	
@@ -124,10 +125,10 @@ public class CSCTokenizer {
     	return this.newLineStarted;
     }
 
-    public void consumeToken(String token, CSCFile file) throws IOException, DataFormatException{
+    public void consumeToken(String token) throws IOException, DataFormatException{
         if(!this.currentToken.equals(token)) {
             throw new DataFormatException("Expected token '" + token + "' but found '" + this.currentToken + 
-                                          "' in line " + getCurrentLine() + " of file " + file.getLocation());
+                                          "' in line " + getCurrentLine() + " of file " + this.inputUrl);
         }
         if(!done()) {
             advance();

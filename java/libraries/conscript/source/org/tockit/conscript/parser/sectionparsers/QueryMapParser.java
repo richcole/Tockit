@@ -27,21 +27,21 @@ class QueryMapParser extends CSCFileSectionParser {
         QueryMap queryMap = new QueryMap(file, queryMapId);
 
         int line = tokenizer.getCurrentLine();
-        tokenizer.consumeToken("=", file);
+        tokenizer.consumeToken("=");
         while (tokenizer.getCurrentLine() == line) {
             tokenizer.advance(); // skip possible remarks
         }
 
         while (!tokenizer.getCurrentToken().equals(";")) {
-            tokenizer.consumeToken("(", file);
+            tokenizer.consumeToken("(");
             String clause = tokenizer.popCurrentToken();
-            tokenizer.consumeToken(",", file);
+            tokenizer.consumeToken(",");
             String id = tokenizer.popCurrentToken();
-            tokenizer.consumeToken(")", file);
+            tokenizer.consumeToken(")");
             queryMap.addEntry(clause, id);
         }
 
-        tokenizer.consumeToken(";", file);
+        tokenizer.consumeToken(";");
 
         file.add(queryMap);
         CSCParser.logger.log(Level.FINER, "Query map added: '" + queryMap.getName() + "'");

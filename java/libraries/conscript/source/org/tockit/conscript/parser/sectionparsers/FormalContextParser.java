@@ -33,7 +33,7 @@ class FormalContextParser extends CSCFileSectionParser {
 		while (!tokenizer.getCurrentToken().equals("OBJECTS")) {
 			tokenizer.advance();
 		}
-		tokenizer.consumeToken("OBJECTS", file);
+		tokenizer.consumeToken("OBJECTS");
 
 		while (!tokenizer.getCurrentToken().equals("ATTRIBUTES")) {
 			// find objects until attributes come
@@ -43,7 +43,7 @@ class FormalContextParser extends CSCFileSectionParser {
 			objects.add(tokenizer.getCurrentToken()); // use name
 			tokenizer.advance(); // next
 		}
-		tokenizer.consumeToken("ATTRIBUTES", file);
+		tokenizer.consumeToken("ATTRIBUTES");
 
 		while (!tokenizer.getCurrentToken().equals("RELATION")) {
 			// find attributes until relation comes
@@ -52,7 +52,7 @@ class FormalContextParser extends CSCFileSectionParser {
             attributes.add(tokenizer.getCurrentToken()); // use name
 			tokenizer.advance(); // next
 		}
-        tokenizer.consumeToken("RELATION", file);
+        tokenizer.consumeToken("RELATION");
         
         int height = Integer.parseInt(tokenizer.popCurrentToken());
         if(height != objects.size()) {
@@ -60,7 +60,7 @@ class FormalContextParser extends CSCFileSectionParser {
                                           contextId + "', line " + tokenizer.getCurrentLine() + ", file '" +
                                           file.getLocation() + "'");
         }
-        tokenizer.consumeToken(",", file);
+        tokenizer.consumeToken(",");
         int width = Integer.parseInt(tokenizer.popCurrentToken());
         if(width != attributes.size()) {
             throw new DataFormatException("Relation width does not match number of attributes in context '" +
@@ -96,7 +96,7 @@ class FormalContextParser extends CSCFileSectionParser {
 			tokenizer.advance(); // next row
 		}
 
-        tokenizer.consumeToken(";", file);
+        tokenizer.consumeToken(";");
         
         file.add(context);
         CSCParser.logger.log(Level.FINER, "Formal context added: '" + context.getName() + "'");

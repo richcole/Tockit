@@ -21,6 +21,7 @@ import org.tockit.conscript.model.FormattedString;
 import org.tockit.conscript.model.Line;
 import org.tockit.conscript.model.LineDiagram;
 import org.tockit.conscript.model.Point;
+import org.tockit.conscript.model.TypedSize;
 import org.tockit.conscript.parser.CSCParser;
 import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
@@ -35,11 +36,16 @@ class LineDiagramParser extends CSCFileSectionParser {
 		String identifier = tokenizer.popCurrentToken();
         LineDiagram diagram = new LineDiagram(file, identifier);
 
-        tokenizer.consumeToken("=", file);
+        tokenizer.consumeToken("=");
 
 		parseTitleRemarkSpecials(tokenizer, diagram);
 
-		tokenizer.consumeToken("POINTS", file);
+        tokenizer.consumeToken("UNITLENGTH");
+        double value = Double.parseDouble(tokenizer.popCurrentToken());
+        String unitType = tokenizer.popCurrentToken();
+        diagram.setUnitLength(new TypedSize(value,unitType));
+
+		tokenizer.consumeToken("POINTS");
 
         Map points = new Hashtable();
 		while (!tokenizer.getCurrentToken().equals("LINES")) {
@@ -58,11 +64,11 @@ class LineDiagramParser extends CSCFileSectionParser {
 
         List lines = new ArrayList();
 		while (!tokenizer.getCurrentToken().equals("OBJECTS")) {
-            tokenizer.consumeToken("(", file);
+            tokenizer.consumeToken("(");
             Long from = new Long(tokenizer.popCurrentToken());
-            tokenizer.consumeToken(",", file);
+            tokenizer.consumeToken(",");
             Long to = new Long(tokenizer.popCurrentToken());
-            tokenizer.consumeToken(")", file);
+            tokenizer.consumeToken(")");
             
             Point fromPoint = (Point)points.get(from);
             if(fromPoint == null) {
@@ -134,7 +140,7 @@ class LineDiagramParser extends CSCFileSectionParser {
 			// we ignore the concept definitions 
 			tokenizer.advance();
 		}
-        tokenizer.consumeToken(";", file);
+        tokenizer.consumeToken(";");
         
         file.add(diagram);
         CSCParser.logger.log(Level.FINER, "Line diagram added: '" + diagram.getName() + "'");

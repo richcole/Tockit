@@ -26,10 +26,10 @@ class ConceptualSchemaParser extends CSCFileSectionParser {
 
 	public void parse(CSCTokenizer tokenizer, CSCFile file) throws IOException, DataFormatException {
         String identifier = tokenizer.popCurrentToken();
-        tokenizer.consumeToken("=", file);
+        tokenizer.consumeToken("=");
         ConceptualSchema schema = new ConceptualSchema(file, identifier);
         parseTitleRemarkSpecials(tokenizer, schema);
-        tokenizer.consumeToken("(", file);
+        tokenizer.consumeToken("(");
         String dbIdentifier = tokenizer.popCurrentToken();
         schema.setDatabase(file.findDatabaseDefinition(dbIdentifier));
         if(schema.getDatabase() == null) {
@@ -47,8 +47,8 @@ class ConceptualSchemaParser extends CSCFileSectionParser {
             scales.add(scale);
         }
         schema.setConcreteScales((ConcreteScale[]) scales.toArray(new ConcreteScale[scales.size()]));
-        tokenizer.consumeToken(")", file);
-        tokenizer.consumeToken(";", file);
+        tokenizer.consumeToken(")");
+        tokenizer.consumeToken(";");
 
         file.add(schema);
         CSCParser.logger.log(Level.FINER, "Conceptual schema added: '" + schema.getName() + "'");

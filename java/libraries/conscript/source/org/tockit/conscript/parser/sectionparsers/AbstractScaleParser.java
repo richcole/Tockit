@@ -27,13 +27,13 @@ class AbstractScaleParser extends CSCFileSectionParser {
         String name = tokenizer.popCurrentToken();
         AbstractScale scale = new AbstractScale(file, name);
         
-        tokenizer.consumeToken("=", file);
+        tokenizer.consumeToken("=");
         
         parseTitleRemarkSpecials(tokenizer, scale);
-        tokenizer.consumeToken("(", file);
+        tokenizer.consumeToken("(");
         
         String contextId = tokenizer.popCurrentToken();
-        tokenizer.consumeToken(",", file);
+        tokenizer.consumeToken(",");
         
         FormalContext context = file.findFormalContext(contextId);
         if(context == null) {
@@ -46,7 +46,7 @@ class AbstractScaleParser extends CSCFileSectionParser {
         }
         
         do {
-            tokenizer.consumeToken(",", file);
+            tokenizer.consumeToken(",");
             String diagramId = tokenizer.popCurrentToken();
             LineDiagram diagram = file.findLineDiagram(diagramId);
             if(diagram == null) {
@@ -55,8 +55,8 @@ class AbstractScaleParser extends CSCFileSectionParser {
             scale.addLineDiagram(diagram);
         } while(!tokenizer.getCurrentToken().equals(")"));
         
-        tokenizer.consumeToken(")", file);
-        tokenizer.consumeToken(";", file);
+        tokenizer.consumeToken(")");
+        tokenizer.consumeToken(";");
         
         file.add(scale);
         CSCParser.logger.log(Level.FINER, "Abstract scale added: '" + scale.getName() + "'");
