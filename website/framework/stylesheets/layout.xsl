@@ -105,11 +105,56 @@ a {color: #0000CC;}
                         </td>
                         <td>
                             <xsl:copy-of select="body/node()"/>
-                            <div align="center">
-                                <img src="{//file[@id='bar']/@src}" alt="----------------------------------------------" width="500" height="30"/>
+                            <div style="margin-top:50px; margin-bottom:10px">
+                            <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                            	<tr>
+                            	<td align="right" width="3%">
+                                <img src="{//file[@id='barleft']/@src}" alt="&lt;" width="19" height="15"/>
+                                </td>
+                            	<td align="center" width="94%">
+                                <img src="{//file[@id='barcenter']/@src}" alt="----------------------------------" width="100%" height="15"/>
+                                </td>
+                            	<td align="left" width="3%">
+                                <img src="{//file[@id='barright']/@src}" alt="&gt;" width="26" height="15"/>
+        						</td>
+        						</tr>
+        					</table>
+        					</div>
+                            <div class="footer" align="center" style="margin-bottom:15px">
+                            <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                            	<tr>
+                            	<td align="center">
+		                            This project is a cooperation of: 
+		                            <a href="http://www.dstc.edu.au">
+		                            	<img src="{//file[@id='dstclogo1']/@src}" border="0" width="30" height="30" align="middle" alt="DSTC Logo"/>
+		                            	<img src="{//file[@id='dstclogo2']/@src}" border="0" width="34" height="30" align="middle" alt="DSTC Logo"/>
+		                            </a>,
+		                            <a href="http://www.itee.uq.edu.au">
+		                            	<img src="{//file[@id='uqlogo']/@src}" border="0" width="105" height="30" align="middle" alt="University of Queensland Logo"/>
+		                            </a> and 
+		                            <a href="http://www.tu-darmstadt.de/index.en.html">
+		                            	<img src="{//file[@id='tudlogo']/@src}" border="0" width="77" height="30" align="middle" alt="Technical University Darmstadt Logo"/>
+		                            </a>.
+        						Hosted on <a href="http://sourceforge.net">
+        						<img src="http://sourceforge.net/sflogo.php?group_id=21448" border="0" width="88" height="31" alt="SourceForge Logo" align="middle"/>
+        						</a> --visit the <a href="http://sourceforge.net/projects/tockit">project page</a>
+        						</td>
+                            </tr>
+                            </table>
                             </div>
                             <div class="footer" align="center">
-        This project is hosted on <a href="http://sourceforge.net"><img src="http://sourceforge.net/sflogo.php?group_id=21448" border="0" width="88" height="31" alt="SourceForge Logo" align="absmiddle"/></a> --visit the <a href="http://sourceforge.net/projects/tockit">project page</a>
+                            <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                            	<tr>
+                            	<td align="center">
+        						Website created with <a href="http://xweb.sourceforge.net">
+        						<img src="http://xweb.sourceforge.net/images/xwebbutton.png" border="0" width="88" height="31" alt="XWeb Logo" align="middle"/>
+        						</a> using 
+                        <a href="http://validator.w3.org/check/referer"><img border="0" src="http://www.w3.org/Icons/valid-html401" align="middle" alt="Valid HTML 4.01!" height="31" width="88" /></a>
+                        			and
+                        <a href="http://jigsaw.w3.org/css-validator/check/referer"><img border="0" height="31" width="88" align="middle" src="http://jigsaw.w3.org/css-validator/images/vcss" alt="Valid CSS!" /></a>
+        						</td>
+        						</tr>
+        					</table>
                             </div>
                         </td>
                     </tr>

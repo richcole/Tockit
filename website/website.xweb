@@ -31,7 +31,13 @@
             <file sourceFile="banner3.png" targetFile="banner3.png" type="copy" id="banner3"/>
             <file sourceFile="navfill.svg" targetFile="navfill.png" type="svg" id="navfill"/>
             <file sourceFile="navend.png" targetFile="navend.png" type="copy" id="navend"/>
-            <file sourceFile="bar.png" targetFile="bar.png" type="copy" id="bar"/>
+            <file sourceFile="barcenter.png" targetFile="barcenter.png" type="copy" id="barcenter"/>
+            <file sourceFile="barleft.png" targetFile="barleft.png" type="copy" id="barleft"/>
+            <file sourceFile="barright.png" targetFile="barright.png" type="copy" id="barright"/>
+            <file sourceFile="dstcglobe.jpg" targetFile="dstcglobe.jpg" type="copy" id="dstclogo1"/>
+            <file sourceFile="dstctext.jpg" targetFile="dstctext.jpg" type="copy" id="dstclogo2"/>
+            <file sourceFile="uqlogo.jpg" targetFile="uqlogo.jpg" type="copy" id="uqlogo"/>
+            <file sourceFile="tudlogo.gif" targetFile="tudlogo.gif" type="copy" id="tudlogo"/>
         </directory>
     </structure>
     <layout>
