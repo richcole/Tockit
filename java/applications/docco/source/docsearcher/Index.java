@@ -94,6 +94,7 @@ public class Index
                  // end for excell
                 else if (isPdf)
                 {
+                	System.err.println("\nFOUND PDF\n");
                     PdfToText pp = new PdfToText(currentFi, ds.pdfTextFile);
                     pp.parse();
                     curSummary = getDocSummary(ds.pdfTextFile, typeInt);

@@ -38,6 +38,7 @@ public class PdfToText
     public void parse()
         throws Exception
     {
+    	System.out.println("PDF parser");
         int currentArgumentIndex = 0;
         String password = "";
         String encoding = DEFAULT_ENCODING;
@@ -70,6 +71,8 @@ public class PdfToText
 
             // now get the author
             PDDocumentInformation info = metaD.getDocumentInformation();
+            
+            System.out.println("pdf file creation date: " + info.getCreationDate());
 
             // get the author
             author = info.getAuthor();
@@ -78,7 +81,9 @@ public class PdfToText
             //
             output =
                 new OutputStreamWriter(new FileOutputStream(tempFile), encoding);
+            System.out.println("writing text into temp file " + tempFile);
             stripper.writeText(document, output);
+			//stripper.writeText(document, new OutputStreamWriter(System.out));
         }
         catch (Exception eR)
         {

@@ -22,8 +22,9 @@ import handlers.QueryEventHandler;
  * $Id$
  */
 public class Docco {
-	private static final String defaultIndexName = "test";
-	private String indexLocation = DocSearch.indexDir + "/" + defaultIndexName;
+	private static final String DEFAULT_INDEX_NAME = "test";
+	
+	private String indexLocation = DocSearch.indexDir + "/" + DEFAULT_INDEX_NAME;
 	private String defaultQueryField = "body";
 	
 	
@@ -44,7 +45,7 @@ public class Docco {
 		}
 		catch (IOException e) {
 			ErrorDialog.showError(null, e, "Error", "\nPlease check if you have created an index using docsearcher.\n" + 
-							" Index name should be '" + defaultIndexName + "'");
+							" Index name should be '" + DEFAULT_INDEX_NAME + "'");
 		}
 		catch (Exception e) {
 			ErrorDialog.showError(null, e, "Error");
