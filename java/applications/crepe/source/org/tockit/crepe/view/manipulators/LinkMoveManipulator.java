@@ -31,24 +31,31 @@ public class LinkMoveManipulator extends ItemMovementManipulator {
         double xDiff = toPosition.getX() - fromPosition.getX();
         double yDiff = toPosition.getY() - fromPosition.getY();
         itemsToMove.add(linkView);
-        if( (dragEvent.getModifiers() & InputEvent.CTRL_MASK) != 0 ) {
+        if ((dragEvent.getModifiers() & InputEvent.CTRL_MASK) != 0) {
             findConnectedViewsRecursive(itemsToMove, lineViews);
-        }
-        else if( (dragEvent.getModifiers() & InputEvent.SHIFT_MASK) != 0 ) {
+        } else {
             for (Iterator iterator = lineViews.iterator(); iterator.hasNext();) {
                 LineView lineView = (LineView) iterator.next();
-                if(lineView.getConnectedLinkView() == linkView) {
+                if (lineView.getConnectedLinkView() == linkView) {
                     itemsToMove.add(lineView.getConnectedNodeView());
+                }
+            }
+            if((dragEvent.getModifiers() & InputEvent.SHIFT_MASK) == 0) {
+                for (Iterator iterator = lineViews.iterator(); iterator.hasNext();) {
+                    LineView lineView = (LineView) iterator.next();
+                    if (lineView.getConnectedLinkView() != linkView) {
+                        itemsToMove.remove(lineView.getConnectedNodeView());
+                    }
                 }
             }
         }
         for (Iterator iterator = itemsToMove.iterator(); iterator.hasNext();) {
             Object o = (Object) iterator.next();
-            if( o instanceof LinkView ) {
+            if (o instanceof LinkView) {
                 LinkView lv = (LinkView) o;
                 lv.moveBy(xDiff, yDiff);
             }
-            if( o instanceof NodeView ) {
+            if (o instanceof NodeView) {
                 NodeView nv = (NodeView) o;
                 nv.moveBy(xDiff, yDiff);
             }
@@ -60,15 +67,13 @@ public class LinkMoveManipulator extends ItemMovementManipulator {
             LineView lineView = (LineView) iterator.next();
             LinkView connectedLinkView = lineView.getConnectedLinkView();
             NodeView connectedNodeView = lineView.getConnectedNodeView();
-            if(itemsToMove.contains(connectedLinkView) &&
-               !itemsToMove.contains(connectedNodeView))
-            {
+            if (itemsToMove.contains(connectedLinkView) &&
+                    !itemsToMove.contains(connectedNodeView)) {
                 itemsToMove.add(connectedNodeView);
                 findConnectedViewsRecursive(itemsToMove, lineViews);
             }
-            if(!itemsToMove.contains(connectedLinkView) &&
-               itemsToMove.contains(connectedNodeView))
-            {
+            if (!itemsToMove.contains(connectedLinkView) &&
+                    itemsToMove.contains(connectedNodeView)) {
                 itemsToMove.add(connectedLinkView);
                 findConnectedViewsRecursive(itemsToMove, lineViews);
             }
