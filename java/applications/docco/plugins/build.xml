@@ -4,7 +4,7 @@
 	<!-- TODO have to change the way we get Docco stuff -->
 	<property name="docco.libs.dir" value="../libs"/>
 	<property name="docco.build.dir" value="../build/dev"/>
-	<property name="plugins.dist.dir" value="../pluginJars"/>
+	<property name="plugins.dist.dir" value="../pluginsDist"/>
 
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 	  <classpath>
@@ -19,6 +19,7 @@
 			</patternset>	        
         </dirset>
 	</path>	
+
 
 	<target name="cleanPlugins">
 		<delete dir="${plugins.dist.dir}"/>
@@ -49,10 +50,24 @@
 	</target>
 	
 	<target name="pluginDist">
-		<ant antfile="build.xml" target="makePluginJar"/>
-		<copy file="${param}Plugin.jar" todir="${plugins.dist.dir}"/>
+		<echo>plugin path: ${param}</echo>
+		<!-- TODO shouldn't hardcode targetos -->
+		<pathconvert targetos="windows" property="relative.plugin.path" >
+			<path >
+				<pathelement location="${param}"/>
+			</path>
+		    <map from="${basedir}/" to=""/>
+		    <map from="${basedir}\" to=""/>
+	    </pathconvert>
+		<echo>rel plugin path: ${relative.plugin.path}</echo>
+		
+		<ant antfile="${basedir}/buildPlugin.xml" dir="${param}" target="makeDist" inheritall="false">
+			<property name="plugin.name" value="${relative.plugin.path}Plugin"/>
+			<property name="docco.build.dir" value="../${docco.build.dir}"/>
+			<property name="plugins.dist.dir" value="${plugins.dist.dir}"/>
+		</ant>
 	</target>
-
+	
 	<target name="cleanPlugin">
 		<ant antfile="${basedir}/buildPlugin.xml" dir="${param}" target="clean">
 			<property name="plugin.name" value="${param}Plugin"/>

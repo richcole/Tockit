@@ -23,6 +23,7 @@
 	-->
 	<property name="plugin.name" value="MultivalentDocumentHandlerPlugin"/>
 	<property name="docco.build.dir" value="../../build/dev"/>
+	<property name="plugins.dist.dir" value="dist"/>
 
 	<!-- Shouldn't need to change anything from now on -->
 	
@@ -30,6 +31,7 @@
 	<property name="plugin.src.dir" value="source"/>
 	<property name="plugin.libs.dir" value="libs"/>
 	<property name="plugin.jar.name" value="${plugin.name}.jar"/>
+	<!--<property name="plugin.dist.dir" value="${plugins.dist.dir}/${plugin.name}"/>-->
 
     <path id="plugin.class.path">
         <pathelement path="${classpath}"/>
@@ -49,6 +51,7 @@
 
 	<target name="clean">
 		<delete dir="${plugin.build.dir}"/>
+		<delete dir="${plugin.dist.dir}"/>
 		<delete file="${plugin.jar.name}"/>
 	</target>
 
@@ -60,7 +63,18 @@
 	
 	<target name="makeJar" depends="prepare,compile">
 		<jar jarfile="${plugin.jar.name}" basedir="${plugin.build.dir}" />
-		<mapper type="flatten"/>
+		<!--<mapper type="flatten"/>-->
+	</target>
+
+	<target name="makeDist" depends="prepare,compile,makeJar">	
+		<echo>plugins dist dir: ${plugins.dist.dir}</echo>
+		<mkdir dir="${plugins.dist.dir}"/>
+		<copy todir="${plugins.dist.dir}/libs" includeEmptyDirs="no">
+			<fileset dir="${basedir}/libs">
+		        <include name="**"/>
+            </fileset>
+		</copy>
+		<copy file="${plugin.jar.name}" todir="${plugin.dist.dir}"/>
 	</target>
 
 </project>

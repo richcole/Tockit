@@ -140,7 +140,10 @@
 	</target>
 
 	<target name="makePluginJars" depends="compileRelease">
-		<ant antfile="build.xml" dir="plugins" target="makeJars"/>
+		<ant antfile="build.xml" dir="plugins" target="makeJars">
+			<property name="docco.build.dir" value="${build.release.dir}"/>
+			<property name="plugins.dist.dir" value="${build.release.dir}/plugins"/>
+		</ant>
 	</target>
 	
 </project>
