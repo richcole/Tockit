@@ -13,6 +13,7 @@
 	<!-- all libs in alphabetical order -->
     <target name="canvas" depends="events, swing">
     	<ant antfile="build.xml" dir="canvas"/>
+    	<ant antfile="build.xml" dir="canvas/plugins"/>
     </target>
 
     <target name="cernatoXML" depends="fca">
