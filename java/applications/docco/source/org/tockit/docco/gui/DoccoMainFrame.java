@@ -33,11 +33,16 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -99,8 +104,8 @@ public class DoccoMainFrame extends JFrame {
     private JTree hitList;
     private JTextField queryField = new JTextField(20);
 	private JButton searchButton = new JButton("Submit");
-	private JCheckBox showPhantomNodesCheckBox = new JCheckBox("Show phantom nodes");
-	private JCheckBox showContingentOnlyCheckBox = new JCheckBox("Show matches only once");
+	private JCheckBoxMenuItem showPhantomNodesCheckBox;
+	private JCheckBoxMenuItem showContingentOnlyCheckBox;
 
 	private DiagramView diagramView;
 	
@@ -446,6 +451,13 @@ public class DoccoMainFrame extends JFrame {
 		this.eventBroker.subscribe(new QueryFinishedEventHandler(), 
 									QueryFinishedEvent.class, 
 									QueryWithResultSet.class);
+									
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.add(createFileMenu());
+		menuBar.add(createViewMenu());
+		menuBar.add(Box.createHorizontalGlue());
+		menuBar.add(createHelpMenu());
+		this.setJMenuBar(menuBar);
 		
 		JComponent queryViewComponent = buildQueryViewComponent();
 		queryViewComponent.setBorder(BorderFactory.createRaisedBevelBorder());
@@ -469,9 +481,83 @@ public class DoccoMainFrame extends JFrame {
 			}
 		});
 	}
+
+    private JMenu createHelpMenu() {
+		JMenu helpMenu = new JMenu("Help");
+		
+		final DoccoMainFrame outerThis = this;
+        
+		JMenuItem howtoItem = new JMenuItem("How to use Docco...");
+		howtoItem.setMnemonic('h');
+		howtoItem.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(outerThis, "Not yet implemented");
+			}
+		});
+		helpMenu.add(howtoItem);
+
+		JMenuItem aboutItem = new JMenuItem("About Docco...");
+		aboutItem.setMnemonic('a');
+		aboutItem.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(outerThis, "Not yet implemented");
+			}
+		});
+		helpMenu.add(aboutItem);
+
+		return helpMenu;
+    }
+
+    private JMenu createViewMenu() {
+        JMenu viewMenu = new JMenu("View");
+        viewMenu.setMnemonic('v');
+        
+        this.showPhantomNodesCheckBox = new JCheckBoxMenuItem("Show phantom nodes");
+        this.showPhantomNodesCheckBox.setMnemonic('p');
+        this.showPhantomNodesCheckBox.setSelected(true);
+        this.showPhantomNodesCheckBox.addActionListener(new ActionListener(){
+        	public void actionPerformed(ActionEvent e) {
+        		/// @todo this is a bit brute force and will be confusing if the text field has changed since
+        		/// the last query
+        		doQuery();
+        	}
+        });
+        viewMenu.add(this.showPhantomNodesCheckBox);
+        
+        this.showContingentOnlyCheckBox = new JCheckBoxMenuItem("Show matches only once");
+        this.showContingentOnlyCheckBox.setMnemonic('o');
+        this.showContingentOnlyCheckBox.addActionListener(new ActionListener(){
+        	public void actionPerformed(ActionEvent e) {
+        		if(showContingentOnlyCheckBox.isSelected()) {
+        			diagramView.setDisplayType(ConceptInterpretationContext.CONTINGENT);
+        		} else {
+        			diagramView.setDisplayType(ConceptInterpretationContext.EXTENT);
+        		}
+        		fillTreeList();
+        	}
+        });
+        viewMenu.add(this.showContingentOnlyCheckBox);
+        return viewMenu;
+    }
+
+    private JMenu createFileMenu() {
+        JMenu fileMenu = new JMenu("File");
+        fileMenu.setMnemonic('f');
+        
+        JMenuItem exitItem = new JMenuItem("Exit");
+        exitItem.setMnemonic('x');
+        exitItem.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e) {
+            	System.exit(0);
+            }
+        });
+                
+        fileMenu.add(exitItem);
+        return fileMenu;
+    }
 	
 	private JComponent buildQueryViewComponent() {
-		JPanel queryPanel = new JPanel(new FlowLayout());
+		JPanel queryPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
 		/**
 		 * @todo check if this could be done more elegant, e.g. by listening to properties
@@ -493,29 +579,16 @@ public class DoccoMainFrame extends JFrame {
 		});
 
 		setSearchEnabledStatus();		
+
 		this.searchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				doQuery();
 			}
 		});
 		
-		this.showPhantomNodesCheckBox.setSelected(true);
-		this.showContingentOnlyCheckBox.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e) {
-				if(showContingentOnlyCheckBox.isSelected()) {
-					diagramView.setDisplayType(ConceptInterpretationContext.CONTINGENT);
-				} else {
-					diagramView.setDisplayType(ConceptInterpretationContext.EXTENT);
-				}
-				fillTreeList();
-			}
-		});
-		
 		queryPanel.add(new JLabel("Search:"));
 		queryPanel.add(this.queryField);
 		queryPanel.add(this.searchButton);
-		queryPanel.add(this.showPhantomNodesCheckBox);
-		queryPanel.add(this.showContingentOnlyCheckBox);
 		return queryPanel;
 	}
 	
