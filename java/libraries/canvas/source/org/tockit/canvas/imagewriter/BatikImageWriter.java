@@ -22,8 +22,6 @@ import org.tockit.canvas.Canvas;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * Saves a Canvas as SVG graphic.
@@ -95,28 +93,7 @@ public class BatikImageWriter implements ImageWriter {
 		
         // Create an instance of the SVG Generator
         SVGGraphics2D svgGenerator = new SVGGraphics2D(document);
-        	
-		Element svgRoot = svgGenerator.getRoot();
-		//Get title and desc and insert into the svg document
-		String title = metadata.getProperty("title");
-		String description= metadata.getProperty("description");
-		if( title != null && description!= null ) {
-			Element titleElement = document.createElement("title");
-			Element descElement = document.createElement("desc");
-			titleElement.appendChild(document.createTextNode(title));
-			descElement.appendChild(document.createTextNode(description));
-			// Append title and description element to the existing document	 
-			svgRoot.appendChild(titleElement);
-			svgRoot.appendChild(descElement);
-			
-			// To remove the empty <g/> tag at the top level
-			NodeList nl = svgRoot.getElementsByTagName("g");
-			if(nl.getLength()!=0){
-				Node topLvl = nl.item(0);
-				svgRoot.removeChild(topLvl);
-			}	
-		}
-
+		
         svgGenerator.setSVGCanvasSize(new Dimension(settings.getImageWidth(), settings.getImageHeight()));
         Rectangle2D bounds = new Rectangle2D.Double(
                 0, 0, settings.getImageWidth(), settings.getImageHeight());
@@ -128,11 +105,20 @@ public class BatikImageWriter implements ImageWriter {
 
         // render the graphic into the DOM
         canvas.paintCanvas(svgGenerator);
-
-		// get the image codes and put them at the back of the xml file
-		// so that the title and desc tags will appear above the image codes
-		Element topLevelGrp = svgGenerator.getTopLevelGroup();
-		svgRoot.appendChild(topLevelGrp);
+	
+		Element svgRoot = svgGenerator.getRoot();
+		//Get title and desc and insert into the svg document
+			String title = metadata.getProperty("title");
+			String description= metadata.getProperty("description");
+			if( title != null && description!= null ) {
+				Element titleElement = document.createElement("title");
+				Element descElement = document.createElement("desc");
+				titleElement.appendChild(document.createTextNode(title));
+				descElement.appendChild(document.createTextNode(description));
+				// Insert the title and description element to top of the existing document	 
+				svgRoot.insertBefore(descElement,svgRoot.getFirstChild());
+				svgRoot.insertBefore(titleElement,svgRoot.getFirstChild());
+			}
 		
         // Finally, stream out SVG to the standard output using UTF-8
         // character to byte encoding
@@ -141,7 +127,7 @@ public class BatikImageWriter implements ImageWriter {
             FileOutputStream outStream = new FileOutputStream(outputFile);
             Writer out = new OutputStreamWriter(outStream, "UTF-8");
 			svgGenerator.stream(svgRoot, out, useCSS);
-            outStream.close();
+		    outStream.close();
         } catch (Exception e) {
             throw new ImageGenerationException("Error while generating '" +
                     outputFile.getPath() + "' - writing SVG error: " + e.getMessage(), e);
