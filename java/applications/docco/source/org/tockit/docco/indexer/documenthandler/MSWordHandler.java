@@ -72,24 +72,10 @@ public class MSWordHandler implements DocumentHandler {
 	}
 	
 	private DocumentContent getDocumentContent(File file) throws IOException, DocumentHandlerException {
-		try {
-			WordDocument wordDoc = new WordDocument(file.getAbsolutePath());
-			Writer docTextWriter = new StringWriter();
-			wordDoc.writeAllText(docTextWriter);
-			return new DocumentContent(docTextWriter.toString());
-		}
-		catch (ArrayIndexOutOfBoundsException e) {
-			throw new DocumentHandlerException("ArrayIndexOutOfBoundsException", e);
-		}
-		catch (IndexOutOfBoundsException e) {
-			throw new DocumentHandlerException("ArrayIndexOutOfBoundsException", e);
-		}
-		catch (NegativeArraySizeException e) {
-			throw new DocumentHandlerException("IndexOutOfBoundsException",e);
-		}
-		catch (NullPointerException e) {
-			throw new DocumentHandlerException("NullPointerException", e);
-		}
+		WordDocument wordDoc = new WordDocument(file.getAbsolutePath());
+		Writer docTextWriter = new StringWriter();
+		wordDoc.writeAllText(docTextWriter);
+		return new DocumentContent(docTextWriter.toString());
 	}
 
 	private List getAuthors(SummaryInformation info) {
