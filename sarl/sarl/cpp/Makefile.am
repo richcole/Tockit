@@ -31,36 +31,35 @@ sarlplusinclude_HEADERS = \
 	RelationIterator.h \
 	Lattice.h \
 	LatticeIterator.h 
-
-#
-# Sources and headers not to be installed
-#
-libsarlplus_la_SOURCES = \
 	AdditiveLayout.h \
 	ConceptIterator.h \
 	Config.h \
-	Context.cpp \
 	Context.h \
-	ContextIterator.cpp \
-	ContextIterator.h \
-	ContextReader.h \
-	depend.mak \
 	Dictionary.h \
 	Index.h \
 	InputFileStream.h \
 	InputStream.h \
-	Lattice.cpp \
-	LatticeIterator.cpp \
 	Map.h \
 	OutputStream.h \
 	Pair.h \
-	RefCount.cpp \
+	ContextReader.h \
+	ContextIterator.h \
 	RefCount.h \
+	String.h
+#
+# Sources and headers not to be installed
+#
+libsarlplus_la_SOURCES = \
+	Context.cpp \
+	ContextIterator.cpp \
+	Lattice.cpp \
+	LatticeIterator.cpp \
+	RefCount.cpp \
 	Relation.cpp \
 	RelationIterator.cpp \
 	Set.cpp \
-	SetIterator.cpp \
-	String.h
+	SetIterator.cpp 
+
 
 libsarlplus_la_LDFLAGS = @VERSION_INFO_PLUSPLUS@
 
