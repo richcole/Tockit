@@ -36,6 +36,6 @@
     </target>
 
     <target name="jar" depends="compile">
-        <jar jarfile="${jar.file}" basedir="${build.dir}"/>
+        <jar jarfile="${jar.file}" basedir="${build.dir}" excludes="**/tests/*.class"/>
     </target>
 </project>

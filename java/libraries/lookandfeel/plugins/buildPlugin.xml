@@ -110,7 +110,7 @@
 		<property name="plugin.versioned.dist.dir.name" value="${plugin.dist.dir.name}-${plugin.version.name}"/>
 		<property name="plugin.full.dist.dir" value="${plugin.dist.dir}/${plugin.versioned.dist.dir.name}"/>
 		<mkdir dir="${plugin.full.dist.dir}"/>
-		<jar jarfile="${plugin.full.dist.dir}/${plugin.jar.name}" basedir="${plugin.build.dir}" />
+		<jar jarfile="${plugin.full.dist.dir}/${plugin.jar.name}" basedir="${plugin.build.dir}" excludes="**/tests/*.class"/>
 		<copy todir="${plugin.full.dist.dir}" includeEmptyDirs="no">
 			<fileset dir="${basedir}">
 		        <include name="libs/**"/>
