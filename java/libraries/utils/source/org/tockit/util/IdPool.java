@@ -20,9 +20,18 @@ public class IdPool {
         do {
             retVal = String.valueOf(nextNumber);
             nextNumber++;
-        } while (idIsReserved(retVal));
+        } while (idReserved(retVal));
         reserveId(retVal);
         return retVal;
+    }
+    
+    public String getFreeId(String preferredId) {
+    	if ( idReserved(preferredId)) {
+    		return getFreeId();
+    	} else {
+    		reserveId(preferredId);
+    		return preferredId;
+    	}
     }
 
     public void releaseId(String id) {
@@ -30,13 +39,23 @@ public class IdPool {
     }
 
     public void reserveId(String id) throws IllegalArgumentException {
-        if (idIsReserved(id)) {
+        if (idReserved(id)) {
         	throw new IllegalArgumentException("Id " + id + " is already reserved");
         }
         this.allocatedIds.add(id);
     }
     
+    /**
+     * @deprecated use idReserved(String) instead
+     * @param id
+     * @return
+     */
     public boolean idIsReserved (String id) {
+    	return this.idReserved(id);
+    }
+
+    public boolean idReserved (String id) {
     	return this.allocatedIds.contains(id);
     }
+    
 }
