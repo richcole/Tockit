@@ -8,7 +8,7 @@ struct Sarl_String;
 
 /* return zero on error */
 extern int 
-  sarl_input_stream_get_line(Sarl_InputStream* input, Sarl_String *s);
+  sarl_input_stream_read_line(Sarl_InputStream* input, Sarl_String *s);
 
 extern struct Sarl_InputStream* 
   sarl_input_stream_create_from_file(FILE *file);

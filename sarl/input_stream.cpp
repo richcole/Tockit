@@ -17,7 +17,7 @@ struct Sarl_InputStream : Sarl_Iterator
 using namespace std;
 
 int 
-sarl_input_stream_get_line(Sarl_InputStream* input, Sarl_String *s)
+sarl_input_stream_read_line(Sarl_InputStream* input, Sarl_String *s)
 {
   static char buf[4096];
   

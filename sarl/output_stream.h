@@ -3,7 +3,7 @@
 
 struct Sarl_OutputStream;
 
-int sarl_output_stream_get_line(
+int sarl_output_stream_write_line(
   Sarl_OutputStream* output, Sarl_String *s);
 
 Sarl_OutputStream* 
@@ -13,7 +13,8 @@ Sarl_OutputStream*
   sarl_output_stream_create_from_file_name(Sarl_String *file_name);
 
 Sarl_OutputStream*
-  sarl_output_stream_create_from_string(Sarl_String *s)
+  sarl_output_stream_create_from_string(Sarl_String *s);
+
 
 
 #endif

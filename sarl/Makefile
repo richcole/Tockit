@@ -32,7 +32,8 @@ OBJECTS = \
   dictionary \
   plain_dictionary \
   dictionary_indexes_set_iterator \
-  input_stream
+  input_stream 
+#  read_cxt_context
 
 TESTS = \
   test_set \
