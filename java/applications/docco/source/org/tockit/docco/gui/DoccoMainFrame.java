@@ -19,10 +19,15 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.Point2D;
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -40,6 +45,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultTreeSelectionModel;
+import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -70,6 +76,7 @@ import org.tockit.events.EventBroker;
 import org.tockit.events.EventBrokerListener;
 
 
+import org.tockit.docco.GlobalConstants;
 import org.tockit.docco.events.QueryEvent;
 import org.tockit.docco.events.QueryFinishedEvent;
 import org.tockit.docco.query.HitReference;
@@ -289,15 +296,73 @@ public class DoccoMainFrame extends JFrame {
 			Concept concept = node.getConcept();
 			diagramView.setSelectedConcepts(new Concept[]{concept});
 			
-			DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
-			Iterator extentIterator = concept.getExtentIterator();
-			int i = 0;
-			while (extentIterator.hasNext()) {
-				HitReference cur = (HitReference) extentIterator.next();
-				root.add(new DefaultMutableTreeNode(cur));
+			fillTreeList(concept);
+		}
+	}
+
+	private void fillTreeList(Concept concept) {
+		Map pathToNodeMap = new Hashtable();
+		DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("root");
+		pathToNodeMap.put("",rootNode);
+		
+		String separator = File.separator;
+		
+		Iterator extentIterator = concept.getExtentIterator();
+		int i = 0;
+		while (extentIterator.hasNext()) {
+			HitReference reference = (HitReference) extentIterator.next();
+			String path = reference.getDocument().get(GlobalConstants.FIELD_DOC_PATH);
+			StringTokenizer tokenizer = new StringTokenizer(path, separator);
+			StringBuffer curPath = new StringBuffer();
+			DefaultMutableTreeNode lastNode = rootNode;
+			while(tokenizer.hasMoreTokens()) {
+				String currentToken = tokenizer.nextToken();
+				curPath.append(currentToken);
+				if(tokenizer.hasMoreTokens()) {
+					curPath.append(separator);
+					DefaultMutableTreeNode curNode = (DefaultMutableTreeNode) pathToNodeMap.get(curPath.toString());
+					if(curNode == null) {
+						curNode = new DefaultMutableTreeNode(curPath.toString());
+						lastNode.add(curNode);
+						pathToNodeMap.put(curPath.toString(), curNode);
+					}
+					lastNode = curNode;
+				} else {
+					DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(reference);
+					lastNode.add(newNode);
+				}
 			}
+		}
+		
+		flattenResults(rootNode);
 			
-			hitList.setModel(new DefaultTreeModel(root));
+		this.hitList.setModel(new DefaultTreeModel(rootNode));
+	}
+
+	private void flattenResults(DefaultMutableTreeNode treeNode) {
+		Enumeration children;
+		boolean done; 
+		do {
+			children = treeNode.children();
+			if(!children.hasMoreElements()) { // leaf
+				return; 
+			}
+			DefaultMutableTreeNode firstChild = (DefaultMutableTreeNode) children.nextElement();
+			done = true;
+			if(!children.hasMoreElements()) { // single child
+				treeNode.setUserObject(firstChild.getUserObject());
+				treeNode.remove(firstChild);
+				Enumeration grandchildren = firstChild.children();
+				while (grandchildren.hasMoreElements()) {
+					MutableTreeNode grandchild = (MutableTreeNode) grandchildren.nextElement();
+					treeNode.add(grandchild);
+				}
+				done = false;
+			}
+		} while(!done);
+		children = treeNode.children();
+		while(children.hasMoreElements()) {
+			flattenResults((DefaultMutableTreeNode) children.nextElement());
 		}
 	}
 
@@ -439,6 +504,10 @@ public class DoccoMainFrame extends JFrame {
 		this.hitList.addTreeSelectionListener(new TreeSelectionListener() {
 			public void valueChanged(TreeSelectionEvent e) {
 				TreePath path = hitList.getSelectionPath();
+				if(path == null) {
+					documentDisplayPane.clearDisplay();
+					return;
+				}
 				DefaultMutableTreeNode lastNode = (DefaultMutableTreeNode) path.getLastPathComponent();
 				Object lastObject = lastNode.getUserObject();
 				if(lastObject instanceof HitReference) {
