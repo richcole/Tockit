@@ -21,8 +21,7 @@ import java.util.Iterator;
  *
  * The contingents are usually used for labelling the diagram.
  */
-interface Concept
-{
+public interface Concept {
     /**
      * Returns true if the concept is realised in the current context, false if
      * it is only in the data model but not supported by the current data.
@@ -80,4 +79,13 @@ interface Concept
      * implementation suited for displaying the objects.
      */
     Iterator getObjectContingentIterator();
+
+    /**
+     * Creates the direct product of two concepts.
+     *
+     * This is the concept in the direct product of the two lattices of the
+     * input concepts which is created by the union of the intents and the
+     * join on the extents.
+     */
+    Concept directProduct(Concept other);
 }
