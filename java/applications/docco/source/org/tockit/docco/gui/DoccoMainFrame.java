@@ -86,7 +86,16 @@ public class DoccoMainFrame extends JFrame {
 	
 	int width = 900;
 	int height = 700;
-	
+
+	/**
+	 * @todo the code in here implements a more general notion of creating a lattice
+	 * diagramm from a set of attribute/set pairs. This is not specific to Docco and
+	 * could be reused. In math terms it models the mapping:
+	 * 
+	 *   { (m, m') | m \in M } --> B(G,M,I) with 
+	 *                                G = \bigcup_{m \in M} m'
+	 *                                I = { (g,m) | g \in m' }
+	 */	
 	private class QueryFinishedEventHandler implements EventBrokerListener {
 		public void processEvent(Event event) {
 			QueryWithResultSet queryResultSet = (QueryWithResultSet) event.getSubject();
