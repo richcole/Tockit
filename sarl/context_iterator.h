@@ -5,24 +5,26 @@
 #include <sarl/pair.h>
 
 extern struct Sarl_ContextIterator *
-  sarl_context_iterator_create
-(
-  struct Sarl_Context*
+  sarl_context_iterator_create(
+    struct Sarl_Context*
+  );
+
+extern struct Sarl_ContextIterator *
+  sarl_context_iterator_copy(
+    struct Sarl_ContextIterator*
 );
 
 extern struct Sarl_ContextIterator *
-  sarl_context_iterator_create_from_relation
-(
-  struct Sarl_RelationIterator*
+  sarl_context_iterator_create_from_relation(
+    struct Sarl_RelationIterator*
 );
 
 extern struct Sarl_ContextIterator *
-  sarl_context_iterator_copy
-(
-  struct Sarl_SetIterator*      G_it,
-  struct Sarl_SetIterator*      M_it,
-  struct Sarl_RelationIterator* I_it
-);
+  sarl_context_iterator_create_from_gmi(
+    struct Sarl_SetIterator*      G_it,
+    struct Sarl_SetIterator*      M_it,
+    struct Sarl_RelationIterator* I_it
+  );
 
 extern struct Sarl_ContextIterator *
   sarl_context_iterator_obtain_ownership(
@@ -33,14 +35,6 @@ extern struct Sarl_ContextIterator *
   sarl_context_iterator_release_ownership(
     struct Sarl_ContextIterator* it
   );
-
-extern struct Sarl_ContextIterator *
-  sarl_context_iterator_copy
-(
-  struct Sarl_SetIterator*      G_it,
-  struct Sarl_SetIterator*      M_it,
-  struct Sarl_RelationIterator* I_it
-);
 
 extern struct Sarl_SetIterator *
   sarl_context_iterator_objects(

@@ -13,42 +13,12 @@ extern "C" {
 #include <sarl/lattice_iterator_impl.h>
 #include <sarl/test.h>
 
-struct Sarl_LatticeIterator *
-  sarl_lattice_iterator_create(
-    struct Sarl_ContextIterator *context)
-{
-  struct Sarl_LatticeIterator *result = new Sarl_LatticeIterator;
-  sarl_lattice_iterator_init(result);
-  
-  result->context = sarl_context_iterator_obtain_ownership(context);
-  result->A = 0;
-  result->B = 0;
-  
-  sarl_lattice_iterator_reset(result);
-  return result;
-};
-
-
 void 
   sarl_lattice_iterator_reset(
     struct Sarl_LatticeIterator *it
   )
 {
-  struct Sarl_SetIterator* A;
-  struct Sarl_SetIterator* B;
-
-  if ( it->A != 0 ) {
-    sarl_set_iterator_decr_ref(it->A);
-    A = 0;
-  };
-  
-  if ( it->B != 0 ) {
-    sarl_set_iterator_decr_ref(it->B);
-    B = 0;
-  };
-
-  it->B = sarl_context_iterator_attributes(it->context);
-  it->A = sarl_context_iterator_extent_set(it->context, it->B);
+  it->funcs->reset(it);
 };
 
 
@@ -57,31 +27,14 @@ void
      struct Sarl_LatticeIterator *it
   )
 {
-  struct Sarl_SetIterator* next_A;
-  struct Sarl_SetIterator* next_B;
-  
-  sarl_set_iterator_release_ownership(it->A);
-  next_A = sarl_context_iterator_next_extent(it->context, it->A);
-
-  if ( next_A != 0 ) {
-    next_B = sarl_context_iterator_intent_set(it->context, next_A);
-  }
-  else {
-    next_A = next_B = 0;
-  }
-
-  sarl_set_iterator_decr_ref(it->A);
-  sarl_set_iterator_decr_ref(it->B);
-  
-  it->A = next_A;
-  it->B = next_B;
+  it->funcs->next(it);
 };
 
 int  
   sarl_lattice_iterator_at_end(
     struct Sarl_LatticeIterator *it)
 {
-  return it->A == 0;
+  return it->funcs->at_end(it);
 };
 
 void 
@@ -90,31 +43,7 @@ void
      struct Sarl_ConceptIterator *c
   )
 {
-  struct Sarl_SetIterator* A      = sarl_concept_iterator_extent(c);
-  struct Sarl_SetIterator* next_A = sarl_concept_iterator_extent(c);
-  struct Sarl_SetIterator* next_B = sarl_concept_iterator_extent(c);
-
-  sarl_set_iterator_release_ownership(A);
-  if ( sarl_set_iterator_lexical_compare(A, it->A) > 0 ) {
-
-    sarl_set_iterator_reset(A);
-    next_A = sarl_context_iterator_next_extent(it->context, A);
-
-    if ( next_A != 0 ) {
-      next_B = sarl_context_iterator_intent_set(it->context, next_A);
-    }
-    else {
-      next_A = next_B = 0;
-    }
-
-    sarl_set_iterator_release_ownership(it->A);
-    sarl_set_iterator_release_ownership(it->B);
-    sarl_set_iterator_decr_ref(it->A);
-    sarl_set_iterator_decr_ref(it->B);
-  
-    it->A = next_A;
-    it->B = next_B;
-  }
+  it->funcs->next_gte(it, c);
 };
 
 
@@ -132,7 +61,7 @@ struct Sarl_LatticeIterator *
     struct Sarl_LatticeIterator *it,
     struct Sarl_SetIterator *A)
 {
-  SARL_NOT_IMPLEMENTED;
+  it->funcs->filter_from_extent(it, A);
 };
 
 struct Sarl_LatticeIterator *
@@ -141,6 +70,7 @@ struct Sarl_LatticeIterator *
     struct Sarl_ConceptIterator *c)
 {
   SARL_NOT_IMPLEMENTED;
+  //  it->funcs->filter(it, c);
 };
 
 
@@ -149,13 +79,15 @@ struct Sarl_LatticeIterator *
     struct Sarl_LatticeIterator *it,
     struct Sarl_LatticeIterator *c)
 {
+  SARL_NOT_IMPLEMENTED;
+  //  it->funcs->ideal(it, c);
 };
 
 struct Sarl_SetIterator *
   sarl_lattice_iterator_extent(
     struct Sarl_LatticeIterator *it)
 {
-  return sarl_set_iterator_copy(it->A);
+  return it->funcs->extent(it);
 };
 
 struct Sarl_SetIterator *
@@ -163,7 +95,7 @@ struct Sarl_SetIterator *
     struct Sarl_LatticeIterator *it
   )
 {
-  return sarl_set_iterator_copy(it->B);
+  return it->funcs->intent(it);
 };
 
 struct Sarl_ConceptIterator *
@@ -171,7 +103,7 @@ struct Sarl_ConceptIterator *
     struct Sarl_LatticeIterator *it
   )
 {
-  return sarl_concept_iterator_create(it->A, it->B);
+  return it->funcs->value(it);
 };
 
 void
@@ -179,19 +111,7 @@ void
     struct Sarl_LatticeIterator *it
   )
 {
-  if ( sarl_ref_count_decr(&it->ref_count) ) {
-    if (it->A) {
-      sarl_set_iterator_release_ownership(it->A);
-      sarl_set_iterator_decr_ref(it->A);
-    }
-    if (it->B) {
-      sarl_set_iterator_release_ownership(it->B);
-      sarl_set_iterator_decr_ref(it->B);
-    }
-    sarl_context_iterator_release_ownership(it->context);
-    sarl_context_iterator_decr_ref(it->context);
-    delete it;
-  }
+  return it->funcs->decr_ref(it);
 };
 
 
@@ -201,6 +121,14 @@ void
   )
 {
   sarl_iterator_incr_ref(it);
+};
+
+struct Sarl_LatticeIterator*
+  sarl_lattice_iterator_copy(
+    struct Sarl_LatticeIterator *it
+  )
+{
+  return it->funcs->copy(it);
 };
 
 

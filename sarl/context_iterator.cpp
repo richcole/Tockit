@@ -48,32 +48,32 @@ struct Sarl_ContextIterator *
 
 struct Sarl_ContextIterator *
   sarl_context_iterator_copy(
-		struct Sarl_ContextIterator* a_context)
+    struct Sarl_ContextIterator* a_context)
 {
-	Sarl_ContextIterator* p_it = new Sarl_ContextIterator();
-	sarl_context_iterator_init(p_it);
+  Sarl_ContextIterator* p_it = new Sarl_ContextIterator();
+  sarl_context_iterator_init(p_it);
+  
+  p_it->G = sarl_set_iterator_copy(a_context->G);
+  p_it->M = sarl_set_iterator_copy(a_context->M);
+  p_it->I = sarl_relation_iterator_copy(a_context->I);
 
-	p_it->G = sarl_set_iterator_copy(a_context->G);
-	p_it->M = sarl_set_iterator_copy(a_context->M);
-	p_it->I = sarl_relation_iterator_copy(a_context->I);
-
-	return p_it;
+  return p_it;
 }
 
 struct Sarl_ContextIterator *
   sarl_context_iterator_copy_iterators(
-		struct Sarl_SetIterator*      a_G,
-		struct Sarl_SetIterator*      a_M,
-		struct Sarl_RelationIterator* a_I)
+    struct Sarl_SetIterator*      a_G,
+    struct Sarl_SetIterator*      a_M,
+    struct Sarl_RelationIterator* a_I)
 {
-	Sarl_ContextIterator* p_it = new Sarl_ContextIterator();
-	sarl_context_iterator_init(p_it);
-
-	p_it->G = sarl_set_iterator_copy(a_G);
-	p_it->M = sarl_set_iterator_copy(a_M);
-	p_it->I = sarl_relation_iterator_copy(a_I);
-
-	return p_it;
+  Sarl_ContextIterator* p_it = new Sarl_ContextIterator();
+  sarl_context_iterator_init(p_it);
+  
+  p_it->G = sarl_set_iterator_copy(a_G);
+  p_it->M = sarl_set_iterator_copy(a_M);
+  p_it->I = sarl_relation_iterator_copy(a_I);
+  
+  return p_it;
 };
 
 void

@@ -2,7 +2,7 @@ CCC = g++
 
 CPP_FLAGS = -DSARL_NATIVE
 OBJECTS = Set SetIterator Relation RelationIterator RefCount
-TEST = test_intersection test_relation test_relation_join
+TEST = test_intersection test_relation test_relation_join test_context
 
 SARL_LIB_DIR   = ../lib
 SARL_LIB_DIR_D = ../lib_d

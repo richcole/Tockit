@@ -9,9 +9,15 @@ extern "C" {
 #include <sarl/cpp/SetIterator.h>
 #include <sarl/cpp/Relation.h>
 
+class ContextIterator;
+class SetIterator;
+
 class RelationIterator {
 
- public:
+  friend class ContextIterator;
+  friend class SetIterator;
+
+public:
   RelationIterator(Relation const& relation) {
     mp_itRef = sarl_relation_iterator_create(relation.mp_relationRef);
   };

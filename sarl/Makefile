@@ -21,7 +21,10 @@ OBJECTS = \
   context_complement_relation_iterator \
   lectic \
   concept_iterator \
-  lattice_iterator
+  lattice_iterator \
+  plain_lattice_iterator \
+  filter_lattice_iterator \
+  string
 
 TESTS = \
   test_set \
@@ -57,7 +60,7 @@ CLASSES = \
 PYTHON_SARL_LIB =  python/_sarl.so
 JAVA_SARL_LIB   =  java/libsarl_java.so
 
-export LD_LIBRARY_PATH += $(SARL_ROOT)/lib_d
+export LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):$(SARL_ROOT)/lib_d
 
 # Main.
 
@@ -73,7 +76,7 @@ test: libs base_test python_test java_test cpp_test
 
 # Base.
 
-base_test: $(TESTS) 
+base_test: libs $(TESTS) 
 
 $(TESTS) : $(TESTS:%=%.exe)
 	./$@.exe
@@ -117,6 +120,18 @@ lib_d/libsarl++.so: lib_d
 
 java/%.class: java/%.java
 	cd java; $(JAVAC) ../$<
+
+%.gxl: %
+	$(CPPX) -g "-c -I../" $<
+
+
+$(TESTS:%=%.exe) : $(@:%.exe=%.o) $(OBJECTS:%=%.o)
+	$(CCC) $(DEBUG) -I../ -o $@ -lstdc++ $(@:%.exe=%.o) $(OBJECTS:%=%.o)
+
+
+# CPPX
+
+base_gxl : headers.cpp.gxl
 
 # Python.
 

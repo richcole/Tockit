@@ -7,13 +7,21 @@ extern "C" {
 
 #include <sarl/cpp/Index.h>
 
-class RelationIterator;
 class Set;
+class Relation;
+class RelationIterator;
+class ConceptIterator;
+class ContextIterator;
+class LatticeIterator;
 
 class SetIterator {
 
-  friend class RelationIterator;
   friend class Set;
+  friend class Relation;
+  friend class RelationIterator;
+  friend class ContextIterator;
+  friend class ConceptIterator;
+  friend class LatticeIterator;
 
   friend SetIterator meet(SetIterator& a_it, SetIterator& b_it);
   friend SetIterator join(SetIterator& a_it, SetIterator& b_it);

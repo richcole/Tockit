@@ -1,7 +1,7 @@
 CCC   = g++
 CC    = gcc
 JAVAC = javac
-DEBUG = -ggdb 
+DEBUG = -march=i686 -O3 -pg -ggdb # -ggdb
 
 # Sarl Root
 
@@ -28,6 +28,13 @@ SWIG_INC   = \
 
 SWIG       = \
   /usr/local/bin/swig 
+
+# CPPX
+
+CPPX       = \
+  /usr/local/cppx/bin/cppx
+
+
 
 
 

@@ -6,8 +6,8 @@
 
 extern struct Sarl_Context *sarl_context_create();
 extern struct Sarl_Context *sarl_context_copy(struct Sarl_ContextIterator *);
-extern void sarl_context_insert(struct Sarl_Context *, Sarl_Index, Sarl_Index);
-extern void sarl_context_remove(struct Sarl_Context *, Sarl_Index, Sarl_Index);
+extern void sarl_context_insert(struct Sarl_Context *, Sarl_Pair pair);
+extern void sarl_context_remove(struct Sarl_Context *, Sarl_Pair pair);
 
 extern struct Sarl_ContextIterator *sarl_context_create_from_relation(
   struct Sarl_RelationIterator *

@@ -31,6 +31,17 @@ domain_set_iterator.o: ../sarl/ref_count.h ../sarl/set_impl.h
 domain_set_iterator.o: ../sarl/domain_set_iterator_impl.h
 domain_set_iterator.o: ../sarl/set_iterator_impl.h ../sarl/iterator_impl.h
 domain_set_iterator.o: ../sarl/test.h
+filter_lattice_iterator.o: ../sarl/config.h ../sarl/concept_iterator.h
+filter_lattice_iterator.o: ../sarl/index.h ../sarl/context_iterator.h
+filter_lattice_iterator.o: ../sarl/pair.h ../sarl/lattice_iterator.h
+filter_lattice_iterator.o: ../sarl/set_iterator.h ../sarl/ref_count.h
+filter_lattice_iterator.o: ../sarl/concept_iterator_impl.h
+filter_lattice_iterator.o: ../sarl/iterator_impl.h ../sarl/test.h
+filter_lattice_iterator.o: ../sarl/lattice_iterator_impl.h
+headers.o: ../sarl/index.h ../sarl/pair.h ../sarl/set.h
+headers.o: ../sarl/set_iterator.h ../sarl/relation.h
+headers.o: ../sarl/relation_iterator.h ../sarl/concept_iterator.h
+headers.o: ../sarl/context_iterator.h ../sarl/lattice_iterator.h
 intent_set_iterator.o: ../sarl/set.h ../sarl/index.h ../sarl/set_iterator.h
 intent_set_iterator.o: ../sarl/relation_iterator.h ../sarl/pair.h
 intent_set_iterator.o: ../sarl/ref_count.h ../sarl/set_impl.h
@@ -73,6 +84,14 @@ lattice_iterator.o: ../sarl/iterator_impl.h ../sarl/test.h
 lattice_iterator.o: ../sarl/lattice_iterator_impl.h
 lectic.o: ../sarl/set.h ../sarl/index.h ../sarl/set_iterator.h
 lectic.o: ../sarl/lectic.h ../sarl/pair.h ../sarl/context_iterator.h
+plain_lattice_iterator.o: ../sarl/config.h ../sarl/concept_iterator.h
+plain_lattice_iterator.o: ../sarl/index.h ../sarl/context_iterator.h
+plain_lattice_iterator.o: ../sarl/pair.h ../sarl/lattice_iterator.h
+plain_lattice_iterator.o: ../sarl/set_iterator.h ../sarl/ref_count.h
+plain_lattice_iterator.o: ../sarl/filter_lattice_iterator.h
+plain_lattice_iterator.o: ../sarl/concept_iterator_impl.h
+plain_lattice_iterator.o: ../sarl/iterator_impl.h ../sarl/test.h
+plain_lattice_iterator.o: ../sarl/lattice_iterator_impl.h
 plain_relation_iterator.o: ../sarl/relation.h ../sarl/index.h ../sarl/pair.h
 plain_relation_iterator.o: ../sarl/relation_iterator.h ../sarl/ref_count.h
 plain_relation_iterator.o: ../sarl/relation_impl.h
