@@ -56,10 +56,12 @@ import org.tockit.events.EventBroker;
  */
 
 public class Canvas extends JPanel implements Printable {
+    private static final double DEFAULT_GRID_INCREMENT_FACTOR = 1.2;
+
     /**
      * This is the background item which is assumed to be wherever no other item is.
      */
-    private CanvasBackground background = new CanvasBackground();
+    private CanvasBackground background;
 
     /**
      * A list of all canvas layers to draw on top of the background.
@@ -108,12 +110,28 @@ public class Canvas extends JPanel implements Printable {
      * The controller caring about the event handling and callbacks.
      */
     private CanvasController controller = null;
+    
+    /**
+     * The cell width of the grid if used.
+     */
+    private double gridCellWidth;
+
+    /**
+     * The cell height of the grid if used.
+     */
+    private double gridCellHeight;
+    
+    /**
+     * Flag if the grid function is used.
+     */
+    private boolean gridEnabled;
 
     /**
      * Creates a new, empty canvas with a new controller attached to it.
      */
     public Canvas(EventBroker eventBroker) {
         this.controller = new CanvasController(this, eventBroker);
+        this.background = new CanvasBackground(this);
     }
 
     /**
@@ -463,5 +481,104 @@ public class Canvas extends JPanel implements Printable {
      */
     public boolean hasLayer(String layerName) {
     	return this.layerNameMapping.containsKey(layerName);
+    }
+    
+    /**
+     * Return the width of a single cell in the current grid.
+     * 
+     * This value is irrelevant if the grid is not enabled.
+     * 
+     * @see hasGridEnabled()
+     */
+    public double getGridCellWidth() {
+        return this.gridCellWidth;
+    }
+    
+    /**
+     * Return the height of a single cell in the current grid.
+     *
+     * This value is irrelevant if the grid is not enabled.
+     *
+     * @see hasGridEnabled()
+     */
+    public double getGridCellHeight() {
+        return this.gridCellHeight;
+    }
+    
+    /**
+     * Sets the grid used for the canvas.
+     * 
+     * This does set the size of a single grid cell and turns the grid on.
+     */
+    public void setGrid(double cellWidth, double cellHeight) {
+    	this.gridCellWidth = cellWidth;
+    	this.gridCellHeight = cellHeight;
+    	setGridEnabled(true);
+    	repaint();
+    }
+    
+    /**
+     * Turns the grid function on or off.
+     * 
+     * If the grid is turned on, it will be drawn on the background and the
+     * method getClosestPointOnGrid(Point2D) will snap the position given
+     * onto the grid.
+     */
+    public void setGridEnabled(boolean gridEnabled) {
+    	this.gridEnabled = gridEnabled;
+    	repaint();
+    }
+    
+    /**
+     * Returns true iff the grid function is enabled.
+     * 
+     * @see setGrid(double, double)
+     */
+    public boolean hasGridEnabled() {
+    	return this.gridEnabled;
+    }
+    
+    /**
+     * Returns the closest position on the current grid.
+     * 
+     * If the grid is enabled, this method will move the given point onto the
+     * grid lines. If the grid is not enabled, the original point will be
+     * returned.
+     */
+    public Point2D getClosestPointOnGrid(Point2D point) {
+    	if(this.gridEnabled == false) {
+    		return point;
+    	}
+        double x = Math.round(point.getX() / this.gridCellWidth) * this.gridCellWidth;
+        double y = Math.round(point.getY() / this.gridCellHeight) * this.gridCellHeight;
+        return new Point2D.Double(x,y);
+    }
+
+	/**
+	 * Increases the grid cell size by a fixed increment.
+	 */
+    public void increaseGridSize() {
+        increaseGridSize(DEFAULT_GRID_INCREMENT_FACTOR);
+    }
+
+    /**
+     * Increases the grid cell size by the given increment.
+     */
+    public void increaseGridSize(double incrementFactor) {
+        setGrid(this.gridCellWidth * incrementFactor, this.gridCellHeight * incrementFactor);
+    }
+
+    /**
+     * Decreases the grid cell size by a fixed decrement.
+     */
+    public void decreaseGridSize() {
+        decreaseGridSize(DEFAULT_GRID_INCREMENT_FACTOR);
+    }
+
+    /**
+     * Decreases the grid cell size by the given decrement.
+     */
+    public void decreaseGridSize(double decrementFactor) {
+        increaseGridSize(1 / decrementFactor);
     }
 }

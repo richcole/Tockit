@@ -75,6 +75,7 @@ public class CanvasController implements MouseListener, MouseMotionListener {
      * (last canvas item that has been pointed at with a mouse)
      */
     private CanvasItem pointedCanvasItem = null;
+    private Point2D lastMousePosTr;
 
     public CanvasController(Canvas canvas, EventBroker eventBroker) {
         this.canvas = canvas;
@@ -145,13 +146,22 @@ public class CanvasController implements MouseListener, MouseMotionListener {
 
     protected void dragFinished(MouseEvent e) {
         Point mousePos = e.getPoint();
-        Point2D mousePosTr = canvas.getCanvasCoordinates(mousePos);
-        Point2D lastMousePosTr = canvas.getCanvasCoordinates(lastMousePos);
+        Point2D mousePosTr = findCanvasPositionOnGrid(mousePos);
+        lastMousePosTr = findCanvasPositionOnGrid(lastMousePos);
         this.eventBroker.processEvent(new CanvasItemDroppedEvent(
                 this.selectedCanvasItem,
                 e.getModifiersEx(),
                 lastMousePosTr, lastMousePos,
                 mousePosTr, mousePos));
+    }
+
+    protected Point2D findCanvasPositionOnGrid(Point2D mousePos) {
+        Point2D mousePosTr = canvas.getCanvasCoordinates(mousePos);
+        if(canvas.hasGridEnabled()) {
+        	return canvas.getClosestPointOnGrid(mousePosTr);
+        } else {
+        	return mousePosTr;
+        }
     }
 
     public void mouseEntered(MouseEvent e) {
@@ -179,8 +189,8 @@ public class CanvasController implements MouseListener, MouseMotionListener {
         if (dragMode) {
             Point2D mousePosTr = null;
             Point2D lastMousePosTr = null;
-            mousePosTr = canvas.getCanvasCoordinates(mousePos);
-            lastMousePosTr = canvas.getCanvasCoordinates(lastMousePos);
+            mousePosTr = findCanvasPositionOnGrid(mousePos);
+            lastMousePosTr = findCanvasPositionOnGrid(lastMousePos);
             if (newDrag) {
                 this.eventBroker.processEvent(new CanvasItemPickupEvent(
                         this.selectedCanvasItem,
@@ -236,6 +246,7 @@ public class CanvasController implements MouseListener, MouseMotionListener {
                       InputEvent.ALT_GRAPH_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK;
         this.buttonOnePressed = (e.getModifiersEx() & (onMask | offMask)) == onMask;
         this.lastMousePos = screenPos;
+        this.lastMousePosTr = findCanvasPositionOnGrid(lastMousePos);
         if (e.isPopupTrigger()) {
             handlePopupRequest(e.getModifiers(), canvasPos, screenPos);
         }
