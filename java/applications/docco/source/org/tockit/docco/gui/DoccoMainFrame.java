@@ -83,7 +83,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import net.sourceforge.toscanaj.controller.cernato.NDimNodeMovementEventListener;
+import net.sourceforge.toscanaj.controller.diagram.AttributeAdditiveNodeMovementEventListener;
 import net.sourceforge.toscanaj.controller.diagram.NodeMovementEventListener;
 import net.sourceforge.toscanaj.controller.fca.ConceptInterpretationContext;
 import net.sourceforge.toscanaj.controller.fca.DiagramHistory;
@@ -96,6 +96,7 @@ import net.sourceforge.toscanaj.model.database.AggregateQuery;
 import net.sourceforge.toscanaj.model.diagram.Diagram2D;
 import net.sourceforge.toscanaj.model.diagram.DiagramNode;
 import net.sourceforge.toscanaj.model.diagram.NestedLineDiagram;
+import net.sourceforge.toscanaj.model.diagram.WriteableDiagram2D;
 import net.sourceforge.toscanaj.model.lattice.Concept;
 import net.sourceforge.toscanaj.model.lattice.ConceptImplementation;
 import net.sourceforge.toscanaj.view.diagram.DiagramView;
@@ -128,7 +129,6 @@ import org.tockit.plugin.PluginLoader;
 import org.tockit.swing.preferences.ExtendedPreferences;
 
 /**
- * @TODO manipulating a nested diagram creates exceptions
  * @TODO the results shown when selected nodes in nested diagrams are sometimes wrong (too many)
  */
 public class DoccoMainFrame extends JFrame {
@@ -1001,7 +1001,7 @@ public class DoccoMainFrame extends JFrame {
         eventBroker.subscribe(new SelectionEventHandler(),
                                     CanvasItemSelectedEvent.class,
                                     CanvasBackground.class);
-        eventBroker.subscribe(new NDimNodeMovementEventListener(), 
+        eventBroker.subscribe(new AttributeAdditiveNodeMovementEventListener(), 
                 new EventFilter[] {
                         new SubjectTypeFilter(NodeView.class),
                         new EventTypeFilter(CanvasItemDraggedEvent.class),
@@ -1115,6 +1115,10 @@ public class DoccoMainFrame extends JFrame {
             try {
                 results = this.queryEngine.executeQueryUsingDecomposer(getQueryString());
 				Diagram2D diagram = DiagramGenerator.createDiagram(results, this.showPhantomNodesCheckBox.isSelected());
+				if(diagram instanceof WriteableDiagram2D) {
+					// attach event broker so we can use DiagramChangeEvents to update nested diagrams
+					((WriteableDiagram2D)diagram).setEventBroker(new EventBroker());
+				}
 				Diagram2D oldDiagram = this.diagramView.getDiagram();
 				if(nestDiagram && oldDiagram != null) {
 					// before nesting make sure apposition is ok by synchronizing object sets to their join

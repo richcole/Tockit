@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="src" path="/ToscanaJ"/>
 	<classpathentry kind="src" path="plugins/multivalent/source"/>
 	<classpathentry kind="src" path="plugins/pdfbox/source"/>
 	<classpathentry kind="src" path="plugins/poi/source"/>
