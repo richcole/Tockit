@@ -11,22 +11,23 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.tockit.relations.model.Relation;
+import org.tockit.relations.model.Tuple;
 import org.tockit.relations.model.tests.RelationImplementationTest;
-import org.tockit.relations.operations.PickColumnsOperation;
+import org.tockit.relations.operations.DropColumnsOperation;
 import org.tockit.relations.operations.RelationOperation;
 
 
-public class PickColumnsOperationTest extends AbstractRelationOperationTest {
-    public PickColumnsOperationTest(String s) {
+public class DropColumnsOperationTest extends AbstractRelationOperationTest {
+    public DropColumnsOperationTest(String s) {
         super(s);
     }
 
 	public static Test suite() {
-		return new TestSuite(PickColumnsOperationTest.class);
+		return new TestSuite(DropColumnsOperationTest.class);
 	}
 
     protected RelationOperation getOperation() {
-        return new PickColumnsOperation(new int[]{1,2,1,2});
+        return new DropColumnsOperation(new int[]{1,3});
     }
 
     protected int getExpectedArity() {
@@ -38,12 +39,12 @@ public class PickColumnsOperationTest extends AbstractRelationOperationTest {
     	testCases.setUp();
     	
     	RelationTestSetup one = new RelationTestSetup();
-    	Relation testRelOne = RelationImplementationTest.stringRelation;
+    	Relation testRelOne = RelationImplementationTest.objectRelation;
         one.input = new Relation[]{testRelOne};
-    	one.expectedOutputArity = 4;
-    	one.expectedOutputSize = testRelOne.getSize();
-		one.expectedTuples = new Object[][]{new String[]{"6","1","6","1"}};
-		one.unexpectedTuples = new Object[][]{new String[]{"1","6","6","1"}};
+    	one.expectedOutputArity = 3; // we dropped 2 out of 5
+    	one.expectedOutputSize = 4; // 2 out of the 5 are the same after projection
+    	Tuple first = (Tuple) testRelOne.getTuples().iterator().next();
+		one.expectedTuples = new Object[][]{new Object[]{first.getElement(0), first.getElement(2), first.getElement(4)}};
     	
         return new RelationTestSetup[]{one};
     }

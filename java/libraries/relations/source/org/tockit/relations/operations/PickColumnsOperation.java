@@ -25,12 +25,19 @@ public class PickColumnsOperation extends AbstractUnaryRelationOperation {
 	private int[] columnsToPick;
 	private String name;
 	
-	public PickColumnsOperation(int[] columnsToPick) {
-		this(columnsToPick, "Permute and project");
-	}
-	
-    public PickColumnsOperation(int[] columnsToPick, String name) {
+    public PickColumnsOperation(int[] columnsToPick) {
     	this.columnsToPick = columnsToPick;
+		this.name = "Pick columns (";
+		for (int i = 0; i < columnsToPick.length; i++) {
+			if(i != 0) {
+				this.name += ",";
+			}
+			this.name += columnsToPick[i];
+		}
+		this.name += ")";
+    }
+    
+    public void setName(String name) {
     	this.name = name;
     }
 

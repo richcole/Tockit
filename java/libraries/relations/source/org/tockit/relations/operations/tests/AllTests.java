@@ -20,6 +20,7 @@ public class AllTests extends TestCase {
         TestSuite suite = new TestSuite();
 		suite.addTest(org.tockit.relations.operations.tests.IdentityOperationTest.suite());
 		suite.addTest(org.tockit.relations.operations.tests.PickColumnsOperationTest.suite());
+		suite.addTest(org.tockit.relations.operations.tests.DropColumnsOperationTest.suite());
         return suite;
     }
 }
