@@ -547,7 +547,9 @@ public class DoccoMainFrame extends JFrame {
     private void updateIndex() {
     	// first check all documents in the index if they disappeared or changed
 		Set knownDocuments;
+		Set filesToAdd = new HashSet();
     	try {
+			this.indexThread.stopIndexing();
 			IndexReader reader = IndexReader.open(this.indexLocation);
 			knownDocuments = new HashSet(reader.numDocs());
             for(int i = 0; i < reader.maxDoc(); i++) {
@@ -557,15 +559,22 @@ public class DoccoMainFrame extends JFrame {
             		knownDocuments.add(path);
             		File file = new File(path);
             		if(!file.exists()) {
-            			System.out.println("Removed: " + path);
+            			reader.delete(i);
             		} else {
             			String dateIndex = doc.get(GlobalConstants.FIELD_DOC_MODIFICATION_DATE);
             			String dateFS = DateField.dateToString(new Date(file.lastModified()));
             			if(!dateFS.equals(dateIndex)) {
-            				System.out.println("Modified: " + path);	
+            				reader.delete(i);
+            				filesToAdd.add(file);	
             			}
             		}
             	}
+            }
+            reader.close();
+            this.indexThread.startIndexing(this.indexLocation);
+            for (Iterator iter = filesToAdd.iterator(); iter.hasNext();) {
+                File file = (File) iter.next();
+                this.indexThread.enqueue(file);
             }
         } catch (IOException e) {
         	ErrorDialog.showError(this, e, "Can't access index");
