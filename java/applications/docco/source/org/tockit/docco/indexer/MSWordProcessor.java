@@ -82,6 +82,9 @@ public class MSWordProcessor implements DocumentProcessor {
 		catch (ArrayIndexOutOfBoundsException e) {
 			System.err.println("ArrayIndexOutOfBoundsException on doc " + file.getPath());
 		}
+		catch (NegativeArraySizeException e) {
+			System.err.println("NegativeArraySizeException on doc " + file.getPath());
+		}
 		/// @todo this is dodgy - we should just bail out with an exception
 		return null;
 	}
