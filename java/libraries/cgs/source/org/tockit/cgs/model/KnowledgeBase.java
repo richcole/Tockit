@@ -38,6 +38,8 @@ public class KnowledgeBase {
     public KnowledgeBase(Element element, EventBroker eventBroker) {
         this.eventBroker = eventBroker;
         this.element = element;
+        Type.setDefaultKnowledgeBase(this);
+        Relation.setDefaultKnowledgeBase(this);
 
         Iterator it = element.getChildren("conceptualGraph").iterator();
         while (it.hasNext()) {
@@ -74,8 +76,6 @@ public class KnowledgeBase {
             Element relationElem = (Element) it.next();
             new Relation(this, relationElem);
         }
-        Type.setDefaultKnowledgeBase(this);
-        Relation.setDefaultKnowledgeBase(this);
     }
 
     public void addGraph(ConceptualGraph graph, boolean addXML) {

@@ -251,19 +251,19 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
             relationHierarchyViews[i] = new JTree(
                             new DefaultTreeModel(new RelationHierachyTreeNode(Relation.getUniversal(i + 1), null)));
             relationHierarchyViews[i].setRootVisible(true);
-            tabPane.add(getArityName(i + 1), relationHierarchyViews[i]);
+            tabPane.add(getArityName(i + 1), new JScrollPane(relationHierarchyViews[i]));
             new RelationHierachyUpdateHandler(relationHierarchyViews[i], i + 1, this.eventBroker);
         }
 
         JList instanceListView = new JList();
         new InstanceListUpdateHandler(instanceListView, this.eventBroker);
 
-        rightLowerSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, tabPane, instanceListView);
+        rightLowerSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, tabPane, new JScrollPane(instanceListView));
         rightLowerSplitPane.setResizeWeight(0);
         int div = ConfigurationManager.fetchInt("CrepeMainPanel", "lowerRightDivider", 200);
         rightLowerSplitPane.setDividerLocation(div);
 
-        rightSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, typeHierarchyView, rightLowerSplitPane);
+        rightSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(typeHierarchyView), rightLowerSplitPane);
         rightSplitPane.setResizeWeight(0);
         div = ConfigurationManager.fetchInt("CrepeMainPanel", "upperRightDivider", 200);
         rightSplitPane.setDividerLocation(div);

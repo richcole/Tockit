@@ -53,6 +53,7 @@ public class Relation {
 
     public static void setDefaultKnowledgeBase(KnowledgeBase knowledgeBase) {
         defaultKB = knowledgeBase;
+        universal.clear();
     }
 
     protected Relation(KnowledgeBase knowledgeBase) {
