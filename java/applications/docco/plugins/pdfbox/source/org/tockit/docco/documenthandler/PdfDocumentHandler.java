@@ -76,9 +76,6 @@ public class PdfDocumentHandler implements DocumentHandler, Plugin {
 		if (info.getAuthor() != null) {
 			res.add(info.getAuthor());
 		}
-		if (info.getCreator() != null) {
-			res.add(info.getCreator());
-		}
 		return res;
 	}
 
