@@ -103,7 +103,7 @@ public class DocumentProcessor {
 		if (docSummary.keywords != null) {
 			for (Iterator iter = docSummary.keywords.iterator(); iter.hasNext();) {
                 String keyword = (String) iter.next();
-				doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_KEYWORDS, keyword));
+				doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_KEYWORD, keyword));
             }
 		}
 		
@@ -133,7 +133,7 @@ public class DocumentProcessor {
 						"\n\t size = " +  doc.get(GlobalConstants.FIELD_DOC_SIZE) + 
 						"\n\t author = " + doc.get(GlobalConstants.FIELD_DOC_AUTHOR) + 
 						"\n\t summary = " + doc.get(GlobalConstants.FIELD_DOC_SUMMARY)+ 
-						"\n\t keywords = " + doc.get(GlobalConstants.FIELD_DOC_KEYWORDS));
+						"\n\t keywords = " + doc.get(GlobalConstants.FIELD_DOC_KEYWORD));
 		
 	}
 
