@@ -23,6 +23,11 @@ import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
 
+/**
+ * @todo add error messages for the case that parts to be created do exist already,
+ *       e.g. two line diagrams with the same id. If an element found by a parser
+ *       is already initialized, it must be a duplicate id.
+ */
 public abstract class CSCFileSectionParser {
 	protected static final CSCFileSectionParser[] CSC_FILE_SECTIONS_PARSERS = 
 									new CSCFileSectionParser[]{
