@@ -27,6 +27,12 @@ class StringMapParser extends CSCFileSectionParser {
         String id = tokenizer.popCurrentToken();
         StringMap map = getStringMap(file, id);
         tokenizer.consumeToken("=");
+        
+        if(tokenizer.getCurrentToken().equals("REMARK")) {
+            tokenizer.consumeToken("REMARK");
+            map.setRemark(tokenizer.popCurrentToken());
+        }
+        
         while(!tokenizer.getCurrentToken().equals(";")) {
             tokenizer.consumeToken("(");
             String identifier = tokenizer.popCurrentToken();
