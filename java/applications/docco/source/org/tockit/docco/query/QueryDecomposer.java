@@ -34,7 +34,7 @@ public class QueryDecomposer {
         }
         else {
         	ArrayList result = new ArrayList();
-        	result.add(new SimpleQueryReference(query));
+        	result.add(query);
             return result;
         }
 	}	
@@ -43,13 +43,9 @@ public class QueryDecomposer {
 		ArrayList result = new ArrayList();
 		BooleanClause[] clauses = query.getClauses();
 		for (int i = 0; i < clauses.length; i++) {
-			BooleanClause clause = clauses[i];
-			if  ( (!clause.required) && (!clause.prohibited) ) {
-				result.add(new SimpleQueryReference(clause.query));	
-			}
-			else {
-				result.add(new SimpleQueryReference(clause.query, clause.required, clause.prohibited));
-			}
+			BooleanQuery newQuery = new BooleanQuery();
+			newQuery.add(clauses[i]); 
+			result.add(newQuery);	
 		}
 		return result;
 	}

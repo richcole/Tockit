@@ -45,13 +45,11 @@ public class QueryEngine {
 	
 	public QueryWithResultSet executeQueryUsingDecomposer (String queryString) throws ParseException, IOException {
 		QueryWithResultSet queryResult = new QueryWithResultSetImplementation();
-		//Set queryTermsCombinations = this.queryDecomposer.buildQueryTermsCombinations(queryString);
 		List queryTermsCombinations = this.queryDecomposer.breakQueryIntoTerms(queryString);
 		Iterator it = queryTermsCombinations.iterator();
 		while (it.hasNext()) {
-			//String cur = (String) it.next();
-			SimpleQueryReference cur = (SimpleQueryReference) it.next();
-			QueryWithResult qwr = executeQuery(cur.getQuery());
+			Query cur = (Query) it.next();
+			QueryWithResult qwr = executeQuery(cur);
 			queryResult.add(qwr);
 		}
 		return queryResult;
