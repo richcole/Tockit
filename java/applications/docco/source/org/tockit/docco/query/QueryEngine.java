@@ -41,17 +41,18 @@ public class QueryEngine {
 	public QueryWithResultSet executeQueryUsingDecomposer (String queryString) throws ParseException, IOException {
 		QueryWithResultSet queryResult = new QueryWithResultSetImplementation();
 		List queryTermsCombinations = this.queryDecomposer.breakQueryIntoTerms(queryString);
+		IndexSearcher searcher = new IndexSearcher(indexLocation);
 		Iterator it = queryTermsCombinations.iterator();
 		while (it.hasNext()) {
 			QueryDecomposer.LabeledQuery cur = (QueryDecomposer.LabeledQuery) it.next();
-			QueryWithResult qwr = executeQuery(cur.getQuery(), cur.getLabel());
+			QueryWithResult qwr = executeQuery(searcher, cur.getQuery(), cur.getLabel());
 			queryResult.add(qwr);
 		}
+		searcher.close();
 		return queryResult;
 	}
 	
-	private QueryWithResult executeQuery (Query query, String label) throws IOException {
-		IndexSearcher searcher = new IndexSearcher(indexLocation);
+	private QueryWithResult executeQuery (IndexSearcher searcher, Query query, String label) throws IOException {
 		HitReferencesSet result = new HitReferencesSetImplementation();
 		Hits hits = searcher.search(query);
 		for (int i = 0; i < hits.length(); i++) {
@@ -59,7 +60,6 @@ public class QueryEngine {
 			HitReference hitRef = new HitReference(doc, hits.score(i));
 			result.add(hitRef);
 		}
-		searcher.close();
 		return new QueryWithResult(query, result, label);
 	}
 }

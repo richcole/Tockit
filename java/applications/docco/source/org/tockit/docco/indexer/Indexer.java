@@ -88,12 +88,16 @@ public class Indexer extends Thread {
 			if(!this.fileQueue.isEmpty()) {  
 				file = (File) this.fileQueue.remove(0);
 			} else {
-				try {
-                    this.writer.optimize();
-                } catch (IOException e) {
-                	e.printStackTrace();
-                	showFeedbackMessage("ERROR: " + e.getMessage());
-                }
+				synchronized(this) {
+					if(this.writer!=null){
+						try {
+							this.writer.optimize();
+						} catch (IOException e) {
+							e.printStackTrace();
+							showFeedbackMessage("ERROR: " + e.getMessage());
+						}
+					}
+				}
 				file = null;
 			}
 			if(this.writer != null && file != null) {
