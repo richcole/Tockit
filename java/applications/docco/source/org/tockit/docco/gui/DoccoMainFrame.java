@@ -620,7 +620,7 @@ public class DoccoMainFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				for (Iterator iter = indexes.iterator(); iter.hasNext();) {
                     Index index = (Index) iter.next();
-                    index.updateIndex();
+                    updateIndex(index);
                 }
             }
 		});
@@ -699,9 +699,7 @@ public class DoccoMainFrame extends JFrame {
     }
 
     private void addIndexMenu(final JMenu fileMenu, final Index currentIndex) {
-    	final JFrame outerThis = this;
-    	
-        final JMenu currentIndexMenu = new JMenu(currentIndex.getName());
+    	final JMenu currentIndexMenu = new JMenu(currentIndex.getName());
 		final JCheckBoxMenuItem indexActiveItem = new JCheckBoxMenuItem("Active");
 		indexActiveItem.setMnemonic('a');
 		indexActiveItem.addActionListener(new ActionListener(){
@@ -717,11 +715,7 @@ public class DoccoMainFrame extends JFrame {
 		updateIndexItem.setMnemonic('u');
 		updateIndexItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				try {
-					currentIndex.updateIndex();
-				} catch (Exception ex) {
-					ErrorDialog.showError(outerThis, ex, "Error updating the index");
-				}
+				updateIndex(currentIndex);
 			}
 		});
 		updateIndexItem.setEnabled(!currentIndex.isWorking());
@@ -1200,6 +1194,27 @@ public class DoccoMainFrame extends JFrame {
                     ErrorDialog.showError(this, e, "Printing failed");
                 }
             }
+        }
+    }
+
+    private void updateIndex(final Index index) {
+        try {
+            if(index.isLocked()) {
+                int result = JOptionPane.showOptionDialog(this, 
+                        "The index is locked. This can occur if Docco was not closed properly,\n" +
+                		"or if some other program accesses the index. You can remove the lock,\n" +
+                		"but that might affect other programs you run on the same index.", 
+                		"Index '" + index.getName() + "' locked",
+                		JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null, 
+                		new String[]{"Remove lock", "Do not index"}, "Do not index");
+                if(result != 0) {
+                    return;
+                }
+                index.removeLock();
+            }
+        	index.updateIndex();
+        } catch (Exception ex) {
+        	ErrorDialog.showError(this, ex, "Error updating the index");
         }
     }
 }

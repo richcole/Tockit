@@ -18,7 +18,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.store.FSDirectory;
 import org.tockit.docco.GlobalConstants;
 import org.tockit.docco.documenthandler.DocumentHandlerRegistry;
 import org.tockit.docco.indexer.DocumentHandlerMapping;
@@ -76,13 +78,17 @@ public class Index {
 		retVal.updateIndex();
 		return retVal;
 	}
+    
+    public boolean isLocked() throws IOException {
+        return IndexReader.isLocked(getIndexLocation().getPath());
+    }
 	
 	public void updateIndex() {
 		if(this.indexThread != null && this.indexThread.isAlive()) {
-			throw new IllegalStateException("Index is already been updated.");
+			throw new IllegalStateException("Index is already being updated.");
 		}
 		this.callbackRecipient.showFeedbackMessage("Updating...");
-		this.indexThread = new Thread(this.indexer);
+        this.indexThread = new Thread(this.indexer);
         this.indexThread.setPriority(indexingPriority);
 		this.indexThread.start();
     }
@@ -106,6 +112,7 @@ public class Index {
 		this.indexLocation = new File(indexDirectory, name);
 		this.baseDirectory = baseDirectory;
         this.indexer = new Indexer(this.indexLocation, baseDirectory, documentMappings, callbackRecipient);
+        saveContentsAndMappings();
 	}
 
 	private static File getContentsFile(File indexLocation, String indexName) {
@@ -157,7 +164,11 @@ public class Index {
                 }
 			}
 		}
-		try {
+		saveContentsAndMappings();
+	}
+	
+    private void saveContentsAndMappings() {
+        try {
 			PrintStream out = new PrintStream(new FileOutputStream(getContentsFile()));
 			out.println(this.baseDirectory.getPath());
 			out.close();
@@ -172,8 +183,8 @@ public class Index {
 		} catch (IOException e) {
 			e.printStackTrace(); // nothing we could do, but throwing on shutdown is not nice either.
 		}
-	}
-	
+    }
+
     public List getDocumentMappings() {
         return this.indexer.getDocumentMappings();
     }
@@ -235,5 +246,9 @@ public class Index {
         }
 
 		this.callbackRecipient.showFeedbackMessage("Index '" + getName() + "' deleted");
+    }
+
+    public void removeLock() throws IOException {
+        IndexReader.unlock(FSDirectory.getDirectory(getIndexLocation(), false));
     }
 }
