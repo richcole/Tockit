@@ -12,7 +12,7 @@ class InputFileStream : public InputStream {
 
 public: 
 
-  inline InputFileStream(String& string);
+  inline InputFileStream(String const& string);
   inline InputFileStream(InputFileStream const& inputfilestream);
   inline InputFileStream& operator=(InputFileStream const& it);
   
@@ -25,7 +25,7 @@ public:
   };
 };
 
-inline InputFileStream::InputFileStream(String &s)
+inline InputFileStream::InputFileStream(String const& s)
     : InputStream(
         sarl_input_stream_create_from_file_name(s.mp_stringRef)
     )

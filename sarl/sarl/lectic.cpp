@@ -15,6 +15,7 @@ struct Sarl_SetIterator*
     )
 {
   Sarl_SetIterator *result;
+
   Sarl_SetIterator *rem = sarl_set_iterator_minus(G,A);
 
   if ( sarl_set_iterator_at_end(rem) ) {

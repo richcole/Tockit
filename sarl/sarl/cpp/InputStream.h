@@ -14,7 +14,7 @@ class InputStream {
 
 public: 
 
-  inline InputStream(String& string);
+  inline InputStream(String const& string);
   inline InputStream(InputStream const& inputstream);
   inline InputStream& operator=(InputStream const& it);
   
@@ -34,7 +34,7 @@ public:
   }
 };
 
-inline InputStream::InputStream(String &s)
+inline InputStream::InputStream(String const& s)
 {
   mp_inRef = sarl_input_stream_create_from_string(s.mp_stringRef);
 };

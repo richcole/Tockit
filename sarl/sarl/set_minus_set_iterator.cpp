@@ -95,7 +95,7 @@ struct Sarl_SetIterator *sarl_set_iterator_minus(
 
   it->first = sarl_set_iterator_obtain_ownership(a_first);
   it->second = sarl_set_iterator_obtain_ownership(a_second);
-  sarl_set_iterator_set_minus_advance(it);
+  sarl_set_iterator_reset(it);
   return it;
 }
 

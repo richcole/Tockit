@@ -6,7 +6,7 @@
 # SARLUIDIR = SarlUI appsui
 # endif
 
-SUBDIRS = python cpp
+SUBDIRS = . python cpp examples 
 
 EXTRA_DIST = 		
 

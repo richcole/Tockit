@@ -76,7 +76,7 @@ AC_ARG_ENABLE(debug,
 [
   if test x$enableval = xyes; then
 	echo setting debug mode to on...;
-	SARL_CF=" -O0 -g -pipe -Wall "; 
+	SARL_CF=" -O0 -ggdb -pipe -Wall "; 
   else
 	echo setting debug mode to off...
   fi
@@ -182,7 +182,7 @@ AC_SUBST(PYTHONDYNAMICLINKING)
 ###############################################################################
 
 CFLAGS="  $CFLAGS $SARL_CF "
-CXXFLAGS="  $CXXFLAGS $SARL_CF "
+CXXFLAGS="  $CXXFLAGS $SARL_CXF "
 LDFLAGS=" $LDFLAGS $SARL_LD -L/lib "
 
 AC_SUBST(CFLAGS)
@@ -238,6 +238,7 @@ AC_SUBST(REQUIREMENTS_PLUS)
 AC_OUTPUT([
 Makefile
 sarl/Makefile
+sarl/examples/Makefile
 sarl/cpp/Makefile
 sarl/python/Makefile
 testsuite/Makefile

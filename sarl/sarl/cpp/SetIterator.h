@@ -3,6 +3,7 @@
 
 extern "C" {
 #include <sarl/set_iterator.h>
+#include <sarl/lectic.h>
 #include <sarl/assert.h>
 }
 
@@ -35,6 +36,11 @@ public:
   friend SetIterator meet(SetIterator const& a_it, SetIterator const& b_it);
   friend SetIterator join(SetIterator const& a_it, SetIterator const& b_it);
   friend SetIterator minus(SetIterator const& a_it, SetIterator const& b_it);
+
+  friend SetIterator lectic_next(
+    SetIterator const& a_it, 
+    SetIterator const& b_it
+  );
 
 public:
 
@@ -108,6 +114,17 @@ public:
   {
     SARL_ASSERT(mp_itRef != 0);
     return sarl_set_iterator_is_member(mp_itRef, x);
+  };
+
+  bool is_empty() const
+  {
+    SARL_ASSERT(mp_itRef != 0);
+    return sarl_set_iterator_is_empty(mp_itRef);
+  };
+
+  static SetIterator empty() 
+  {
+    return SetIterator(sarl_set_iterator_create_empty()).retn();
   };
 
 protected:
@@ -203,6 +220,22 @@ inline SetIterator minus(SetIterator const& a_it, SetIterator const& b_it)
     ).retn();
 };
 
+inline SetIterator lectic_next(
+  SetIterator const& a_it, SetIterator const& b_it)
+{
+  SARL_ASSERT(a_it.mp_itRef != 0 && b_it.mp_itRef != 0);
+
+  Sarl_SetIterator *next_it = 
+    sarl_set_iterator_lectic_next(a_it.mp_itRef, b_it.mp_itRef);
+  if ( next_it == 0 ) {
+    next_it = sarl_set_iterator_create_empty();
+  }
+  else {
+    next_it = sarl_set_iterator_cache_and_decr_ref(next_it);
+  }
+  return SetIterator(next_it).retn();
+};
+
 class SetIteratorFunctions {
 public:
   inline static 
@@ -221,6 +254,12 @@ public:
   SetIterator minus(SetIterator const& a_it, SetIterator const& b_it) 
   {
     return ::minus(a_it, b_it).retn();
+  }
+
+  inline static 
+  SetIterator lectic_next(SetIterator const& a_it, SetIterator const& b_it) 
+  {
+    return ::lectic_next(a_it, b_it).retn();
   }
 };
 

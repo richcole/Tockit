@@ -10,8 +10,6 @@ extern "C" {
 #include <sarl/cpp/SetIterator.h>
 #include <sarl/cpp/RelationIterator.h>
 
-#include <iostream>
-
 class LatticeIterator;
 class ContextIterator;
 class Context;
