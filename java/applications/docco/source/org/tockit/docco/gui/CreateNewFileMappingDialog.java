@@ -161,15 +161,6 @@ public class CreateNewFileMappingDialog extends JDialog {
 			}
 		});
 									
-		int row = 0;	
-		new GridBagConstraints(0, row, 
-									1, 1, 
-									0, 0,
-									GridBagConstraints.WEST,
-									GridBagConstraints.NONE,
-									new Insets(5, 5, 5, 5),
-									0, 0
-									);
 		GridBagConstraints labelConstraint = new GridBagConstraints();
 		labelConstraint.anchor = GridBagConstraints.WEST;
 		labelConstraint.insets = new Insets(5, 5, 5, 5);
@@ -263,6 +254,4 @@ public class CreateNewFileMappingDialog extends JDialog {
 	public DocumentHandlerMapping getCreatedMapping() {
 		return this.mapping;
 	}
-
-
 }
