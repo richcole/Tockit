@@ -19,7 +19,21 @@ inline Sarl_Pair sarl_pair(Sarl_Index dom, Sarl_Index rng)
  */
 inline int sarl_pair_compare(struct Sarl_Pair x, struct Sarl_Pair y)
 {
-  return (x.dom == y.dom) ? (x.rng - y.rng) : (x.dom - y.dom);
+  if ( x.dom < y.dom ) {
+    return -1;
+  }
+  else if ( x.dom > y.dom ) {
+    return 1;
+  }
+  else {
+    if ( x.rng < y.rng ) {
+      return -1;
+    }
+    else {
+      return 1;
+    }
+  };
+
 }
 
 #endif

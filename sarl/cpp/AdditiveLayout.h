@@ -36,14 +36,14 @@ public:
   Index x, y;
 
   void reset() { 
-    count = 0; x = 0; y = 10; 
+    count = 0; x = 0; y = 50; 
   };
 
   void next() 
   {
     ++count;
-    x = (count % 2 ? 1 : -1) * 10;
-    y = (((count - 1) / 2) + 1) * 10;
+    x = (count % 2 ? 1 : -1) * 50;
+    y = (((count - 1) / 2) + 1) * 50;
   };
 
   Index value_x() 
@@ -78,9 +78,19 @@ public:
     SARL_FOR(C) {
       SetIterator intent = L.ordering().intent(C.value());
       Dx.insert(C.value(), sum(intent, Mx));
+      Dx.insert(C.value(), Dx.image(C.value()) + Mx.image(C.value()));
       Dy.insert(C.value(), sum(intent, My));
+      Dy.insert(C.value(), Dy.image(C.value()) + My.image(C.value()));
       std::cerr << "c=" << C.value() << ", x=" << sum(intent, Mx);
       std::cerr << ", y=" << sum(intent, My) << std::endl;
+      std::cerr << "c=" << C.value() << ", up_set=(";
+      for(intent.reset(); !intent.at_end(); ) {
+        std::cerr << intent.value();
+        if ( intent.next(), ! intent.at_end() ) {
+          std::cerr << ", ";
+        }
+      }
+      std::cerr << ")" << std::endl;
     }
 
     return SARL_OK;

@@ -13,6 +13,7 @@ extern "C" {
 #include "transitive_relation_impl.h"
 
 #include <algorithm>
+#include <iostream>
 
 struct Sarl_TransitiveRelation *sarl_transitive_relation_create()
 {
@@ -111,6 +112,8 @@ void sarl_transitive_relation_insert(struct Sarl_TransitiveRelation *r,
   
   SARL_SET_ITERATOR_FOR(upper_ferrels) {
     if ( sarl_set_iterator_value(upper_ferrels) != b ) {
+      std::cerr << "Remove: " << a << " prev ";
+      std::cerr << sarl_set_iterator_value(upper_ferrels) << std::endl;
       sarl_relation_remove(
         r->covering, a, sarl_set_iterator_value(upper_ferrels)
       );
@@ -122,6 +125,8 @@ void sarl_transitive_relation_insert(struct Sarl_TransitiveRelation *r,
       sarl_relation_remove(
         r->covering, sarl_set_iterator_value(lower_ferrels), b
       );
+      std::cerr << "Remove: " << sarl_set_iterator_value(lower_ferrels);
+      std::cerr << " prev " << b << std::endl;
     }
   };
 
@@ -203,8 +208,16 @@ struct Sarl_SetIterator*
     struct Sarl_TransitiveRelation* r, 
     Sarl_Index index)
 {
-  Sarl_RelationIterator* it = sarl_relation_iterator_create(r->covering);
-  return sarl_relation_iterator_intent(it, index);
+  Sarl_RelationIterator* it = sarl_relation_iterator_create(r->ordering);
+  Sarl_SetIterator* index_set = sarl_set_iterator_create_from_index(index);
+  Sarl_SetIterator* result = 
+    sarl_set_iterator_union(
+      index_set, 
+      sarl_relation_iterator_intent(it, index)
+    );
+  sarl_set_iterator_decr_ref(index_set);
+  sarl_relation_iterator_decr_ref(it);
+  return result;
 };
 
 
@@ -213,8 +226,16 @@ struct Sarl_SetIterator*
     struct Sarl_TransitiveRelation* r, 
     Sarl_Index index)
 {
-  Sarl_RelationIterator* it = sarl_relation_iterator_create(r->covering);
-  return sarl_relation_iterator_extent(it, index);
+  Sarl_RelationIterator* it = sarl_relation_iterator_create(r->ordering);
+  Sarl_SetIterator* index_set = sarl_set_iterator_create_from_index(index);
+  Sarl_SetIterator* result = 
+    sarl_set_iterator_union(
+      index_set, 
+      sarl_relation_iterator_extent(it, index)
+    );
+  sarl_set_iterator_decr_ref(index_set);
+  sarl_relation_iterator_decr_ref(it);
+  return result;
 };
 
 

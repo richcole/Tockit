@@ -75,7 +75,7 @@ struct Sarl_Lattice* sarl_lattice_copy(
     };
 
     // determine extent
-    Sarl_SetIterator* extent = sarl_lattice_iterator_intent(it);
+    Sarl_SetIterator* extent = sarl_lattice_iterator_extent(it);
     SARL_SET_ITERATOR_FOR(extent) {
       sarl_relation_insert(
         lattice->extent, concept, sarl_set_iterator_value(extent)
@@ -231,11 +231,22 @@ extern struct Sarl_SetIterator *
 sarl_lattice_concepts(struct Sarl_Lattice* L)
 {
   Sarl_SetIterator* result;
-  Sarl_RelationIterator* r_it;
+  Sarl_RelationIterator* r_intent;
+  Sarl_RelationIterator* r_extent;
+  Sarl_SetIterator* s_intent;
+  Sarl_SetIterator* s_extent;
 
-  r_it = sarl_relation_iterator_create(L->intent);
-  result = sarl_relation_iterator_domain(r_it);
-  sarl_relation_iterator_decr_ref(r_it);
+  r_intent = sarl_relation_iterator_create(L->intent);
+  r_extent = sarl_relation_iterator_create(L->extent);
+
+  s_intent = sarl_relation_iterator_domain(r_intent);
+  s_extent = sarl_relation_iterator_domain(r_extent);
+
+  result = sarl_set_iterator_union(s_intent, s_extent);
+  sarl_relation_iterator_decr_ref(r_intent);
+  sarl_relation_iterator_decr_ref(r_extent);
+  sarl_set_iterator_decr_ref(s_intent);
+  sarl_set_iterator_decr_ref(s_extent);
 
   return result;
 };

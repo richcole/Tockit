@@ -19,7 +19,7 @@ struct Sarl_RefCounter {
   Sarl_RefCounter() { this->count = 0; };
   ~Sarl_RefCounter() { 
     if ( this->count != 0 ) {
-			fprintf(stderr, __FILE__ "(%d):\n", __LINE__);
+      fprintf(stderr, __FILE__ "(%d):\n", __LINE__);
       fprintf(stderr, "  Error, Reference Count=%d\n", this->count);
       exit(-1);
     }

@@ -23,7 +23,7 @@ void print_extent(Sarl_SetIterator *curr)
   SARL_SET_ITERATOR_FOR(curr) {
     fprintf(stdout, "%d ", sarl_set_iterator_value(curr));
   };
-  fprintf(stdout, "\n", sarl_set_iterator_value(curr));
+  fprintf(stdout, "\n");
 };
 
 int main(int num_args, char **args)
@@ -32,7 +32,6 @@ int main(int num_args, char **args)
   Sarl_RelationIterator *r_it;
   
   Sarl_ContextIterator  *K;
-  Sarl_Set              *empty;
   Sarl_SetIterator      *curr, *next;
 
   Sarl_SetIterator      *M;

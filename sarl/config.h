@@ -9,6 +9,11 @@
   { fprintf(stderr, "%s:%d: Fatal Error: %s.\n", \
           __FILE__, __LINE__, (x)); };
 
+#include <limits.h>
+
+#define SARL_INDEX_MIN_VALUE INT_MIN
+#define SARL_INDEX_MAX_VALUE INT_MAX
+
 #define SARL_ERROR 0
 #define SARL_OK    1
 

@@ -78,12 +78,8 @@ Sarl_RelationIterator *sarl_relation_iterator_context_complement(
 struct Sarl_RelationIterator* sarl_relation_iterator_context_complement_inverse(
   struct Sarl_RelationIterator *a_it)
 {
-  Sarl_ContextComplementRelationIterator *it = 
-    static_cast<Sarl_ContextComplementRelationIterator*>(a_it);
-
-	cerr << "sarl_relation_iterator_context_complement_inverse: not implemented";
-	cerr << endl;
-	return 0;
+  SARL_NOT_IMPLEMENTED;
+  return SARL_ERROR;
 };
 
 void  sarl_relation_iterator_context_complement_next_gte(

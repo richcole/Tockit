@@ -120,7 +120,7 @@ static void  sarl_set_iterator_intent_reset(struct Sarl_SetIterator *a_it)
   sarl_relation_iterator_reset(it->iterator);
   sarl_relation_iterator_next_gte(
     it->iterator, 
-    sarl_pair(it->object, 0)
+    sarl_pair(it->object, SARL_INDEX_MIN_VALUE)
   );
 };
 

@@ -93,7 +93,7 @@ Sarl_Index sarl_map_image(struct Sarl_Map *r, Sarl_Index dom)
   Sarl_Index result = 0;
   Sarl_RelationIterator* r_it = sarl_relation_iterator_create(r);
   Sarl_SetIterator *intent = sarl_relation_iterator_intent(r_it, dom);
-  if ( sarl_set_iterator_at_end(intent) == false ) {
+  if ( ! sarl_set_iterator_at_end(intent) ) {
     result = sarl_set_iterator_value(intent);
   }
   sarl_relation_iterator_decr_ref(r_it);
@@ -106,7 +106,7 @@ Sarl_Index sarl_map_coimage(struct Sarl_Map *r, Sarl_Index rng)
   Sarl_Index result = 0;
   Sarl_RelationIterator* r_it = sarl_relation_iterator_create(r);
   Sarl_SetIterator *extent = sarl_relation_iterator_extent(r_it, rng);
-  if ( sarl_set_iterator_at_end(extent) == false ) {
+  if ( ! sarl_set_iterator_at_end(extent) ) {
     result = sarl_set_iterator_value(extent);
   }
   sarl_relation_iterator_decr_ref(r_it);

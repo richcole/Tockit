@@ -42,6 +42,7 @@ OBJECTS = \
 
 
 TESTS = \
+  test_map_001 \
   test_set \
   test_set_iterator_meet \
   test_set_iterator_union \
