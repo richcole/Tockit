@@ -18,8 +18,11 @@ extern void sarl_nary_relation_insert(
 extern void sarl_nary_relation_remove(
   struct Sarl_NaryRelation *, Sarl_Vector *v);
 
-extern bool sarl_nary_relation_is_member(
+extern int sarl_nary_relation_is_member(
   struct Sarl_NaryRelation *r, Sarl_Vector *v);
+
+extern Sarl_Index sarl_nary_relation_count(
+  struct Sarl_NaryRelation *r);
 
 /* return a set iterator 
 extern Sarl_SetIterator sarl_nary_relation_set_iterator();
