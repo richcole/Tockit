@@ -8,6 +8,7 @@
 package org.tockit.docco.query;
 
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
 import org.tockit.docco.GlobalConstants;
 
 public class HitReference {
@@ -42,6 +43,12 @@ public class HitReference {
 	}
 
 	public String toString() {
-		return this.getDocument().getField(GlobalConstants.FIELD_DOC_TITLE).stringValue();
+		Field title = this.getDocument().getField(GlobalConstants.FIELD_DOC_TITLE);
+		if (title == null) {
+			return this.getDocument().getField(GlobalConstants.FIELD_DOC_PATH).stringValue();
+		}
+		else {
+			return this.getDocument().getField(GlobalConstants.FIELD_DOC_TITLE).stringValue();
+		}
 	}
 }
