@@ -37,7 +37,8 @@ public interface RelationOperation {
 	 * 
 	 * @return String[] names for the different inputs in the same order as used in 
 	 *                   apply(Relation[]). Array is not null, contents can be if 
-	 *                   naming is not applicable 
+	 *                   naming is not applicable. The length has to be the same as
+	 *                   the arity of the operation.
 	 */
 	String[] getParameterNames();
 	

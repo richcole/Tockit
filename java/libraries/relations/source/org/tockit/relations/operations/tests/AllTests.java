@@ -5,7 +5,7 @@
  *
  * $Id$
  */
-package org.tockit.relations.tests;
+package org.tockit.relations.operations.tests;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -18,9 +18,7 @@ public class AllTests extends TestCase {
 
     public static Test suite() {
         TestSuite suite = new TestSuite();
-		suite.addTest(org.tockit.relations.model.tests.AllTests.suite());
-		suite.addTest(org.tockit.relations.operations.tests.AllTests.suite());
+		suite.addTest(org.tockit.relations.operations.tests.IdentityTest.suite());
         return suite;
     }
-
 }
