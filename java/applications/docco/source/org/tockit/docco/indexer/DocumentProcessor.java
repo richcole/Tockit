@@ -15,7 +15,7 @@ import java.util.List;
 public interface DocumentProcessor {
 	///@todo should use contsructors instead of this method.
 	public void readDocument(File file) throws IOException, DocumentProcessingException;
-	public DocumentContent getDocumentContent () throws IOException;
+	public DocumentContent getDocumentContent () throws IOException, DocumentProcessingException;
 	public List getAuthors ();
 	public String getTitle ();
 	public String getSummary();

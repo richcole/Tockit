@@ -72,7 +72,7 @@ public class MSWordProcessor implements DocumentProcessor {
 		
 	}
 
-	public DocumentContent getDocumentContent() throws IOException {
+	public DocumentContent getDocumentContent() throws IOException, DocumentProcessingException {
 		try {
 			WordDocument wordDoc = new WordDocument(this.file.getAbsolutePath());
 			Writer docTextWriter = new StringWriter();
@@ -81,18 +81,20 @@ public class MSWordProcessor implements DocumentProcessor {
 		}
 		catch (ArrayIndexOutOfBoundsException e) {
 			System.err.println("ArrayIndexOutOfBoundsException while extracting content in " + file.getPath());
+			throw new DocumentProcessingException(e);
 		}
 		catch (IndexOutOfBoundsException e) {
 			System.err.println("ArrayIndexOutOfBoundsException while extracting content in " + file.getPath());
+			throw new DocumentProcessingException(e);
 		}
 		catch (NegativeArraySizeException e) {
 			System.err.println("IndexOutOfBoundsException while extracting content in " + file.getPath());
+			throw new DocumentProcessingException(e);
 		}
 		catch (NullPointerException e) {
 			System.err.println("NullPointerException while extracting content in " + file.getPath());
+			throw new DocumentProcessingException(e);
 		}
-		/// @todo this is dodgy - we should just bail out with an exception
-		return null;
 	}
 
 	public List getAuthors() {
