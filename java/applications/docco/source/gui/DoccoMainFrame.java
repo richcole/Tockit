@@ -16,6 +16,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.Point2D;
@@ -48,7 +49,9 @@ import net.sourceforge.toscanaj.model.diagram.WriteableDiagram2D;
 import net.sourceforge.toscanaj.model.lattice.Concept;
 import net.sourceforge.toscanaj.model.lattice.ConceptImplementation;
 import net.sourceforge.toscanaj.view.diagram.DiagramView;
+import net.sourceforge.toscanaj.view.diagram.NodeView;
 
+import org.tockit.canvas.CanvasItem;
 import org.tockit.events.Event;
 import org.tockit.events.EventBroker;
 import org.tockit.events.EventBrokerListener;
@@ -246,7 +249,30 @@ public class DoccoMainFrame extends JFrame {
 	}
 	
 	private JComponent buildViewsComponent() {
-		this.diagramView = new DiagramView();
+		this.diagramView = new DiagramView(){
+			public String getToolTipText(MouseEvent me) {
+				Point2D canvasPos = getCanvasCoordinates(me.getPoint());
+				CanvasItem item = getCanvasItemAt(canvasPos);
+				if(!(item instanceof NodeView)) {
+					return null;
+				}
+				NodeView nodeView = (NodeView) item;
+				Concept concept = nodeView.getDiagramNode().getConcept();
+				StringBuffer tooltip = new StringBuffer();
+				Iterator it = concept.getIntentIterator();
+				if(!it.hasNext()) {
+					return null;
+				}
+				while(it.hasNext()) {
+					tooltip.append(it.next().toString());
+					if(it.hasNext()) {
+						tooltip.append("; ");
+					}
+				}
+				return tooltip.toString();
+			}
+		};
+		this.diagramView.setToolTipText("dummy to enable tooltips");
 		this.diagramView.setConceptInterpreter(new DirectConceptInterpreter());
 		ConceptInterpretationContext conceptInterpretationContext = 
 					new ConceptInterpretationContext(new DiagramHistory(),new EventBroker());
