@@ -125,7 +125,6 @@ public class DoccoMainFrame extends JFrame {
 	private JSplitPane viewsSplitPane;
 	private JSplitPane mainPane;
 	private String indexLocation;
-	private String lastIndexedDirLocation;
 	
 	private class SelectionEventHandler implements EventBrokerListener {
 		public void processEvent(Event event) {
@@ -431,7 +430,16 @@ public class DoccoMainFrame extends JFrame {
             }
 			indexFile.delete();
 		}
-		JFileChooser fileDialog = new JFileChooser();
+		JFileChooser fileDialog;
+		String lastIndexedDir = ConfigurationManager.fetchString(CONFIGURATION_SECTION_NAME,
+									CONFIGURATION_LAST_INDEX_DIR,
+									null);
+		if (lastIndexedDir != null) {
+			fileDialog = new JFileChooser(lastIndexedDir);
+		}
+		else {
+			fileDialog = new JFileChooser();
+		}
 		fileDialog.setDialogTitle("Select directory to index");
 		fileDialog.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		int rv = fileDialog.showDialog(null, "Index Directory");
@@ -439,8 +447,11 @@ public class DoccoMainFrame extends JFrame {
 			return;
 		}
 		/// @todo add some better feedback here
-		this.lastIndexedDirLocation = fileDialog.getSelectedFile().getAbsolutePath(); 
-		new Indexer(this.lastIndexedDirLocation, this.indexLocation);
+		String dirToIndex = fileDialog.getSelectedFile().getAbsolutePath();
+		new Indexer(dirToIndex, this.indexLocation);
+		ConfigurationManager.storeString(CONFIGURATION_SECTION_NAME, CONFIGURATION_LAST_INDEX_DIR,
+									dirToIndex);
+		
 
 		createQueryEngine();
     }
@@ -668,10 +679,6 @@ public class DoccoMainFrame extends JFrame {
 								this.mainPane.getDividerLocation());
 		ConfigurationManager.storeString(CONFIGURATION_SECTION_NAME, CONFIGURATION_INDEX_NAME, 
 								DEFAULT_INDEX_NAME);
-		if ((this.lastIndexedDirLocation != null) && (this.lastIndexedDirLocation.length() > 0)) {
-			ConfigurationManager.storeString(CONFIGURATION_SECTION_NAME, CONFIGURATION_LAST_INDEX_DIR,
-									this.lastIndexedDirLocation);
-		}
 		
 		ConfigurationManager.saveConfiguration();
 		System.exit(0);

@@ -1,0 +1,10 @@
+###
+### Docco properties file
+###
+### this file stores session managment information and some configuration options
+### the session management information will appear during usage, the configuration
+### options can be set according to the comments below.
+###
+
+IndexName=default
+
