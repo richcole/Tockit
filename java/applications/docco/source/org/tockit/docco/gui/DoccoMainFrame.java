@@ -76,8 +76,10 @@ import net.sourceforge.toscanaj.view.diagram.DiagramView;
 import net.sourceforge.toscanaj.view.diagram.LabelView;
 import net.sourceforge.toscanaj.view.diagram.NodeView;
 
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.store.FSDirectory;
 import org.tockit.canvas.CanvasBackground;
 import org.tockit.canvas.CanvasItem;
 import org.tockit.canvas.events.CanvasItemSelectedEvent;
@@ -289,7 +291,7 @@ public class DoccoMainFrame extends JFrame {
 	}
 	
 
-	public DoccoMainFrame() {
+	public DoccoMainFrame(boolean forceIndexAccess) {
 		super("Docco");
 		
 		JMenuBar menuBar = new JMenuBar();
@@ -328,19 +330,32 @@ public class DoccoMainFrame extends JFrame {
 		});
 		this.indexThread.start();
 		
-		File indexFile = new File(indexLocation);
-		if(!indexFile.canRead()) {
-			createNewIndex();
-			if(!indexFile.canRead()) {
-				System.exit(1);
+		if(IndexReader.indexExists(indexLocation)) {
+			try {
+				if(IndexReader.isLocked(indexLocation)) {
+					if(!forceIndexAccess) {
+						JOptionPane.showMessageDialog(this, "The index is locked. You can run only one instance of Docco at one time.\n" +
+													  "If you want to override this error run Docco with the '-forceIndexAccess' option.",
+													  "Index locked", JOptionPane.ERROR_MESSAGE);
+						System.exit(1);
+					}
+					try {
+						IndexReader.unlock(FSDirectory.getDirectory(indexLocation, false));
+					} catch (IOException e) {
+						// we just ignore that here -- Lucene throws exceptions about lock files that can't be deleted since
+						// they are not there
+					}
+				}
+				createQueryEngine();
+				this.indexThread.startIndexing(indexLocation);
+			} catch (IOException e) {
+				ErrorDialog.showError(this, e, "Couldn't start indexer");
 			}
 		} else {
-			createQueryEngine();
-			try {
-                this.indexThread.startIndexing(indexLocation);
-            } catch (IOException e1) {
-            	ErrorDialog.showError(this, e1, "Couldn't start indexer");
-            }
+			createNewIndex();
+			if(!IndexReader.indexExists(indexLocation)) {
+				System.exit(1);
+			}
 		}
 
 		this.setVisible(true);

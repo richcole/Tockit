@@ -13,19 +13,24 @@ import net.sourceforge.toscanaj.gui.dialog.ErrorDialog;
 import org.tockit.docco.gui.DoccoMainFrame;
 
 public class Docco {
-	public Docco () {
+	public static void main (String[] args) {
+		ToscanaJ.testJavaVersion();
+		boolean forceIndexAccess = false;
+		for (int i = 0; i < args.length; i++) {
+            String arg = args[i];
+            if(arg.equals("-forceIndexAccess")) {
+            	forceIndexAccess = true;
+            } else {
+            	System.err.println("Unknown command line parameter");
+            	System.exit(1);
+            }
+        }
 		try {
-			DoccoMainFrame mainFrame = new DoccoMainFrame();
+			DoccoMainFrame mainFrame = new DoccoMainFrame(forceIndexAccess);
 			mainFrame.setVisible(true);
 		}
 		catch (Exception e) {
 			ErrorDialog.showError(null, e, "Error");
 		}
 	}
-	
-	public static void main (String[] args) {
-		ToscanaJ.testJavaVersion();
-		new Docco();
-	}
-
 }
