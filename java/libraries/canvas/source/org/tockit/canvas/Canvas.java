@@ -56,8 +56,6 @@ import org.tockit.events.EventBroker;
  */
 
 public class Canvas extends JPanel implements Printable {
-    private static final double DEFAULT_GRID_INCREMENT_FACTOR = 1.2;
-
     /**
      * This is the background item which is assumed to be wherever no other item is.
      */
@@ -71,7 +69,7 @@ public class Canvas extends JPanel implements Printable {
      * the layers.
      */
     protected List canvasLayers = new ArrayList();
-    
+
     /**
      * Stores the names of the layers as a mapping into the layer objects.
      * 
@@ -82,14 +80,14 @@ public class Canvas extends JPanel implements Printable {
      */
     protected Hashtable layerNameMapping = new Hashtable();
 
-	/**
-	 * These items are marked to be raised.
-	 * 
-	 * Raisal is postponed to avoid ConcurrentModificationExceptions. Items are
-	 * raised within their layer, they don't cross layers.
-	 * 
-	 * @todo we need the same for addition
-	 */
+    /**
+     * These items are marked to be raised.
+     * 
+     * Raisal is postponed to avoid ConcurrentModificationExceptions. Items are
+     * raised within their layer, they don't cross layers.
+     * 
+     * @todo we need the same for addition
+     */
     protected List itemsToRaise = new ArrayList();
 
     /**
@@ -110,7 +108,7 @@ public class Canvas extends JPanel implements Printable {
      * The controller caring about the event handling and callbacks.
      */
     private CanvasController controller = null;
-    
+
     /**
      * The cell width of the grid if used.
      */
@@ -120,7 +118,7 @@ public class Canvas extends JPanel implements Printable {
      * The cell height of the grid if used.
      */
     private double gridCellHeight;
-    
+
     /**
      * Flag if the grid function is used.
      */
@@ -151,34 +149,37 @@ public class Canvas extends JPanel implements Printable {
         // paint all items on canvas
         Iterator layerIt = this.canvasLayers.iterator();
         while (layerIt.hasNext()) {
-        	Collection layer = (Collection) layerIt. next();
-        	Iterator itemIt = layer.iterator();
-        	while(itemIt.hasNext()) {
-		        CanvasItem cur = (CanvasItem) itemIt.next();
-		        if(cur.getPosition() != null) {
-		        	cur.draw(graphics);
-		        }
-        	}
+            Collection layer = (Collection) layerIt.next();
+            Iterator itemIt = layer.iterator();
+            while (itemIt.hasNext()) {
+                CanvasItem cur = (CanvasItem) itemIt.next();
+                if (cur.getPosition() != null) {
+                    cur.draw(graphics);
+                }
+            }
         }
-        this.controller.getEventBroker().processEvent(new CanvasDrawnEvent(this));
+        this.controller.getEventBroker().processEvent(
+            new CanvasDrawnEvent(this));
     }
 
-	/**
-	 * Raises all items that have been requested to raise.
-	 * 
-	 * This might happen delayed since we can't change the item lists while we
-	 * are still iterating over it (e.g. a raisal while drawing would cause
-	 * ConcurrentModificationExceptions).
-	 */
+    /**
+     * Raises all items that have been requested to raise.
+     * 
+     * This might happen delayed since we can't change the item lists while we
+     * are still iterating over it (e.g. a raisal while drawing would cause
+     * ConcurrentModificationExceptions).
+     */
     private void raiseMarkedItems() {
-        for (Iterator iterator = itemsToRaise.iterator(); iterator.hasNext();) {
+        for (Iterator iterator = itemsToRaise.iterator();
+            iterator.hasNext();
+            ) {
             CanvasItem canvasItem = (CanvasItem) iterator.next();
             Iterator layerIt = this.canvasLayers.iterator();
             while (layerIt.hasNext()) {
-                Collection layer = (Collection) layerIt. next();
-                if(layer.contains(canvasItem)) {
-		            layer.remove(canvasItem);
-		            layer.add(canvasItem);
+                Collection layer = (Collection) layerIt.next();
+                if (layer.contains(canvasItem)) {
+                    layer.remove(canvasItem);
+                    layer.add(canvasItem);
                 }
             }
         }
@@ -210,31 +211,30 @@ public class Canvas extends JPanel implements Printable {
         return screenTransform;
     }
 
-
     /**
      * Calculates the size of this canvas on a specific drawing context.
      *
      * This is the smallest upright rectangle that contains all canvas items.
      */
     public Rectangle2D getCanvasSize(Graphics2D graphics) {
-    	Rectangle2D retVal = null;
+        Rectangle2D retVal = null;
         Iterator layerIt = this.canvasLayers.iterator();
-		while(layerIt.hasNext()) {
-			Collection layer = (Collection) layerIt.next();
-			Iterator itemIt = layer.iterator();        
-	        while (itemIt.hasNext()) {
-	            CanvasItem cur = (CanvasItem) itemIt.next();
-	            Rectangle2D curBounds = cur.getCanvasBounds(graphics);
-	            if(curBounds == null) {
-	            	continue; // not visible
-	            }
-                if(retVal == null) {
-	                retVal = curBounds;
-	            } else {
-	            	retVal = retVal.createUnion(curBounds);
-	            }
-	        }
-		}
+        while (layerIt.hasNext()) {
+            Collection layer = (Collection) layerIt.next();
+            Iterator itemIt = layer.iterator();
+            while (itemIt.hasNext()) {
+                CanvasItem cur = (CanvasItem) itemIt.next();
+                Rectangle2D curBounds = cur.getCanvasBounds(graphics);
+                if (curBounds == null) {
+                    continue; // not visible
+                }
+                if (retVal == null) {
+                    retVal = curBounds;
+                } else {
+                    retVal = retVal.createUnion(curBounds);
+                }
+            }
+        }
         if (retVal == null) {
             return new Rectangle2D.Double(0, 0, 0, 0);
         }
@@ -253,10 +253,11 @@ public class Canvas extends JPanel implements Printable {
      */
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) {
         if (pageIndex == 0) {
-        	this.controller.hideMouseFromItems(true);
+            this.controller.hideMouseFromItems(true);
             Graphics2D graphics2D = (Graphics2D) graphics;
 
-            Rectangle2D bounds = new Rectangle2D.Double(
+            Rectangle2D bounds =
+                new Rectangle2D.Double(
                     pageFormat.getImageableX(),
                     pageFormat.getImageableY(),
                     pageFormat.getImageableWidth(),
@@ -265,7 +266,7 @@ public class Canvas extends JPanel implements Printable {
             graphics2D.transform(transform);
             // paint all items on canvas
             paintCanvas(graphics2D);
-			this.controller.hideMouseFromItems(false);
+            this.controller.hideMouseFromItems(false);
 
             return PAGE_EXISTS;
         } else {
@@ -277,7 +278,9 @@ public class Canvas extends JPanel implements Printable {
      * Scales the graphic context in which the canvas items will be completely
      * visible in the rectangle.
      */
-    public AffineTransform scaleToFit(Graphics2D graphics2D, Rectangle2D bounds) {
+    public AffineTransform scaleToFit(
+        Graphics2D graphics2D,
+        Rectangle2D bounds) {
         this.canvasSize = this.getCanvasSize(graphics2D);
 
         // we need some values to do the projection -- the initial values are
@@ -301,14 +304,22 @@ public class Canvas extends JPanel implements Printable {
         if ((canvasSize.getWidth() != 0) && (canvasSize.getHeight() != 0)) {
             if (xScale > yScale) {
                 xScale = yScale;
-                xOrigin = xOrigin + (bounds.getWidth() / xScale - canvasSize.getWidth()) / 2;
+                xOrigin =
+                    xOrigin
+                        + (bounds.getWidth() / xScale - canvasSize.getWidth())
+                            / 2;
             } else {
                 yScale = xScale;
-                yOrigin = yOrigin + (bounds.getHeight() / yScale - canvasSize.getHeight()) / 2;
+                yOrigin =
+                    yOrigin
+                        + (bounds.getHeight() / yScale - canvasSize.getHeight())
+                            / 2;
             }
         }
-        AffineTransform transform = AffineTransform.getScaleInstance(xScale, yScale);
-        transform.concatenate(AffineTransform.getTranslateInstance(xOrigin, yOrigin));
+        AffineTransform transform =
+            AffineTransform.getScaleInstance(xScale, yScale);
+        transform.concatenate(
+            AffineTransform.getTranslateInstance(xOrigin, yOrigin));
         return transform;
     }
 
@@ -319,16 +330,17 @@ public class Canvas extends JPanel implements Printable {
      * If multiple items are overlapping, the highest one will be returned.
      */
     public CanvasItem getCanvasItemAt(Point2D point) {
-        ListIterator layerIt = this.canvasLayers.listIterator(this.canvasLayers.size());
-        while(layerIt.hasPrevious()) {
-        	List layer = (List) layerIt.previous();
-	        ListIterator itemIt = layer.listIterator(layer.size());
-	        while (itemIt.hasPrevious()) {
-	            CanvasItem cur = (CanvasItem) itemIt.previous();
-	            if (cur.containsPoint(point)) {
-	                return cur;
-	            }
-	        }
+        ListIterator layerIt =
+            this.canvasLayers.listIterator(this.canvasLayers.size());
+        while (layerIt.hasPrevious()) {
+            List layer = (List) layerIt.previous();
+            ListIterator itemIt = layer.listIterator(layer.size());
+            while (itemIt.hasPrevious()) {
+                CanvasItem cur = (CanvasItem) itemIt.previous();
+                if (cur.containsPoint(point)) {
+                    return cur;
+                }
+            }
         }
         return background;
     }
@@ -338,8 +350,9 @@ public class Canvas extends JPanel implements Printable {
      */
     public Collection getCanvasItemsAt(Point2D point) {
         Collection retVal = new HashSet();
-        ListIterator layerIt = this.canvasLayers.listIterator(this.canvasLayers.size());
-        while(layerIt.hasPrevious()) {
+        ListIterator layerIt =
+            this.canvasLayers.listIterator(this.canvasLayers.size());
+        while (layerIt.hasPrevious()) {
             List layer = (List) layerIt.next();
             ListIterator itemIt = layer.listIterator(layer.size());
             while (itemIt.hasPrevious()) {
@@ -352,9 +365,9 @@ public class Canvas extends JPanel implements Printable {
         return retVal;
     }
 
-	/**
-	 * Makes the given item the uppermost in its layer.
-	 */
+    /**
+     * Makes the given item the uppermost in its layer.
+     */
     public void raiseItem(CanvasItem item) {
         // can not be done here since this would easily cause ConcurrentModificationExceptions whenever someone iterates
         // over the items and calls this
@@ -370,7 +383,9 @@ public class Canvas extends JPanel implements Printable {
             point = this.screenTransform.inverseTransform(screenPos, null);
         } catch (Exception ex) {
             //this should not happen
-            throw new RuntimeException("Internal error: noninvertible transformation found.", ex);
+            throw new RuntimeException(
+                "Internal error: noninvertible transformation found.",
+                ex);
         }
         return point;
     }
@@ -390,25 +405,27 @@ public class Canvas extends JPanel implements Printable {
      * It will appear on top of all other items in the highest layer.
      */
     public void addCanvasItem(CanvasItem node) {
-    	if(this.canvasLayers.isEmpty()) {
-    		List newLayer = new ArrayList();
-    		this.canvasLayers.add(newLayer);
-    		this.layerNameMapping.put("", newLayer);
-    	}
-    	List uppermostLayer = (List) this.canvasLayers.get(this.canvasLayers.size() - 1);
+        if (this.canvasLayers.isEmpty()) {
+            List newLayer = new ArrayList();
+            this.canvasLayers.add(newLayer);
+            this.layerNameMapping.put("", newLayer);
+        }
+        List uppermostLayer =
+            (List) this.canvasLayers.get(this.canvasLayers.size() - 1);
         uppermostLayer.add(node);
     }
-    
+
     /**
      * Adds a canvas item to a specific layer.
      * 
      * The item will be the uppermost item in the layer.
      */
     public void addCanvasItem(CanvasItem node, String layerName) {
-    	List layer = (List) layerNameMapping.get(layerName);
-    	if(layer == null) {
-    		throw new NoSuchLayerException("Could not find layer with name \"" + layerName + "\"");
-    	}
+        List layer = (List) layerNameMapping.get(layerName);
+        if (layer == null) {
+            throw new NoSuchLayerException(
+                "Could not find layer with name \"" + layerName + "\"");
+        }
         layer.add(node);
     }
 
@@ -416,35 +433,36 @@ public class Canvas extends JPanel implements Printable {
      * Removes an item from the canvas.
      */
     public void removeCanvasItem(CanvasItem item) {
-        ListIterator layerIt = this.canvasLayers.listIterator(this.canvasLayers.size());
-        while(layerIt.hasNext()) {
+        ListIterator layerIt =
+            this.canvasLayers.listIterator(this.canvasLayers.size());
+        while (layerIt.hasNext()) {
             List layer = (List) layerIt.next();
             layer.remove(item);
         }
         this.itemsToRaise.remove(item);
     }
 
-	/**
-	 * Returns a collection of all canvas items of a specific type.
-	 * 
-	 * Every layer is searched for items of this type and the matches are
-	 * returned as a set.
-	 */
+    /**
+     * Returns a collection of all canvas items of a specific type.
+     * 
+     * Every layer is searched for items of this type and the matches are
+     * returned as a set.
+     */
     public Collection getCanvasItemsByType(Class type) {
         Set retVal = new HashSet();
         Iterator layerIt = this.canvasLayers.iterator();
-        while(layerIt.hasNext()) {
+        while (layerIt.hasNext()) {
             List layer = (List) layerIt.next();
-	        for (Iterator iterator = layer.iterator(); iterator.hasNext();) {
-	            CanvasItem canvasItem = (CanvasItem) iterator.next();
-	            if( type.isAssignableFrom(canvasItem.getClass()) ) {
-	                retVal.add(canvasItem);
-	            }
-	        }
+            for (Iterator iterator = layer.iterator(); iterator.hasNext();) {
+                CanvasItem canvasItem = (CanvasItem) iterator.next();
+                if (type.isAssignableFrom(canvasItem.getClass())) {
+                    retVal.add(canvasItem);
+                }
+            }
         }
         return retVal;
     }
-    
+
     /**
      * Creates a new layer with the given name.
      * 
@@ -453,38 +471,39 @@ public class Canvas extends JPanel implements Printable {
      * be thrown).
      */
     public void addLayer(String layerName) {
-    	if(layerName == null) {
-    		throw new IllegalLayerNameException("Layer name must be given to create a new layer");
-    	}
-    	if(layerName.length() == 0) {
-    		throw new IllegalLayerNameException("Layer name must not be empty");
-    	}
-    	if(this.hasLayer(layerName)) {
-    		throw new IllegalLayerNameException("Layer name does already exist");
-    	}
-    	List newLayer = new ArrayList();
-    	this.canvasLayers.add(newLayer);
-    	this.layerNameMapping.put(layerName, newLayer);
+        if (layerName == null) {
+            throw new IllegalLayerNameException("Layer name must be given to create a new layer");
+        }
+        if (layerName.length() == 0) {
+            throw new IllegalLayerNameException("Layer name must not be empty");
+        }
+        if (this.hasLayer(layerName)) {
+            throw new IllegalLayerNameException("Layer name does already exist");
+        }
+        List newLayer = new ArrayList();
+        this.canvasLayers.add(newLayer);
+        this.layerNameMapping.put(layerName, newLayer);
     }
-    
+
     /**
      * Removes a whole layer from the canvas.
      */
     public void removeLayer(String layerName) {
-    	if(!this.hasLayer(layerName)) {
-    		throw new NoSuchLayerException("Could not find layer named \"" + layerName + "\"");
-    	}
-    	Object removeLayer = this.layerNameMapping.remove(layerName);
-    	this.canvasLayers.remove(removeLayer);
+        if (!this.hasLayer(layerName)) {
+            throw new NoSuchLayerException(
+                "Could not find layer named \"" + layerName + "\"");
+        }
+        Object removeLayer = this.layerNameMapping.remove(layerName);
+        this.canvasLayers.remove(removeLayer);
     }
-    
+
     /**
      * Returns true if there is a layer with the given name.
      */
     public boolean hasLayer(String layerName) {
-    	return this.layerNameMapping.containsKey(layerName);
+        return this.layerNameMapping.containsKey(layerName);
     }
-    
+
     /**
      * Return the width of a single cell in the current grid.
      * 
@@ -495,7 +514,7 @@ public class Canvas extends JPanel implements Printable {
     public double getGridCellWidth() {
         return this.gridCellWidth;
     }
-    
+
     /**
      * Return the height of a single cell in the current grid.
      *
@@ -506,19 +525,19 @@ public class Canvas extends JPanel implements Printable {
     public double getGridCellHeight() {
         return this.gridCellHeight;
     }
-    
+
     /**
      * Sets the grid used for the canvas.
      * 
      * This does set the size of a single grid cell and turns the grid on.
      */
     public void setGrid(double cellWidth, double cellHeight) {
-    	this.gridCellWidth = cellWidth;
-    	this.gridCellHeight = cellHeight;
-    	setGridEnabled(true);
-    	repaint();
+        this.gridCellWidth = cellWidth;
+        this.gridCellHeight = cellHeight;
+        setGridEnabled(true);
+        repaint();
     }
-    
+
     /**
      * Turns the grid function on or off.
      * 
@@ -527,19 +546,19 @@ public class Canvas extends JPanel implements Printable {
      * onto the grid.
      */
     public void setGridEnabled(boolean gridEnabled) {
-    	this.gridEnabled = gridEnabled;
-    	repaint();
+        this.gridEnabled = gridEnabled;
+        repaint();
     }
-    
+
     /**
      * Returns true iff the grid function is enabled.
      * 
      * @see setGrid(double, double)
      */
     public boolean hasGridEnabled() {
-    	return this.gridEnabled;
+        return this.gridEnabled;
     }
-    
+
     /**
      * Returns the closest position on the current grid.
      * 
@@ -548,39 +567,14 @@ public class Canvas extends JPanel implements Printable {
      * returned.
      */
     public Point2D getClosestPointOnGrid(Point2D point) {
-    	if(this.gridEnabled == false) {
-    		return point;
-    	}
-        double x = Math.round(point.getX() / this.gridCellWidth) * this.gridCellWidth;
-        double y = Math.round(point.getY() / this.gridCellHeight) * this.gridCellHeight;
-        return new Point2D.Double(x,y);
-    }
-
-	/**
-	 * Increases the grid cell size by a fixed increment.
-	 */
-    public void increaseGridSize() {
-        increaseGridSize(DEFAULT_GRID_INCREMENT_FACTOR);
-    }
-
-    /**
-     * Increases the grid cell size by the given increment.
-     */
-    public void increaseGridSize(double incrementFactor) {
-        setGrid(this.gridCellWidth * incrementFactor, this.gridCellHeight * incrementFactor);
-    }
-
-    /**
-     * Decreases the grid cell size by a fixed decrement.
-     */
-    public void decreaseGridSize() {
-        decreaseGridSize(DEFAULT_GRID_INCREMENT_FACTOR);
-    }
-
-    /**
-     * Decreases the grid cell size by the given decrement.
-     */
-    public void decreaseGridSize(double decrementFactor) {
-        increaseGridSize(1 / decrementFactor);
+        if (this.gridEnabled == false) {
+            return point;
+        }
+        double x =
+            Math.round(point.getX() / this.gridCellWidth) * this.gridCellWidth;
+        double y =
+            Math.round(point.getY() / this.gridCellHeight)
+                * this.gridCellHeight;
+        return new Point2D.Double(x, y);
     }
 }
