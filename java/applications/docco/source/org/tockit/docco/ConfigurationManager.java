@@ -170,18 +170,35 @@ public class ConfigurationManager {
         return properties.getProperty(section + "-" + key, defaultValue);
     }
 
-    /**
-     * Stores a list of strings.
-     */
-    static public void storeStringList(String section, String key, List list) {
-        Iterator it = list.iterator();
-        int index = 1;
-        while (it.hasNext()) {
-            String cur = (String) it.next();
-            properties.setProperty(section + "-" + key + "-" + index, cur);
-            index++;
-        }
-    }
+	/**
+	 * Stores a list of strings.
+	 */
+	static public void storeStringList(String section, String key, List list) {
+		Iterator it = list.iterator();
+		int index = 1;
+		while (it.hasNext()) {
+			String cur = (String) it.next();
+			properties.setProperty(section + "-" + key + "-" + index, cur);
+			index++;
+		}
+	}
+
+	/**
+	 * Stores a list of strings, removing all occurances after up to the given index (inclusive).
+	 */
+	static public void storeStringList(String section, String key, List list, int deleteUpToIndex) {
+		Iterator it = list.iterator();
+		int index = 1;
+		while (it.hasNext()) {
+			String cur = (String) it.next();
+			properties.setProperty(section + "-" + key + "-" + index, cur);
+			index++;
+		}
+		while(index <= deleteUpToIndex) {
+			properties.remove(section + "-" + key + "-" + index);
+			index++;
+		}
+	}
 
     /**
      * Retrieves a list of strings.
