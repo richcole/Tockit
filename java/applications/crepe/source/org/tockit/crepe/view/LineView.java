@@ -12,22 +12,25 @@ import org.tockit.canvas.CanvasItem;
 import java.awt.*;
 import java.awt.geom.*;
 
+/**
+ * @todo add option to use arrows
+ */
 public class LineView extends CanvasItem {
-    private LinkView linkView = null;
-    private NodeView nodeView = null;
+    private LinkView connectedLinkView = null;
+    private NodeView connectedNodeView = null;
     private int number;
 
     public LineView(LinkView linkView, NodeView nodeView, int number) {
         super();
-        this.linkView = linkView;
-        this.nodeView = nodeView;
+        this.connectedLinkView = linkView;
+        this.connectedNodeView = nodeView;
         this.number = number;
     }
 
     public void draw(Graphics2D g) {
         g.setPaint(Color.black);
-        Point2D nodePos = nodeView.getPosition();
-        Point2D linkPos = linkView.getPosition();
+        Point2D nodePos = connectedNodeView.getPosition();
+        Point2D linkPos = connectedLinkView.getPosition();
         g.draw(new Line2D.Double(nodePos, linkPos));
         double xDiff = nodePos.getX() - linkPos.getX();
         double yDiff = nodePos.getY() - linkPos.getY();
@@ -52,14 +55,37 @@ public class LineView extends CanvasItem {
     }
 
     public Rectangle2D getCanvasBounds(Graphics2D g) {
-        Point2D nodePos = nodeView.getPosition();
+        Point2D nodePos = connectedNodeView.getPosition();
         Rectangle2D rect1 = new Rectangle2D.Double(nodePos.getX(), nodePos.getY(), 1, 1);
-        Point2D linkPos = linkView.getPosition();
+        Point2D linkPos = connectedLinkView.getPosition();
         Rectangle2D rect2 = new Rectangle2D.Double(linkPos.getX(), linkPos.getY(), 1, 1);
         return rect1.createUnion(rect2);
     }
 
     public boolean hasAutoRaise() {
         return false;
+    }
+
+    public Point2D getPosition() {
+        Point2D nodePos = connectedNodeView.getPosition();
+        Point2D linkPos = connectedLinkView.getPosition();
+        return new Point2D.Double( (nodePos.getX() + linkPos.getX()) / 2,
+                                   (nodePos.getY() + linkPos.getY()) / 2);
+    }
+
+    public LinkView getConnectedLinkView() {
+        return connectedLinkView;
+    }
+
+    public void setConnectedLinkView(LinkView connectedLinkView) {
+        this.connectedLinkView = connectedLinkView;
+    }
+
+    public NodeView getConnectedNodeView() {
+        return connectedNodeView;
+    }
+
+    public void setConnectedNodeView(NodeView connectedNodeView) {
+        this.connectedNodeView = connectedNodeView;
     }
 }

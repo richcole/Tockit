@@ -8,20 +8,31 @@
 package org.tockit.crepe.view;
 
 import org.tockit.canvas.Canvas;
+import org.tockit.canvas.events.CanvasItemDraggedEvent;
 import org.tockit.events.EventBroker;
-import org.tockit.crepe.view.manipulators.ItemMovementManipulator;
+import org.tockit.events.LoggingEventListener;
+import org.tockit.canvas.manipulators.ItemMovementManipulator;
 import org.tockit.cgs.model.*;
+import org.tockit.crepe.view.manipulators.NodeMoveManipulator;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
-import java.util.Iterator;
-import java.util.Hashtable;
+import java.awt.geom.Point2D;
+import java.util.*;
+import java.util.List;
 
 public class GraphView extends Canvas {
+    private ConceptualGraph graphShown;
+    private Hashtable nodemap = new Hashtable();
+    private Hashtable linkmap = new Hashtable();
+    private static final int LINK_LAYOUT_RADIUS = 100;
+
     public GraphView(EventBroker eventBroker) {
         super(eventBroker);
         getBackgroundItem().setPaint(Color.LIGHT_GRAY);
-        new ItemMovementManipulator(this, eventBroker);
+        new NodeMoveManipulator(this, eventBroker);
+        new ItemMovementManipulator(this, LinkView.class, eventBroker);
+//        new LoggingEventListener(eventBroker, CanvasItemDraggedEvent.class, Object.class, System.out);
     }
 
     public void paintComponent(Graphics g) {
@@ -38,35 +49,72 @@ public class GraphView extends Canvas {
 
     public void showGraph(ConceptualGraph graph) {
         this.clearCanvas();
-         if(graph == null) {
+        this.nodemap.clear();
+        this.linkmap.clear();
+        this.graphShown = graph;
+        if(graph == null) {
             return;
         }
+        fillCanvas();
+        repaint();
+    }
 
-        Hashtable nodemap = new Hashtable();
-        Node[] nodes = graph.getNodes();
+    private void fillCanvas() {
+        Node[] nodes = graphShown.getNodes();
+        List nodeViewsToAdd = new ArrayList();
+        List newNodeViewsPlaced = new ArrayList();
         for (int i = 0; i < nodes.length; i++) {
             Node node = nodes[i];
-            NodeView nodeView = new NodeView(node);
-            nodemap.put(node,nodeView);
+            if (!nodemap.containsKey(node)) {
+                NodeView nodeView = new NodeView(node);
+                nodemap.put(node,nodeView);
+                nodeViewsToAdd.add(nodeView);
+            }
         }
 
-        Link[] links = graph.getLinks();
+        Link[] links = graphShown.getLinks();
         for (int i = 0; i < links.length; i++) {
             Link link = links[i];
-            LinkView linkView = new LinkView(link);
-            Node[] references = link.getReferences();
-            for (int j = 0; j < references.length; j++) {
-                Node node = references[j];
-                this.addCanvasItem(new LineView(linkView, (NodeView) nodemap.get(node), j + 1));
+            if (!linkmap.containsKey(link)) {
+                LinkView linkView = new LinkView(link);
+                double xPos = this.getWidth()/2.0;
+                double yPos = this.getHeight()/2.0;
+                linkView.setPosition(new Point2D.Double(xPos, yPos));
+                linkmap.put(link,linkView);
+                Node[] references = link.getReferences();
+                for (int j = 0; j < references.length; j++) {
+                    Node node = references[j];
+                    NodeView nodeView = (NodeView) nodemap.get(node);
+                    double angle = 2*Math.PI * j / references.length;
+                    double nodeX = xPos + LINK_LAYOUT_RADIUS * Math.sin(angle);
+                    // y gets correction for shapes of vertices (wider than high). Does only work in very special cases, which we have :-)
+                    double nodeY = yPos + LINK_LAYOUT_RADIUS * Math.cos(angle) -
+                                   Math.abs(LINK_LAYOUT_RADIUS * Math.sin(angle) / 3);
+                    nodeView.setPosition(new Point2D.Double(nodeX, nodeY));
+                    newNodeViewsPlaced.add(nodeView);
+                    this.addCanvasItem(new LineView(linkView, nodeView, j + 1));
+                }
+                this.addCanvasItem(linkView);
             }
-            this.addCanvasItem(linkView);
         }
 
-        for (Iterator iterator = nodemap.values().iterator(); iterator.hasNext();) {
+        for (Iterator iterator = nodeViewsToAdd.iterator(); iterator.hasNext();) {
             NodeView nodeView = (NodeView) iterator.next();
+            if (!newNodeViewsPlaced.contains(nodeView)) {
+                double nodeX = this.getWidth()/2.0;
+                double nodeY = this.getHeight()/2.0;
+                nodeView.setPosition(new Point2D.Double(nodeX, nodeY));
+            }
             this.addCanvasItem(nodeView);
         }
+    }
 
+    public ConceptualGraph getGraphShown() {
+        return graphShown;
+    }
+
+    public void updateContents() {
+        fillCanvas();
         repaint();
     }
 }

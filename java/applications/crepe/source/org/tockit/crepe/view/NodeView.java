@@ -7,8 +7,8 @@
  */
 package org.tockit.crepe.view;
 
-import org.tockit.cgs.model.Node;
-import org.tockit.cgs.model.Instance;
+import org.tockit.cgs.model.*;
+import org.tockit.canvas.MovableCanvasItem;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -27,20 +27,30 @@ public class NodeView extends MovableCanvasItem {
     }
 
     public void draw(Graphics2D g) {
+        FontMetrics fontMetrics = g.getFontMetrics();
+
+        g.setPaint(Color.darkGray);
+        g.fill(new Rectangle2D.Double(rect.getX() + 2, rect.getY() + 2, rect.getWidth(), rect.getHeight()));
         g.setPaint(Color.white);
         g.fill(rect);
         g.setPaint(Color.black);
         g.draw(rect);
 
-        /// @todo use font metrics to center
         Instance referent = node.getReferent();
-        if (referent != null) {
-            g.drawString(node.getType().getName() + ": " + referent.getIdentifier(),
-                         (float)rect.getX() + 5, (float)rect.getY() + 20);
-        } else {
-            g.drawString(node.getType().getName(),
-                         (float)rect.getX() + 5, (float)rect.getY() + 20);
+        Type type = node.getType();
+        String text;
+        if( type != null) {
+            text = type.getName();
         }
+        else {
+            text = "[universal]";
+        }
+        if (referent != null) {
+            text += ": " + referent.getIdentifier();
+        }
+        float xPos = (float)(rect.getX() + rect.getWidth()/2 - fontMetrics.stringWidth(text)/2);
+        float yPos = (float)(rect.getY() + rect.getHeight()/2 + fontMetrics.getHeight()/2 - fontMetrics.getDescent());
+        g.drawString(text, xPos, yPos);
     }
 
     public boolean containsPoint(Point2D point) {
@@ -52,11 +62,9 @@ public class NodeView extends MovableCanvasItem {
     }
 
     public void setPosition(Point2D newPosition) {
-        this.rect.setRect(newPosition.getX(), newPosition.getY(), rect.getWidth(), rect.getHeight());
-    }
-
-    public void moveBy(double xDiff, double yDiff) {
-        this.rect.setRect(rect.getX() + xDiff, rect.getY() + yDiff, rect.getWidth(), rect.getHeight());
+        this.rect.setRect(newPosition.getX() - rect.getWidth()/2,
+                          newPosition.getY() - rect.getHeight()/2,
+                          rect.getWidth(), rect.getHeight());
     }
 
     public Point2D getPosition() {
