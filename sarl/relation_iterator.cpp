@@ -252,8 +252,7 @@ struct Sarl_SetIterator *sarl_relation_iterator_extent_set(
 };
 
 struct Sarl_SetIterator *sarl_relation_iterator_extent_intent_set(
-  struct Sarl_RelationIterator *r, struct Sarl_SetIterator *intent
-)
+  struct Sarl_RelationIterator *r, struct Sarl_SetIterator *intent)
 {
   Sarl_SetIterator *extent;
   Sarl_SetIterator *extent_intent;
@@ -299,6 +298,115 @@ struct Sarl_RelationIterator *
   return sarl_iterator_release_ownership(it);
 };
 
+
+/* operations on relation using an implicit opreator */
+
+struct Sarl_SetIterator *sarl_relation_domain(
+  struct Sarl_Relation *r)
+{
+  struct Sarl_SetIterator *result;
+  Sarl_RelationIterator* r_it = sarl_relation_iterator_create(r);
+  sarl_relation_iterator_release_ownership(r_it);
+
+  result = sarl_relation_iterator_domain(r_it);
+  sarl_relation_iterator_decr_ref(r_it);
+  return result;
+};
+
+
+struct Sarl_SetIterator *sarl_relation_range(
+  struct Sarl_Relation *r)
+{
+  struct Sarl_SetIterator *result;
+  Sarl_RelationIterator* r_it = sarl_relation_iterator_create(r);
+  sarl_relation_iterator_release_ownership(r_it);
+
+  result = sarl_relation_iterator_range(r_it);
+  sarl_relation_iterator_decr_ref(r_it);
+  return result;
+};
+
+
+struct Sarl_SetIterator *sarl_relation_intent(
+  struct Sarl_Relation *r, Sarl_Index g)
+{
+  struct Sarl_SetIterator *result;
+  Sarl_RelationIterator* r_it = sarl_relation_iterator_create(r);
+  sarl_relation_iterator_release_ownership(r_it);
+
+  result = sarl_relation_iterator_intent(r_it, g);
+  sarl_relation_iterator_decr_ref(r_it);
+  return result;
+};
+
+
+struct Sarl_SetIterator *sarl_relation_extent(
+  struct Sarl_Relation *r, Sarl_Index m)
+{
+  struct Sarl_SetIterator *result;
+  Sarl_RelationIterator* r_it = sarl_relation_iterator_create(r);
+  sarl_relation_iterator_release_ownership(r_it);
+
+  result = sarl_relation_iterator_extent(r_it, m);
+  sarl_relation_iterator_decr_ref(r_it);
+  return result;
+};
+
+
+struct Sarl_SetIterator *sarl_relation_intent_set(
+  struct Sarl_Relation *r, struct Sarl_SetIterator *A
+)
+{
+  struct Sarl_SetIterator *result;
+  Sarl_RelationIterator* r_it = sarl_relation_iterator_create(r);
+  sarl_relation_iterator_release_ownership(r_it);
+
+  result = sarl_relation_iterator_intent_set(r_it, A);
+  sarl_relation_iterator_decr_ref(r_it);
+  return result;
+};
+
+
+struct Sarl_SetIterator *sarl_relation_extent_set(
+  struct Sarl_Relation *r, struct Sarl_SetIterator *B
+)
+{
+  struct Sarl_SetIterator *result;
+  Sarl_RelationIterator* r_it = sarl_relation_iterator_create(r);
+  sarl_relation_iterator_release_ownership(r_it);
+
+  result = sarl_relation_iterator_extent_set(r_it, B);
+  sarl_relation_iterator_decr_ref(r_it);
+  return result;
+};
+
+
+struct Sarl_SetIterator *sarl_relation_extent_intent_set(
+  struct Sarl_Relation *r, struct Sarl_SetIterator *A
+)
+{
+  struct Sarl_SetIterator *result;
+  Sarl_RelationIterator* r_it = sarl_relation_iterator_create(r);
+  sarl_relation_iterator_release_ownership(r_it);
+
+  result = sarl_relation_iterator_extent_intent_set(r_it, A);
+  sarl_relation_iterator_decr_ref(r_it);
+  return result;
+};
+
+
+struct Sarl_SetIterator *sarl_relation_intent_extent_set(
+  struct Sarl_Relation *r, struct Sarl_SetIterator *B
+)
+{
+  struct Sarl_SetIterator *result;
+  Sarl_RelationIterator* r_it = sarl_relation_iterator_create(r);
+  sarl_relation_iterator_release_ownership(r_it);
+
+  result = sarl_relation_iterator_intent_extent_set(r_it, B);
+  sarl_relation_iterator_decr_ref(r_it);
+  return result;
+};
 
 
 

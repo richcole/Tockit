@@ -27,7 +27,7 @@ OBJECTS = \
   string \
   transitive_relation \
   lattice \
-#  cached_lattice_iterator
+  cached_lattice_iterator
 
 TESTS = \
   test_set \
@@ -143,7 +143,7 @@ python/sarl_wrap.o: python/sarl_wrap.c
           -o $@ $^
 
 python/sarl_wrap.c: $(PUBLIC_HEADERS) sarl.input
-	cd python; $(SWIG) -I.. -o sarl_wrap.c -c++ -shadow -python sarl.input 
+	cd python; $(SWIG) -I.. -o sarl_wrap.c -c++ -python sarl.input 
 
 python_test: $(PYTHON_SARL_LIB)
 	cd python; $(PYTHON) test_sarl.py
@@ -154,7 +154,7 @@ java/sarl_wrap.o: java/sarl_wrap.c
 	$(CCC) -c -I../ $(SWIG_INC:%=-I%) $(JAVA_INC:%=-I%) -o $@ $^
 
 java/sarl_wrap.c: $(PUBLIC_HEADERS) sarl.input
-	cd java; $(SWIG) -I.. -o sarl_wrap.c -c++ -shadow -java ../sarl.input
+	cd java; $(SWIG) -I.. -o sarl_wrap.c -c++ -java ../sarl.input
 
 java/TestSarl.class: java/TestSarl.java $(JAVA_SARL_LIB) java/sarl_wrap.c
 	cd java; javac TestSarl.java

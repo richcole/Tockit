@@ -48,7 +48,7 @@ struct Sarl_CachedLatticeIterator : Sarl_LatticeIterator {
   struct Sarl_SetIterator*       concept;
 };
 
-inline void sarl_plain_lattice_iterator_init(
+inline void sarl_lattice_iterator_init(
   struct Sarl_LatticeIterator *it, 
   struct Sarl_LatticeIteratorFunctionTable *ap_funcs)
 {

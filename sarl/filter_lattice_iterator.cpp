@@ -75,7 +75,7 @@ struct Sarl_LatticeIterator *
     struct Sarl_SetIterator* filter)
 {
   struct Sarl_FilterLatticeIterator *result = new Sarl_FilterLatticeIterator;
-  sarl_plain_lattice_iterator_init(result, &s_filterLatticeIteratorTable);
+  sarl_lattice_iterator_init(result, &s_filterLatticeIteratorTable);
   
   result->context = sarl_context_iterator_obtain_ownership(context);
   result->A = sarl_context_iterator_next_extent_superseteq(
@@ -307,7 +307,7 @@ struct Sarl_LatticeIterator*
   Sarl_FilterLatticeIterator* copy_it =
     new Sarl_FilterLatticeIterator;
   
-  sarl_plain_lattice_iterator_init(copy_it, &s_filterLatticeIteratorTable);
+  sarl_lattice_iterator_init(copy_it, &s_filterLatticeIteratorTable);
 
   copy_it->A = sarl_set_iterator_copy(it->A);
   copy_it->B = sarl_set_iterator_copy(it->B);

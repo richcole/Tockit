@@ -77,7 +77,7 @@ struct Sarl_LatticeIterator *
     struct Sarl_ContextIterator *context)
 {
   struct Sarl_PlainLatticeIterator *result = new Sarl_PlainLatticeIterator;
-  sarl_plain_lattice_iterator_init(result, &s_plainLatticeIteratorTable);
+  sarl_lattice_iterator_init(result, &s_plainLatticeIteratorTable);
   
   result->context = sarl_context_iterator_obtain_ownership(context);
   result->A = 0;
@@ -295,7 +295,7 @@ struct Sarl_LatticeIterator*
   Sarl_PlainLatticeIterator* copy_it =
     new Sarl_PlainLatticeIterator;
   
-  sarl_plain_lattice_iterator_init(copy_it, &s_plainLatticeIteratorTable);
+  sarl_lattice_iterator_init(copy_it, &s_plainLatticeIteratorTable);
 
   copy_it->A = sarl_set_iterator_copy(it->A);
   copy_it->B = sarl_set_iterator_copy(it->B);

@@ -7,12 +7,14 @@ extern "C" {
 #include <sarl/set_iterator.h>
 #include <sarl/ref_count.h>
 
+#include <sarl/lattice.h>
 #include <sarl/filter_lattice_iterator.h>
-  
+#include <sarl/relation_iterator.h>
 }
 
 #include <sarl/concept_iterator_impl.h>
 #include <sarl/lattice_iterator_impl.h>
+#include <sarl/lattice_impl.h>
 #include <sarl/test.h>
 
 /* function prototypes used in function table declaired below */
@@ -82,16 +84,32 @@ struct Sarl_LatticeIterator *
   result->lattice = lattice;
   sarl_lattice_incr_ref(lattice);
 
+  Sarl_RelationIterator *r_intent_it = 
+    sarl_relation_iterator_create(result->lattice->intent);
+
+  Sarl_RelationIterator *r_extent_it = 
+    sarl_relation_iterator_create(result->lattice->extent);
+
+  sarl_relation_iterator_release_ownership(r_intent_it);
+  sarl_relation_iterator_release_ownership(r_extent_it);
+
   Sarl_SetIterator* intent_it = 
-    sarl_relation_iterator_domain(result->lattice->intent);
+    sarl_relation_iterator_domain(r_intent_it);
 
   Sarl_SetIterator* extent_it = 
-    sarl_relation_iterator_domain(result->lattice->extent);
+    sarl_relation_iterator_domain(r_extent_it);
+
+  sarl_relation_iterator_decr_ref(r_intent_it);
+  sarl_relation_iterator_decr_ref(r_extent_it);
 
   sarl_set_iterator_release_ownership(intent_it);
   sarl_set_iterator_release_ownership(extent_it);
   
   result->concept = sarl_set_iterator_union(intent_it, extent_it);
+
+  sarl_set_iterator_decr_ref(intent_it);
+  sarl_set_iterator_decr_ref(extent_it);
+  
   return result;
 };
 
@@ -142,10 +160,10 @@ void
   
   B = sarl_concept_iterator_intent(c);
   sarl_set_iterator_release_ownership(B);
-  B =  sarl_relation_iterator_extent_set(it->intent, B); 
+  B =  sarl_relation_extent_set(it->lattice->intent, B); 
 
   if ( ! sarl_set_iterator_at_end(B_i) ) {
-    sarl_set_iterator_next_gte(a_it->concept, sarl_set_iterator_value(B_i));
+    sarl_set_iterator_next_gte(it->concept, sarl_set_iterator_value(B_i));
   }
   sarl_set_iterator_decr_ref(B);
   sarl_set_iterator_decr_ref(B_i);
@@ -197,7 +215,10 @@ struct Sarl_SetIterator *
   Sarl_CachedLatticeIterator* it = 
    static_cast<struct Sarl_CachedLatticeIterator*>(a_it);
 
-  return sarl_relation_iterator_intent(it->extent, it->concept);
+  return sarl_relation_intent(
+    it->lattice->extent, 
+    sarl_set_iterator_value(it->concept)
+  );
 };
 
 struct Sarl_SetIterator *
@@ -208,7 +229,10 @@ struct Sarl_SetIterator *
   Sarl_CachedLatticeIterator* it = 
     static_cast<struct Sarl_CachedLatticeIterator*>(a_it);
 
-  return sarl_relation_iterator_intent(it->intent, it->concept);
+  return sarl_relation_intent(
+    it->lattice->intent, 
+    sarl_set_iterator_value(it->concept)
+  );
 };
 
 struct Sarl_ConceptIterator *
@@ -216,6 +240,9 @@ struct Sarl_ConceptIterator *
     struct Sarl_LatticeIterator *a_it
   )
 {
+  Sarl_CachedLatticeIterator* it = 
+    static_cast<struct Sarl_CachedLatticeIterator*>(a_it);
+
   Sarl_SetIterator* A = sarl_lattice_iterator_extent(it);
   Sarl_SetIterator* B = sarl_lattice_iterator_intent(it);
   Sarl_ConceptIterator* result;
@@ -239,11 +266,8 @@ void
     static_cast<struct Sarl_CachedLatticeIterator*>(a_it);
 
   if ( sarl_ref_count_decr(&it->ref_count) ) {
-    sarl_relation_iterator_release_ownership(it->intent);
-    sarl_relation_iterator_decr_ref(it->A);
-    sarl_relation_iterator_release_ownership(it->extent);
-    sarl_relation_iterator_decr_ref(it->A);
-    sarl_lattice_decr_ref(lattice);
+    sarl_lattice_decr_ref(it->lattice);
+    sarl_set_iterator_decr_ref(it->concept);
     delete it;
   }
 };
