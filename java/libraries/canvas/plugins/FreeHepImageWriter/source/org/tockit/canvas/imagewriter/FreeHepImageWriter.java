@@ -25,6 +25,7 @@ import org.freehep.graphicsio.pdf.PDFGraphics2D;
 import org.freehep.graphicsio.ps.PSGraphics2D;
 import org.freehep.graphicsio.svg.SVGGraphics2D;
 import org.freehep.graphicsio.swf.SWFGraphics2D;
+import org.freehep.util.UserProperties;
 import org.tockit.canvas.Canvas;
 
 /**
@@ -171,6 +172,10 @@ public class FreeHepImageWriter implements ImageWriter {
 				graphics2D = new EMFGraphics2D(outputFile,imageSize);
 			} else if(graphicFormat instanceof GraphicFormatPS) {
 				graphics2D = new PSGraphics2D(outputFile,imageSize);
+				UserProperties properties = (UserProperties) PSGraphics2D.getDefaultProperties();
+				properties.setProperty(PSGraphics2D.EMBED_FONTS, true);
+				properties.setProperty(PSGraphics2D.TITLE, metadata.getProperty("title"));
+				graphics2D.setProperties(properties);
 			} else if(graphicFormat instanceof GraphicFormatPPM) {
 				graphics2D = new ImageGraphics2D(outputFile,imageSize,"ppm");
 			} else if(graphicFormat instanceof GraphicFormatSWF) {
