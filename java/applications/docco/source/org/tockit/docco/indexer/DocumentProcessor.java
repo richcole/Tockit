@@ -12,12 +12,15 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.tockit.docco.GlobalConstants;
 
 public class DocumentProcessor {
+    private static Logger logger = Logger.getLogger(DocumentProcessor.class.getName());
 	
 	private List documentMappings;
 	
@@ -46,7 +49,7 @@ public class DocumentProcessor {
 		
 		if (docSummary != null) {
 			Document doc = fillDocumentFields(file, docSummary);
-			//printDebug(doc);
+			logDocument(doc);
 			return doc;								
 		}
 		else {
@@ -127,8 +130,8 @@ public class DocumentProcessor {
 		return doc;
 	}
 	
-	private void printDebug (Document doc) {
-		System.out.println("DOCUMENT:: path = " + doc.get(GlobalConstants.FIELD_DOC_PATH) +
+	private void logDocument(Document doc) {
+		logger.log(Level.FINE, "DOCUMENT:: path = " + doc.get(GlobalConstants.FIELD_DOC_PATH) +
 						"\n\t date = " +  doc.get(GlobalConstants.FIELD_DOC_MODIFICATION_DATE) + 
 						"\n\t size = " +  doc.get(GlobalConstants.FIELD_DOC_SIZE) + 
 						"\n\t author = " + doc.get(GlobalConstants.FIELD_DOC_AUTHOR) + 

@@ -156,7 +156,6 @@ public class CreateNewFileMappingDialog extends JDialog {
 		
 		docHandlersChooser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Object selectedItem = docHandlersChooser.getSelectedItem();
 				setOkButtonStatus();
 			}
 		});

@@ -54,15 +54,14 @@ public class OpenOfficeDocumentHandler implements DocumentHandler {
 					// stupid zip stream doesn't have a proper check for more entries and I don't dare to
 					// use available(). So much about reusing interfaces like Iterator or Enumeration :(
 				}
-				// check for the top (and hopefully only one) meta file and any content file inside
-				// there can be multiple content files if there are embedded objects
-				String entryName = entry.getName();
 				// the indirection avoids closing the zip stream too early
 				InputSource source = new InputSource(new InputStream(){
 					public int read() throws IOException {
 						return zipStream.read();
 					}
 				});
+                // check for the top (and hopefully only one) meta file and any content file inside
+                // there can be multiple content files if there are embedded objects
 				if(entry.getName().equals(META_FILE_NAME)) {
 					extractMetaData(source, docSummary);		
 				} else if(entry.getName().endsWith(CONTENT_FILE_NAME)) {
@@ -111,11 +110,11 @@ public class OpenOfficeDocumentHandler implements DocumentHandler {
 			docSummary.summary = n.getFirstChild().getNodeValue();
 		}
         
-		nodes = metaElem.getElementsByTagNameNS(META_NAMESPACE,"creation-date");
-		for (int i=0; i<nodes.getLength(); i++) {
-			Node n = nodes.item(i);
-			// @todo parse creation date
-		}
+//		nodes = metaElem.getElementsByTagNameNS(META_NAMESPACE,"creation-date");
+//		for (int i=0; i<nodes.getLength(); i++) {
+//			Node n = nodes.item(i);
+//			// @todo parse creation date
+//		}
         
 		nodes = metaElem.getElementsByTagNameNS(DC_NAMESPACE,"creator");
 		docSummary.authors = new ArrayList();
