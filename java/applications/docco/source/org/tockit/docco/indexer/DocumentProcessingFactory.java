@@ -79,7 +79,7 @@ public class DocumentProcessingFactory {
 			if (docProcessor.getSummary() != null) {
 				doc.add(Field.Text(GlobalConstants.FIELD_DOC_SUMMARY, docProcessor.getSummary()));
 			}
-			
+		
 			if (docProcessor.getModificationDate() != null) {
 				try {
 					doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_MODIFICATION_DATE, docProcessor.getModificationDate()));

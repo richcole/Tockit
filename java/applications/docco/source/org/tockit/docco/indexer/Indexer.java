@@ -42,7 +42,8 @@ public class Indexer extends Thread {
 				mappings = new ArrayList(20);
 				mappings.add("html:org.tockit.docco.indexer.HtmlDocumentProcessor");
 				mappings.add("htm:org.tockit.docco.indexer.HtmlDocumentProcessor");
-				mappings.add("pdf:org.tockit.docco.indexer.PdfDocumentProcessor");
+				//mappings.add("pdf:org.tockit.docco.indexer.PdfDocumentProcessor");
+				mappings.add("pdf:org.tockit.docco.indexer.PdfMultivalentDocumentProcessor");
 				mappings.add("doc:org.tockit.docco.indexer.MSWordProcessor");
 				mappings.add("txt:org.tockit.docco.indexer.PlainTextDocumentProcessor");
 				mappings.add("xls:org.tockit.docco.indexer.MSExcelDocProcessor");
@@ -138,11 +139,19 @@ public class Indexer extends Thread {
 				}
 			}
 		}
+		catch (UnknownFileExtensionException e) {
+		}
+		catch (NotFoundFileExtensionException e) {
+		}
+		catch (DocumentProcessingException e) {
+		}
 		catch (Exception e) {
 			// sometimes shit happens. E.g. the PDF header might be screwed. Some other things
 			// might be broken. We don't want to stop indexing whenever one document fails to be
 			// read properly, so we just ignore it for now. Of course we should consider
 			// @todo some error handling/reporting
+			//e.printStackTrace();
+			System.err.println("Error processing document " + file.getAbsolutePath() + ": " + e.getMessage());
 		}
 	}
 
