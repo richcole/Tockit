@@ -17,7 +17,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
@@ -33,7 +32,9 @@ import java.util.zip.ZipFile;
  * files found.
  * 
  * For more information on loading classes or resources 
- * @see findClass(String name) and findResource(String name)   
+ * @see findClass(String name) 
+ * @see findResource(String name)
+ * @see loadClass(Resource resource)   
  */
 public class PluginClassLoader extends ClassLoader {
 
@@ -42,12 +43,6 @@ public class PluginClassLoader extends ClassLoader {
 	private File pluginsDirLocation;
 
 	private List foundResources = new ArrayList();
-	
-	/**
-	 * keys - resource.getRelativePath()
-	 * values - corresponding class
-	 */
-	private Hashtable loadedClassesMap = new Hashtable();
 	
 	private interface Resource {
 		public byte[] getData() throws IOException;
@@ -175,7 +170,7 @@ public class PluginClassLoader extends ClassLoader {
 			Resource curResource = (Resource) it.next();
 			String name = curResource.getRelativePath();
 			if (name.endsWith(".class")) {
-				String newName = name.replaceAll(".class","");
+				System.out.println(name);
 				Class curClass = loadClass(curResource);
 				Class[] interfaces = curClass.getInterfaces();
 				for (int i = 0; i < interfaces.length; i++) {
@@ -237,30 +232,59 @@ public class PluginClassLoader extends ClassLoader {
 		return loadClass(resource);
 	 }
 	 
+	 /**
+	  * Assumptions: 
+	  * - We don't support duplicate class definitions within the same 
+	  * 	plugin. In the case of duplicate class definitions we just
+	  * 	use the first class found.
+	  * - Class definitions found in the classpath by default 
+	  * 	class loader cannot be overriden, therefore
+	  * 	they will be preferred.
+	  */
 	 private Class loadClass (Resource resource) 
 	 								throws ClassNotFoundException, 
 	 								NoClassDefFoundError {
-	 	if (this.loadedClassesMap.containsKey(resource.getRelativePath())) {
-	 		return (Class) this.loadedClassesMap.get(resource.getRelativePath());
-	 	}
+	 	Class resClass = null;
 	 	// @todo Use getResource here instead of loading class.
-//	 	try {
-//	 		String className = resource.getRelativePath().replace('/','.').replaceAll(".class", "");
-//	 		Class resClass = this.getClass().getClassLoader().loadClass(className);
-//	 		System.out.println(className + " - YES");	 
-//	 		return resClass;
-//	 	}
-//	 	catch (ClassNotFoundException e) {
-//			System.out.println(resource.getRelativePath() + " - NO");	 		
-//	 	}
-		try {
-			byte [] b = resource.getData();
-			Class resClass = defineClass(null, b, 0, b.length);
-			this.loadedClassesMap.put(resource.getRelativePath(), resClass);
-			return resClass;	 	
-		} catch (IOException e) {
-			throw new ClassNotFoundException("Couldn't find resource " + resource.getRelativePath(), e);			
+	 	// @todo should we rather use a different approach to figure out if 
+	 	// a class is already loaded: try to load it via define method and 
+	 	// check if we get LinkageError (check for error message "duplicate...")
+	 	// see commented out below.
+	 	try {
+	 		String className = resource.getRelativePath().replace('/','.').replaceAll(".class", "");
+	 		resClass = this.getClass().getClassLoader().loadClass(className);
+	 	}
+	 	catch (ClassNotFoundException e) {
+			try {
+				byte [] b = resource.getData();
+				resClass = defineClass(null, b, 0, b.length);
+			} catch (IOException exc) {
+				throw new ClassNotFoundException("Couldn't find resource " + resource.getRelativePath(), exc);			
+			}
 		}
+		
+//		try {
+//			byte [] b = resource.getData();
+//			resClass = defineClass(null, b, 0, b.length);
+//		}
+//		catch (LinkageError e) {
+//			if (e.getMessage().startsWith("duplicate class definition: ")) {
+//				String className = resource.getRelativePath().replace('/','.').replaceAll(".class", "");
+//				try {
+//					// load class from this class loader?
+//					// still need loaded classes hashmap
+//				} 
+//				catch (LinkageError err) {
+//					if (err.getMessage().startsWith("duplicate class definition: ")) {
+//						// try/catch here as well?
+//						resClass = this.getClass().getClassLoader().loadClass(className);
+//					}
+//				}
+//			}
+//		}
+		
+		System.out.println("--Class = " + resClass.getName());
+		return resClass;
 	 }
 
 	private Resource findResourceLocation (String name) {

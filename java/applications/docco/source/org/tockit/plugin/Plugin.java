@@ -10,5 +10,4 @@ package org.tockit.plugin;
 
 public interface Plugin {
 	public void load();
-
 }

@@ -36,7 +36,7 @@ public class PluginClassLoaderTest extends TestCase {
 							+ System.getProperty("file.separator")
 							+ "docco"
 							+ System.getProperty("file.separator")
-							+ "plugins";
+							+ "plugins/multivalent";
 		try {	
 			Logger logger = Logger.getLogger(PluginClassLoader.class.getName());
 			logger.setLevel(Level.FINE);
