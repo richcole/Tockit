@@ -33,12 +33,22 @@ public class DiagramView extends JComponent implements MouseListener, MouseMotio
      */
     List canvasItems;
 
-    ToscanajGraphics2D tg = null;
+    /**
+     * Stores the drawing context used for scaling.
+     *
+     * This is created any time the diagram is drawn and is needed for mapping
+     * a point on the screen back into the coordinate system for the diagram
+     * whenever a mouse event occurs.
+     */
+    ToscanajGraphics2D graphics = null;
 
     /**
-     * The size of a point.
+     * The minimum size for drawing.
+     *
+     * If this size for a diagram is not reached (in width or height), the digram
+     * will not be drawn at all.
      */
-    private final int RADIUS = 10;
+    private final int MINDIAGRAMSIZE=50;
 
     /**
      * This is a generic margin used for all four edges.
@@ -114,7 +124,7 @@ public class DiagramView extends JComponent implements MouseListener, MouseMotio
         int w = getWidth() - insets.top - insets.bottom - 2 * MARGIN;
 
         // check if there is enough left to paint on, otherwise abort
-        if( ( h < RADIUS ) || ( w < RADIUS ) ) {
+        if( ( h < MINDIAGRAMSIZE ) || ( w < MINDIAGRAMSIZE ) ) {
             return;
         }
 
@@ -161,53 +171,71 @@ public class DiagramView extends JComponent implements MouseListener, MouseMotio
             yOrigin = y - _diagram.getPoint(0).getY() * yScale;
         }
         //store updated ToscanajGraphics2D
-        tg = new ToscanajGraphics2D(g2d, new Point2D.Double( xOrigin, yOrigin ), xScale, yScale );
+        graphics = new ToscanajGraphics2D(g2d, new Point2D.Double( xOrigin, yOrigin ), xScale, yScale );
         // paint all items on canvas
         Iterator it = this.canvasItems.iterator();
         while( it.hasNext() ) {
             CanvasItem cur = (CanvasItem) it.next();
-            cur.draw(tg);
+            cur.draw(graphics);
         }
     }
 
-    // mouse listeners for diagram events
-    // Example moving labels
-
+    /**
+     * Not used yet.
+     */
     public void mouseClicked(MouseEvent e){
       //System.out.println("mouseClicked");
     }
 
+    /**
+     * Resets the diagram from dragging mode back into normal mode.
+     */
     public void mouseReleased(MouseEvent e) {
         dragMode = false;
         selectedLabel = null;
     }
+
+    /**
+     * Not used yet.
+     */
     public void mouseEntered(MouseEvent e) {
       //System.out.println("mouseEntered");
     }
+
+    /**
+     * Not used yet.
+     */
     public void mouseExited(MouseEvent e) {
       //System.out.println("mouseExited");
     }
 
-    // Mouse Motion Listener for label drag events
-
+    /**
+     * Handles dragging the labels.
+     */
     public void mouseDragged(MouseEvent e) {
         if(selectedLabel != null && (dragMode || ((getDistance(lastMousePos.getX(), lastMousePos.getY(), e.getX(), e.getY()) >= dragMin)))) {
-            selectedLabel.moveBy(tg.inverseScaleX(e.getX() - lastMousePos.getX()),
-                                 tg.inverseScaleY(e.getY() - lastMousePos.getY()));
+            selectedLabel.moveBy(graphics.inverseScaleX(e.getX() - lastMousePos.getX()),
+                                 graphics.inverseScaleY(e.getY() - lastMousePos.getY()));
             lastMousePos = new Point2D.Double(e.getX(), e.getY());
             dragMode = true;
         }
     }
 
+    /**
+     * Not used yet.
+     */
     public void mouseMoved(MouseEvent e) {
       //System.out.println("mouseMoved");
     }
 
+    /**
+     * Starts the process of dragging a label.
+     */
     public void mousePressed(MouseEvent e) {
         ListIterator it = this.canvasItems.listIterator(this.canvasItems.size());
         while(it.hasPrevious()) {
             CanvasItem cur = (CanvasItem) it.previous();
-            Point2D point = this.tg.inverseProject(e.getPoint());
+            Point2D point = this.graphics.inverseProject(e.getPoint());
             if(cur.containsPoint(point)) {
                 if(cur instanceof LabelView) {
                     // store the information needed for moving the label
@@ -216,16 +244,24 @@ public class DiagramView extends JComponent implements MouseListener, MouseMotio
                     // raise the label
                     it.remove();
                     this.canvasItems.add(cur);
+                    // redraw the raised label (needed if it will not be moved)
+                    repaint();
                     break;
                 }
             }
         }
     }
 
+    /**
+     * Calculates the distance between the two points.
+     */
     private double getDistance(double x1, double y1, double x2, double y2){
       return Math.abs(Math.sqrt(sqr(x2 - x1) + sqr(y2 - y1)));
     }
 
+    /**
+     * Returns the square of the input.
+     */
     private double sqr(double x) {
       return x * x;
     }
