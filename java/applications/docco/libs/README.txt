@@ -15,3 +15,6 @@ jakarta-poi*.jar:
   
 PDFBox.jar:
   PDF Box, 0.6.1 (http://www.pdfbox.org, license in LICENSE-PDFBox)
+
+ant-contrib.jar
+  ant extras, 0.3 (http://sourceforge.net/projects/ant-contrib/, license in LICENSE-ant-contrib.txt)
