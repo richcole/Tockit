@@ -15,9 +15,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-
-
-import org.tockit.context.model.*;
 import org.tockit.util.ListSet;
 import org.tockit.util.ListSetImplementation;
 
@@ -448,25 +445,25 @@ public class ConceptImplementation implements Concept {
         return this.objectContingent.iterator();
     }
 
-    public void addObject(FCAElement object) {
+    public void addObject(Object object) {
         this.objectContingent.add(object);
     }
 
-    public void addAttribute(FCAElement attribute) {
+    public void addAttribute(Object attribute) {
         this.attributeContingent.add(attribute);
     }
     
-    public void replaceObject(FCAElement objectToReplace, FCAElement newObject) {
+    public void replaceObject(Object objectToReplace, Object newObject) {
 		// @todo make sure new object is inserted at the same position where old one was
     	this.objectContingent.remove(objectToReplace);
     	this.objectContingent.add(newObject);
     }
 
-    public void removeObject(FCAElement object) {
+    public void removeObject(Object object) {
         this.objectContingent.remove(object);
     }
 
-    public void removeAttribute(FCAElement attribute) {
+    public void removeAttribute(Object attribute) {
         this.attributeContingent.remove(attribute);
     }
 

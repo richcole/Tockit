@@ -12,8 +12,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import org.tockit.context.model.BinaryRelation;
-import org.tockit.context.model.FCAElement;
-import org.tockit.context.model.FCAElementImplementation;
 
 
 public class ViewContext {
@@ -28,14 +26,10 @@ public class ViewContext {
                 return false;
             }
             CernatoObject fcaObject = (CernatoObject) domainObject;
-            if (!(rangeObject instanceof FCAElement)) {
+            if (!(rangeObject instanceof Criterion)) {
                 return false;
             }
-            FCAElement attribute = (FCAElement) rangeObject;
-            if (!(attribute.getData() instanceof Criterion)) {
-                return false;
-            }
-            Criterion criterion = (Criterion) attribute.getData();
+            Criterion criterion = (Criterion) rangeObject;
             AttributeValue relationValue = model.getContext().getRelationship(fcaObject, criterion.getProperty());
             return criterion.getValueGroup().containsValue(relationValue);
         }
@@ -47,7 +41,7 @@ public class ViewContext {
         attributes = new HashSet();
         for (Iterator iterator = view.getCriteria().iterator(); iterator.hasNext();) {
             Criterion criterion = (Criterion) iterator.next();
-            attributes.add(new FCAElementImplementation(criterion, null));
+            attributes.add(criterion);
         }
         this.name = view.getName();
     }

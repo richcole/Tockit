@@ -17,8 +17,6 @@ import java.util.Iterator;
 
 
 import org.tockit.cernatoXML.model.*;
-import org.tockit.context.model.FCAElement;
-import org.tockit.context.model.FCAElementImplementation;
 
 public class ViewContextTest extends TestCase {
     final static Class THIS = ViewContextTest.class;
@@ -43,13 +41,11 @@ public class ViewContextTest extends TestCase {
         Collection attributes = scaledContext.getAttributes();
         for (Iterator it1 = objects.iterator(); it1.hasNext();) {
             CernatoObject object = (CernatoObject) it1.next();
-            // @todo re-enable once core FCA is in Tockit
             for (Iterator it2 = attributes.iterator(); it2.hasNext();) {
-                FCAElement attribute = (FCAElement) it2.next();
-                Criterion criterion = (Criterion) attribute.getData();
+                Criterion criterion = (Criterion) it2.next();
                 assertEquals(object.getName() + " x " + criterion.getProperty().getName() + ":" + criterion.getValueGroup().getName(),
                         TestData.isInScaledRelation(object, criterion),
-                        scaledContext.getRelation().contains(object, new FCAElementImplementation(criterion, null)));
+                        scaledContext.getRelation().contains(object, criterion));
             }
         }
     }
