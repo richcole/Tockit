@@ -101,12 +101,12 @@ import org.tockit.docco.query.QueryEngine;
 import org.tockit.docco.query.util.QueryWithResultSet;
 
 public class DoccoMainFrame extends JFrame {
-	private static final int LOWEST_PRIORITY = Thread.MIN_PRIORITY;
+    private static final int LOWEST_PRIORITY = Thread.MIN_PRIORITY;
 	private static final int LOW_PRIORITY = (Thread.MIN_PRIORITY + Thread.NORM_PRIORITY)/2;
     private static final int MEDIUM_PRIORITY = Thread.NORM_PRIORITY;
 	private static final int HIGH_PRIORITY = (Thread.NORM_PRIORITY + Thread.MAX_PRIORITY)/2;
     private static final int HIGHEST_PRIORITY = Thread.MAX_PRIORITY;
-    private JLabel statusBarMessage;
+
     private static final int VISIBLE_TREE_DEPTH = 2;
     private static final int DEFAULT_VERTICAL_DIVIDER_LOCATION = 600;
     private static final int DEFAULT_FRAME_WIDTH = 900;
@@ -121,6 +121,7 @@ public class DoccoMainFrame extends JFrame {
 	private static final String CONFIGURATION_LAST_INDEX_DIR = "lastIndexDir";
 	private static final String CONFIGURATION_SHOW_PHANTOM_NODES_NAME = "showPhantomNodes";
 	private static final String CONFIGURATION_SHOW_CONTINGENT_ONLY_NAME = "showContingentOnly";
+	private static final String CONFIGURATION_INDEXING_PRIORITY_NAME = "indexingPriority";
 	
 	private QueryEngine queryEngine;
 	private Index index;
@@ -131,7 +132,7 @@ public class DoccoMainFrame extends JFrame {
 	private JButton searchButton = new JButton("Submit");
 	private JCheckBoxMenuItem showPhantomNodesCheckBox;
 	private JCheckBoxMenuItem showContingentOnlyCheckBox;
-
+	private JLabel statusBarMessage;
 	private DiagramView diagramView;
 	private Concept selectedConcept;
 	private JSplitPane viewsSplitPane;
@@ -311,7 +312,10 @@ public class DoccoMainFrame extends JFrame {
 		contentPane.add(mainPane, BorderLayout.CENTER);
 		contentPane.add(this.statusBarMessage, BorderLayout.SOUTH);
 		
-		setContentPane(contentPane);	
+		setContentPane(contentPane);
+		
+		Index.indexingPriority = ConfigurationManager.fetchInt(CONFIGURATION_SECTION_NAME, 
+															   CONFIGURATION_INDEXING_PRIORITY_NAME, MEDIUM_PRIORITY);	
 		
         String indexLocation = getIndexLocation().getPath();
 		if(IndexReader.indexExists(indexLocation)) {
@@ -856,6 +860,8 @@ public class DoccoMainFrame extends JFrame {
 								this.showPhantomNodesCheckBox.isSelected()?1:0);
 		ConfigurationManager.storeInt(CONFIGURATION_SECTION_NAME, CONFIGURATION_SHOW_CONTINGENT_ONLY_NAME,
 								this.showContingentOnlyCheckBox.isSelected()?1:0);
+		ConfigurationManager.storeInt(CONFIGURATION_SECTION_NAME, CONFIGURATION_INDEXING_PRIORITY_NAME,
+								Index.indexingPriority);
 		
 		ConfigurationManager.saveConfiguration();
 		System.exit(0);
