@@ -116,4 +116,15 @@ public class DocumentHandlerRegistry {
 		}
 		return mappings;
 	}
+
+	public void restoreDefaults () {
+		docHandlersList = new LinkedList();
+		try {
+			registerMappings(DocumentHandlerRegistry.DEFAULT_MAPPINGS);	
+		}
+		catch (Exception e) {
+			// @todo what to do with these exceptions here?!!
+			e.printStackTrace();			
+		}
+	}
 }

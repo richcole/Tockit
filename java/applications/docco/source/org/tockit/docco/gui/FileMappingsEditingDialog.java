@@ -40,6 +40,7 @@ import org.tockit.docco.indexer.filefilter.DoccoFileFilter;
 
 public class FileMappingsEditingDialog extends JDialog {
 	
+	
 	private DocHandlersRegistryListModel model;
 	private DocumentHandlerRegistry docHandlersRegistry;
 	
@@ -53,6 +54,8 @@ public class FileMappingsEditingDialog extends JDialog {
 	private JLabel fileFilterDisplayLabel = new JLabel();
 	private JLabel docHandlerDisplayLabel = new JLabel();
 	
+	private JButton okButton;
+	private JButton applyButton;
 	private class MappingsListCellRenderer extends DefaultListCellRenderer {
 		public Component getListCellRendererComponent(JList list, Object value, 
 												int index, boolean isSelected, 
@@ -119,6 +122,11 @@ public class FileMappingsEditingDialog extends JDialog {
 			fireIntervalAdded(copyRegistry.getMappingAt(getSize() - 1), 0, getSize());
 		}
 		
+		public void restoreDefaultMappings () {
+			copyRegistry.restoreDefaults();
+			fireContentsChanged(copyRegistry.getMappingAt(0), 0, copyRegistry.getDocumentMappingList().size());
+		}
+		
 		public DocumentHandlerRegistry getRegistry () {
 			return copyRegistry;
 		}
@@ -134,7 +142,7 @@ public class FileMappingsEditingDialog extends JDialog {
 		getContentPane().add(createMainPanel(), BorderLayout.CENTER);
 		getContentPane().add(createButtonsPanel(), BorderLayout.SOUTH);
 		
-		setButtonsStatus();
+		setManipulatorButtonsStatus();
 		
 		pack();
 		setLocationRelativeTo(parent);
@@ -157,6 +165,7 @@ public class FileMappingsEditingDialog extends JDialog {
 					model.moveMapping(index, index -1);
 					jlist.setSelectedIndex(index - 1);
 					// @todo store mappings in index ???
+					setSaveButtonsStatus(true);
 				}
 			}
 		});
@@ -169,6 +178,7 @@ public class FileMappingsEditingDialog extends JDialog {
 					model.moveMapping(index, index + 1);
 					jlist.setSelectedIndex(index + 1);
 					// @todo store mappings in index ???
+					setSaveButtonsStatus(true);
 				}
 			}
 		});
@@ -176,6 +186,7 @@ public class FileMappingsEditingDialog extends JDialog {
 		addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				createMapping();
+				setSaveButtonsStatus(true);
 			}
 		});
 		
@@ -183,13 +194,13 @@ public class FileMappingsEditingDialog extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				int selectedIndex = jlist.getSelectedIndex();
 				model.removeMappingAt(selectedIndex);
-				setButtonsStatus();
 				if (selectedIndex >= model.getSize()) {
 					jlist.setSelectedIndex(model.getSize() - 1);
 				}
 				else {
 					jlist.setSelectedIndex(selectedIndex);
 				}
+				setSaveButtonsStatus(true);
 			}
 		});
 
@@ -197,7 +208,7 @@ public class FileMappingsEditingDialog extends JDialog {
 		jlist.setCellRenderer(new MappingsListCellRenderer());
 		jlist.addListSelectionListener(new ListSelectionListener(){
 			public void valueChanged(ListSelectionEvent e) {
-				setButtonsStatus();
+				setManipulatorButtonsStatus();
 				displayMappingDetails();
 			}
 		});
@@ -223,13 +234,13 @@ public class FileMappingsEditingDialog extends JDialog {
 								)); 
 
 		row++;
-		editingPanel.add(scrollPane ,new GridBagConstraints(0, row, 	// gridx, gridy
-								1, 4, 							// gridwidth, gridheight
-								0.4, 0.2,  						// weightx, weighty
-								GridBagConstraints.CENTER,	// anchor
-								GridBagConstraints.BOTH,	// fill
-								new Insets(5, 5, 5, 5),		// insets
-								0, 0						// ipadx, ipady
+		editingPanel.add(scrollPane ,new GridBagConstraints(0, row, 	
+								1, 4, 							
+								0.4, 0.2,  						
+								GridBagConstraints.CENTER,	
+								GridBagConstraints.BOTH,	
+								new Insets(5, 5, 5, 5),		
+								0, 0						
 								)); 
 		
 		
@@ -328,7 +339,7 @@ public class FileMappingsEditingDialog extends JDialog {
 	private JPanel createButtonsPanel () {
 		JPanel panel = new JPanel();
 
-		JButton okButton = new JButton("OK");
+		okButton = new JButton("OK");
 		okButton.setToolTipText("Save changes and exit this dialog");
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -337,12 +348,26 @@ public class FileMappingsEditingDialog extends JDialog {
 			}
 		});
 		
-		JButton applyButton = new JButton("Apply");
-		applyButton.setToolTipText("Apply changes");
+		applyButton = new JButton("Apply");
+		applyButton.setToolTipText("Save changes");
+		applyButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				docHandlersRegistry.setDocumentMappingList(model.getRegistry().getDocumentMappingList());
+				setSaveButtonsStatus(false);
+			}
+		});
 		
-		JButton restoreDefault = new JButton("Restore Original Settings");
+		JButton restoreDefault = new JButton("Restore Default");
+		restoreDefault.setToolTipText("Ovewrite mappings with default mapping settings.");
+		restoreDefault.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				model.restoreDefaultMappings();
+				docHandlersRegistry.setDocumentMappingList(model.getRegistry().getDocumentMappingList());
+			}
+		});
 					
 		JButton cancelButton = new JButton("Cancel");
+		cancelButton.setToolTipText("Close dialog without saving any changes that may have been made");
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				setVisible(false);
@@ -354,13 +379,18 @@ public class FileMappingsEditingDialog extends JDialog {
 		panel.add(Box.createHorizontalGlue());
 		panel.add(okButton);
 		panel.add(Box.createRigidArea(new Dimension(10, 0)));
+		panel.add(applyButton);
+		panel.add(Box.createRigidArea(new Dimension(10, 0)));
+		panel.add(restoreDefault);
+		panel.add(Box.createRigidArea(new Dimension(10, 0)));
 		panel.add(cancelButton);
 		
+		setSaveButtonsStatus(false);
 		
 		return panel;
 	}
 	
-	private void setButtonsStatus() {
+	private void setManipulatorButtonsStatus() {
 		if (this.jlist.getSelectedIndex() == -1) {
 			this.upButton.setEnabled(false);
 			this.downButton.setEnabled(false);
@@ -372,6 +402,17 @@ public class FileMappingsEditingDialog extends JDialog {
 			this.removeButton.setEnabled(true);			
 		}
 		this.addButton.setEnabled(true);
+	}
+	
+	private void setSaveButtonsStatus (boolean dataIsChanged) {
+		if (dataIsChanged) {
+			okButton.setEnabled(dataIsChanged);
+			applyButton.setEnabled(dataIsChanged);
+		}
+		else {
+			okButton.setEnabled(dataIsChanged);
+			applyButton.setEnabled(dataIsChanged);
+		}		
 	}
 	
 	
