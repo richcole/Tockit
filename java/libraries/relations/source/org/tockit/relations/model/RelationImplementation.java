@@ -27,6 +27,9 @@ public class RelationImplementation implements Relation {
      */
     public RelationImplementation(int arity) {
     	this.dimensionNames = new String[arity];
+    	for (int i = 0; i < this.dimensionNames.length; i++) {
+            this.dimensionNames[i] = String.valueOf(i + 1);
+        }
     }
     
     /**
