@@ -80,6 +80,7 @@ import org.tockit.events.EventBroker;
 import org.tockit.events.EventBrokerListener;
 
 
+import org.tockit.docco.ConfigurationManager;
 import org.tockit.docco.GlobalConstants;
 import org.tockit.docco.fca.DiagramGenerator;
 import org.tockit.docco.indexer.Indexer;
@@ -91,8 +92,25 @@ import org.tockit.docco.query.util.QueryWithResultSet;
 
 
 public class DoccoMainFrame extends JFrame {
-	private QueryEngine queryEngine;
+	
     private static final int VISIBLE_TREE_DEPTH = 2;
+    private static final int DEFAULT_VERTICAL_DIVIDER_LOCATION = 600;
+	private static final int DEFAULT_HORIZONTAL_DIVIDER_LOCATION = 500;
+    private static final int DEFAULT_FRAME_WIDTH = 900;
+    private static final int DEFAULT_FRAME_HEIGHT = 700;
+	private static final String DEFAULT_INDEX_NAME = "default";
+
+	private static final String WINDOW_TITLE = "Docco";
+    
+	private static final String CONFIGURATION_SECTION_NAME = "DoccoMainPanel";
+	private static final String CONFIGURATION_VERTICAL_DIVIDER_LOCATION = "verticalDivider";
+	private static final String CONFIGURATION_HORIZONTAL_DIVIDER_LOCATION = "horizontalDivider";
+	private static final String CONFIGURATION_INDEX_NAME = "indexName";
+	private static final String CONFIGURATION_LAST_INDEX_DIR = "lastIndexDir";
+	
+    
+	private QueryEngine queryEngine;
+
     private DocumentDisplayPane documentDisplayPane;
     private JTree hitList;
     private JTextField queryField = new JTextField(20);
@@ -101,11 +119,13 @@ public class DoccoMainFrame extends JFrame {
 	private JCheckBoxMenuItem showContingentOnlyCheckBox;
 
 	private DiagramView diagramView;
-	
-	int width = 900;
-	int height = 700;
 
 	private Concept selectedConcept;
+	
+	private JSplitPane viewsSplitPane;
+	private JSplitPane mainPane;
+	private String indexLocation;
+	private String lastIndexedDirLocation;
 	
 	private class SelectionEventHandler implements EventBrokerListener {
 		public void processEvent(Event event) {
@@ -272,22 +292,22 @@ public class DoccoMainFrame extends JFrame {
 		JComponent viewsComponent = buildViewsComponent();
 		this.documentDisplayPane = new DocumentDisplayPane();
 		
-		JSplitPane mainPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, viewsComponent, documentDisplayPane);
+		mainPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, viewsComponent, documentDisplayPane);
 		mainPane.setOneTouchExpandable(true);
 		mainPane.setResizeWeight(0.9);
+		mainPane.setDividerLocation(ConfigurationManager.fetchInt(
+									CONFIGURATION_SECTION_NAME, 
+									CONFIGURATION_HORIZONTAL_DIVIDER_LOCATION,
+									DEFAULT_HORIZONTAL_DIVIDER_LOCATION));
 		
-		setContentPane(mainPane);
+		setContentPane(mainPane);	
+		
+		indexLocation = GlobalConstants.INDEX_DIR + 
+								ConfigurationManager.fetchString(CONFIGURATION_SECTION_NAME,
+											CONFIGURATION_INDEX_NAME,
+											DEFAULT_INDEX_NAME);
 
-		setSize(this.width, this.height);
-		setBounds(new Rectangle(20, 20, this.width, this.height));
-
-		addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent e) {
-				System.exit(0);
-			}
-		});
-
-		File indexFile = new File(GlobalConstants.DEFAULT_INDEX_LOCATION);
+		File indexFile = new File(indexLocation);
 		if(!indexFile.canRead()) {
 			createNewIndex();
 			if(!indexFile.canRead()) {
@@ -296,7 +316,21 @@ public class DoccoMainFrame extends JFrame {
 		} else {
 			createQueryEngine();
 		}
+
+		ConfigurationManager.restorePlacement(
+					CONFIGURATION_SECTION_NAME,
+					this,
+					new Rectangle(10, 10, DEFAULT_FRAME_WIDTH, DEFAULT_FRAME_HEIGHT));
+
+		addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				closeMainPanel();
+			}
+		});
 	}
+
+		
+
 
     private JMenu createHelpMenu() {
 		JMenu helpMenu = new JMenu("Help");
@@ -382,7 +416,7 @@ public class DoccoMainFrame extends JFrame {
     }
     
     private void createNewIndex(){
-		File indexFile = new File(GlobalConstants.DEFAULT_INDEX_LOCATION);
+		File indexFile = new File(this.indexLocation);
 		if(indexFile.canRead()) {
 			int result = JOptionPane.showConfirmDialog(this, "An index already exists. Overwrite?", "Overwrite Index?",
 			                                           JOptionPane.OK_CANCEL_OPTION);
@@ -405,7 +439,8 @@ public class DoccoMainFrame extends JFrame {
 			return;
 		}
 		/// @todo add some better feedback here
-		new Indexer(fileDialog.getSelectedFile().getAbsolutePath());
+		this.lastIndexedDirLocation = fileDialog.getSelectedFile().getAbsolutePath(); 
+		new Indexer(this.lastIndexedDirLocation, this.indexLocation);
 
 		createQueryEngine();
     }
@@ -416,7 +451,7 @@ public class DoccoMainFrame extends JFrame {
 													GlobalConstants.FIELD_QUERY_BODY, 
 													GlobalConstants.DEFAULT_ANALYZER);
 			this.queryEngine =	new QueryEngine(
-												GlobalConstants.DEFAULT_INDEX_LOCATION,
+												this.indexLocation,
 												GlobalConstants.FIELD_QUERY_BODY,
 												GlobalConstants.DEFAULT_ANALYZER,
 												queryDecomposer);
@@ -580,12 +615,16 @@ public class DoccoMainFrame extends JFrame {
 		leftPane.add(queryViewComponent, BorderLayout.NORTH);
 		leftPane.add(this.diagramView, BorderLayout.CENTER);
 				
-		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-								   leftPane, scrollPane);
-		splitPane.setOneTouchExpandable(true);
-		splitPane.setResizeWeight(0.9);
+		viewsSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+										   leftPane, scrollPane);
+		viewsSplitPane.setOneTouchExpandable(true);
+		viewsSplitPane.setDividerLocation(ConfigurationManager.fetchInt( 
+										CONFIGURATION_SECTION_NAME, 
+										CONFIGURATION_VERTICAL_DIVIDER_LOCATION, 
+										DEFAULT_VERTICAL_DIVIDER_LOCATION));
+		viewsSplitPane.setResizeWeight(0.9);
 
-		return splitPane;
+		return viewsSplitPane;
 	}
 	
 	private void setSearchEnabledStatus() {
@@ -616,4 +655,26 @@ public class DoccoMainFrame extends JFrame {
 			this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}
 	}
+	
+	private void closeMainPanel() {
+		// store current position
+		ConfigurationManager.storePlacement(CONFIGURATION_SECTION_NAME, this);
+		
+		ConfigurationManager.storeFloat(CONFIGURATION_SECTION_NAME,	"minLabelFontSize",
+								(float) this.diagramView.getMinimumFontSize());
+		ConfigurationManager.storeInt(CONFIGURATION_SECTION_NAME, CONFIGURATION_VERTICAL_DIVIDER_LOCATION,
+								this.viewsSplitPane.getDividerLocation());
+		ConfigurationManager.storeInt(CONFIGURATION_SECTION_NAME, CONFIGURATION_HORIZONTAL_DIVIDER_LOCATION,
+								this.mainPane.getDividerLocation());
+		ConfigurationManager.storeString(CONFIGURATION_SECTION_NAME, CONFIGURATION_INDEX_NAME, 
+								DEFAULT_INDEX_NAME);
+		if ((this.lastIndexedDirLocation != null) && (this.lastIndexedDirLocation.length() > 0)) {
+			ConfigurationManager.storeString(CONFIGURATION_SECTION_NAME, CONFIGURATION_LAST_INDEX_DIR,
+									this.lastIndexedDirLocation);
+		}
+		
+		ConfigurationManager.saveConfiguration();
+		System.exit(0);
+	}
+	
 }

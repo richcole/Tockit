@@ -26,7 +26,7 @@ public class Indexer {
 	private DocumentProcessingFactory docProcessingFactory = new DocumentProcessingFactory();
 	private int docCount = 0;
 	
-	public Indexer (String filesToIndexLocation) {
+	public Indexer (String filesToIndexLocation, String indexLocation) {
 		try {
 			Date start = new Date();
 			
@@ -44,12 +44,12 @@ public class Indexer {
 			this.docProcessingFactory.registerExtension("xls", MSExcelDocProcessor.class);
 
 
-			File f = new File(GlobalConstants.DEFAULT_INDEX_LOCATION);
+			File f = new File(indexLocation);
 			createDirPath(f);
 
 
 			IndexWriter writer = new IndexWriter(
-									GlobalConstants.DEFAULT_INDEX_LOCATION,
+									indexLocation,
 									GlobalConstants.DEFAULT_ANALYZER,
 									true);
 
@@ -147,11 +147,11 @@ public class Indexer {
 
 	public static void main(String[] args) {
 
-		if (args.length == 0) {
-			System.out.println("Usage: Indexer path_to_files_to_index");
+		if (args.length != 2) {
+			System.out.println("Usage: Indexer path_to_files_to_index indexLocation");
 			System.exit(1);
 		}
-		new Indexer(args[0]);
+		new Indexer(args[0], args[1]);
 
 	}
 }
