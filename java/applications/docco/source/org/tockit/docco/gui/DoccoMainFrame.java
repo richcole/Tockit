@@ -89,6 +89,7 @@ import org.tockit.events.EventBrokerListener;
 import org.tockit.docco.ConfigurationManager;
 import org.tockit.docco.GlobalConstants;
 import org.tockit.docco.fca.DiagramGenerator;
+import org.tockit.docco.indexer.DocumentHandlersRegistery;
 import org.tockit.docco.indexer.Indexer;
 import org.tockit.docco.query.HitReference;
 import org.tockit.docco.query.QueryDecomposer;
@@ -131,7 +132,10 @@ public class DoccoMainFrame extends JFrame {
 	private Concept selectedConcept;
 	
 	private JSplitPane viewsSplitPane;
+	
 	private String indexLocation;
+	
+	private DocumentHandlersRegistery docHandlersRegistery;
 	
 	private class SelectionEventHandler implements EventBrokerListener {
 		public void processEvent(Event event) {
@@ -316,7 +320,8 @@ public class DoccoMainFrame extends JFrame {
 											CONFIGURATION_INDEX_NAME,
 											DEFAULT_INDEX_NAME);
 
-		this.indexThread = new Indexer(new Indexer.CallbackRecipient(){
+		this.docHandlersRegistery = new DocumentHandlersRegistery();
+		this.indexThread = new Indexer(this.docHandlersRegistery, new Indexer.CallbackRecipient(){
 			public void showFeedbackMessage(String message) {
 				statusBarMessage.setText(message);
 			}
@@ -511,7 +516,8 @@ public class DoccoMainFrame extends JFrame {
 
 
 	private void editFileMappings() {
-		FileMappingsEditingDialog fileMappingsEditingDialog = new FileMappingsEditingDialog(this);
+		FileMappingsEditingDialog fileMappingsEditingDialog = 
+						new FileMappingsEditingDialog(this, this.docHandlersRegistery);
 
 		// @todo store changed info in config manager?
 	}

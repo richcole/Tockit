@@ -8,26 +8,36 @@
 package org.tockit.docco.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.HeadlessException;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Iterator;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import org.tockit.docco.indexer.DocumentHandlerMapping;
+import org.tockit.docco.indexer.DocumentHandlersRegistery;
 
 public class FileMappingsEditingDialog extends JDialog {
+
+	DocumentHandlersRegistery docHandlersRegistery;	
 	
 	private DefaultListModel model = new DefaultListModel();
 	private JButton upButton = new JButton("Move Up");
@@ -36,13 +46,34 @@ public class FileMappingsEditingDialog extends JDialog {
 	private JButton removeButton = new JButton("Remove");
 	private JLabel fileFilterDisplayLabel = new JLabel();
 	private JLabel docHandlerDisplayLabel = new JLabel();
+	
+	private class MappingsListCellRenderer extends DefaultListCellRenderer {
+		public Component getListCellRendererComponent(JList list, Object value, 
+												int index, boolean isSelected, 
+												boolean cellHasFocus) {
+			
+			super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+			
+			DocumentHandlerMapping mapping = (DocumentHandlerMapping) value;
+			String text = mapping.getFileFilter().getDisplayString() + 
+								": " + mapping.getHandler().getDisplayName();
+			
+			setText(text);
+			return this;
+		}
+	}
 
-	private JButton okButton = new JButton("Save");
-	private JButton cancelButton = new JButton("Cancel");
 	
-	
-	public FileMappingsEditingDialog(Frame parent) throws HeadlessException {
+	public FileMappingsEditingDialog(Frame parent, DocumentHandlersRegistery registery) 
+													throws HeadlessException {
 		super(parent, "Edit File Mappins Configuration", true);
+		this.docHandlersRegistery = registery;
+		
+		Iterator it = this.docHandlersRegistery.getDocumentMappingIterator();
+		while (it.hasNext()) {
+			DocumentHandlerMapping curMapping = (DocumentHandlerMapping) it.next();
+			this.model.addElement(curMapping);
+		}
 		
 		getContentPane().add(createMainPanel(), BorderLayout.CENTER);
 		getContentPane().add(createButtonsPanel(), BorderLayout.SOUTH);
@@ -56,9 +87,11 @@ public class FileMappingsEditingDialog extends JDialog {
 		
 		JPanel mainPanel = new JPanel(new BorderLayout());
 		
-		JList jlist = new JList(model);
+		JList jlist = new JList(this.model);
+		jlist.setCellRenderer(new MappingsListCellRenderer());
+		
 		JScrollPane scrollPane = new JScrollPane(jlist);
-		Dimension d = new Dimension(200, 200);
+		Dimension d = new Dimension(150, 200);
 		scrollPane.setPreferredSize(d);
 		scrollPane.setMinimumSize(d);
 
@@ -181,6 +214,19 @@ public class FileMappingsEditingDialog extends JDialog {
 	
 	private JPanel createButtonsPanel () {
 		JPanel panel = new JPanel();
+		JButton okButton = new JButton("Save");
+		okButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				saveMappings();
+			}
+		});
+		
+		JButton cancelButton = new JButton("Cancel");
+		cancelButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+			}
+		});
 		
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 		panel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
@@ -192,5 +238,11 @@ public class FileMappingsEditingDialog extends JDialog {
 		return panel;
 	}
 	
+	private void saveMappings () {
+		JOptionPane.showMessageDialog(this, "This action is not implemented yet");
+		
+		// @todo store changed info in config manager?
+
+	}	
 
 }

@@ -7,15 +7,14 @@
  */
 package org.tockit.docco.indexer;
 
-import java.io.FileFilter;
-
 import org.tockit.docco.indexer.documenthandler.DocumentHandler;
+import org.tockit.docco.indexer.filefilter.DoccoFileFilter;
 
 public class DocumentHandlerMapping {
-	private FileFilter fileFilter;
+	private DoccoFileFilter fileFilter;
 	private DocumentHandler docHandler;
 	
-	public DocumentHandlerMapping (FileFilter fileFilter, DocumentHandler docHandler) {
+	public DocumentHandlerMapping (DoccoFileFilter fileFilter, DocumentHandler docHandler) {
 		this.fileFilter = fileFilter;
 		this.docHandler = docHandler;
 	}
@@ -24,7 +23,7 @@ public class DocumentHandlerMapping {
 		return this.docHandler;
 	}
 	
-	public FileFilter getFileFilter() {
+	public DoccoFileFilter getFileFilter() {
 		return this.fileFilter;
 	}
 	
