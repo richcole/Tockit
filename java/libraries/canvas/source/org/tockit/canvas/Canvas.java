@@ -355,7 +355,7 @@ public class Canvas extends JPanel implements Printable {
         ListIterator layerIt =
             this.canvasLayers.listIterator(this.canvasLayers.size());
         while (layerIt.hasPrevious()) {
-            List layer = (List) layerIt.next();
+            List layer = (List) layerIt.previous();
             ListIterator itemIt = layer.listIterator(layer.size());
             while (itemIt.hasPrevious()) {
                 CanvasItem cur = (CanvasItem) itemIt.previous();
