@@ -15,7 +15,7 @@ JAVA_INC   = \
 # Python
 
 PYTHON_INC = \
-  /usr/include/python/
+  /usr/include/python1.5/
 
 PYTHON     = \
   /usr/bin/python

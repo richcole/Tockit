@@ -98,7 +98,7 @@ python/sarl_wrap.o: python/sarl_wrap.c
 python/sarl_wrap.c: $(PUBLIC_HEADERS) sarl.input
 	cd python; $(SWIG) -I.. -o sarl_wrap.c -c++ -shadow -python sarl.input 
 
-test_python: java/TestSarl.class
+test_python: python/sarlcmodule.so
 	cd python; $(PYTHON) test_sarl.py
 
 java/sarl_wrap.o: java/sarl_wrap.c
@@ -107,10 +107,10 @@ java/sarl_wrap.o: java/sarl_wrap.c
 java/sarl_wrap.c: $(PUBLIC_HEADERS) sarl.input
 	cd java; $(SWIG) -I.. -o sarl_wrap.c -c++ -shadow -java ../sarl.input
 
-java/TestSarl.class: java/TestSarl.java
+java/TestSarl.class: java/TestSarl.java java/libsarlmodule.so java/sarl_wrap.c
 	cd java; javac TestSarl.java
 
-test_java: java/TestSarl.class $(CLASSES:%=java/%.class) java/libsarlmodule.so
+test_java: java/TestSarl.class java/libsarlmodule.so 
 	cd java; java -Djava.library.path=. TestSarl
 
 test_cpp: 
