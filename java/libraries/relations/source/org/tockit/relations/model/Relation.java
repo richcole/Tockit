@@ -7,10 +7,7 @@
  */
 package org.tockit.relations.model;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
-
 
 /**
  * Models a relation as set of tuples.
@@ -21,24 +18,7 @@ import java.util.Set;
  * case the names will all be null, but the call to getVariableNames() will never
  * return null itself.
  */
-public class Relation {
-    private String[] dimensionNames;
-    private Set tuples = new HashSet();
-    
-    /**
-     * Creates a relation with the given arity but no names.
-     */
-    public Relation(int arity) {
-    	this.dimensionNames = new String[arity];
-    }
-    
-    /**
-     * Creates a relation with the arity of the array length and the given names.
-     */
-    public Relation(String[] dimensionNames) {
-        this.dimensionNames = dimensionNames;  
-    }
-    
+public interface Relation {
     /**
      * Adds a tuple into the relation.
      * 
@@ -46,12 +26,7 @@ public class Relation {
      * @param tuple a Tuple matching the relation's arity
      * @throws IllegalArgumentException if the arity is not matched
      */
-    public void addTuple(Tuple tuple) {
-        if(tuple.getLength() != this.dimensionNames.length) {
-            throw new IllegalArgumentException("Tuples have to have the same length as the relation's arity");
-        }
-        this.tuples.add(tuple);
-    }
+    void addTuple(Tuple tuple);
     
     /**
      * Adds an array of objects as Tuple into the relation.
@@ -63,28 +38,22 @@ public class Relation {
      * @param data an Object[] matching the relation's arity
      * @throws IllegalArgumentException if the arity is not matched
      */
-    public void addTuple(Object[] data) {
-        addTuple(new Tuple(data));
-    }
-
-	/**
-	 * Returns the names for the dimensions of the relation.
-	 * 
-	 * If the relation doesn't use names the array will still be an array with the
-	 * right length, but containing only null values.
-	 */    
-    public String[] getDimensionNames() {
-        return this.dimensionNames;
-    }
+    void addTuple(Object[] data);
+    
+    /**
+     * Returns the names for the dimensions of the relation.
+     * 
+     * If the relation doesn't use names the array will still be an array with the
+     * right length, but containing only null values.
+     */
+    String[] getDimensionNames();
     
     /**
      * Returns the relation's arity.
      * 
      * @see getSize()
      */
-    public int getArity() {
-    	return this.dimensionNames.length;
-    }
+    int getArity();
     
     /**
      * Returns the number of tuples in this relation.
@@ -93,16 +62,32 @@ public class Relation {
      * 
      * @see getArity()
      */
-    public int getSize() {
-        return this.tuples.size();
-    }
+    int getSize();
     
     /**
      * Returns all tuples in the relation.
      * 
      * @return Set all tuples as unmodifiable collection, type Tuple
      */
-    public Set getTuples() {
-        return Collections.unmodifiableSet(tuples);
-    }
+    Set getTuples();
+    
+    /**
+     * Returns true iff the given Tuple is part of the relation.
+     * 
+     * @see isRelated(Object[])
+     * @param tuple a Tuple matching the relation's arity
+     * @throws IllegalArgumentException if the arity is not matched
+     */
+    boolean isRelated(Tuple tuple);
+    
+    /**
+     * Returns true iff the given array is part of the relation.
+     * 
+     * This is a convenience method equivalent to isRelated(new Tuple(data)).
+     * 
+     * @see isRelated(Tuple)
+     * @param data an Object[] matching the relation's arity
+     * @throws IllegalArgumentException if the arity is not matched
+     */
+    boolean isRelated(Object[] data);
 }

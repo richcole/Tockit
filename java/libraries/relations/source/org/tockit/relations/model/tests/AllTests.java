@@ -18,7 +18,7 @@ public class AllTests extends TestCase {
 
     public static Test suite() {
         TestSuite suite = new TestSuite();
-        suite.addTest(RelationTest.suite());
+        suite.addTest(RelationImplementationTest.suite());
         suite.addTest(TupleTest.suite());
         return suite;
     }
