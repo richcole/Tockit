@@ -7,11 +7,11 @@ canvas.jar, events.jar:
 jdom.jar: 
   JDOM, beta 9 (http://www.jdom.org, license in LICENSE.jdom)
 
-lucene-*.jar:
+lucene.jar:
   Lucence, 1.3rc1 (http://jakarta.apache.org/lucene, license in LICENSE-lucene.txt)
   
-jakarta-poi-*.jar:
+jakarta-poi*.jar:
   Jakarta POI, 1.5.1 (http://jakarta.apache.org/poi, license in LICENSE-jakarta-poi)
   
-PDFBox-*.jar:
+PDFBox.jar:
   PDF Box, 0.6.1 (http://www.pdfbox.org, license in LICENSE-PDFBox)
