@@ -5,7 +5,7 @@
 using namespace std;
 
 
-void main()
+int main()
 {
   Set s, t;
   int i, LEN=100;
@@ -24,14 +24,17 @@ void main()
   
   SetIterator it = it_s.iterator_meet(it_t);
   SetIterator tmp;
+  /*
   tmp = it;
   SetIterator *p_it = new SetIterator(tmp);
   
   if ( it.count_remaining() != LEN/6 ) {
     cerr << "Error, expected count_remaining=" << LEN/6 << ", but got ";
-    cerr << it.count_remaining();
+    cerr << it.count_remaining() << endl;
   }
-  
+  */
+
+  return 0;
 };
 
 

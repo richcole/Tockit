@@ -11,7 +11,7 @@ struct RefCounter {
   RefCounter() { this->count = 0; };
   ~RefCounter() { 
     if ( this->count != 0 ) {
-      fprintf(stderr, "Error, Refernce Count=%d\n", this->count);
+      fprintf(stderr, "Error, Reference Count=%d\n", this->count);
     }
   }
   int count;

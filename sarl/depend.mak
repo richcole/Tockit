@@ -5,6 +5,11 @@ domain_set_iterator.o: ../sarl/ref_count.h ../sarl/set_impl.h
 domain_set_iterator.o: ../sarl/domain_set_iterator_impl.h
 domain_set_iterator.o: ../sarl/set_iterator_impl.h
 domain_set_iterator.o: ../sarl/relation_iterator.h ../sarl/pair.h
+intent_set_iterator.o: ../sarl/set.h ../sarl/index.h ../sarl/set_iterator.h
+intent_set_iterator.o: ../sarl/relation_iterator.h ../sarl/pair.h
+intent_set_iterator.o: ../sarl/ref_count.h ../sarl/set_impl.h
+intent_set_iterator.o: ../sarl/domain_set_iterator_impl.h
+intent_set_iterator.o: ../sarl/set_iterator_impl.h
 intersection_set_iterator.o: ../sarl/set.h ../sarl/index.h
 intersection_set_iterator.o: ../sarl/set_iterator.h ../sarl/ref_count.h
 intersection_set_iterator.o: ../sarl/set_impl.h
@@ -14,7 +19,22 @@ inverse_relation_iterator.o: ../sarl/relation.h ../sarl/index.h
 inverse_relation_iterator.o: ../sarl/pair.h ../sarl/relation_iterator.h
 inverse_relation_iterator.o: ../sarl/ref_count.h ../sarl/relation_impl.h
 inverse_relation_iterator.o: ../sarl/relation_iterator_impl.h
-inverse_relation_iterator.o: ../sarl/relation_iterator_plain.h
+inverse_relation_iterator.o: ../sarl/plain_relation_iterator.h
+join_relation_iterator.o: ../sarl/relation.h ../sarl/index.h ../sarl/pair.h
+join_relation_iterator.o: ../sarl/relation_iterator.h ../sarl/set_iterator.h
+join_relation_iterator.o: ../sarl/ref_count.h ../sarl/relation_impl.h
+join_relation_iterator.o: ../sarl/relation_iterator_impl.h
+join_relation_iterator.o: ../sarl/join_relation_iterator.h
+join_relation_iterator-new.o: ../sarl/relation.h ../sarl/index.h
+join_relation_iterator-new.o: ../sarl/pair.h ../sarl/relation_iterator.h
+join_relation_iterator-new.o: ../sarl/ref_count.h ../sarl/relation_impl.h
+join_relation_iterator-new.o: ../sarl/relation_iterator_impl.h
+join_relation_iterator-new.o: ../sarl/join_relation_iterator.h
+plain_relation_iterator.o: ../sarl/relation.h ../sarl/index.h ../sarl/pair.h
+plain_relation_iterator.o: ../sarl/relation_iterator.h ../sarl/ref_count.h
+plain_relation_iterator.o: ../sarl/relation_impl.h
+plain_relation_iterator.o: ../sarl/relation_iterator_impl.h
+plain_relation_iterator.o: ../sarl/plain_relation_iterator.h
 range_set_iterator.o: ../sarl/set.h ../sarl/index.h ../sarl/set_iterator.h
 range_set_iterator.o: ../sarl/ref_count.h ../sarl/set_impl.h
 range_set_iterator.o: ../sarl/domain_set_iterator_impl.h
@@ -26,7 +46,7 @@ relation.o: ../sarl/relation_iterator.h ../sarl/ref_count.h relation_impl.h
 relation_iterator.o: ../sarl/relation.h ../sarl/index.h ../sarl/pair.h
 relation_iterator.o: ../sarl/relation_iterator.h ../sarl/ref_count.h
 relation_iterator.o: ../sarl/relation_impl.h ../sarl/relation_iterator_impl.h
-relation_iterator.o: ../sarl/relation_iterator_plain.h
+relation_iterator.o: ../sarl/plain_relation_iterator.h
 set.o: ../sarl/set.h ../sarl/index.h ../sarl/set_iterator.h
 set.o: ../sarl/ref_count.h set_impl.h
 set_iterator.o: ../sarl/set.h ../sarl/index.h ../sarl/set_iterator.h

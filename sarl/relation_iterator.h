@@ -49,13 +49,13 @@ extern struct Sarl_SetIterator *sarl_relation_iterator_domain(
 extern struct Sarl_SetIterator *sarl_relation_iterator_range(
   struct Sarl_RelationIterator *);
 
-/* omit ---
-
 extern struct Sarl_SetIterator *sarl_relation_iterator_intent(
-  struct Sarl_RelationIterator *, Index);
+  struct Sarl_RelationIterator *, Sarl_Index);
 
 extern struct Sarl_SetIterator *sarl_relation_iterator_extent(
-  struct Sarl_RelationIterator *, Index);
+  struct Sarl_RelationIterator *, Sarl_Index);
+
+/* omit ---
 
 extern struct Sarl_SetIterator *sarl_relation_intent_set(
   struct Sarl_RelationIterator *, struct Iterator *
@@ -81,8 +81,6 @@ extern struct Sarl_RelationIterator *sarl_relation_iterator_create(
   struct Sarl_Relation *
 );
 
-/* omit ---
-
 extern struct Sarl_RelationIterator *sarl_relation_iterator_join(
   struct Sarl_RelationIterator *, struct Sarl_RelationIterator *
 );
@@ -91,7 +89,7 @@ extern struct Sarl_RelationIterator *sarl_relation_iterator_inverse(
   struct Sarl_RelationIterator *
 );
 
--- omit */
+
 
 
 

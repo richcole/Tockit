@@ -7,10 +7,13 @@ OBJECTS = \
   relation \
   relation_iterator \
   inverse_relation_iterator \
+  plain_relation_iterator \
   domain_set_iterator \
   intersection_set_iterator \
+  intent_set_iterator \
   union_set_iterator \
   set_minus_set_iterator \
+  join_relation_iterator \
   ref_count
 
 TESTS = \

@@ -76,6 +76,14 @@ class RelationIterator {
     return SetIterator(sarl_relation_iterator_range(mp_itRef));
   }
 
+  RelationIterator join(RelationIterator& it) {
+    return RelationIterator(
+      sarl_relation_iterator_join(
+	mp_itRef, it.mp_itRef
+      )
+    );
+  }
+
  private:
   Sarl_RelationIterator* mp_itRef;
 

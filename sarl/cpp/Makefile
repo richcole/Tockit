@@ -2,10 +2,12 @@ CCC = g++
 
 CPP_FLAGS = -DSARL_NATIVE
 OBJECTS = Set SetIterator Relation RelationIterator
+TEST = test_intersection test_relation test_relation_join
 
 target: sarl++.so
 
-test: test_intersection.exe test_relation.exe
+test: $(TEST:%=%.exe)
+	for x in $(TEST:%=%.exe) ; do ./$$x ; done
 
 %.o: %.cpp
 	$(CCC) -ggdb $(CPP_FLAGS) $(DEBUG) -c -I../.. -o $@ $< 

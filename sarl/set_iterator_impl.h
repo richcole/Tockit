@@ -27,6 +27,12 @@ struct Sarl_PlainSetIterator : Sarl_SetIterator
   Iterator m_it;
 };
 
+struct Sarl_IntentSetIterator : Sarl_SetIterator
+{
+  struct Sarl_RelationIterator *mp_iterator;
+  Sarl_Index m_object;
+};
+
 inline void sarl_set_iterator_init(
   struct Sarl_SetIterator *it,
   Sarl_SetIteratorFunctionTable *ap_funcs)
