@@ -33,7 +33,6 @@ import javax.swing.JScrollPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import org.tockit.docco.ConfigurationManager;
 import org.tockit.docco.indexer.DocumentHandlerMapping;
 import org.tockit.docco.indexer.DocumentHandlersRegistery;
 import org.tockit.docco.indexer.documenthandler.DocumentHandler;
@@ -42,6 +41,7 @@ import org.tockit.docco.indexer.filefilter.DoccoFileFilter;
 public class FileMappingsEditingDialog extends JDialog {
 	
 	private DocHandlersRegisteryListModel model;
+	private DocumentHandlersRegistery docHandlersRegistery;
 	
 	private JButton upButton = new JButton("Move Up");
 	private JButton downButton = new JButton("Move Down");
@@ -52,8 +52,6 @@ public class FileMappingsEditingDialog extends JDialog {
 	
 	private JLabel fileFilterDisplayLabel = new JLabel();
 	private JLabel docHandlerDisplayLabel = new JLabel();
-	
-	
 	
 	private class MappingsListCellRenderer extends DefaultListCellRenderer {
 		public Component getListCellRendererComponent(JList list, Object value, 
@@ -82,10 +80,11 @@ public class FileMappingsEditingDialog extends JDialog {
 		public DocHandlersRegisteryListModel (DocumentHandlersRegistery registery) {
 			
 			copyRegistery = new DocumentHandlersRegistery();
+
 			Iterator it = registery.getDocumentMappingList().iterator();
 			while (it.hasNext()) {
 				DocumentHandlerMapping cur = (DocumentHandlerMapping) it.next();
-				copyRegistery.register(cur);
+				copyRegistery.register(cur.getFileFilter(), cur.getHandler());
 			}
 		}
 
@@ -119,12 +118,17 @@ public class FileMappingsEditingDialog extends JDialog {
 			copyRegistery.register(fileFilter, docHandler);
 			fireIntervalAdded(copyRegistery.getMappingAt(getSize() - 1), 0, getSize());
 		}
+		
+		public DocumentHandlersRegistery getRegistery () {
+			return copyRegistery;
+		}
 	}
 
 	
 	public FileMappingsEditingDialog(Frame parent, DocumentHandlersRegistery registery) 
 													throws HeadlessException {
 		super(parent, "Edit File Mappins Configuration", true);
+		this.docHandlersRegistery = registery;
 		this.model = new DocHandlersRegisteryListModel(registery);
 		
 		getContentPane().add(createMainPanel(), BorderLayout.CENTER);
@@ -350,8 +354,12 @@ public class FileMappingsEditingDialog extends JDialog {
 	}
 	
 	private void saveMappings () {
-		// @todo store changed info in config manager?
-		//ConfigurationManager.storeStringList();
+		int itemsToDelete = this.docHandlersRegistery.getDocumentMappingList().size() -
+						model.getRegistery().getDocumentMappingList().size();
+		this.docHandlersRegistery = model.getRegistery();
+		System.out.println("orig registery size: " + this.docHandlersRegistery.getDocumentMappingList().size());
+		System.out.println("itemsToDelete = " + itemsToDelete);
+		this.docHandlersRegistery.saveDocumentHandlersRegisteryConfig(itemsToDelete);
 
 	}	
 	

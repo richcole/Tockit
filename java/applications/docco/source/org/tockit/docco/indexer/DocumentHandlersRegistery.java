@@ -25,14 +25,19 @@ public class DocumentHandlersRegistery {
 	private static final String CONFIGURATION_SECTION_NAME = "Indexer";
 	
 	List docHandlersList = new LinkedList();
-	
+
 	public DocumentHandlersRegistery () {
-		try {
-			loadDocumentHandlersRegistery();
-		}
-		catch (Exception e) {
-			// @todo what to do with these exceptions here?!!
-			e.printStackTrace();
+	}
+	
+	public DocumentHandlersRegistery (boolean loadFromConfig) {
+		if (loadFromConfig) {
+			try {
+				loadDocumentHandlersRegistery();
+			}
+			catch (Exception e) {
+				// @todo what to do with these exceptions here?!!
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -101,4 +106,17 @@ public class DocumentHandlersRegistery {
 			}
 		}
 	}	
+	
+	public void saveDocumentHandlersRegisteryConfig (int deleteUpToIndex) {
+		List mappings = new LinkedList();
+		Iterator it = this.docHandlersList.iterator();
+		while (it.hasNext()) {
+			DocumentHandlerMapping cur = (DocumentHandlerMapping) it.next();
+			String str = cur.getFileFilter().getFilteringString() + 
+							":" + cur.getFileFilter().getClass().getName() + 
+							":" + cur.getHandler().getClass().getName();
+			mappings.add(str);
+		}
+		ConfigurationManager.storeStringList(CONFIGURATION_SECTION_NAME, CONFIGURATION_MAPPING_ENTRY_NAME, mappings, deleteUpToIndex);		
+	}
 }

@@ -327,7 +327,8 @@ public class DoccoMainFrame extends JFrame {
 											CONFIGURATION_INDEX_NAME,
 											DEFAULT_INDEX_NAME);
 
-		this.docHandlersRegistery = new DocumentHandlersRegistery();
+		this.docHandlersRegistery = new DocumentHandlersRegistery(true);
+		
 		this.indexThread = new Indexer(this.docHandlersRegistery, new Indexer.CallbackRecipient(){
 			public void showFeedbackMessage(String message) {
 				statusBarMessage.setText(message);
