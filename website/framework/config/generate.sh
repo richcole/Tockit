@@ -13,16 +13,16 @@
 # the place were you start the script. They should work but
 # don't complain about problems unless you can solve them :-)
 #
-baseDir="../..";
+baseDir="/home/groups/tockit/source/website";
 
 # outputDir is the place where the HTML is generated
 #
-outputDir=$baseDir/output;
+outputDir=/home/groups/tockit/htdocs
 
 # saxonDir must point to a Saxon installation or Saxon
 # must be found in the java classpath
 #
-saxonDir=$SAXONDIR;
+saxonDir=/home/groups/tockit/saxon;
 
 # styleSheet sets the style sheet that is used
 # to process the files. It is expected in 
