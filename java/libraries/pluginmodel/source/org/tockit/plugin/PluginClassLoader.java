@@ -164,7 +164,7 @@ public class PluginClassLoader extends ClassLoader {
 		}
 		
 		public URL getURL() throws MalformedURLException {
-			URL url = new URL("jar:file:/" + this.jarFile.getPath() + 
+			URL url = new URL("jar:file:" + this.jarFile.getPath() + 
 								"/!/" + this.zipEntry.getName());
 			return url;
 		}
@@ -251,16 +251,19 @@ public class PluginClassLoader extends ClassLoader {
 	 * NOTE: first found resource will be returned.
 	 * </p>
 	 */
-	public URL findResource (String name ) {
+	public URL findResource (String name) {
+        logger.entering(this.getClass().getName(), "findResource(String)", new Object[] {name});
 		Resource resource = findResourceLocation(name);
 		if (resource != null) {
 			try {
+                logger.exiting(this.getClass().getName(), "findResource(name)", resource.getURL());
 				return resource.getURL();
 			}
 			catch (MalformedURLException e) {
-				/// @todo what to do with exception here?
+				logger.severe("Can not create URL for resource '" + name + "'");
 			}
 		}
+        logger.exiting(this.getClass().getName(), "findResource(name)", null);
 		return null;
 	}
 	 
@@ -351,12 +354,11 @@ public class PluginClassLoader extends ClassLoader {
 	}
 
 	private List findResourcesLocation (String name) {
-		name = name.replace('\\', '/');
 		Iterator it = this.foundResources.iterator();
 		List result = new ArrayList();
 		while (it.hasNext()) {
 			Resource curResource = (Resource) it.next();
-			String curResourceName = curResource.getRelativePath().replace('\\','/');
+			String curResourceName = curResource.getRelativePath();
 			if (curResourceName.equals(name)) {
 				result.add(curResource);
 			}
