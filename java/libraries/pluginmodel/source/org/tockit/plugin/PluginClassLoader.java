@@ -20,6 +20,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -342,16 +343,25 @@ public class PluginClassLoader extends ClassLoader {
 	 }
 
 	private Resource findResourceLocation (String name) {
+		List foundResources = findResourcesLocation(name);
+		if (foundResources.size() > 0) {
+			return (Resource) foundResources.get(0); 
+		}
+		return null;
+	}
+
+	private List findResourcesLocation (String name) {
 		name = name.replace('\\', '/');
 		Iterator it = this.foundResources.iterator();
+		List result = new ArrayList();
 		while (it.hasNext()) {
 			Resource curResource = (Resource) it.next();
 			String curResourceName = curResource.getRelativePath().replace('\\','/');
 			if (curResourceName.equals(name)) {
-				return curResource;
+				result.add(curResource);
 			}
 		}
-		return null;
+		return result;
 	}
 	 
 	 private void listAllFiles (File file) {
@@ -420,6 +430,18 @@ public class PluginClassLoader extends ClassLoader {
 			return result;
 		}
 		return file.getName();
+	}
+
+	protected Enumeration findResources(String name) throws IOException {
+		Vector resources = new Vector();
+		List foundResources = findResourcesLocation(name);
+		Iterator it = foundResources.iterator();
+		while (it.hasNext()) {
+			Resource curResource = (Resource) it.next();
+			resources.add(curResource.getURL());
+		}
+		
+		return resources.elements();
 	}
 
 }
