@@ -373,7 +373,7 @@ public class DoccoMainFrame extends JFrame {
 			}
 		}
 		catch (FileNotFoundException e) {
-			ErrorDialog.showError(this, e, "Error loading plugins");
+			// no plugins -- we don't care
 		}
 	}
 	
