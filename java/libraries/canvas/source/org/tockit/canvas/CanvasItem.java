@@ -34,6 +34,11 @@ public abstract class CanvasItem {
 
     /**
      * Returns the rectangular bounds of the canvas item.
+     * 
+     * @todo should be in canvas coordinates and should not need the Graphics2D
+     * 		 parameter. This way the canvas could do more caching and the
+     *       objects can work in canvas coordinates all the time. OTOH the fonts
+     *       might cause problems.
      */
     public abstract Rectangle2D getCanvasBounds(Graphics2D g);
 
