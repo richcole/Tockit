@@ -24,26 +24,26 @@ class DatabaseParser extends CSCFileSectionParser {
 	public void parse(CSCTokenizer tokenizer, ConceptualFile targetFile) throws IOException, DataFormatException {
         String identifier = tokenizer.popCurrentToken();
         
-        tokenizer.consumeToken("=");
+        tokenizer.consumeToken("=", targetFile);
         
         // ignore specials for now
         // @todo add specials
         while(!tokenizer.getCurrentToken().equals("(")) {
             tokenizer.advance();
         }
-        tokenizer.consumeToken("(");
+        tokenizer.consumeToken("(", targetFile);
         String name = tokenizer.popCurrentToken();
-        tokenizer.consumeToken(",");
+        tokenizer.consumeToken(",", targetFile);
         String table = tokenizer.popCurrentToken();
-        tokenizer.consumeToken(",");
+        tokenizer.consumeToken(",", targetFile);
         String primaryKey = tokenizer.popCurrentToken();
-        tokenizer.consumeToken(")");
+        tokenizer.consumeToken(")", targetFile);
         DatabaseDefinition dbDefinition = new DatabaseDefinition(identifier, name, table, primaryKey);
         
         DatabaseDefinitions dbDefinitions = new DatabaseDefinitions(targetFile.getFile(), identifier, null,
                                                                     "", new Hashtable(), new DatabaseDefinition[] {dbDefinition});
         targetFile.setDatabaseDefinitions(dbDefinitions);
         
-        tokenizer.consumeToken(";");
+        tokenizer.consumeToken(";", targetFile);
 	}
 }

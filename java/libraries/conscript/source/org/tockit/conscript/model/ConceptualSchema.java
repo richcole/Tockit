@@ -8,7 +8,7 @@
  package org.tockit.conscript.model;
 
 import java.net.URL;
-import java.util.Hashtable;
+import java.util.Map;
 
 public class ConceptualSchema extends SchemaPart{
 	private DatabaseDefinition database;
@@ -18,7 +18,7 @@ public class ConceptualSchema extends SchemaPart{
 	private String identifier;
 	private FormattedString title;
 	private String remark;
-	private Hashtable specials;
+	private Map specials;
 	
 	public ConceptualSchema(URL file, String identifier) {
 		this.file = file;
@@ -26,7 +26,7 @@ public class ConceptualSchema extends SchemaPart{
 	}
 
 	public ConceptualSchema(URL file, String identifier, FormattedString title, 
-							 String remark, Hashtable specials, DatabaseDefinition database, ConcreteScale[] concreteScales) {
+							 String remark, Map specials, DatabaseDefinition database, ConcreteScale[] concreteScales) {
 		this.file = file;
 		this.identifier = identifier;
 		this.title = title;
@@ -56,7 +56,7 @@ public class ConceptualSchema extends SchemaPart{
 		return remark;
 	}
 
-	public Hashtable getSpecials() {
+	public Map getSpecials() {
 		return specials;
 	}
 
@@ -84,7 +84,7 @@ public class ConceptualSchema extends SchemaPart{
 		this.remark = remark;
 	}
 
-	public void setSpecials(Hashtable specials) {
+	public void setSpecials(Map specials) {
 		this.specials = specials;
 	}
 

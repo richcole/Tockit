@@ -7,10 +7,19 @@
  */
 package org.tockit.conscript.parser.sectionparsers;
 
-import java.awt.geom.Point2D;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 
 import org.tockit.conscript.model.ConceptualFile;
+import org.tockit.conscript.model.FCAAttribute;
+import org.tockit.conscript.model.FCAObject;
+import org.tockit.conscript.model.FormattedString;
+import org.tockit.conscript.model.Line;
+import org.tockit.conscript.model.LineDiagram;
+import org.tockit.conscript.model.Point;
 import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
@@ -20,24 +29,18 @@ class LineDiagramParser extends CSCFileSectionParser {
 	}
 
 	public void parse(CSCTokenizer tokenizer, ConceptualFile targetFile)
-		throws IOException, DataFormatException {
-		//        	SimpleLineDiagram diagram = new SimpleLineDiagram();
+	                        throws IOException, DataFormatException {
+		String identifier = tokenizer.popCurrentToken();
 
-		String identifier = tokenizer.getCurrentToken();
-		tokenizer.advance();
+        tokenizer.consumeToken("=", targetFile);
 
-        tokenizer.consumeToken("=");
-
+        String title = "";
 		if (tokenizer.getCurrentToken().equals("TITLE")) {
 			tokenizer.advance();
-			String title = tokenizer.getCurrentToken();
-			tokenizer.advance();
-			if (!title.equals("")) {
-				identifier = title;
-			}
+			title = tokenizer.popCurrentToken();
 		}
-		//        	diagram.setTitle(identifier);
-//		CSCParser.sectionIdMap.put(identifier, identifier);
+        
+        LineDiagram diagram = new LineDiagram(targetFile.getFile(), identifier, new FormattedString(title, null), null);
 
 		while (!tokenizer.getCurrentToken().equals("POINTS")) {
 			// we ignore remark, special list and unitlength
@@ -45,105 +48,96 @@ class LineDiagramParser extends CSCFileSectionParser {
 		}
 		tokenizer.advance();
 
+        Map points = new Hashtable();
 		while (!tokenizer.getCurrentToken().equals("LINES")) {
-			String id = tokenizer.getCurrentToken();
-			tokenizer.advance();
+			Long id = new Long(tokenizer.popCurrentToken());
 
-			double x = Double.parseDouble(tokenizer.getCurrentToken());
-			tokenizer.advance();
-			double y = Double.parseDouble(tokenizer.getCurrentToken());
-			tokenizer.advance();
-			Point2D position = new Point2D.Double(x, y);
-
-			//            	DiagramNode node = new DiagramNode(diagram, id, position, new ConceptImplementation(), null, null, null);
-			//            	diagram.addNode(node);
+			double x = Double.parseDouble(tokenizer.popCurrentToken());
+			double y = Double.parseDouble(tokenizer.popCurrentToken());
+			points.put(id, new Point(id.longValue(), x, y, null, null));
 		}
+        diagram.setPoints((Point[]) points.values().toArray(new Point[points.size()]));
 		tokenizer.advance();
 
+        List lines = new ArrayList();
 		while (!tokenizer.getCurrentToken().equals("OBJECTS")) {
-			String linecode = tokenizer.getCurrentToken();
-
-			String from = linecode.substring(1, linecode.indexOf(','));
-			String to =
-				linecode.substring(
-					linecode.indexOf(',') + 1,
-					linecode.length() - 1);
-
-			while (to.startsWith(" ")) {
-				to = to.substring(1);
-			}
-
-			//                DiagramNode fromNode = diagram.getNode(from);
-			//                DiagramNode toNode = diagram.getNode(to);
-			//                diagram.addLine(fromNode, toNode);
-			//                
-			//                ConceptImplementation fromConcept = (ConceptImplementation) fromNode.getConcept();
-			//                ConceptImplementation toConcept = (ConceptImplementation) toNode.getConcept();
-			//            	fromConcept.addSubConcept(toNode.getConcept());
-			//            	toConcept.addSuperConcept(fromConcept);
-
-			tokenizer.advance();
+            tokenizer.consumeToken("(", targetFile);
+            Long from = new Long(tokenizer.popCurrentToken());
+            tokenizer.consumeToken(",", targetFile);
+            Long to = new Long(tokenizer.popCurrentToken());
+            tokenizer.consumeToken(")", targetFile);
+            
+            Point fromPoint = (Point)points.get(from);
+            if(fromPoint == null) {
+                throw new DataFormatException("Can not resolve line start point " +
+                                              from +" in LINE_DIAGRAM '" + diagram.getIdentifier() +
+                                              "' in file '" + targetFile.getFile() +"', line " + tokenizer.getCurrentLine());
+            }
+            Point toPoint = (Point)points.get(to);
+            if(fromPoint == null) {
+                throw new DataFormatException("Can not resolve line end point " +
+                                              to +" in LINE_DIAGRAM '" + diagram.getIdentifier() +
+                                              "' in file '" + targetFile.getFile() +"', line " + tokenizer.getCurrentLine());
+            }
+            lines.add(new Line(fromPoint, toPoint, null));
 		}
 		tokenizer.advance();
 
+        List objects = new ArrayList();
 		while (!tokenizer.getCurrentToken().equals("ATTRIBUTES")) {
-			//            	DiagramNode node = diagram.getNode(tokenizer.getCurrentToken());
-			tokenizer.advance();
-
-			tokenizer.advance(); // ignore id of object
-
-			String content = tokenizer.getCurrentToken();
-			tokenizer.advance();
-
-			//                LabelInfo labelInfo;
+            Long pointId = new Long(tokenizer.popCurrentToken());
+            Point point = (Point) points.get(pointId);
+            if(point == null) {
+                throw new DataFormatException("Can not resolve point " +
+                                              point +" for object in LINE_DIAGRAM '" + diagram.getIdentifier() +
+                                              "' in file '" + targetFile.getFile() +"', line " + tokenizer.getCurrentLine());
+            }
+            
+            String id = tokenizer.popCurrentToken();
+			String content = tokenizer.popCurrentToken();
+			FormattedString format = null;
+            
 			if (!tokenizer.newLineHasStarted()) {
 				// still on the same line --> we have a formatting string
-				String formattingString = tokenizer.getCurrentToken();
-				tokenizer.advance();
-
-				//                	labelInfo = parseLabelInfo(formattingString);
-			} else {
-				//                	labelInfo = new LabelInfo();
+				tokenizer.popCurrentToken();
+                // @todo parse format
 			}
-
-			//                ConceptImplementation concept = (ConceptImplementation) node.getConcept();
-			//                concept.addObject(content);
-
-			//                node.setObjectLabelInfo(labelInfo);
+			
+            objects.add(new FCAObject(point, id, content, format));
 		}
 		tokenizer.advance();
+        diagram.setObjects((FCAObject[]) objects.toArray(new FCAObject[objects.size()]));
 
+        List attributes = new ArrayList();
 		while (!tokenizer.getCurrentToken().equals("CONCEPTS")) {
-			//                DiagramNode node = diagram.getNode(tokenizer.getCurrentToken());
-			tokenizer.advance();
-
-			tokenizer.advance(); // ignore id of attribute
-
-			String content = tokenizer.getCurrentToken();
-			tokenizer.advance();
-
-			//                LabelInfo labelInfo;
-			if (!tokenizer.newLineHasStarted()) {
-				// still on the same line --> we have a formatting string
-				String formattingString = tokenizer.getCurrentToken();
-				tokenizer.advance();
-
-				//                    labelInfo = parseLabelInfo(formattingString);
-			} else {
-				//                    labelInfo = new LabelInfo();
-			}
-
-			//                ConceptImplementation concept = (ConceptImplementation) node.getConcept();
-			//                concept.addAttribute(new Attribute(content));
-			//                node.setAttributeLabelInfo(labelInfo);
+            Long pointId = new Long(tokenizer.popCurrentToken());
+            Point point = (Point) points.get(pointId);
+            if(point == null) {
+                throw new DataFormatException("Can not resolve point " +
+                                              point +" for attribute in LINE_DIAGRAM '" + diagram.getIdentifier() +
+                                              "' in file '" + targetFile.getFile() +"', line " + tokenizer.getCurrentLine());
+            }
+            
+            String id = tokenizer.popCurrentToken();
+            String content = tokenizer.popCurrentToken();
+            FormattedString format = null;
+            
+            if (!tokenizer.newLineHasStarted()) {
+                // still on the same line --> we have a formatting string
+                tokenizer.popCurrentToken();
+                // @todo parse format
+            }
+            
+            attributes.add(new FCAAttribute(point, id, content, format));
 		}
 		tokenizer.advance();
+        diagram.setAttributes((FCAAttribute[]) attributes.toArray(new FCAAttribute[attributes.size()]));
 
 		while (!tokenizer.getCurrentToken().equals(";")) {
 			// we ignore the concept definitions 
 			tokenizer.advance();
 		}
-        tokenizer.consumeToken(";");
+        tokenizer.consumeToken(";", targetFile);
 	}
 
 	private String[] extractFormattingStringSegment(String formattingString) {

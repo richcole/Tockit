@@ -8,7 +8,7 @@
 package org.tockit.conscript.model;
 
 import java.net.URL;
-import java.util.Hashtable;
+import java.util.Map;
 import java.util.List;
 
 public class RemarkStructure extends SchemaPart{
@@ -16,11 +16,11 @@ public class RemarkStructure extends SchemaPart{
 	private String identifier;
 	private FormattedString title;
 	private String remark;
-	private Hashtable specials;
+	private Map specials;
 	private List remarks;
 	
 	public RemarkStructure(URL file, String identifier, FormattedString title, 
-							String remark, Hashtable specials, List remarks) { 
+							String remark, Map specials, List remarks) { 
 	this.file = file;
 	this.identifier = identifier;
 	this.title = title;
@@ -41,7 +41,7 @@ public class RemarkStructure extends SchemaPart{
 		return this.remark;
 	}
 
-	public Hashtable getSpecials() {
+	public Map getSpecials() {
 		return this.specials;
 	}
 
@@ -65,7 +65,7 @@ public class RemarkStructure extends SchemaPart{
 		this.remark = remark;
 	}
 	
-	public void setSpecials(Hashtable specials) {
+	public void setSpecials(Map specials) {
 		this.specials = specials;
 	}
 	

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.tockit.conscript.model.BinaryRelationImplementation;
 import org.tockit.conscript.model.ConceptualFile;
 import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
@@ -21,49 +22,54 @@ class FormalContextParser extends CSCFileSectionParser {
 		throws IOException, DataFormatException {
 		List objects = new ArrayList();
 		List attributes = new ArrayList();
-		String contextTitle = tokenizer.getCurrentToken();
-//		CSCParser.sectionIdMap.put(contextTitle, contextTitle);
+		String contextId = tokenizer.popCurrentToken();
+        String contextTitle = null;
 
 		while (!tokenizer.getCurrentToken().equals("OBJECTS")) {
-			// ignore everything before the objects
+			// ignore everything but the title before the objects
 			if (tokenizer.getCurrentToken().equals("TITLE")) {
 				tokenizer.advance();
-//				CSCParser.sectionIdMap.put(
-//					tokenizer.getCurrentToken(),
-//					contextTitle);
 				contextTitle = tokenizer.getCurrentToken();
 			}
 			tokenizer.advance();
 		}
-		tokenizer.advance(); // skip "OBJECTS"
-
-		//            ContextImplementation context = new ContextImplementation(contextTitle);
+		tokenizer.consumeToken("OBJECTS", targetFile);
 
 		while (!tokenizer.getCurrentToken().equals("ATTRIBUTES")) {
 			// find objects until attributes come
+            
 			tokenizer.advance(); // skip number
 			tokenizer.advance(); // skip id
 			objects.add(tokenizer.getCurrentToken()); // use name
 			tokenizer.advance(); // next
 		}
-		tokenizer.advance(); // skip "ATTRIBUTES"
-		//            context.getObjects().addAll(objects); // we have all objects
+		tokenizer.consumeToken("ATTRIBUTES", targetFile);
 
 		while (!tokenizer.getCurrentToken().equals("RELATION")) {
 			// find attributes until relation comes
 			tokenizer.advance(); // skip number
 			tokenizer.advance(); // skip id
-			//                attributes.add(new Attribute(tokenizer.getCurrentToken(), null)); // use name
+            attributes.add(tokenizer.getCurrentToken()); // use name
 			tokenizer.advance(); // next
 		}
-		tokenizer.advance(); // skip "RELATION"
-		tokenizer.advance(); // skip size ...
-		tokenizer.advance(); // ... both parts of it
-		//            context.getAttributes().addAll(attributes); // we have all attributes
-
-		//            BinaryRelationImplementation relation = context.getRelationImplementation();
+        tokenizer.consumeToken("RELATION", targetFile);
+        
+        int height = Integer.parseInt(tokenizer.popCurrentToken());
+        if(height != objects.size()) {
+            throw new DataFormatException("Relation height does not match number of objects in context '" +
+                                          contextId + "', line " + tokenizer.getCurrentLine() + ", file '" +
+                                          targetFile.getFile() + "'");
+        }
+        tokenizer.consumeToken(",", targetFile);
+        int width = Integer.parseInt(tokenizer.popCurrentToken());
+        if(width != attributes.size()) {
+            throw new DataFormatException("Relation width does not match number of attributes in context '" +
+                                          contextId + "', line " + tokenizer.getCurrentLine() + ", file '" +
+                                          targetFile.getFile() + "'");
+        }
 
 		// create relation
+        BinaryRelationImplementation relation = new BinaryRelationImplementation();
 		Iterator objIt = objects.iterator(); // iterate over objects/rows
 		while (objIt.hasNext()) {
 			Object object = objIt.next();
@@ -83,14 +89,14 @@ class FormalContextParser extends CSCFileSectionParser {
 			while (attrIt.hasNext()) {
 				Object attribute = attrIt.next();
 				if (row.charAt(i) == '*') {
-					//                        relation.insert(object,attribute); // hit --> add to relation
+					relation.insert(object,attribute); // hit --> add to relation
 				}
 				i++;
 			}
 			tokenizer.advance(); // next row
 		}
 
-        tokenizer.consumeToken(";");
+        tokenizer.consumeToken(";", targetFile);
 	}
 
 	public String getStartToken() {

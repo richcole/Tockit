@@ -22,15 +22,11 @@ public class ConceptualFile {
     private DatabaseDefinitions databaseDefinitions;
 	
 	public ConceptualFile(URL file, String identifier, FormattedString title, 
-						   String remark, Hashtable specials, StringMap objectMap, 
-						   RealisedScale[] realisedScales) {
+						   String remark) {
 		this.file = file;
 		this.identifier = identifier;
 		this.title = title;
 		this.remark = remark;
-		this.specials = specials;
-		this.objectMap = objectMap;
-		this.realisedScales = realisedScales;
 	}
 
 	public URL getFile() {

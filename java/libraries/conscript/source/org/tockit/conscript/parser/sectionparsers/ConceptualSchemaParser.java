@@ -26,7 +26,7 @@ class ConceptualSchemaParser extends CSCFileSectionParser {
 
 	public void parse(CSCTokenizer tokenizer, ConceptualFile targetFile) throws IOException, DataFormatException {
         String identifier = tokenizer.popCurrentToken();
-        tokenizer.consumeToken("=");
+        tokenizer.consumeToken("=", targetFile);
         ConceptualSchema schema = new ConceptualSchema(targetFile.getFile(), identifier);
         String nextToken = tokenizer.getCurrentToken();
         if(nextToken.equals("TITLE")) {
@@ -61,8 +61,8 @@ class ConceptualSchemaParser extends CSCFileSectionParser {
             scales.add(scale);
         }
         schema.setConcreteScales((ConcreteScale[]) scales.toArray(new ConcreteScale[scales.size()]));
-        tokenizer.consumeToken(")");
-        tokenizer.consumeToken(";");
+        tokenizer.consumeToken(")", targetFile);
+        tokenizer.consumeToken(";", targetFile);
 	}
 
     private ConcreteScale findScale(ConceptualFile targetFile, String scaleId) {

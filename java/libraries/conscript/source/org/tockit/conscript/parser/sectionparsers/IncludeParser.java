@@ -10,7 +10,6 @@ package org.tockit.conscript.parser.sectionparsers;
 import java.io.IOException;
 import java.net.URL;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.tockit.conscript.model.ConceptualFile;
 import org.tockit.conscript.parser.CSCParser;
@@ -24,9 +23,15 @@ class IncludeParser extends CSCFileSectionParser {
 
 	public void parse(CSCTokenizer tokenizer, ConceptualFile targetFile) throws IOException, DataFormatException {
         String includeLocation = tokenizer.popCurrentToken();
-        tokenizer.consumeToken(";");
+        tokenizer.consumeToken(";", targetFile);
         URL includeURL = new URL(targetFile.getFile(), includeLocation);
         CSCParser.logger.log(Level.FINER, "Including URL: '" + includeURL + "'");
 		ConceptualFile includeFile = CSCParser.importCSCFile(includeURL);
+        merge(targetFile, includeFile);
 	}
+
+    private void merge(ConceptualFile targetFile, ConceptualFile includeFile) {
+        // @todo should merge here
+        System.out.println("to merge:\n" + includeFile);
+    }
 }

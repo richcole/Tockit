@@ -8,7 +8,7 @@
 package org.tockit.conscript.model;
 
 import java.net.URL;
-import java.util.Hashtable;
+import java.util.Map;
 
 public class DatabaseDefinitions extends SchemaPart{
 	private DatabaseDefinition[] databases;
@@ -16,10 +16,10 @@ public class DatabaseDefinitions extends SchemaPart{
 	private String identifier;
 	private FormattedString title;
 	private String remark;
-	private Hashtable specials;
+	private Map specials;
 	
 	public DatabaseDefinitions(URL file, String identifier, FormattedString title, 
-								String remark, Hashtable specials, DatabaseDefinition[] databases) {
+								String remark, Map specials, DatabaseDefinition[] databases) {
 		this.file = file;
 		this.identifier = identifier;
 		this.title = title;
@@ -44,7 +44,7 @@ public class DatabaseDefinitions extends SchemaPart{
 		return remark;
 	}
 
-	public Hashtable getSpecials() {
+	public Map getSpecials() {
 		return specials;
 	}
 
@@ -68,7 +68,7 @@ public class DatabaseDefinitions extends SchemaPart{
 		this.remark = remark;
 	}
 
-	public void setSpecials(Hashtable specials) {
+	public void setSpecials(Map specials) {
 		this.specials = specials;
 	}
 

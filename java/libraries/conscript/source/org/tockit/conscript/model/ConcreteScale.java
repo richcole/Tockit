@@ -8,7 +8,7 @@
 package org.tockit.conscript.model;
 
 import java.net.URL;
-import java.util.Hashtable;
+import java.util.Map;
 
 public class ConcreteScale extends SchemaPart{
 	private String[] tables;
@@ -21,7 +21,7 @@ public class ConcreteScale extends SchemaPart{
 	private String identifier;
 	private FormattedString title;
 	private String remark;
-	private Hashtable specials;
+	private Map specials;
 	
 	public ConcreteScale(URL file, String identifier) {
 		this.file = file;
@@ -56,7 +56,7 @@ public class ConcreteScale extends SchemaPart{
 		return remark;
 	}
 
-	public Hashtable getSpecials() {
+	public Map getSpecials() {
 		return specials;
 	}
 
@@ -96,7 +96,7 @@ public class ConcreteScale extends SchemaPart{
 		this.remark = remark;
 	}
 
-	public void setSpecials(Hashtable specials) {
+	public void setSpecials(Map specials) {
 		this.specials = specials;
 	}
 

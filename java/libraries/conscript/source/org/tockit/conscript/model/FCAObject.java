@@ -8,37 +8,47 @@
 package org.tockit.conscript.model;
 
 public class FCAObject {
-	private long number;
+	private Point point;
 	private String identifier;
-	private FormattedString description;
+	private FormattedString format;
+    private String content;
 	
-	public FCAObject(long number, String identifier, FormattedString description) {
-		this.number = number;
+	public FCAObject(Point point, String identifier, String content, FormattedString format) {
+		this.point = point;
 		this.identifier = identifier;
-		this.description = description;
-	}
-
-	public FormattedString getDescription() {
-		return description;
+        this.content = content;
+		this.format = format;
 	}
 
 	public String getIdentifier() {
 		return identifier;
 	}
 
-	public long getNumber() {
-		return number;
-	}
-
-	public void setDescription(FormattedString description) {
-		this.description = description;
+	public Point getPoint() {
+		return point;
 	}
 
 	public void setIdentifier(String identifier) {
 		this.identifier = identifier;
 	}
 
-	public void setNumber(long number) {
-		this.number = number;
+	public void setPoint(Point point) {
+		this.point = point;
 	}
+    
+    public String getContent() {
+        return this.content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+    
+    public FormattedString getFormat() {
+        return this.format;
+    }
+    
+    public void setFormat(FormattedString format) {
+        this.format = format;
+    }
 }

@@ -8,37 +8,47 @@
 package org.tockit.conscript.model;
 
 public class FCAAttribute {
-	private long number;
-	private String identifier;
-	private FormattedString description;
-	
-	public FCAAttribute(long number, String identifier, FormattedString description) {
-		this.number = number;
-		this.identifier = identifier;
-		this.description = description;
-	}
+    private Point point;
+    private String identifier;
+    private FormattedString format;
+    private String content;
+    
+    public FCAAttribute(Point point, String identifier, String content, FormattedString format) {
+        this.point = point;
+        this.identifier = identifier;
+        this.content = content;
+        this.format = format;
+    }
 
-	public FormattedString getDescription() {
-		return description;
-	}
+    public String getIdentifier() {
+        return identifier;
+    }
 
-	public String getIdentifier() {
-		return identifier;
-	}
+    public Point getPoint() {
+        return point;
+    }
 
-	public long getNumber() {
-		return number;
-	}
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
 
-	public void setDescription(FormattedString description) {
-		this.description = description;
-	}
+    public void setPoint(Point point) {
+        this.point = point;
+    }
+    
+    public String getContent() {
+        return this.content;
+    }
 
-	public void setIdentifier(String identifier) {
-		this.identifier = identifier;
-	}
-
-	public void setNumber(long number) {
-		this.number = number;
-	}
+    public void setContent(String content) {
+        this.content = content;
+    }
+    
+    public FormattedString getFormat() {
+        return this.format;
+    }
+    
+    public void setFormat(FormattedString format) {
+        this.format = format;
+    }
 }

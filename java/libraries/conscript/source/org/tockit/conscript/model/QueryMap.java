@@ -8,21 +8,18 @@
 package org.tockit.conscript.model;
 
 import java.net.URL;
-import java.util.Hashtable;
+import java.util.Map;
 
 public class QueryMap extends SchemaPart{
 	private URL file;
 	private String identifier;
 	private FormattedString title;
 	private String remark;
-	private Hashtable specials;
-	private Hashtable map;
+	private Map specials;
+	private Map map;
 		
-	public QueryMap() {
-	}
-
 	public QueryMap(URL file, String identifier, FormattedString title,
-					  String remark, Hashtable specials, Hashtable map) {
+					  String remark, Map specials, Map map) {
 		this.file = file;
 		this.identifier = identifier;
 		this.title = title;
@@ -39,7 +36,7 @@ public class QueryMap extends SchemaPart{
 		return identifier;
 	}
 
-	public Hashtable getMap() {
+	public Map getMap() {
 		return map;
 	}
 
@@ -47,7 +44,7 @@ public class QueryMap extends SchemaPart{
 		return remark;
 	}
 
-	public Hashtable getSpecials() {
+	public Map getSpecials() {
 		return specials;
 	}
 
@@ -63,7 +60,7 @@ public class QueryMap extends SchemaPart{
 		this.identifier = identifier;
 	}
 
-	public void setMap(Hashtable map) {
+	public void setMap(Map map) {
 		this.map = map;
 	}
 
@@ -71,7 +68,7 @@ public class QueryMap extends SchemaPart{
 		this.remark = remark;
 	}
 
-	public void setSpecials(Hashtable specials) {
+	public void setSpecials(Map specials) {
 		this.specials = specials;
 	}
 

@@ -11,12 +11,14 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.logging.Level;
 
+import org.tockit.conscript.model.ConceptualFile;
+
 public class CSCTokenizer {
     private BufferedReader inputReader;
     private String currentToken;
     private int currentLine = 1;
     private boolean newLineStarted = true;
-    private boolean commaFound = false;
+    private int characterWaiting = -1;
 
 	public CSCTokenizer(Reader in) throws IOException, DataFormatException {
 	    this.inputReader = new BufferedReader(in);
@@ -31,6 +33,8 @@ public class CSCTokenizer {
      * Advances and then return the token current before.
      * 
      * Convenience method equivalent to calling getCurrentToken() and then advance().
+     * Note that this method has two effects at once and it thus not proper coding style,
+     * but it is just more handy to use.
      */
     public String popCurrentToken() throws IOException, DataFormatException {
         String token = this.currentToken;
@@ -38,23 +42,16 @@ public class CSCTokenizer {
         return token;
     }
 	
-	/**
-	 * Returns the current token as a string with all escape codes resolved.
-	 */
-	private String getCurrentString() {
-		return resolveEscapes(this.currentToken);
-	}
-	
 	public void advance() throws IOException, DataFormatException {
-        if(done()) {
-            throw new IOException("CSCTokenizer.advance() called after end of file");
-        }
-        
-        if(this.commaFound) {
-            this.commaFound = false;
-            this.currentToken = ",";
+        if(this.characterWaiting != -1) {
+            this.currentToken = "" + (char)this.characterWaiting;
+            this.characterWaiting = -1;
             CSCParser.logger.log(Level.FINEST, "Tokenizer generized token '" + this.currentToken + "'");
             return;
+        }
+        
+        if(done()) {
+            throw new IOException("CSCTokenizer.advance() called after end of file");
         }
         
 		int character;
@@ -92,17 +89,17 @@ public class CSCTokenizer {
     }
 
     private void advanceNormal(int character) throws IOException {
-        if(character == ',') {
-            this.currentToken = ",";
+        if(character == ',' || character == ')') {
+            this.currentToken += (char) character;
         } else {
             while( character != -1 && !Character.isWhitespace((char)character) &&
                     character != '\"') {
-                if(character == ',') {
-                    this.commaFound = true;
+                if(character == ',' || character == ')') {
+                    this.characterWaiting = character;
                     break;
                 }
                 this.currentToken += (char) character;
-                if(character == '(' || character == ')') {
+                if(character == '(') {
                     break;
                 }
                 character = this.inputReader.read();
@@ -123,24 +120,10 @@ public class CSCTokenizer {
     	return this.newLineStarted;
     }
 
-	private static String resolveEscapes(String input) {
-		String output = "";
-		for(int i = 0; i < input.length(); i++) {
-			char curChar = input.charAt(i);
-			if(curChar == '\\') {
-				i++;
-				output += input.charAt(i);
-			} else {
-				output += curChar;
-			}
-		}
-		return output;
-	}
-
-    public void consumeToken(String token) throws IOException, DataFormatException{
+    public void consumeToken(String token, ConceptualFile file) throws IOException, DataFormatException{
         if(!this.currentToken.equals(token)) {
             throw new DataFormatException("Expected token '" + token + "' but found '" + this.currentToken + 
-                                          "' in line " + getCurrentLine());
+                                          "' in line " + getCurrentLine() + " of file " + file.getFile());
         }
         if(!done()) {
             advance();

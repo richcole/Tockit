@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.tockit.conscript.model.*;
@@ -25,7 +24,7 @@ public class CSCParser {
     public static ConceptualFile importCSCFile(URL mainInput) throws FileNotFoundException, DataFormatException {
         try {
         	ConceptualFile mainFile = new ConceptualFile(mainInput,"mainFile", new FormattedString("",new StringFormat()),
-        												 mainInput.toString(), null, null, null);
+        												 mainInput.toString());
             CSCTokenizer tokenizer = new CSCTokenizer(new InputStreamReader(mainInput.openStream()));
             
             CSCFileSectionParser currentSectionParser = null;
@@ -52,7 +51,7 @@ public class CSCParser {
         
 			return mainFile;
         } catch (IOException e) {
-            throw new DataFormatException("Error reading input file", e);
+            throw new DataFormatException("Error reading input file '" + mainInput + "'", e);
         }
     }
     
@@ -72,7 +71,7 @@ public class CSCParser {
      * Main method for testing.
      */
     public static void main(String[] args) throws FileNotFoundException, MalformedURLException, DataFormatException {
-		logger.setLevel(Level.ALL);
+		//logger.setLevel(java.util.logging.Level.ALL);
 		File inputFile = new File(args[0]);
 		importCSCFile(inputFile.toURL());    	
     }

@@ -8,6 +8,7 @@
 package org.tockit.conscript.parser.sectionparsers;
 
 import java.io.IOException;
+import java.util.Hashtable;
 
 import org.tockit.conscript.model.ConceptualFile;
 import org.tockit.conscript.model.QueryMap;
@@ -21,27 +22,25 @@ class QueryMapParser extends CSCFileSectionParser {
 
     public void parse(CSCTokenizer tokenizer, ConceptualFile targetFile)
         throws IOException, DataFormatException {
-        QueryMap retval = new QueryMap();
-        retval.setIdentifier(tokenizer.getCurrentToken());
-        tokenizer.advance();
+        String queryMapId = tokenizer.popCurrentToken();
+        QueryMap queryMap = new QueryMap(targetFile.getFile(), queryMapId, null,
+                                         null, null, new Hashtable());
 
         int line = tokenizer.getCurrentLine();
-        tokenizer.consumeToken("=");
+        tokenizer.consumeToken("=", targetFile);
         while (tokenizer.getCurrentLine() == line) {
             tokenizer.advance(); // skip possible remarks
         }
 
-        /// @todo tupels should be send as a couple of tokens
         while (!tokenizer.getCurrentToken().equals(";")) {
-            String tupel = tokenizer.popCurrentToken();
-            tupel = tupel.substring(1, tupel.length() - 1);
-            int commaPos = tupel.indexOf(',');
-            String clause = tupel.substring(0, commaPos).trim();
-            clause = clause.substring(1, clause.length() - 1);
-            String id = tupel.substring(commaPos + 1).trim();
-            retval.getMap().put(id, clause);
+            tokenizer.consumeToken("(", targetFile);
+            String clause = tokenizer.popCurrentToken();
+            tokenizer.consumeToken(",", targetFile);
+            String id = tokenizer.popCurrentToken();
+            tokenizer.consumeToken(")", targetFile);
+            queryMap.getMap().put(id, clause);
         }
 
-        tokenizer.consumeToken(";");
+        tokenizer.consumeToken(";", targetFile);
     }
 }

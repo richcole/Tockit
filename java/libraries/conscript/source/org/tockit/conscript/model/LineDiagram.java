@@ -8,7 +8,7 @@
 package org.tockit.conscript.model;
 
 import java.net.URL;
-import java.util.Hashtable;
+import java.util.Map;
 
 public class LineDiagram extends SchemaPart{
 	private TypedSize unitLength;
@@ -22,23 +22,14 @@ public class LineDiagram extends SchemaPart{
 	private String identifier;
 	private FormattedString title;
 	private String remark;
-	private Hashtable specials;
+	private Map specials;
 	
 	public LineDiagram(URL file, String identifier, FormattedString title,
-						String remark, Hashtable specials, TypedSize unitLength,
-						Point[] points, Line[] lines, FCAObject[] objects,
-						FCAAttribute[] attributes, Concept[] concepts) {
+						String remark) {
 		this.file = file;
 		this.identifier = identifier;
 		this.title = title;
 		this.remark = remark;
-		this.specials = specials;
-		this.unitLength = unitLength;
-		this.points = points;
-		this.lines = lines;
-		this.objects = objects;
-		this.attributes = attributes;
-		this.concepts = concepts;		
 	}
 
 	public FCAAttribute[] getAttributes() {
@@ -73,7 +64,7 @@ public class LineDiagram extends SchemaPart{
 		return remark;
 	}
 
-	public Hashtable getSpecials() {
+	public Map getSpecials() {
 		return specials;
 	}
 
@@ -117,7 +108,7 @@ public class LineDiagram extends SchemaPart{
 		this.remark = remark;
 	}
 
-	public void setSpecials(Hashtable specials) {
+	public void setSpecials(Map specials) {
 		this.specials = specials;
 	}
 
