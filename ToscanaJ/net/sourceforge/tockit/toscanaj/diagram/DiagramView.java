@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseEvent;
+import java.util.Vector;
 
 import net.sourceforge.tockit.toscanaj.data.Diagram;
 import net.sourceforge.tockit.toscanaj.data.LabelInfo;
@@ -14,12 +15,23 @@ import net.sourceforge.tockit.toscanaj.diagram.LabelView;
 import net.sourceforge.tockit.toscanaj.diagram.ScalingInfo;
 import net.sourceforge.tockit.toscanaj.gui.MainPanel;
 
+
 /**
  * This class paints a diagram defined by the Diagram class.
  */
 
-public class DiagramView extends JComponent implements MouseListener, MouseMotionListener
+public class DiagramView extends JComponent implements MouseListener, MouseMotionListener, DiagramObserver
 {
+  /**
+   * vector to store objectLabels
+   */
+  Vector objectLabels = null;
+
+  /**
+   * vector to store attributeLabels
+   */
+  Vector attributeLabels = null;
+
     /**
      * Holds sacaling info. Is updated on each redraw
      */
@@ -40,16 +52,59 @@ public class DiagramView extends JComponent implements MouseListener, MouseMotio
     /**
      * The diagram to display.
      */
-    Diagram _diagram;
+    Diagram _diagram = null;
+
+    /**
+     * load object and attribute labels on first paint;
+     */
+    private boolean firstPaint = true;
+
+    /**
+     * Holds the LabelInfo for selected label view
+     * that the user has clicked on with intent to move
+     */
+    private LabelInfo li = null;
+    /**
+     * Flag to signal that a label has been selected for reposition
+     */
+    private boolean labelSelected = false;
+    /**
+     * Flag to prevent label from being moved when just clicked on
+     */
+    private boolean dragMode = false;
+    /**
+     * Distance that label has to be moved to enable dragMode
+     */
+    int dragMin = 5;
+    /**
+     * Holds the last point that the current label being move
+     * was move to
+     */
+    Point2D lastPoint = null;
 
     /**
      * Creates a new vew displaying an empty digram (i.e. nothing at all).
      */
     public DiagramView()
     {
-        _diagram = new Diagram();
         addMouseListener(this);
         addMouseMotionListener(this);
+        objectLabels = new Vector();
+        attributeLabels = new Vector();
+    }
+
+    /**
+    * method to notify observer that a change has been made
+    */
+    public void diagramChanged(){
+      repaint();
+    }
+
+    /**
+    * Method called by LabelView to update all observers
+    */
+    public void updateAllObservers() {
+      _diagram.emitChangeSignal();
     }
 
     /**
@@ -57,6 +112,9 @@ public class DiagramView extends JComponent implements MouseListener, MouseMotio
      */
     public void paintComponent( Graphics g )
     {
+        if( _diagram == null ) {
+            return;
+        }
         Graphics2D g2d = (Graphics2D) g;
 
         // calculate paintable area
@@ -144,12 +202,23 @@ public class DiagramView extends JComponent implements MouseListener, MouseMotio
             // paint the point
             g2d.fill( new Ellipse2D.Double( px - RADIUS, py - RADIUS,
                                             RADIUS * 2, RADIUS * 2 ) );
+            if(firstPaint == true){
+              LabelView label = new LabelView( this, _diagram.getAttributeLabel( i ) );
+              label.draw( g2d, si, px, py + RADIUS * invY, LabelView.ABOVE );
+              attributeLabels.insertElementAt(label, i);
 
-            LabelView label = new LabelView( _diagram.getAttributeLabel( i ) );
-            label.draw( g2d, si, px, py + RADIUS * invY, LabelView.ABOVE );
-            label = new LabelView( _diagram.getObjectLabel( i ) );
-            label.draw( g2d, si, px, py - RADIUS * invY, LabelView.BELOW );
+              label = new LabelView( this, _diagram.getObjectLabel( i ) );
+              label.draw( g2d, si, px, py - RADIUS * invY, LabelView.BELOW );
+              objectLabels.insertElementAt(label, i);
+
+            } else {
+              LabelView label = (LabelView)attributeLabels.elementAt(i);
+              label.draw( g2d, si, px, py + RADIUS * invY, LabelView.ABOVE );
+              label = (LabelView)objectLabels.elementAt(i);
+              label.draw( g2d, si, px, py - RADIUS * invY, LabelView.BELOW );
+            }
         }
+        firstPaint = false;
     }
 
     // mouse listeners for diagram events
@@ -174,21 +243,15 @@ public class DiagramView extends JComponent implements MouseListener, MouseMotio
     }
 
     // Mouse Motion Listener for label drag events
-    LabelInfo li = null;
-    boolean labelSelected = false;
-    boolean dragMode = false;
-    Point2D lastPoint = null;
-    int dragMin = 10;
 
     public void mouseDragged(MouseEvent e) {
-      if((getDistance(lastPoint.getX(), lastPoint.getY(), e.getX(), e.getY()) >= dragMin) && labelSelected == true) {
-        li.setOffset(new Point2D.Double(li.getOffset().getX() -
+      if(li != null && (dragMode || ((getDistance(lastPoint.getX(), lastPoint.getY(), e.getX(), e.getY()) >= dragMin) && labelSelected == true))) {
+        li.emitChangeSignal(new Point2D.Double(li.getOffset().getX() -
                         si.inverseScaleX(lastPoint.getX() - e.getX()),
                         li.getOffset().getY() -
                         si.inverseScaleY(lastPoint.getY() - e.getY())
                       ));
         lastPoint = new Point2D.Double(e.getX(), e.getY());
-        repaint();
         dragMode = true;
       }
     }
@@ -203,7 +266,7 @@ public class DiagramView extends JComponent implements MouseListener, MouseMotio
       double x, y;
       String type = "";
       Point2D node, found = null;
-      LabelInfo objectLabel, attributeLabel;
+      LabelView objectLabel, attributeLabel;
       lastPoint = new Point2D.Double(e.getX(), e.getY());
       //if (e.getClickCount() == 2){
         for( int i = 0; i < _diagram.getNumberOfPoints(); i++ ) {
@@ -215,27 +278,27 @@ public class DiagramView extends JComponent implements MouseListener, MouseMotio
             index = i;
             type = "Node";
           }
-          objectLabel = _diagram.getObjectLabel(i);
-          x = e.getX() - objectLabel.labelX;
-          y = e.getY() - objectLabel.labelY;
-          if(!(x < 0 || y < 0)  && (x <= objectLabel.labelWidth) && (y <= objectLabel.labelHeight)  ) {
+          objectLabel = (LabelView)objectLabels.elementAt(i);
+          x = e.getX() - objectLabel.getLabelX();
+          y = e.getY() - objectLabel.getLabelY();
+          if(!(x < 0 || y < 0)  && (x <= objectLabel.getLabelWidth()) && (y <= objectLabel.getLabelHeight())  ) {
             System.out.println("\nObject label clicked on");
-            for(int o = 0; o < objectLabel.getNumberOfEntries(); o++) {
-              System.out.println("objectLabels " + objectLabel.getEntry(o));
+            if(MainPanel.debug) {
+              System.out.println("ObjectLabel " + _diagram.getObjectLabel(i).getEntry(0));
             }
-            li = objectLabel;
+            li = _diagram.getObjectLabel(i);
             labelSelected = true;
             return;
           }
-          attributeLabel = _diagram.getAttributeLabel(i);
-          x = e.getX() - attributeLabel.labelX;
-          y = e.getY() - attributeLabel.labelY;
-          if(!(x < 0 || y < 0)  && (x <= attributeLabel.labelWidth) && (y <= attributeLabel.labelHeight)  ) {
+          attributeLabel = (LabelView)attributeLabels.elementAt(i);
+          x = e.getX() - attributeLabel.getLabelX();
+          y = e.getY() - attributeLabel.getLabelY();
+          if(!(x < 0 || y < 0)  && (x <= attributeLabel.getLabelWidth()) && (y <= attributeLabel.getLabelHeight())  ) {
             System.out.println("\nAttribute labelLabel clicked on");
-            for(int a = 0; a < attributeLabel.getNumberOfEntries(); a++) {
-              System.out.println("objectLabels " + attributeLabel.getEntry(a));
+            if(MainPanel.debug) {
+              System.out.println("AttributeLabel " + _diagram.getAttributeLabel(i).getEntry(0));
             }
-            li = attributeLabel;
+            li = _diagram.getAttributeLabel(i);
             labelSelected = true;
             return;
           }
@@ -281,6 +344,7 @@ public class DiagramView extends JComponent implements MouseListener, MouseMotio
     public void showDiagram( Diagram diagram )
     {
         _diagram = diagram;
+        _diagram.addObserver(this);
         repaint();
     }
 }

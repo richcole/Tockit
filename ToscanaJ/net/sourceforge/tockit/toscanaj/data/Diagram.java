@@ -1,15 +1,40 @@
 package net.sourceforge.tockit.toscanaj.data;
 
+import net.sourceforge.tockit.toscanaj.diagram.DiagramObserver;
+import net.sourceforge.tockit.toscanaj.gui.MainPanel;
+
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Enumeration;
 import java.util.*;
 
 /**
  * This class is an abstraction of all diagram related information.
  */
 
-public class Diagram
+public class Diagram implements DiagramObservable
 {
+
+  private Vector diagramObserver = null;
+
+  /**
+   * Method to add observer
+   */
+  public void addObserver(DiagramObserver observer){
+    this.diagramObserver.addElement(observer);
+  }
+
+  /**
+   *
+   */
+  public void emitChangeSignal(){
+      Iterator iterator = diagramObserver.iterator();
+      while(iterator.hasNext()){
+        ((DiagramObserver)iterator.next()).diagramChanged();
+      }
+  }
+
+
     /**
      * The title used for this diagram.
      */
@@ -61,6 +86,7 @@ public class Diagram
         _objectLabels = new Vector();
         _lineStartPoints = new Vector();
         _lineEndPoints = new Vector();
+        diagramObserver = new Vector();
     }
 
     /**

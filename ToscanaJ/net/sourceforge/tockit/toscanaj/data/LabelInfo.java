@@ -1,5 +1,9 @@
 package net.sourceforge.tockit.toscanaj.data;
 
+import net.sourceforge.tockit.toscanaj.data.LabelObservable;
+import net.sourceforge.tockit.toscanaj.gui.MainPanel;
+import net.sourceforge.tockit.toscanaj.diagram.LabelObserver;
+
 import java.awt.*;
 import java.awt.geom.Point2D;
 import java.util.*;
@@ -8,9 +12,28 @@ import java.util.*;
  * This class encapsulates all information needed to paint a label.
  */
 
-public class LabelInfo
+public class LabelInfo implements LabelObservable
 {
-    public double labelWidth, labelHeight, labelX, labelY;
+    //
+    private Vector labelObserver = null;
+
+  /**
+   * Method to add observer
+   */
+  public void addObserver(LabelObserver observer){
+    this.labelObserver.addElement(observer);
+  }
+
+  public void emitChangeSignal(Point2D offset){
+    if(labelObserver != null){
+      _offset = offset;
+      Iterator iterator = labelObserver.iterator();
+      while(iterator.hasNext()){
+        ((LabelObserver)iterator.next()).diagramChanged();
+      }
+    }
+  }
+
     /**
      * The list of entries in the label.
      *
@@ -63,6 +86,7 @@ public class LabelInfo
         _backgroundColor = Color.white;
         _textColor = Color.black;
         _textAlignment = ALIGNLEFT;
+        labelObserver = new Vector();
     }
 
     /**

@@ -2,15 +2,34 @@ package net.sourceforge.tockit.toscanaj.diagram;
 
 import java.awt.*;
 import java.awt.geom.*;
+import javax.swing.*;
 
 import net.sourceforge.tockit.toscanaj.data.LabelInfo;
 import net.sourceforge.tockit.toscanaj.diagram.ScalingInfo;
+import net.sourceforge.tockit.toscanaj.data.Diagram;
 
 /**
  * This class encapsulates all label drawing code.
  */
-public class LabelView
+public class LabelView extends JComponent implements LabelObserver
 {
+    /**
+     * Label current width
+     */
+    private double lw;
+    /**
+     * Label current height
+     */
+    private double lh;
+    /**
+     * Label current x coordinate
+     */
+    private double lx;
+    /**
+     * Label current y coordinate
+     */
+    private double ly;
+
     /**
      * Used when the label should be drawn above the given point.
      *
@@ -31,10 +50,48 @@ public class LabelView
     private LabelInfo _labelInfo;
 
     /**
+     * Store the diagram view that the label belongs to
+     */
+    private DiagramView diagramView = null;
+
+    /**
      * Creates a view for the given label information.
      */
-    public LabelView( LabelInfo label ) {
+    public LabelView( DiagramView diagramView, LabelInfo label ) {
+        this.diagramView = diagramView;
         _labelInfo = label;
+        _labelInfo.addObserver(this);    }
+
+    /**
+     * Update label view as label info has change
+     */
+    public void diagramChanged(){
+      diagramView.updateAllObservers();
+    }
+
+    /**
+     * Return Label width
+     */
+    public double getLabelWidth() {
+      return lw;
+    }
+    /**
+     * Return Label height
+     */
+    public double getLabelHeight() {
+      return lh;
+    }
+    /**
+     * Return label x coordinate
+     */
+    public double getLabelX() {
+      return lx;
+    }
+    /**
+     * Return label y coordinate
+     */
+    public double getLabelY() {
+      return ly;
     }
 
     /**
@@ -65,10 +122,9 @@ public class LabelView
         FontMetrics fm = graphics.getFontMetrics();
 
         // find the size and position
-        double lw = getWidth( fm );
-        double lh = getHeight( fm );
-        double lx = x - lw/2 + scInfo.scaleX( _labelInfo.getOffset().getX() );
-        double ly;
+        lw = getWidth( fm );
+        lh = getHeight( fm );
+        lx = x - lw/2 + scInfo.scaleX( _labelInfo.getOffset().getX() );
         if( placement == ABOVE )
         {
             ly = y - lh + scInfo.scaleY( _labelInfo.getOffset().getY() );
@@ -77,10 +133,6 @@ public class LabelView
         {
             ly = y + scInfo.scaleY( _labelInfo.getOffset().getY() );
         }
-        _labelInfo.labelWidth = lw;
-        _labelInfo.labelHeight = lh;
-        _labelInfo.labelX = lx;
-        _labelInfo.labelY = ly;
         // draw a dashed line from the given point to the calculated
         Stroke oldStroke = graphics.getStroke();
         float[] dashstyle = { 4, 4 };
