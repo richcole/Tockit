@@ -13,13 +13,13 @@ import java.awt.geom.Point2D;
 public class StringFormat {
 
 	public static final class HorizontalAlign {
-		protected HorizontalAlign() {};
+		protected HorizontalAlign() {}
 	}
 	public static final class VerticalAlign {
-		protected VerticalAlign(){};
+		protected VerticalAlign(){}
 	}
 	public static final class FontStyle{
-		protected FontStyle() {};
+		protected FontStyle() {}
 	}
 	
 	public static final HorizontalAlign LEFT = new HorizontalAlign();

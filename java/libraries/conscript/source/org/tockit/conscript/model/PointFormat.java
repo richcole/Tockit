@@ -10,7 +10,7 @@ package org.tockit.conscript.model;
 public class PointFormat {
 	
 	public static final class FillStyle{
-		protected FillStyle() { };
+		protected FillStyle() { }
 	}
 	
 	public static final FillStyle EMPTY = new FillStyle();
