@@ -217,7 +217,7 @@ void sarl_lattice_incr_ref(struct Sarl_Set *S)
 }
 
 extern struct Sarl_SetIterator *
-sarl_lattice_iterator_concepts(struct Sarl_Lattice* L)
+sarl_lattice_concepts(struct Sarl_Lattice* L)
 {
   Sarl_SetIterator* result;
   Sarl_RelationIterator* r_it;
@@ -229,42 +229,43 @@ sarl_lattice_iterator_concepts(struct Sarl_Lattice* L)
   return result;
 };
 
-extern struct Sarl_TransitiveRelation *
-sarl_lattice_iterator_ordering(struct Sarl_Lattice* )
+extern struct Sarl_RelationIterator *
+sarl_lattice_ordering(struct Sarl_Lattice *L)
 {
-  SARL_NOT_IMPLEMENTED;
-  return SARL_ERROR;
+  return sarl_transitive_relation_ordering(L->order);
 };
 
 extern struct Sarl_RelationIterator *
-sarl_lattice_iterator_extent(struct Sarl_Lattice* )
+sarl_lattice_covering(struct Sarl_Lattice *L)
 {
-  SARL_NOT_IMPLEMENTED;
-  return SARL_ERROR;
+  return sarl_transitive_relation_covering(L->order);
 };
 
-
 extern struct Sarl_RelationIterator *
-sarl_lattice_iterator_intent(struct Sarl_Lattice* )
+sarl_lattice_extent(struct Sarl_Lattice *L)
 {
-  SARL_NOT_IMPLEMENTED;
-  return SARL_ERROR;
+  return sarl_relation_iterator_create(L->extent);
 };
 
 
 extern struct Sarl_RelationIterator *
-sarl_lattice_iterator_object_contingent(struct Sarl_Lattice* )
+sarl_lattice_intent(struct Sarl_Lattice *L)
 {
-  SARL_NOT_IMPLEMENTED;
-  return SARL_ERROR;
+  return sarl_relation_iterator_create(L->intent);
 };
 
 
 extern struct Sarl_RelationIterator *
-sarl_lattice_iterator_attribute_contingent(struct Sarl_Lattice* )
+sarl_lattice_object_contingent(struct Sarl_Lattice *L)
 {
-  SARL_NOT_IMPLEMENTED;
-  return SARL_ERROR;
+  return sarl_relation_iterator_create(L->intent_contingent);
+};
+
+
+extern struct Sarl_RelationIterator *
+sarl_lattice_attribute_contingent(struct Sarl_Lattice *L)
+{
+  return sarl_relation_iterator_create(L->extent_contingent);
 };
 
 

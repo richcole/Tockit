@@ -57,11 +57,11 @@ class Map {
     sarl_map_remove(mp_relationRef, p.dom);
   };
 
-  inline Sarl_Index image(Index dom) {
+  inline Sarl_Index image(Index dom) const {
     return sarl_map_image(mp_relationRef, dom);
   };
 
-  inline Map copy() {
+  inline Map copy() const {
     Sarl_Map* p_ref;
     p_ref = sarl_map_copy(
       sarl_map_iterator_create(mp_relationRef)

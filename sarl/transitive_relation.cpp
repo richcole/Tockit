@@ -233,5 +233,19 @@ struct Sarl_SetIterator*
   return sarl_relation_iterator_extent_set(it, S);
 };
 
+struct Sarl_RelationIterator*
+  sarl_transitive_relation_ordering(struct Sarl_TransitiveRelation* r)
+{
+  Sarl_RelationIterator* it = sarl_relation_iterator_create(r->ordering);
+  return it;
+};
+
+struct Sarl_RelationIterator*
+  sarl_transitive_relation_covering(struct Sarl_TransitiveRelation* r)
+
+{
+  Sarl_RelationIterator* it = sarl_relation_iterator_create(r->covering);
+  return it;
+};
 
 

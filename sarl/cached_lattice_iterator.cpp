@@ -73,7 +73,6 @@ struct Sarl_LatticeIteratorFunctionTable s_CachedLatticeIteratorTable =
   sarl_lattice_iterator_cached_intent
 };
 
-
 struct Sarl_LatticeIterator *
   sarl_lattice_iterator_cached_create(
     struct Sarl_Lattice *lattice)
@@ -278,7 +277,14 @@ struct Sarl_LatticeIterator*
   )
 {
   SARL_NOT_IMPLEMENTED;
-  return 0;
+  return SARL_ERROR;
+};
+
+struct Sarl_LatticeIterator *
+  sarl_lattice_iterator_create(
+    struct Sarl_Lattice *lattice)
+{
+  return sarl_lattice_iterator_cached_create(lattice);
 };
 
 

@@ -83,15 +83,47 @@ public:
     return result.retn();
   }
 
-  inline SetIterator concept_intent(Index c) 
+  inline SetIterator concept_intent(Index c) const
   {
     SetIterator result(intent().intent(c));
     return result.retn();
   };
 
-  inline SetIterator concept_extent(Index c) 
+  inline SetIterator concept_extent(Index c) const
   {
     SetIterator result(intent().intent(c));
+    return result.retn();
+  };
+
+  inline SetIterator meet_irreducibles() const
+  {
+    SetIterator      C = concepts();
+    RelationIterator R_cover = covering();
+    Set              irr;
+    
+    SARL_FOR(C) {
+      if ( R_cover.intent(C.value()).count() == 1 ) {
+        irr.insert(C.value());
+      }
+    }
+    
+    SetIterator result(irr);
+    return result.retn();
+  };
+
+  inline SetIterator join_irreducibles() const 
+  {
+    SetIterator      C = concepts();
+    RelationIterator R_cover = covering();
+    Set              irr;
+    
+    SARL_FOR(C) {
+      if ( R_cover.extent(C.value()).count() == 1 ) {
+        irr.insert(C.value());
+      }
+    }
+    
+    SetIterator result(irr);
     return result.retn();
   };
 

@@ -13,10 +13,12 @@ extern "C" {
 
 class ContextReader {
  public:
-  static int read_cxt(
+  ContextReader() {};
+
+  int read_cxt(
       InputStream &in, 
-      Lattice& L, 
-      String& title,
+      Lattice&    L, 
+      String&     title,
       Dictionary& G, 
       Dictionary& M,
       OutputStream& err

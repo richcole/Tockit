@@ -10,6 +10,7 @@ OBJECTS = \
   RefCount
 
 TEST = \
+  test_additive_layout \
   test_input_stream \
   test_context_reader \
   test_dictionary \

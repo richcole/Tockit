@@ -56,12 +56,18 @@ extern struct Sarl_SetIterator*
 extern struct Sarl_SetIterator*
   sarl_transitive_relation_upper_bounds(
     struct Sarl_TransitiveRelation* r, 
-    Sarl_SetIterator* index);
+    Sarl_SetIterator* S);
 
 extern struct Sarl_SetIterator*
   sarl_transitive_relation_lower_bounds(
     struct Sarl_TransitiveRelation* r, 
-    Sarl_SetIterator* index);
+    Sarl_SetIterator* S);
+
+struct Sarl_RelationIterator*
+  sarl_transitive_relation_ordering(struct Sarl_TransitiveRelation* r);
+
+struct Sarl_RelationIterator*
+  sarl_transitive_relation_covering(struct Sarl_TransitiveRelation* r);
 
 
 /* reference counting interface */
