@@ -11,6 +11,9 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Map;
 
+/**
+ * @todo subtypes should check for initialization in setters, too
+ */
 public abstract class ConscriptStructure {
     private String name;
     private FormattedString title = null;
@@ -40,18 +43,30 @@ public abstract class ConscriptStructure {
     }
 
     public void setRemark(String remark) {
+        if(this.isInitialized()) {
+            throw new IllegalStateException("Structure already initialized");
+        }
     	this.remark = remark;
     }
 
     public void addSpecial(String special, String value) {
+        if(this.isInitialized()) {
+            throw new IllegalStateException("Structure already initialized");
+        }
         specials.put(special, value);
     }
 
     public void setTitle(FormattedString title) {
+        if(this.isInitialized()) {
+            throw new IllegalStateException("Structure already initialized");
+        }
     	this.title = title;
     }
     
     public void setInitialized() {
+        if(this.isInitialized()) {
+            throw new IllegalStateException("Structure already initialized");
+        }
         this.initialized = true;
     }
     

@@ -7,60 +7,64 @@
  */
 package org.tockit.conscript.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class LineDiagram extends ConscriptStructure{
 	private TypedSize unitLength;
-	private Point[] points;
-	private Line[] lines;
-	private FCAObject[] objects;
-	private FCAAttribute[] attributes;
-	private Concept[] concepts;
+	private List points = new ArrayList();
+	private List lines = new ArrayList();
+	private List objects = new ArrayList();
+	private List attributes = new ArrayList();
+	private List concepts = new ArrayList();
 	
 	public LineDiagram(String identifier) {
         super(identifier);
 	}
 
-	public FCAAttribute[] getAttributes() {
-		return attributes;
+	public List getAttributes() {
+		return Collections.unmodifiableList(this.attributes);
 	}
 
-	public Concept[] getConcepts() {
-		return concepts;
+	public List getConcepts() {
+		return Collections.unmodifiableList(this.concepts);
 	}
 
-	public Line[] getLines() {
-		return lines;
+	public List getLines() {
+		return Collections.unmodifiableList(this.lines);
 	}
 
-	public FCAObject[] getObjects() {
-		return objects;
+	public List getObjects() {
+		return Collections.unmodifiableList(this.objects);
 	}
 
-	public Point[] getPoints() {
-		return points;
+	public List getPoints() {
+		return Collections.unmodifiableList(this.points);
 	}
 
 	public TypedSize getUnitLength() {
-		return unitLength;
+		return this.unitLength;
 	}
 
-	public void setAttributes(FCAAttribute[] attributes) {
-		this.attributes = attributes;
+	public void addAttribute(FCAAttribute attribute) {
+		this.attributes.add(attribute);
 	}
 
-	public void setConcepts(Concept[] concepts) {
-		this.concepts = concepts;
+	public void addConcept(Concept concept) {
+		this.concepts.add(concept);
 	}
 
-	public void setLines(Line[] lines) {
-		this.lines = lines;
+	public void addLine(Line line) {
+		this.lines.add(line);
 	}
 
-	public void setObjects(FCAObject[] objects) {
-		this.objects = objects;
+	public void addObject(FCAObject object) {
+		this.objects.add(object);
 	}
 
-	public void setPoints(Point[] points) {
-		this.points = points;
+	public void addPoint(Point point) {
+		this.points.add(point);
 	}
 
 	public void setUnitLength(TypedSize unitLength) {

@@ -283,4 +283,14 @@ public class CSCFile {
             }
         }
     }
+    
+    public boolean hasInclude(URL includeURL) {
+        for (Iterator iter = this.includeFiles.iterator(); iter.hasNext();) {
+            CSCFile includeFile = (CSCFile) iter.next();
+            if(includeFile.location.equals(includeURL) || includeFile.hasInclude(includeURL)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
