@@ -128,7 +128,7 @@ public final class Multivalent {
 	};
 
 	// look for JARs in same directory (or, during development, in c:/temp)
-	File dir;
+//	File dir;
 	String jar = URIs.decode/*in case space in path*/(Multivalent.class.getResource("Multivalent.class").toString());
 //System.out.println("Bootstrap res = "+jar);
 	String top;
