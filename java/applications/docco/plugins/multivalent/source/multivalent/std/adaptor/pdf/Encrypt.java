@@ -2,8 +2,6 @@ package multivalent.std.adaptor.pdf;
 
 import java.util.Map;
 import java.util.HashMap;
-//import java.security.*;
-import java.io.InputStream;
 import java.lang.reflect.*;
 
 import multivalent.ParseException;

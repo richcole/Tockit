@@ -7,7 +7,6 @@ import java.awt.image.ImageObserver;
 import java.awt.geom.Ellipse2D;
 import java.net.URI;
 import java.net.MalformedURLException;
-import java.net.URL;
 //import java.util.*; -- don't want java.util.EventListener as conflicts with multivalent.EventListener
 import java.util.Map;
 import java.util.HashMap;

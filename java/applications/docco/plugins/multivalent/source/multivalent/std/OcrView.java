@@ -1,6 +1,5 @@
 package multivalent.std;
 
-import java.io.*;
 import java.awt.image.ImageObserver;
 import java.awt.*;
 import java.util.List;
