@@ -5,7 +5,7 @@
  *
  * $Id$
  */
-package org.tockit.docco.indexer.documenthandler;
+package org.tockit.docco.indexer.documenthandler.plugins.multivalent;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +18,8 @@ import java.util.Map;
 
 import org.tockit.docco.indexer.DocumentContent;
 import org.tockit.docco.indexer.DocumentSummary;
+import org.tockit.docco.indexer.documenthandler.DocumentHandler;
+import org.tockit.docco.indexer.documenthandler.DocumentHandlerException;
 
 import tool.ExtractText;
 

@@ -5,7 +5,7 @@
  *
  * $Id$
  */
-package org.tockit.docco.indexer.documenthandler;
+package org.tockit.docco.indexer.documenthandler.plugins.poi;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,6 +23,8 @@ import org.apache.poi.poifs.eventfilesystem.POIFSReaderEvent;
 import org.apache.poi.poifs.eventfilesystem.POIFSReaderListener;
 import org.tockit.docco.indexer.DocumentContent;
 import org.tockit.docco.indexer.DocumentSummary;
+import org.tockit.docco.indexer.documenthandler.DocumentHandler;
+import org.tockit.docco.indexer.documenthandler.DocumentHandlerException;
 
 public class MSWordHandler implements DocumentHandler {
 	

@@ -5,7 +5,7 @@
  *
  * $Id$
  */
-package org.tockit.docco.indexer.documenthandler;
+package org.tockit.docco.indexer.documenthandler.plugins.poi;
 
 import java.io.IOException;
 import java.net.URL;
@@ -18,6 +18,8 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.tockit.docco.indexer.DocumentContent;
 import org.tockit.docco.indexer.DocumentSummary;
+import org.tockit.docco.indexer.documenthandler.DocumentHandler;
+import org.tockit.docco.indexer.documenthandler.DocumentHandlerException;
 
 
 public class MSExcelDocHandler implements DocumentHandler {
