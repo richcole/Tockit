@@ -350,8 +350,7 @@ public class Canvas extends JPanel implements Printable {
             point = this.screenTransform.inverseTransform(screenPos, null);
         } catch (Exception ex) {
             //this should not happen
-            ex.printStackTrace();
-            throw new RuntimeException("Internal error: noninvertible transformation found.");
+            throw new RuntimeException("Internal error: noninvertible transformation found.", ex);
         }
         return point;
     }
