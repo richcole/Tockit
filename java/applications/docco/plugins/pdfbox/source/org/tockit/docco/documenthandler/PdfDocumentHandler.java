@@ -23,6 +23,9 @@ import org.pdfbox.pdfparser.PDFParser;
 import org.pdfbox.pdmodel.PDDocument;
 import org.pdfbox.pdmodel.PDDocumentInformation;
 import org.pdfbox.util.PDFTextStripper;
+
+import org.tockit.docco.filefilter.DoccoFileFilter;
+import org.tockit.docco.filefilter.ExtensionFileFilterFactory;
 import org.tockit.docco.indexer.DocumentSummary;
 import org.tockit.plugin.Plugin;
 
@@ -88,6 +91,10 @@ public class PdfDocumentHandler implements DocumentHandler, Plugin {
 
 	public String getDisplayName() {
 		return "PDF using pdfbox";
+	}
+
+	public DoccoFileFilter getDefaultFilter() {
+		return new ExtensionFileFilterFactory().createNewFilter("pdf");
 	}
 
 	public void load() {

@@ -29,7 +29,6 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -699,7 +698,7 @@ public class DoccoMainFrame extends JFrame {
             fileDialog.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             fileDialog.setMultiSelectionEnabled(false);
             
-			final List documentMappings = new ArrayList(Arrays.asList(GlobalConstants.DEFAULT_MAPPINGS));
+			final List documentMappings = DocumentHandlerRegistry.getDefaultMappings();
 
             JPanel optionsPanel = new JPanel(new GridBagLayout());
             JTextField nameField = new JTextField("Index " + (this.indexes.size() + 1));

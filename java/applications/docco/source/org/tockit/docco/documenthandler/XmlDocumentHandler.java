@@ -16,6 +16,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import org.tockit.docco.filefilter.DoccoFileFilter;
+import org.tockit.docco.filefilter.ExtensionFileFilterFactory;
 import org.tockit.docco.indexer.DocumentSummary;
 
 
@@ -37,5 +39,9 @@ public class XmlDocumentHandler implements DocumentHandler  {
 
 	public String getDisplayName() {
 		return "XML document handler";
+	}
+
+	public DoccoFileFilter getDefaultFilter() {
+		return new ExtensionFileFilterFactory().createNewFilter("xml;svg");
 	}
 }

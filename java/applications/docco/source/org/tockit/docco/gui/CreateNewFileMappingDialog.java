@@ -120,7 +120,7 @@ public class CreateNewFileMappingDialog extends JDialog {
 
 	private void initAllComboBoxModels() {
 		this.docHandlerImplementationsModel = new DefaultComboBoxModel();
-		Iterator docHandlersIterator = DocumentHandlerRegistry.getIterator();
+		Iterator docHandlersIterator = DocumentHandlerRegistry.getDocumentHandlers().iterator();
 		while (docHandlersIterator.hasNext()) {
 			DocumentHandler curDocHandler = (DocumentHandler) docHandlersIterator.next();
 			this.docHandlerImplementationsModel.addElement(curDocHandler);			

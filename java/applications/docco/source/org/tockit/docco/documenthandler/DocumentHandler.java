@@ -10,6 +10,7 @@ package org.tockit.docco.documenthandler;
 import java.io.IOException;
 import java.net.URL;
 
+import org.tockit.docco.filefilter.DoccoFileFilter;
 import org.tockit.docco.indexer.DocumentSummary;
 
 public interface DocumentHandler {
@@ -19,6 +20,5 @@ public interface DocumentHandler {
 	 */
 	public String getDisplayName ();
 	
-	// @todo add this method
-	//public FileFilter getDefaultFilter();
+	public DoccoFileFilter getDefaultFilter();
 }

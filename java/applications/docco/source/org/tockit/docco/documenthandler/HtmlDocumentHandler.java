@@ -23,10 +23,11 @@ import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.*;
 import javax.swing.text.html.parser.ParserDelegator;
 
+import org.tockit.docco.filefilter.DoccoFileFilter;
+import org.tockit.docco.filefilter.ExtensionFileFilterFactory;
 import org.tockit.docco.indexer.DocumentSummary;
 
 public class HtmlDocumentHandler implements DocumentHandler {
-
 	/**
 	 * java sun example on parsing html can be found here:
 	 * http://java.sun.com/products/jfc/tsc/articles/bookmarks/index.html
@@ -132,4 +133,7 @@ public class HtmlDocumentHandler implements DocumentHandler {
 		return "HTML";
 	}
 
+    public DoccoFileFilter getDefaultFilter() {
+        return new ExtensionFileFilterFactory().createNewFilter("htm;html;xhtml");
+    }
 }

@@ -18,6 +18,9 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+
+import org.tockit.docco.filefilter.DoccoFileFilter;
+import org.tockit.docco.filefilter.ExtensionFileFilterFactory;
 import org.tockit.docco.indexer.DocumentSummary;
 import org.tockit.plugin.Plugin;
 
@@ -83,8 +86,11 @@ public class MSExcelDocumentHandler implements DocumentHandler, Plugin {
 		return "Microsoft Excel";
 	}
 
+	public DoccoFileFilter getDefaultFilter() {
+		return new ExtensionFileFilterFactory().createNewFilter("xls");
+	}
+
 	public void load() {
 		DocumentHandlerRegistry.registerDocumentHandler(this);
 	}
-
 }

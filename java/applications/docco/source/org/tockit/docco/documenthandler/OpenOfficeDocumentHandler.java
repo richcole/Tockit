@@ -20,6 +20,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.tockit.docco.filefilter.DoccoFileFilter;
+import org.tockit.docco.filefilter.ExtensionFileFilterFactory;
 import org.tockit.docco.indexer.DocumentSummary;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -136,4 +138,8 @@ public class OpenOfficeDocumentHandler implements DocumentHandler {
     public String getDisplayName() {
 		return "OpenOffice Documents";
 	}
+
+    public DoccoFileFilter getDefaultFilter() {
+        return new ExtensionFileFilterFactory().createNewFilter("sxw;sxc;sxi;sxd");
+    }
 }

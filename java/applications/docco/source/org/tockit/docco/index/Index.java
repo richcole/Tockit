@@ -15,12 +15,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.lucene.index.IndexWriter;
 import org.tockit.docco.GlobalConstants;
+import org.tockit.docco.documenthandler.DocumentHandlerRegistry;
 import org.tockit.docco.indexer.DocumentHandlerMapping;
 import org.tockit.docco.indexer.Indexer;
 import org.tockit.docco.indexer.Indexer.CallbackRecipient;
@@ -54,7 +54,7 @@ public class Index {
 				}
 				retVal = new Index(name, indexDirectory, baseDirectory, documentMappings, callbackRecipient);
 			} else {
-				retVal = new Index(name, indexDirectory, baseDirectory, Arrays.asList(GlobalConstants.DEFAULT_MAPPINGS), 
+				retVal = new Index(name, indexDirectory, baseDirectory, DocumentHandlerRegistry.getDefaultMappings(), 
 				    			   callbackRecipient);
 			}
 			retVal.callbackRecipient = callbackRecipient;

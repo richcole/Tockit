@@ -18,6 +18,8 @@ import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.tockit.docco.filefilter.DoccoFileFilter;
+import org.tockit.docco.filefilter.ExtensionFileFilterFactory;
 import org.tockit.docco.indexer.DocumentSummary;
 import org.tockit.docco.documenthandler.DocumentHandler;
 import org.tockit.docco.documenthandler.DocumentHandlerException;
@@ -187,6 +189,7 @@ public class MultivalentDocumentHandler implements DocumentHandler, Plugin {
 		DocumentHandlerRegistry.registerDocumentHandler(this);
 	}
 
-	
-
+	public DoccoFileFilter getDefaultFilter() {
+		return new ExtensionFileFilterFactory().createNewFilter("pdf;dvi;htm;html;xhtml;man");
+	}
 }

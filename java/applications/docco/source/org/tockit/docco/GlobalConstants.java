@@ -14,8 +14,6 @@ import org.tockit.docco.documenthandler.HtmlDocumentHandler;
 import org.tockit.docco.documenthandler.OpenOfficeDocumentHandler;
 import org.tockit.docco.documenthandler.PlainTextDocumentHandler;
 import org.tockit.docco.documenthandler.XmlDocumentHandler;
-import org.tockit.docco.filefilter.ExtensionFileFilterFactory;
-import org.tockit.docco.indexer.DocumentHandlerMapping;
 
 public class GlobalConstants {
     public static final Analyzer DEFAULT_ANALYZER = new StandardAnalyzer();
@@ -44,18 +42,7 @@ public class GlobalConstants {
 	public static final DocumentHandler[] DEFAULT_DOC_HANDLER_IMPLEMENTATIONS = {
 										new HtmlDocumentHandler(),
 										new XmlDocumentHandler(),
+										new OpenOfficeDocumentHandler(),
 										new PlainTextDocumentHandler()
-										};
-
-	// @todo these should be found through a method on the DocumentHandler interface
-	public static final DocumentHandlerMapping[] DEFAULT_MAPPINGS = new DocumentHandlerMapping[]{
-										new DocumentHandlerMapping(new ExtensionFileFilterFactory().createNewFilter("html;htm"),
-																   new HtmlDocumentHandler()),
-										new DocumentHandlerMapping(new ExtensionFileFilterFactory().createNewFilter("txt"),
-																   new PlainTextDocumentHandler()),
-										new DocumentHandlerMapping(new ExtensionFileFilterFactory().createNewFilter("sxw;sxc;sxi;sxd"),
-																   new OpenOfficeDocumentHandler()),
-										new DocumentHandlerMapping(new ExtensionFileFilterFactory().createNewFilter("xml"),
-																   new XmlDocumentHandler())
 										};
 }
