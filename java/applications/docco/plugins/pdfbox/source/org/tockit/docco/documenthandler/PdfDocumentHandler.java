@@ -23,10 +23,9 @@ import org.pdfbox.pdmodel.PDDocument;
 import org.pdfbox.pdmodel.PDDocumentInformation;
 import org.pdfbox.util.PDFTextStripper;
 import org.tockit.docco.indexer.DocumentSummary;
-import org.tockit.docco.documenthandler.DocumentHandler;
-import org.tockit.docco.documenthandler.DocumentHandlerException;
+import org.tockit.plugin.Plugin;
 
-public class PdfDocumentHandler implements DocumentHandler {
+public class PdfDocumentHandler implements DocumentHandler, Plugin {
 	
 
 	public DocumentSummary parseDocument(URL url) throws IOException, DocumentHandlerException {
@@ -87,5 +86,9 @@ public class PdfDocumentHandler implements DocumentHandler {
 
 	public String getDisplayName() {
 		return "PDF using pdfbox";
+	}
+
+	public void load() {
+		DocumentHandlerRegistry.registerDocumentHandler(this);
 	}
 }
