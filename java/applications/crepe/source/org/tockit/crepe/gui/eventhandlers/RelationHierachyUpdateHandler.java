@@ -11,7 +11,7 @@ import org.tockit.events.*;
 import org.tockit.events.Event;
 import org.tockit.cgs.model.events.NewRelationCreatedEvent;
 import org.tockit.cgs.model.*;
-import org.tockit.crepe.gui.RelationHierachyTreeNode;
+import org.tockit.crepe.gui.treeviews.RelationHierachyTreeNode;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultTreeModel;

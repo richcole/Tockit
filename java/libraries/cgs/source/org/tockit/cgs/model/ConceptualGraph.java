@@ -102,4 +102,8 @@ public class ConceptualGraph {
         }
         ///@todo recurse into descriptors
     }
+
+    public KnowledgeBase getKnowledgeBase() {
+        return knowledgeBase;
+    }
 }

@@ -12,6 +12,7 @@ import org.tockit.canvas.imagewriter.*;
 import org.tockit.crepe.controller.ConfigurationManager;
 import org.tockit.crepe.Crepe;
 import org.tockit.crepe.gui.eventhandlers.*;
+import org.tockit.crepe.gui.treeviews.*;
 import org.tockit.crepe.view.GraphView;
 import org.tockit.cgs.model.*;
 import org.tockit.cgs.util.IdPool;
@@ -240,7 +241,7 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
         graphView = new GraphView(eventBroker);
         graphView.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 
-        JTree typeHierarchyView = new JTree(
+        JTree typeHierarchyView = new TypeHierarchyTreeView(
                                 new DefaultTreeModel(new TypeHierachyTreeNode(Type.getUniversal(), null)));
         typeHierarchyView.setRootVisible(true);
         new TypeHierachyUpdateHandler(typeHierarchyView, this.eventBroker);
@@ -248,7 +249,7 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
         JTabbedPane tabPane = new JTabbedPane();
         JTree[] relationHierarchyViews = new JTree[maxArity];
         for (int i = 0; i < maxArity; i++) {
-            relationHierarchyViews[i] = new JTree(
+            relationHierarchyViews[i] = new TypeHierarchyTreeView(
                             new DefaultTreeModel(new RelationHierachyTreeNode(Relation.getUniversal(i + 1), null)));
             relationHierarchyViews[i].setRootVisible(true);
             tabPane.add(getArityName(i + 1), new JScrollPane(relationHierarchyViews[i]));

@@ -5,7 +5,7 @@
  *
  * $Id$
  */
-package org.tockit.crepe.gui;
+package org.tockit.crepe.gui.treeviews;
 
 import org.tockit.cgs.model.Type;
 
@@ -67,5 +67,9 @@ public class TypeHierachyTreeNode implements TreeNode {
 
     public String toString() {
         return this.type.getName();
+    }
+
+    public Type getType() {
+        return type;
     }
 }

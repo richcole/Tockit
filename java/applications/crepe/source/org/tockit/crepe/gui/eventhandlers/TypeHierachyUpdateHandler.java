@@ -11,7 +11,7 @@ import org.tockit.events.*;
 import org.tockit.cgs.model.events.NewTypeCreatedEvent;
 import org.tockit.cgs.model.KnowledgeBase;
 import org.tockit.cgs.model.Type;
-import org.tockit.crepe.gui.TypeHierachyTreeNode;
+import org.tockit.crepe.gui.treeviews.TypeHierachyTreeNode;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultTreeModel;

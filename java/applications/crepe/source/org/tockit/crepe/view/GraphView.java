@@ -11,14 +11,19 @@ import org.tockit.canvas.Canvas;
 import org.tockit.events.EventBroker;
 import org.tockit.cgs.model.*;
 import org.tockit.crepe.view.manipulators.*;
+import org.tockit.crepe.gui.datatransfer.CGFlavors;
 
 import java.awt.*;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.Point2D;
 import java.util.*;
 import java.util.List;
+import java.io.IOException;
 
-public class GraphView extends Canvas {
+public class GraphView extends Canvas implements DropTargetListener {
     private ConceptualGraph graphShown;
     private Hashtable nodemap = new Hashtable();
     private Hashtable linkmap = new Hashtable();
@@ -32,6 +37,9 @@ public class GraphView extends Canvas {
         new NodeContextMenuHandler(this, eventBroker);
         new LinkContextMenuHandler(this, eventBroker);
 //        new LoggingEventListener(eventBroker, CanvasItemDraggedEvent.class, Object.class, System.out);
+
+        // initialize drop support
+        new DropTarget(this, this);
     }
 
     public void paintComponent(Graphics g) {
@@ -119,5 +127,49 @@ public class GraphView extends Canvas {
     public void updateContents() {
         fillCanvas();
         repaint();
+    }
+
+    public void dragEnter(DropTargetDragEvent dtde) {
+        if (dtde.isDataFlavorSupported(CGFlavors.TypeFlavor)) {
+            dtde.acceptDrag(DnDConstants.ACTION_COPY);
+        } else {
+            dtde.rejectDrag();
+        }
+    }
+
+    public void dragOver(DropTargetDragEvent dtde) {
+    }
+
+    public void dropActionChanged(DropTargetDragEvent dtde) {
+    }
+
+    public void dragExit(DropTargetEvent dte) {
+    }
+
+    public void drop(DropTargetDropEvent dtde) {
+        try {
+            Transferable transferable = dtde.getTransferable();
+            if (transferable.isDataFlavorSupported(CGFlavors.TypeFlavor)) {
+                dtde.acceptDrop(DnDConstants.ACTION_COPY);
+                Type type = (Type) transferable.getTransferData(CGFlavors.TypeFlavor);
+                Node newNode = new Node(this.graphShown.getKnowledgeBase(), type, null, null);
+                Point screenPos = dtde.getLocation();
+                Point2D canvasPos = this.getCanvasCoordinates(screenPos);
+                newNode.setPosition(canvasPos.getX(), canvasPos.getY());
+                this.graphShown.addNode(newNode);
+                NodeView newView = new NodeView(newNode);
+                this.addCanvasItem(newView);
+                repaint();
+                dtde.getDropTargetContext().dropComplete(true);
+            } else {
+                dtde.rejectDrop();
+            }
+        } catch (IOException exception) {
+            exception.printStackTrace();
+            dtde.rejectDrop();
+        } catch (UnsupportedFlavorException ufException) {
+            ufException.printStackTrace();
+            dtde.rejectDrop();
+        }
     }
 }

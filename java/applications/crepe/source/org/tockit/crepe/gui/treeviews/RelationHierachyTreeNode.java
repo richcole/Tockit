@@ -5,7 +5,7 @@
  *
  * $Id$
  */
-package org.tockit.crepe.gui;
+package org.tockit.crepe.gui.treeviews;
 
 import org.tockit.cgs.model.Relation;
 import org.tockit.cgs.model.Type;
