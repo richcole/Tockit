@@ -22,7 +22,9 @@ import org.tockit.events.EventBrokerListener;
 
 
  
- 
+/**
+ * @todo check if we want to drop the events in favour of straight calls
+ */
 public class QueryEventHandler implements EventBrokerListener {
 	
 	private QueryEngine queryEngine;
