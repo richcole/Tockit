@@ -175,13 +175,13 @@ int sarl_set_iterator_lexical_compare(
   return ret_val;
 };
 
-int sarl_set_iterator_subset(
+int sarl_set_iterator_subseteq(
   struct Sarl_SetIterator *x, struct Sarl_SetIterator *y
 )
 {
   int ret_val = 1;
-  Sarl_SetIterator *u = sarl_set_iterator_copy(x);
-  Sarl_SetIterator *v = sarl_set_iterator_copy(y);
+  Sarl_SetIterator *u = sarl_set_iterator_obtain_ownership(x);
+  Sarl_SetIterator *v = sarl_set_iterator_obtain_ownership(y);
 
   sarl_set_iterator_reset(u);
   sarl_set_iterator_reset(v);
@@ -262,7 +262,7 @@ sarl_set_iterator_create_from_index(Sarl_Index g)
   Sarl_Set *s;
   Sarl_SetIterator *result;
 
-  s = sarl_set_create(g);
+  s = sarl_set_create();
   sarl_set_insert(s, g);
   result = sarl_set_iterator_create(s);
   sarl_set_decr_ref(s);
@@ -290,6 +290,8 @@ sarl_set_iterator_eq(Sarl_SetIterator *a, Sarl_SetIterator *b)
   result = sarl_set_iterator_at_end(a) && sarl_set_iterator_at_end(b);
   sarl_set_iterator_decr_ref(a);
   sarl_set_iterator_decr_ref(b);
+
+  return result;
 };
 
   

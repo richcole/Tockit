@@ -83,6 +83,18 @@ extern struct Sarl_SetIterator *
   );
 
 extern struct Sarl_SetIterator *
+  sarl_context_iterator_extent(
+    struct Sarl_ContextIterator *K, 
+    Sarl_Index m
+  );
+
+extern struct Sarl_SetIterator *
+  sarl_context_iterator_intent(
+    struct Sarl_ContextIterator *K, 
+    Sarl_Index g
+  );
+
+extern struct Sarl_SetIterator *
   sarl_context_iterator_extent_set(
     struct Sarl_ContextIterator *K, 
     struct Sarl_SetIterator *B

@@ -6,6 +6,7 @@ extern "C" {
 #include <sarl/assert.h>
 }
 
+#include <sarl/cpp/Config.h>
 #include <sarl/cpp/Index.h>
 
 class Set;
@@ -87,11 +88,11 @@ public:
     return sarl_set_iterator_count(mp_itRef);
   }
 
-  bool subset(SetIterator& a_it)
+  bool subseteq(SetIterator& a_it)
   {
     SARL_ASSERT(mp_itRef != 0);
     return
-      sarl_set_iterator_subset(mp_itRef, a_it.mp_itRef);
+      sarl_set_iterator_subseteq(mp_itRef, a_it.mp_itRef);
   };
 
   int lexical_compare(SetIterator& a_it)
@@ -111,7 +112,14 @@ protected:
 private:
   Sarl_SetIterator* mp_itRef;
 
-  SetIterator(Sarl_SetIterator* ap_itRef) {
+public:
+  SetIterator(
+    Sarl_SetIterator* ap_itRef, 
+    bool incr_ref = SARL_DONT_INCR_REF) 
+  {
+    if ( incr_ref != SARL_DONT_INCR_REF ) {
+      sarl_set_iterator_incr_ref(ap_itRef);
+    }
     mp_itRef = ap_itRef;
   };
 

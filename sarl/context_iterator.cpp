@@ -413,23 +413,43 @@ struct Sarl_ContextIterator *
 };
 
   
-int
-sarl_context_iterator_down_arrow(
-  Sarl_ContextIterator* a_K_it, Sarl_Index g, Sarl_Index m) 
+extern struct Sarl_SetIterator *
+  sarl_context_iterator_extent(
+    struct Sarl_ContextIterator *K, 
+    Sarl_Index m
+  )
 {
-  ContextIterator K_it(a_K_it, SARL_INCR_REF); // wrap a_K_it
-
-  SetIterator cand = K_it.objects().minus(K_it.extent(m));
-  SetIterator g_i = K_it.intent(g);
+  Sarl_SetIterator*      result;
+  Sarl_RelationIterator* I;
   
-  SARL_FOR(cand) {
-    if ( g_i.subseteq(cand.value()) ) {
-      break;
-    }
-  };
+  I = sarl_context_iterator_incidence(K);
+  sarl_relation_iterator_release_ownership(I);
 
-  return ! cand.at_end();
+  result = sarl_relation_iterator_extent(I, m);
+  sarl_relation_iterator_decr_ref(I);
+
+  return result;
 };
+
+
+extern struct Sarl_SetIterator *
+  sarl_context_iterator_intent(
+    struct Sarl_ContextIterator *K, 
+    Sarl_Index g
+  )
+{
+  Sarl_SetIterator*      result;
+  Sarl_RelationIterator* I;
+  
+  I = sarl_context_iterator_incidence(K);
+  sarl_relation_iterator_release_ownership(I);
+
+  result = sarl_relation_iterator_intent(I, g);
+  sarl_relation_iterator_decr_ref(I);
+
+  return result;
+};
+
 
 
   

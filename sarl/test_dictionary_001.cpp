@@ -35,7 +35,7 @@ int main()
   Sarl_SetIterator *indexes = sarl_dictionary_get_indexes(d);
   
   SARL_TEST_ASSERT_EQ(
-    word_set.size(), 
+    (Sarl_Index)word_set.size(), 
     sarl_set_iterator_count_remaining(indexes)
   );
 

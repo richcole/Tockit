@@ -37,7 +37,8 @@ OBJECTS = \
   input_stream \
   output_stream \
   read_cxt_context \
-  write_cxt_context 
+  write_cxt_context \
+  context_iterator_arrow_relations
 
 
 TESTS = \

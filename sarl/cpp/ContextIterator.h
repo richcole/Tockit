@@ -5,6 +5,7 @@ extern "C" {
 #include <sarl/context_iterator.h>
 }
 
+#include <sarl/cpp/Config.h>
 #include <sarl/cpp/Index.h>
 
 class RelationIterator;
@@ -44,6 +45,9 @@ public:
 
   inline SetIterator extent(SetIterator const& A);
   inline SetIterator intent(SetIterator const& B);
+
+  inline SetIterator extent(Index m);
+  inline SetIterator intent(Index g);
 
   inline SetIterator next_extent(SetIterator const& A);
   inline SetIterator next_extent_superseteq(
@@ -146,6 +150,20 @@ inline SetIterator ContextIterator::intent(SetIterator const& A)
   return SetIterator(
     sarl_context_iterator_intent_set(mp_itRef, A.mp_itRef)
   ).retn();
+};
+
+inline SetIterator ContextIterator::extent(Index m)
+{
+  return SetIterator(
+    sarl_context_iterator_extent(mp_itRef, m)
+  );
+};
+
+inline SetIterator ContextIterator::intent(Index g)
+{
+  return SetIterator(
+    sarl_context_iterator_intent(mp_itRef, g)
+  );
 };
 
 inline SetIterator ContextIterator::next_extent(SetIterator const& A)
