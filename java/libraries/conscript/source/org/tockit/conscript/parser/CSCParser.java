@@ -50,6 +50,8 @@ public class CSCParser {
             }
         
 			return mainFile;
+        } catch (FileNotFoundException e) {
+            throw e; // we keep the file not found ones
         } catch (IOException e) {
             throw new DataFormatException("Error reading input file '" + mainInput + "'", e);
         }
