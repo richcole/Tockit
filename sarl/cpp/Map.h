@@ -2,8 +2,8 @@
 #define SARL_CPP_MAP_H
 
 extern "C" {
-#include <sarl/relation.h>
-#include <sarl/relation_iterator.h>
+#include <sarl/map.h>
+#include <sarl/map_iterator.h>
 }
 
 #include <sarl/cpp/Index.h>
@@ -54,7 +54,11 @@ class Map {
   };
 
   inline void remove(Pair const& p) {
-    sarl_map_remove(mp_relationRef, p.dom, p.rng);
+    sarl_map_remove(mp_relationRef, p.dom);
+  };
+
+  inline Sarl_Index image(Index dom) {
+    return sarl_map_image(mp_relationRef, dom);
   };
 
   inline Map copy() {

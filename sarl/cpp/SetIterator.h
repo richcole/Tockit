@@ -14,6 +14,9 @@ class RelationIterator;
 class ConceptIterator;
 class ContextIterator;
 class LatticeIterator;
+class Dictionary;
+
+#define SARL_FOR(i) for((i).reset(); !(i).at_end(); (i).next())
 
 class SetIterator {
 
@@ -24,6 +27,7 @@ public:
   friend class ContextIterator;
   friend class ConceptIterator;
   friend class LatticeIterator;
+  friend class Dictionary;
 
   friend SetIterator meet(SetIterator& a_it, SetIterator& b_it);
   friend SetIterator join(SetIterator& a_it, SetIterator& b_it);

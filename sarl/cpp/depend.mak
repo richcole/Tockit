@@ -64,6 +64,9 @@ test_intersection.o: ../../sarl/cpp/Set.h ../../sarl/set.h ../../sarl/index.h
 test_intersection.o: ../../sarl/set_iterator.h ../../sarl/cpp/Index.h
 test_intersection.o: ../../sarl/cpp/SetIterator.h ../../sarl/assert.h
 test_intersection.o: ../../sarl/test.h
+test_map.o: ../../sarl/cpp/Map.h ../../sarl/map.h ../../sarl/index.h
+test_map.o: ../../sarl/pair.h ../../sarl/map_iterator.h
+test_map.o: ../../sarl/cpp/Index.h ../../sarl/cpp/Pair.h ../../sarl/test.h
 test_relation.o: ../../sarl/cpp/Relation.h ../../sarl/relation.h
 test_relation.o: ../../sarl/index.h ../../sarl/pair.h
 test_relation.o: ../../sarl/relation_iterator.h ../../sarl/cpp/Index.h
@@ -78,3 +81,6 @@ test_relation_join.o: ../../sarl/cpp/Pair.h ../../sarl/cpp/RelationIterator.h
 test_relation_join.o: ../../sarl/assert.h ../../sarl/cpp/SetIterator.h
 test_relation_join.o: ../../sarl/set_iterator.h ../../sarl/cpp/Set.h
 test_relation_join.o: ../../sarl/set.h ../../sarl/test.h
+test_string.o: ../../sarl/cpp/String.h ../../sarl/string.h ../../sarl/index.h
+test_string.o: ../../sarl/string_iterator.h ../../sarl/cpp/Index.h
+test_string.o: ../../sarl/test.h

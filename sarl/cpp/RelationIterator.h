@@ -102,6 +102,14 @@ public:
     ).retn();
   }
 
+  Index count_remaining() {
+    return sarl_relation_iterator_count_remaining(mp_itRef);
+  }
+
+  Index count() {
+    return sarl_relation_iterator_count(mp_itRef);
+  }
+
 private:
   RelationIterator retn() 
   {

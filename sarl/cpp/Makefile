@@ -10,6 +10,9 @@ OBJECTS = \
   RefCount
 
 TEST = \
+  test_dictionary \
+  test_map \
+  test_string \
   test_intersection test_relation \
   test_relation_join test_context \
   test_assignment \
