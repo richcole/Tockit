@@ -75,8 +75,7 @@ java/test_sarl.class: java/test_sarl.java
 	javac -sourcepath ./java java/test_sarl.java
 
 test_java: java/test_sarl.class
-	cd java
-	java test_sarl
+	cd java; java test_sarl
 
 clean: 
 	rm -f python/*.pyc python/sarl_wrap.* python/*.so
