@@ -219,6 +219,8 @@ sarl_lattice_decr_ref(
   if ( sarl_ref_count_decr(&a_lattice->ref_count) ) {
     sarl_relation_decr_ref(a_lattice->intent);
     sarl_relation_decr_ref(a_lattice->extent);
+    sarl_relation_decr_ref(a_lattice->intent_contingent);
+    sarl_relation_decr_ref(a_lattice->extent_contingent);
     sarl_transitive_relation_decr_ref(a_lattice->order);
     delete a_lattice;
   }
