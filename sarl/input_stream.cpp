@@ -16,7 +16,6 @@ struct Sarl_InputStream : Sarl_Iterator
 
 using namespace std;
 
-
 int 
 sarl_input_stream_get_line(Sarl_InputStream* input, Sarl_String *s)
 {
@@ -58,9 +57,10 @@ sarl_input_stream_get_line(Sarl_InputStream* input, Sarl_String *s)
 struct Sarl_InputStream* 
 sarl_input_stream_create_from_file(FILE *file)
 {
-  Sarl_InputStream *result = new Sarl_InputStream();
+  //  Sarl_InputStream *result = new Sarl_InputStream();
   //  result->input = new ifstream(file);
   SARL_NOT_IMPLEMENTED;
+  return SARL_ERROR;
 };
 
 
@@ -69,6 +69,7 @@ sarl_input_stream_create_from_file_name(Sarl_String *file_name)
 {
   Sarl_InputStream *result = new Sarl_InputStream();
   result->input = new ifstream(sarl_string_get_chars(file_name));
+  return result;
 };
 
 
@@ -78,5 +79,6 @@ sarl_input_stream_create_from_file_string(Sarl_String *s)
 {
   Sarl_InputStream *result = new Sarl_InputStream();
   result->input = new istringstream(string(sarl_string_get_chars(s)));
+  return result;
 };
 
