@@ -9,22 +9,23 @@ package org.tockit.docco.indexer;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
 import org.apache.poi.hdf.extractor.WordDocument;
 import org.apache.poi.hpsf.PropertySetFactory;
 import org.apache.poi.hpsf.SummaryInformation;
 import org.apache.poi.poifs.eventfilesystem.POIFSReader;
 import org.apache.poi.poifs.eventfilesystem.POIFSReaderEvent;
 import org.apache.poi.poifs.eventfilesystem.POIFSReaderListener;
-import org.tockit.docco.GlobalConstants;
 
 public class MSWordProcessor implements DocumentProcessor {
+	private File file;
+	private SummaryInformation info;
 	
 	private class DocSummaryPOIFSReaderListener implements POIFSReaderListener {
 		
@@ -47,39 +48,17 @@ public class MSWordProcessor implements DocumentProcessor {
 		}
 	}
 
-	public Document getDocument(File file) throws IOException, FileNotFoundException, DocumentProcessingException {
-		try {
-			Document doc = new Document();
-		
-		
+	public void readDocument(File file) throws IOException, DocumentProcessingException {
+		this.file = file;
+
+		try {		
 			POIFSReader poiReader = new POIFSReader();
 			DocSummaryPOIFSReaderListener summaryListener = new DocSummaryPOIFSReaderListener();
 			poiReader.registerListener(summaryListener, "\005SummaryInformation");
 			poiReader.read(new FileInputStream(file));	
-
+	
 			/// @todo there is more fields that we may want to use
-			SummaryInformation info = summaryListener.getSummary();
-			if (info.getTitle() != null) {
-				doc.add(Field.Text(GlobalConstants.FIELD_DOC_TITLE, info.getTitle()));
-			}		
-			if (info.getAuthor() != null) {
-				doc.add(Field.Text(GlobalConstants.FIELD_DOC_AUTHOR, info.getAuthor()));
-			}
-			if (info.getKeywords() != null) {
-				doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_KEYWORDS, info.getKeywords()));
-			}
-
-			try {
-				WordDocument wordDoc = new WordDocument(file.getAbsolutePath());
-				Writer docTextWriter = new StringWriter();
-				wordDoc.writeAllText(docTextWriter);
-				doc.add(Field.UnStored(GlobalConstants.FIELD_QUERY_BODY, docTextWriter.toString()));
-			}
-			catch (ArrayIndexOutOfBoundsException e) {
-				e.printStackTrace();
-			}
-
-			return doc;
+			this.info = summaryListener.getSummary();
 		}
 		catch (IOException e) {
 			if (e.getMessage().startsWith("Unable to read entire header")) {
@@ -89,6 +68,48 @@ public class MSWordProcessor implements DocumentProcessor {
 				throw e;
 			}
 		}
+		
+		
+	}
+
+	public DocumentContent getDocumentContent() throws IOException {
+		try {
+			WordDocument wordDoc = new WordDocument(this.file.getAbsolutePath());
+			Writer docTextWriter = new StringWriter();
+			wordDoc.writeAllText(docTextWriter);
+			return new DocumentContent(docTextWriter.toString());
+		}
+		catch (ArrayIndexOutOfBoundsException e) {
+			System.err.println("ArrayIndexOutOfBoundsException on doc " + file.getPath());
+		}
+		/// @todo this is dodgy - we should just bail out with an exception
+		return null;
+	}
+
+	public List getAuthors() {
+		if (info.getAuthor() != null) {
+			List res = new LinkedList();
+			res.add(info.getAuthor());
+			return res;
+		}
+		return null;
+	}
+
+	public String getTitle() {
+		return this.info.getTitle();
+	}
+
+	public String getSummary() {
+		return null;
+	}
+
+	public Date getModificationDate() {
+		//return info.getEditTime();
+		return null;
+	}
+
+	public String getKeywords() {
+		return info.getKeywords();
 	}
 	
 

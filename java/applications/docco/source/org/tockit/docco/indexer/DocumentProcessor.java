@@ -8,11 +8,17 @@
 package org.tockit.docco.indexer;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-
-import org.apache.lucene.document.Document;
+import java.util.Date;
+import java.util.List;
 
 public interface DocumentProcessor {
-	public Document getDocument (File file) throws FileNotFoundException, IOException, DocumentProcessingException;
+	///@todo should use contsructors instead of this method.
+	public void readDocument(File file) throws IOException, DocumentProcessingException;
+	public DocumentContent getDocumentContent () throws IOException;
+	public List getAuthors ();
+	public String getTitle ();
+	public String getSummary();
+	public Date getModificationDate ();
+	public String getKeywords ();
 }

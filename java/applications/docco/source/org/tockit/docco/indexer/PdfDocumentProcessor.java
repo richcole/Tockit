@@ -9,66 +9,80 @@ package org.tockit.docco.indexer;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
 import org.pdfbox.cos.COSDocument;
 import org.pdfbox.pdfparser.PDFParser;
 import org.pdfbox.pdmodel.PDDocument;
 import org.pdfbox.pdmodel.PDDocumentInformation;
 import org.pdfbox.util.PDFTextStripper;
-import org.tockit.docco.GlobalConstants;
-
-
 
 public class PdfDocumentProcessor implements DocumentProcessor {
+	private File file;
+	private PDDocumentInformation info;
+	private PDFParser pdfParser;
 
-	public Document getDocument(File file) throws FileNotFoundException, IOException {
-		Document doc = new Document();
-		PDFParser pdfParser = new PDFParser(new FileInputStream (file));
+	public void readDocument(File file) throws IOException {
+		this.file = file;
+		this.pdfParser = new PDFParser(new FileInputStream (file));
 		pdfParser.parse();
-		COSDocument cosDoc = pdfParser.getDocument();
 		PDDocument pdfDoc = pdfParser.getPDDocument();
 		if (pdfDoc.isEncrypted()) {
 			/// @todo handle exception better here?
 			throw new IOException("Couldn't read document " + file.getPath() 
 							+ " because it is encrypted");
 		}
+		this.info = pdfDoc.getDocumentInformation();
+	}
 
-		PDDocumentInformation info = pdfDoc.getDocumentInformation();
-		
-		if (info.getTitle() != null) {
-			doc.add(Field.Text(GlobalConstants.FIELD_DOC_TITLE, info.getTitle()));
-		}
-		if (info.getAuthor() != null) {
-			doc.add(Field.Text(GlobalConstants.FIELD_DOC_AUTHOR, info.getAuthor()));
-		}
-		if (info.getKeywords() != null) {
-			doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_KEYWORDS, info.getKeywords()));
-		}
-		if (info.getCreator() != null) {
-			doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_AUTHOR, info.getCreator()));
-		}
-		if (info.getCreationDate() != null) {
-			Calendar creationDate = info.getCreationDate();
-			doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_CREATION_DATE, creationDate.getTime()));
-		}
-
+	public DocumentContent getDocumentContent() throws IOException {
 		PDFTextStripper pdfToText = new PDFTextStripper();
 		StringWriter writer = new StringWriter();
+		COSDocument cosDoc = this.pdfParser.getDocument();
 		try {
 			pdfToText.writeText(cosDoc, writer);
-			doc.add(Field.UnStored(GlobalConstants.FIELD_QUERY_BODY, writer.toString()));
+			return new DocumentContent(writer.toString());
 		} catch (NullPointerException e) {
 			/// @todo something seems to be dodgy with the PDFBox tool -- I get NPEs on some files (OOo?)
 			System.err.println("Caught null pointer exception in PDF reader for document " + file.getAbsolutePath());
 		}
+		return null;
+	}
 
-		return doc;
+	public List getAuthors() {
+		List res = new LinkedList();
+		if (this.info.getAuthor() != null) {
+			res.add(this.info.getAuthor());
+		}
+		if (this.info.getCreator() != null) {
+			res.add(this.info.getCreator());
+		}
+		return res;
+	}
+
+	public String getTitle() {
+		return this.info.getTitle();
+	}
+
+	public String getSummary() {
+		return null;
+	}
+
+	public Date getModificationDate() {
+		Calendar cal = this.info.getModificationDate();
+		if (cal != null) {
+			return cal.getTime();
+		}
+		return null;
+	}
+
+	public String getKeywords() {
+		return this.info.getKeywords();
 	}
 
 }

@@ -9,25 +9,23 @@ package org.tockit.docco.indexer;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.*;
 import javax.swing.text.html.parser.ParserDelegator;
 
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-
-import org.tockit.docco.GlobalConstants;
-
-
-
 public class HtmlDocumentProcessor implements DocumentProcessor {
+	private File file;
+	private Reader reader;
+	private CallbackHandler handler;
 
 	/**
 	 * java sun example on parsing html can be found here:
@@ -109,18 +107,30 @@ public class HtmlDocumentProcessor implements DocumentProcessor {
 		
 	}
 
-	public Document getDocument(File file) throws FileNotFoundException, IOException {
-		Document doc = new Document();
-	
-		FileReader fileReader = new FileReader(file);
-		BufferedReader br = new BufferedReader(fileReader);
-		CallbackHandler handler = new CallbackHandler();
+	public void readDocument(File file) throws IOException {
+		this.file = file;
+		this.reader = new FileReader(file);		
+
+		BufferedReader br = new BufferedReader(this.reader);
+		this.handler = new CallbackHandler();
 		new ParserDelegator().parse(br, handler, true);
-
-		doc.add(Field.Text(GlobalConstants.FIELD_DOC_TITLE, handler.title));
-
-		doc.add(Field.UnStored(GlobalConstants.FIELD_QUERY_BODY, handler.docTextContent.toString()));
+	}
 	
+	public DocumentContent getDocumentContent()  {
+		return new DocumentContent(handler.docTextContent.toString());
+	}
+
+	public List getAuthors() {
+		List res = new LinkedList();
+		res.add(handler.metaAuthor);
+		return res;
+	}
+
+	public String getTitle() {
+		return handler.title;
+	}
+	
+	public String getSummary() {
 		String summary = "";
 		if (handler.metaDescription.length() > 0 ) {
 			summary = handler.metaDescription;
@@ -128,17 +138,14 @@ public class HtmlDocumentProcessor implements DocumentProcessor {
 		if (handler.metaSummary.length() > 0) {
 			summary += "\n" + handler.metaSummary;
 		}
-
-		doc.add(Field.Text(GlobalConstants.FIELD_DOC_SUMMARY, summary));
-
-		doc.add(Field.Text(GlobalConstants.FIELD_DOC_AUTHOR, handler.metaAuthor));
+		return summary;
+	}
 	
-		if (handler.metaDate != null) {
-			doc.add(Field.Text(GlobalConstants.FIELD_DOC_MODIFICATION_DATE, handler.metaDate.toString()));
-		}
+	public Date getModificationDate () {
+		return handler.metaDate;
+	}
 	
-		doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_KEYWORDS, handler.metaKeywords));
-			
-		return doc;
+	public String getKeywords () {
+		return handler.metaKeywords;
 	}
 }

@@ -30,22 +30,22 @@ public class Indexer {
 		try {
 			Date start = new Date();
 			
-			HtmlDocumentProcessor htmlDocProcessor = new HtmlDocumentProcessor();
-			this.docProcessingFactory.registerExtension("html", htmlDocProcessor);
-			this.docProcessingFactory.registerExtension("htm", htmlDocProcessor);
+			Class htmlDocProcessorClass = HtmlDocumentProcessor.class;
+			this.docProcessingFactory.registerExtension("html", htmlDocProcessorClass);
+			this.docProcessingFactory.registerExtension("htm", htmlDocProcessorClass);
 
-			PlainTextDocumentProcessor plainTextDocProcessor = new PlainTextDocumentProcessor();
-			this.docProcessingFactory.registerExtension("txt", plainTextDocProcessor);
-			this.docProcessingFactory.registerExtension("java", plainTextDocProcessor);
-			this.docProcessingFactory.registerExtension("c", plainTextDocProcessor);
-			this.docProcessingFactory.registerExtension("cc", plainTextDocProcessor);
-			this.docProcessingFactory.registerExtension("cpp", plainTextDocProcessor);
-			this.docProcessingFactory.registerExtension("h", plainTextDocProcessor);
-			this.docProcessingFactory.registerExtension("hh", plainTextDocProcessor);
+			Class plainTextDocProcessorClass = PlainTextDocumentProcessor.class;
+			this.docProcessingFactory.registerExtension("txt", plainTextDocProcessorClass);
+			this.docProcessingFactory.registerExtension("java", plainTextDocProcessorClass);
+			this.docProcessingFactory.registerExtension("c", plainTextDocProcessorClass);
+			this.docProcessingFactory.registerExtension("cc", plainTextDocProcessorClass);
+			this.docProcessingFactory.registerExtension("cpp", plainTextDocProcessorClass);
+			this.docProcessingFactory.registerExtension("h", plainTextDocProcessorClass);
+			this.docProcessingFactory.registerExtension("hh", plainTextDocProcessorClass);
 
-			this.docProcessingFactory.registerExtension("pdf", new PdfDocumentProcessor());
+			this.docProcessingFactory.registerExtension("pdf", PdfDocumentProcessor.class);
 
-			this.docProcessingFactory.registerExtension("doc", new MSWordProcessor());
+			this.docProcessingFactory.registerExtension("doc", MSWordProcessor.class);
 
 
 			File f = new File(GlobalConstants.DEFAULT_INDEX_LOCATION);
@@ -94,7 +94,10 @@ public class Indexer {
 				docCount++;
 			}
 		}
+		catch (UnknownFileExtensionException e) {
+		}
 		catch (DocumentProcessingException e) {
+			System.err.println("Couldn't process '" + file.getAbsolutePath() + "' - " + e.getMessage());
 		}
 		catch (FileNotFoundException e) {
 			// this most probably means we don't have access rights -- we coudln't figure out
@@ -104,7 +107,22 @@ public class Indexer {
 			// The other situation I can think of is that a file was deleted during the indexing,
 			// but then there is no point in indexing it, so it is not really a problem.
 		}
+		catch (InstantiationException e) {
+			errorExit(e);
+		}
+		catch (IllegalAccessException e) {
+			errorExit(e);
+		}
 		catch (IOException e) {
+//			// @todo this a hack: pdf parser throws IO exception when it doesn't
+//			// get expected input, but we don't want to stop then. Perhaps this should be 
+//			// caught and checked earlier
+//			if (e.getMessage().startsWith("expected")) {
+//				System.err.println("Error processing " + file.getAbsolutePath() + ": " + e.getMessage());
+//			}
+//			else {
+//				errorExit(e);
+//			}
 			// sometimes shit happens. E.g. the PDF header might be screwed. Some other things
 			// might be broken. We don't want to stop indexing whenever one document fails to be
 			// read properly, so we just ignore it for now. Of course we should consider
