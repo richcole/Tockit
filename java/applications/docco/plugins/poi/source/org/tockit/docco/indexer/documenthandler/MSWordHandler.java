@@ -23,8 +23,8 @@ import org.apache.poi.poifs.eventfilesystem.POIFSReaderEvent;
 import org.apache.poi.poifs.eventfilesystem.POIFSReaderListener;
 import org.tockit.docco.indexer.DocumentContent;
 import org.tockit.docco.indexer.DocumentSummary;
-import org.tockit.docco.indexer.documenthandler.DocumentHandler;
-import org.tockit.docco.indexer.documenthandler.DocumentHandlerException;
+import org.tockit.docco.documenthandler.DocumentHandler;
+import org.tockit.docco.documenthandler.DocumentHandlerException;
 
 public class MSWordHandler implements DocumentHandler {
 	
