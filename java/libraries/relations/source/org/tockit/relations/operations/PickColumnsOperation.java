@@ -27,6 +27,11 @@ public class PickColumnsOperation extends AbstractUnaryRelationOperation {
 		return op.apply(input);
 	}
 	
+	public static Relation pickColumn(Relation input, int columnToPick) {
+		PickColumnsOperation op = new PickColumnsOperation(new int[]{columnToPick});
+		return op.apply(input);
+	}
+	
 	private int[] columnsToPick;
 	private String name;
 	
