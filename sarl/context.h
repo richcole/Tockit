@@ -2,26 +2,35 @@
 #define SARL_CONTEXT_H
 
 #include <sarl/index.h>
+#include <sarl/pair.h>
 
-extern struct Context *sarl_context_create();
-extern struct Context *sarl_context_copy(struct ContextIterator *);
-extern void sarl_context_insert(struct Context *, index, index);
-extern void sarl_context_remove(struct Context *, index, index);
+extern struct Sarl_Context *sarl_context_create();
+extern struct Sarl_Context *sarl_context_copy(struct Sarl_ContextIterator *);
 
-extern struct ContextIterator *sarl_context_create_from_relation(
-  struct RelationIterator *
+extern void sarl_context_insert_pair(
+  struct Sarl_Context *, Sarl_Pair
 );
 
-extern struct Iterator *sarl_context_objects(
-  struct ContextIterator *
+extern void sarl_context_insert_object(
+  struct Sarl_Context *, Sarl_Index
 );
 
-extern struct Iterator *sarl_context_attributes(
-  struct ContextIterator *
+extern void sarl_context_insert_attribute(
+  struct Sarl_Context *, Sarl_Index
 );
 
-extern struct RelationIterator *sarl_context_incidence(
-  struct ContextIterator *
-); 						     
+extern void sarl_context_remove_pair(
+  struct Sarl_Context *, Sarl_Pair
+);
+
+extern void sarl_context_remove_object(
+  struct Sarl_Context *, Sarl_Index
+);
+
+extern void sarl_context_remove_attribute(
+  struct Sarl_Context *, Sarl_Index
+);
 
 #endif
+
+

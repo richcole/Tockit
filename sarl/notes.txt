@@ -28,6 +28,39 @@ intent that changes when the set A from which it was formed changes,
 or (ii) constructing a vector like construct, i.e. one whose elements
 are addressible via integers.
 
+Persistence
+-----------
+
+For the purpose of storing large data collections it is desirable to
+have a persistent store. This raises the question of how to identify
+the set and relations.
+
+In order for the mappings from objects to integers to be meaningful
+the objects should also be able to be stored in the store. In order to
+maintain a set of objects requires either a lexical ordering over the
+objects, or a hash function. This must neccessarily be associated with
+the object themseleves unless they have a canonical binary
+representation.
+
+It is to have a mechanism for storing binary objects which works for
+small entries and for large. It is also desirable to be able to
+iterate over the objects in their lexical ordering. Examples include:
+
+date of the form: 14:32:03, 20 August 2002
+text strings: Attila the hun
+
+It is problematic to to assign integer values that will respect such
+an integer ordering. The store class generates binary codes that
+respect the ordering. Such codes produce a decoding overhead which
+makes them much slower to compute with. Such an integer coding does
+allow prefix compression. Prefix compression may yield pore results
+compared with offset compression.
+
+The advantage of bit codes is that only a single tree needs to be
+constructed. Both the codes and the set items need only be stored
+once. There is also the problem that tree assumes that the objects are
+smaller than the tree nodes.
+
 Higher Order Relations
 ----------------------
 
