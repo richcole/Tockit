@@ -53,6 +53,8 @@ import org.tockit.events.EventBroker;
  *       layer  object for this)
  * 
  * @todo add tests for this class
+ * 
+ * @todo make this threadsafe -- we still get ConcurrentModificationExceptions
  */
 
 public class Canvas extends JPanel implements Printable {

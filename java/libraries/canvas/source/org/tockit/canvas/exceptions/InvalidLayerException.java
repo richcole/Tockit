@@ -9,6 +9,8 @@ package org.tockit.canvas.exceptions;
 
 /**
  * Superclass for all exceptions that are related to invalid layer access.
+ * 
+ * @todo this should be a checked exception
  */
 public class InvalidLayerException extends RuntimeException {
     public InvalidLayerException() {
