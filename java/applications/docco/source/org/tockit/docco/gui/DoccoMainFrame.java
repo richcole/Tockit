@@ -103,7 +103,6 @@ public class DoccoMainFrame extends JFrame {
     private JLabel statusBarMessage;
     private static final int VISIBLE_TREE_DEPTH = 2;
     private static final int DEFAULT_VERTICAL_DIVIDER_LOCATION = 600;
-	private static final int DEFAULT_HORIZONTAL_DIVIDER_LOCATION = 500;
     private static final int DEFAULT_FRAME_WIDTH = 900;
     private static final int DEFAULT_FRAME_HEIGHT = 700;
 	private static final String DEFAULT_INDEX_NAME = "default";
@@ -112,7 +111,6 @@ public class DoccoMainFrame extends JFrame {
     
 	private static final String CONFIGURATION_SECTION_NAME = "DoccoMainPanel";
 	private static final String CONFIGURATION_VERTICAL_DIVIDER_LOCATION = "verticalDivider";
-	private static final String CONFIGURATION_HORIZONTAL_DIVIDER_LOCATION = "horizontalDivider";
 	private static final String CONFIGURATION_INDEX_NAME = "indexName";
 	private static final String CONFIGURATION_LAST_INDEX_DIR = "lastIndexDir";
 	private static final String CONFIGURATION_SHOW_PHANTOM_NODES_NAME = "showPhantomNodes";
@@ -284,7 +282,7 @@ public class DoccoMainFrame extends JFrame {
 	}
 	
 	public DoccoMainFrame(boolean forceIndexAccess) {
-		super("Docco");
+		super(WINDOW_TITLE);
 		
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.add(createFileMenu());
@@ -547,8 +545,7 @@ public class DoccoMainFrame extends JFrame {
     }
 
 	private void editFileMappings() {
-		FileMappingsEditingDialog fileMappingsEditingDialog = 
-						new FileMappingsEditingDialog(this, this.index.getDocHandlersRegistry());
+		new FileMappingsEditingDialog(this, this.index.getDocHandlersRegistry());
 
 		// @todo store changed info in config manager?
 	}

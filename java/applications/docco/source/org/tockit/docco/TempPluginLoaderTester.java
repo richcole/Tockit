@@ -9,13 +9,9 @@ package org.tockit.docco;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.URL;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.tockit.docco.indexer.documenthandler.DocumentHandler;
 import org.tockit.docco.plugin.PluginClassLoader;
 
 
@@ -34,8 +30,6 @@ public class TempPluginLoaderTester {
 			Logger logger = Logger.getLogger(PluginClassLoader.class.getName());
 			logger.setLevel(Level.FINE);
 //			logger.addHandler(new FileHandler("%h/log%u.log"));
-
-			ClassLoader doccoClassLoader = Docco.class.getClassLoader();
 
 			ClassLoader pluginClassLoader;
 			try {

@@ -67,7 +67,6 @@ public class DocumentDisplayPane extends JPanel {
 		this.sizeField = new JTextField();
 		this.sizeField.setEditable(false);
 		
-		JLabel summaryLabel = new JLabel("Summary:");
 		this.summaryArea = new JTextArea();
 		this.summaryArea.setEditable(false);
 		JScrollPane summaryPane = new JScrollPane(this.summaryArea);

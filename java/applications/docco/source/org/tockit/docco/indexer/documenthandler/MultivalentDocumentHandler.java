@@ -67,9 +67,6 @@ import multivalent.node.LeafText;
 public class MultivalentDocumentHandler implements DocumentHandler {
 	
 	public DocumentSummary parseDocument(URL url) throws IOException, DocumentHandlerException {
-		InputStream inputStream = url.openStream();
-		
-		
 		DocumentSummary result = new DocumentSummary();
 		
 		// @todo make use of mime types...? 

@@ -25,9 +25,6 @@ public class DocumentHandlerRegistry {
 		"xls:org.tockit.docco.indexer.filefilter.ExtensionFileFilter:org.tockit.docco.indexer.documenthandler.MSExcelDocHandler"
 	};
 	
-	private static final String CONFIGURATION_MAPPING_ENTRY_NAME = "extension_mappings";
-	private static final String CONFIGURATION_SECTION_NAME = "Indexer";
-	
 	List docHandlersList = new LinkedList();
 
 	public DocumentHandlerRegistry () {
