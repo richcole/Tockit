@@ -262,7 +262,7 @@ struct Sarl_SetIterator*
   struct Sarl_SetIterator *next;
   struct Sarl_SetIterator *m;
 
-  struct Sarl_SetIterator *next_ii;
+  struct Sarl_SetIterator *next_ii = 0;
 
   bool   finished = false;
 
@@ -302,6 +302,94 @@ struct Sarl_SetIterator*
   sarl_set_iterator_decr_ref(curr);
   sarl_set_iterator_decr_ref(G);
   sarl_set_iterator_decr_ref(i);
+  
+  return next_ii;
+};
+
+struct Sarl_SetIterator* 
+  sarl_context_iterator_next_extent_subseteq(
+    Sarl_SetIterator     *A, 
+    Sarl_SetIterator     *parent_extent, 
+    Sarl_ContextIterator *K)
+{
+  struct Sarl_SetIterator *G;
+  struct Sarl_SetIterator *i;
+
+  struct Sarl_SetIterator *curr;
+  struct Sarl_SetIterator *next;
+  struct Sarl_SetIterator *m;
+  struct Sarl_SetIterator *tmp;
+
+  struct Sarl_SetIterator *next_ii = 0;
+
+  Sarl_Index               start_value;
+  bool                     finished = false;
+
+  // obtain ownership of A
+  A             = sarl_set_iterator_obtain_ownership(A);
+  parent_extent = sarl_set_iterator_obtain_ownership(parent_extent);
+  curr          = sarl_set_iterator_obtain_ownership(parent_extent);
+  G             = sarl_context_iterator_objects(K);
+
+  sarl_set_iterator_reset(A);
+  sarl_set_iterator_reset(parent_extent);
+  sarl_set_iterator_reset(curr);
+
+  // determine last(A \ parent_extent)
+  tmp = sarl_set_iterator_minus(A, parent_extent);
+  if ( sarl_set_iterator_at_end(tmp) ) {
+    if ( sarl_set_iterator_is_empty(A) ) {
+      start_value = 1;
+    }
+    else {
+      start_value = sarl_set_iterator_last(G) + 1;
+    }
+  }
+  else {
+    start_value = sarl_set_iterator_last(tmp) + 1;
+  }
+  sarl_set_iterator_decr_ref(tmp);
+  
+  sarl_set_iterator_release_ownership(G);
+  sarl_set_iterator_release_ownership(A);
+  sarl_set_iterator_reset(G);
+  i = sarl_set_iterator_minus(G, A);
+
+  for(sarl_set_iterator_reset(i), sarl_set_iterator_next_gte(i, start_value);
+      ! finished && ! sarl_set_iterator_at_end(i);
+      sarl_set_iterator_next(i)
+  ) 
+  {
+    // curr = curr (+) i
+    sarl_set_iterator_release_ownership(curr);
+    tmp = sarl_set_iterator_lectic_next_gte(
+      curr, 
+      sarl_set_iterator_value(i),
+      G);
+    sarl_set_iterator_release_ownership(tmp);
+    next = sarl_set_iterator_union(tmp, parent_extent);
+    sarl_set_iterator_decr_ref(tmp);
+
+    // until last(curr'') == last(curr)
+    next_ii = sarl_context_iterator_intent_extent_set(K, next);
+    m = sarl_set_iterator_minus(next_ii, curr);
+    if ( sarl_set_iterator_last(m) == sarl_set_iterator_value(i) ) {
+      finished = true;
+    }
+    else {
+      sarl_set_iterator_decr_ref(next_ii);
+    }
+
+    sarl_set_iterator_decr_ref(m);
+    sarl_set_iterator_decr_ref(curr);
+    curr = next;
+  };
+
+  sarl_set_iterator_decr_ref(curr);
+  sarl_set_iterator_decr_ref(G);
+  sarl_set_iterator_decr_ref(A);
+  sarl_set_iterator_decr_ref(i);
+  sarl_set_iterator_decr_ref(parent_extent);
   
   return next_ii;
 };

@@ -32,7 +32,8 @@ TESTS = \
   test_relation_004 \
   test_set_iterator_interval_001 \
   test_lectic_001 \
-  test_lectic_002
+  test_lectic_002 \
+  test_lectic_003
 
 PUBLIC_HEADERS = \
   cpp/Set.h \

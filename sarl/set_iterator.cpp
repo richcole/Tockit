@@ -14,7 +14,14 @@ int sarl_set_iterator_is_empty(
   struct Sarl_SetIterator *it
 )
 {
-  return sarl_set_iterator_at_end(it);
+  Sarl_SetIterator *tmp = sarl_set_iterator_obtain_ownership(it);
+  bool             result;
+  
+  sarl_set_iterator_reset(tmp);
+  result = sarl_set_iterator_at_end(tmp);
+  sarl_set_iterator_decr_ref(tmp);
+
+  return result;
 };
 
 
