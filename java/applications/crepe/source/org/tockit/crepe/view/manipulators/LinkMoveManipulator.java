@@ -16,7 +16,7 @@ import java.util.*;
 import java.awt.geom.Point2D;
 import java.awt.event.InputEvent;
 
-public class LinkMoveManipulator extends ItemMovementManipulator {
+abstract public class LinkMoveManipulator extends ItemMovementManipulator {
     public LinkMoveManipulator(GraphView graphView, EventBroker eventBroker) {
         super(graphView, LinkView.class, eventBroker);
     }
@@ -30,25 +30,7 @@ public class LinkMoveManipulator extends ItemMovementManipulator {
         Point2D toPosition = dragEvent.getCanvasToPosition();
         double xDiff = toPosition.getX() - fromPosition.getX();
         double yDiff = toPosition.getY() - fromPosition.getY();
-        itemsToMove.add(linkView);
-        if ((dragEvent.getModifiers() & InputEvent.CTRL_MASK) != 0) {
-            findConnectedViewsRecursive(itemsToMove, lineViews);
-        } else {
-            for (Iterator iterator = lineViews.iterator(); iterator.hasNext();) {
-                LineView lineView = (LineView) iterator.next();
-                if (lineView.getConnectedLinkView() == linkView) {
-                    itemsToMove.add(lineView.getConnectedNodeView());
-                }
-            }
-            if((dragEvent.getModifiers() & InputEvent.SHIFT_MASK) == 0) {
-                for (Iterator iterator = lineViews.iterator(); iterator.hasNext();) {
-                    LineView lineView = (LineView) iterator.next();
-                    if (lineView.getConnectedLinkView() != linkView) {
-                        itemsToMove.remove(lineView.getConnectedNodeView());
-                    }
-                }
-            }
-        }
+        determineItemsToMove(dragEvent, itemsToMove, lineViews, linkView);
         for (Iterator iterator = itemsToMove.iterator(); iterator.hasNext();) {
             Object o = (Object) iterator.next();
             if (o instanceof LinkView) {
@@ -62,7 +44,9 @@ public class LinkMoveManipulator extends ItemMovementManipulator {
         }
     }
 
-    private void findConnectedViewsRecursive(HashSet itemsToMove, Collection lineViews) {
+    abstract protected void determineItemsToMove(CanvasItemDraggedEvent dragEvent, HashSet itemsToMove, Collection lineViews, LinkView linkView);
+
+    protected void findConnectedViewsRecursive(HashSet itemsToMove, Collection lineViews) {
         for (Iterator iterator = lineViews.iterator(); iterator.hasNext();) {
             LineView lineView = (LineView) iterator.next();
             LinkView connectedLinkView = lineView.getConnectedLinkView();
@@ -76,6 +60,15 @@ public class LinkMoveManipulator extends ItemMovementManipulator {
                     itemsToMove.contains(connectedNodeView)) {
                 itemsToMove.add(connectedLinkView);
                 findConnectedViewsRecursive(itemsToMove, lineViews);
+            }
+        }
+    }
+
+    protected void findDirectlyConnectedNodeViews(Collection lineViews, LinkView linkView, HashSet itemsToMove) {
+        for (Iterator iterator = lineViews.iterator(); iterator.hasNext();) {
+            LineView lineView = (LineView) iterator.next();
+            if (lineView.getConnectedLinkView() == linkView) {
+                itemsToMove.add(lineView.getConnectedNodeView());
             }
         }
     }

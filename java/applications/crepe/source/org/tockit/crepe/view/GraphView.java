@@ -31,7 +31,9 @@ public class GraphView extends Canvas {
         super(eventBroker);
         getBackgroundItem().setPaint(getBackground());
         new NodeMoveManipulator(this, eventBroker);
-        new LinkMoveManipulator(this, eventBroker);
+        new LinkMoveImmediateManipulator(this, eventBroker);
+        new LinkMoveINCManipulator(this, eventBroker);
+        new LinkMoveConnectedManipulator(this, eventBroker);
         new NodeContextMenuHandler(this, eventBroker);
         new LinkContextMenuHandler(this, eventBroker);
 //        new LoggingEventListener(eventBroker, CanvasItemDraggedEvent.class, Object.class, System.out);
