@@ -21,7 +21,6 @@ TESTS = \
 PUBLIC_HEADERS = \
   cpp/Set.h \
   cpp/SetIterator.h \
-  cpp/Namespace.h \
   index.h \
   pair.h \
   set.h \
@@ -41,7 +40,7 @@ SWIG_INC = \
 
 target: python/sarlcmodule.so java/libsarl.so
 
-test: test_base test_python test_java
+test: target test_base test_python test_java
 
 test_base: $(TESTS:%=%.exe) 
 	bash execute_tests.sh $^
@@ -70,6 +69,9 @@ python/sarl_wrap.o: python/sarl_wrap.c
 
 python/sarl_wrap.c: $(PUBLIC_HEADERS) sarl.input
 	cd python; swig -I.. -o sarl_wrap.c -c++ -shadow -python sarl.input 
+
+test_python: java/TestSarl.class
+	cd python; python test_sarl.py
 
 java/sarl_wrap.o: java/sarl_wrap.c
 	$(CCC) -c -I../ $(SWIG_INC:%=-I%) $(JAVA_INC:%=-I%) -o $@ $^
