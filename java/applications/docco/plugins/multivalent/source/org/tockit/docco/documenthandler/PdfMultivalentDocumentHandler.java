@@ -5,7 +5,7 @@
  *
  * $Id$
  */
-package org.tockit.docco.indexer.documenthandler;
+package org.tockit.docco.documenthandler;
 
 import java.io.File;
 import java.io.IOException;
