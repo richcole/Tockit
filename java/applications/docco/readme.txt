@@ -10,6 +10,7 @@ technique called Formal Concept Analysis.
 This is still a very early release, but it should work. A quick start manual
 can be found in the help menu and in the documentation subfolder. You find the 
 licence for the program in the main folder and the licences for the libraries 
-used in the folder named "libs".
+used in the folder named "libs". To run it you need a Java JRE/JDK of version
+1.4 or higher, then just run the start script for your platform.
 
 Enjoy the program and feel free to send feedback to tockit-general@lists.sf.net.
