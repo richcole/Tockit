@@ -8,16 +8,16 @@ extern "C" {
 
 #include "set_impl.h"
 
-struct Set *sarl_set_create()
+struct Sarl_Set *sarl_set_create()
 {
-  Set *S = new Set();
+  Sarl_Set *S = new Sarl_Set();
   sarl_ref_count_init(&S->m_ref_count);
   return S;
 }
 
-struct Set *sarl_set_copy(struct SetIterator *it)
+struct Sarl_Set *sarl_set_copy(struct Sarl_SetIterator *it)
 {
-  struct Set *s = new Set();
+  struct Sarl_Set *s = new Sarl_Set();
   sarl_ref_count_init(&s->m_ref_count);
   SARL_SET_ITERATOR_FOR(it) {
     sarl_set_insert(s, sarl_set_iterator_val(it));
@@ -25,24 +25,24 @@ struct Set *sarl_set_copy(struct SetIterator *it)
   return s;
 }
 
-void sarl_set_insert(struct Set *S, Index x)
+void sarl_set_insert(struct Sarl_Set *S, Sarl_Index x)
 {
   S->m_set.insert(x);
 }
   
-void sarl_set_remove(struct Set *S, Index x)
+void sarl_set_remove(struct Sarl_Set *S, Sarl_Index x)
 {
   S->m_set.erase(x);
 }
 
-void sarl_set_decr_ref(struct Set *S)
+void sarl_set_decr_ref(struct Sarl_Set *S)
 {
   if ( sarl_ref_count_decr(&S->m_ref_count) ) {
     delete S;
   };
 }
 
-void sarl_set_incr_ref(struct Set *S)
+void sarl_set_incr_ref(struct Sarl_Set *S)
 {
   sarl_ref_count_incr(&S->m_ref_count);
 }

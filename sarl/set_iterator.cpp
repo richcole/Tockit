@@ -12,30 +12,30 @@ extern "C" {
 /* function prototypes used in function table declaired below */
 
 static void sarl_set_iterator_plain_next_gte(
-  struct SetIterator *it, 
-  Index value);
+  struct Sarl_SetIterator *it, 
+  Sarl_Index value);
 
 static void sarl_set_iterator_plain_next(
-  struct SetIterator *it);
+  struct Sarl_SetIterator *it);
 
-static Index sarl_set_iterator_plain_val(
-  struct SetIterator *it);
+static Sarl_Index sarl_set_iterator_plain_val(
+  struct Sarl_SetIterator *it);
 
 static int sarl_set_iterator_plain_at_end(
-  struct SetIterator *it);
+  struct Sarl_SetIterator *it);
 
 static void sarl_set_iterator_plain_reset(
-  struct SetIterator *it);
+  struct Sarl_SetIterator *it);
 
 static void sarl_set_iterator_plain_decr_ref(
-  struct SetIterator *it);
+  struct Sarl_SetIterator *it);
 
-static struct SetIterator* sarl_set_iterator_plain_copy(
-  struct SetIterator *it);
+static struct Sarl_SetIterator* sarl_set_iterator_plain_copy(
+  struct Sarl_SetIterator *it);
 
 /* function prototypes used in function table declaired below */
 
-struct SetIteratorFunctionTable s_plainIteratorTable = 
+struct Sarl_SetIteratorFunctionTable s_plainIteratorTable = 
 {
   sarl_set_iterator_plain_next_gte,
   sarl_set_iterator_plain_next,
@@ -47,9 +47,9 @@ struct SetIteratorFunctionTable s_plainIteratorTable =
 };
 
 /* constructive operations */
-struct SetIterator *sarl_set_iterator_create(struct Set *S)
+struct Sarl_SetIterator *sarl_set_iterator_create(struct Sarl_Set *S)
 {
-  PlainSetIterator* it  = new PlainSetIterator();
+  Sarl_PlainSetIterator* it  = new Sarl_PlainSetIterator();
   sarl_set_iterator_init(it, &s_plainIteratorTable);
 
   it->mp_set = S;
@@ -60,7 +60,7 @@ struct SetIterator *sarl_set_iterator_create(struct Set *S)
 };
 
 int sarl_set_iterator_is_empty(
-  struct SetIterator *it
+  struct Sarl_SetIterator *it
 )
 {
   return sarl_set_iterator_at_end(it);
@@ -69,8 +69,8 @@ int sarl_set_iterator_is_empty(
 
 /* set_iterator moving operations */
 static void  sarl_set_iterator_plain_next_gte(
-  struct SetIterator *it, 
-  Index value)
+  struct Sarl_SetIterator *it, 
+  Sarl_Index value)
 {
   while( ! sarl_set_iterator_at_end(it) && 
     sarl_set_iterator_val(it) < value ) 
@@ -79,50 +79,50 @@ static void  sarl_set_iterator_plain_next_gte(
   }
 }
 
-static void  sarl_set_iterator_plain_next(struct SetIterator *a_it)
+static void  sarl_set_iterator_plain_next(struct Sarl_SetIterator *a_it)
 {
-  PlainSetIterator *it = static_cast<PlainSetIterator*>(a_it);
+  Sarl_PlainSetIterator *it = static_cast<Sarl_PlainSetIterator*>(a_it);
   if ( ! sarl_set_iterator_at_end(it) ) {
     it->m_it++;
   }
 }
 
-static Index sarl_set_iterator_plain_val(struct SetIterator *a_it)
+static Sarl_Index sarl_set_iterator_plain_val(struct Sarl_SetIterator *a_it)
 {
-  PlainSetIterator *it = static_cast<PlainSetIterator*>(a_it);
+  Sarl_PlainSetIterator *it = static_cast<Sarl_PlainSetIterator*>(a_it);
   if ( ! sarl_set_iterator_at_end(it) ) {
     return *it->m_it;
   }
 }
 
-static int   sarl_set_iterator_plain_at_end(struct SetIterator *a_it)
+static int   sarl_set_iterator_plain_at_end(struct Sarl_SetIterator *a_it)
 {
-  PlainSetIterator *it = static_cast<PlainSetIterator*>(a_it);
+  Sarl_PlainSetIterator *it = static_cast<Sarl_PlainSetIterator*>(a_it);
   return it->m_it == it->mp_set->m_set.end();
 };
 
-static void  sarl_set_iterator_plain_reset(struct SetIterator *a_it) 
+static void  sarl_set_iterator_plain_reset(struct Sarl_SetIterator *a_it) 
 {
-  PlainSetIterator *it = static_cast<PlainSetIterator*>(a_it);
+  Sarl_PlainSetIterator *it = static_cast<Sarl_PlainSetIterator*>(a_it);
   it->m_it = it->mp_set->m_set.begin();
 };
 
 /* reference counting interface */
-void sarl_set_iterator_plain_decr_ref(struct SetIterator *a_it)
+void sarl_set_iterator_plain_decr_ref(struct Sarl_SetIterator *a_it)
 {
-  PlainSetIterator *it = static_cast<PlainSetIterator*>(a_it);
+  Sarl_PlainSetIterator *it = static_cast<Sarl_PlainSetIterator*>(a_it);
   if ( sarl_ref_count_decr(&it->m_ref_count) ) {
     sarl_set_decr_ref(it->mp_set);
     delete it;
   }
 }
 
-static struct SetIterator* sarl_set_iterator_plain_copy(
-  struct SetIterator *a_it)
+static struct Sarl_SetIterator* sarl_set_iterator_plain_copy(
+  struct Sarl_SetIterator *a_it)
 {
-  PlainSetIterator *org_it = static_cast<PlainSetIterator*>(a_it);
+  Sarl_PlainSetIterator *org_it = static_cast<Sarl_PlainSetIterator*>(a_it);
   
-  PlainSetIterator* copy_it  = new PlainSetIterator();
+  Sarl_PlainSetIterator* copy_it  = new Sarl_PlainSetIterator();
   sarl_set_iterator_init(copy_it, &s_plainIteratorTable);
 
   copy_it->mp_set = org_it->mp_set;
@@ -134,52 +134,52 @@ static struct SetIterator* sarl_set_iterator_plain_copy(
 
 /* functions delegating to the function table */
 void  sarl_set_iterator_next_gte(
-  struct SetIterator *it, 
-  Index value)
+  struct Sarl_SetIterator *it, 
+  Sarl_Index value)
 {
   it->mp_funcs->next_gte(it, value);
 }
 
-void  sarl_set_iterator_next(struct SetIterator *it)
+void  sarl_set_iterator_next(struct Sarl_SetIterator *it)
 {
   it->mp_funcs->next(it);
 }
 
-Index sarl_set_iterator_val(struct SetIterator *it)
+Sarl_Index sarl_set_iterator_val(struct Sarl_SetIterator *it)
 {
   return it->mp_funcs->val(it);
 }
 
-int   sarl_set_iterator_at_end(struct SetIterator *it)
+int   sarl_set_iterator_at_end(struct Sarl_SetIterator *it)
 {
   return it->mp_funcs->at_end(it);
 };
 
-void  sarl_set_iterator_reset(struct SetIterator *it) 
+void  sarl_set_iterator_reset(struct Sarl_SetIterator *it) 
 {
   it->mp_funcs->reset(it);
 };
 
-void sarl_set_iterator_decr_ref(struct SetIterator *it)
+void sarl_set_iterator_decr_ref(struct Sarl_SetIterator *it)
 {
   it->mp_funcs->decr_ref(it);
 }
 
-void sarl_set_iterator_incr_ref(struct SetIterator *it)
+void sarl_set_iterator_incr_ref(struct Sarl_SetIterator *it)
 {
   sarl_ref_count_incr(&it->m_ref_count);
 };
 
-struct SetIterator* sarl_set_iterator_copy(
-  struct SetIterator *a_it)
+struct Sarl_SetIterator* sarl_set_iterator_copy(
+  struct Sarl_SetIterator *a_it)
 {
   return a_it->mp_funcs->copy(a_it);
 };
 
-extern Index  sarl_set_iterator_count(struct SetIterator *a_it)
+extern Sarl_Index  sarl_set_iterator_count(struct Sarl_SetIterator *a_it)
 {
-  SetIterator *it_copy = sarl_set_iterator_copy(a_it);
-  Index count = 0;
+  Sarl_SetIterator *it_copy = sarl_set_iterator_copy(a_it);
+  Sarl_Index count = 0;
   
   SARL_SET_ITERATOR_FOR(it_copy) {
     ++count;
@@ -189,10 +189,10 @@ extern Index  sarl_set_iterator_count(struct SetIterator *a_it)
   return count;
 };
 
-extern Index  sarl_set_iterator_count_remaining(struct SetIterator *a_it)
+extern Sarl_Index  sarl_set_iterator_count_remaining(struct Sarl_SetIterator *a_it)
 {
-  SetIterator *it_copy = sarl_set_iterator_copy(a_it);
-  Index count = 0;
+  Sarl_SetIterator *it_copy = sarl_set_iterator_copy(a_it);
+  Sarl_Index count = 0;
   
   while(! sarl_set_iterator_at_end(it_copy) ) {
     ++count;
@@ -211,11 +211,11 @@ extern Index  sarl_set_iterator_count_remaining(struct SetIterator *a_it)
  * ret > 0 iff X > Y
  */
 int sarl_set_iterator_lexical_compare(
-  struct SetIterator *x, struct SetIterator *y
+  struct Sarl_SetIterator *x, struct Sarl_SetIterator *y
 )
 {
-  SetIterator *u, *v, *w;
-  SetIterator *a, *b, *c;
+  Sarl_SetIterator *u, *v, *w;
+  Sarl_SetIterator *a, *b, *c;
   int ret_val;
 
   w = sarl_set_iterator_minus(
@@ -259,18 +259,18 @@ int sarl_set_iterator_lexical_compare(
 };
 
 int sarl_set_iterator_subset(
-  struct SetIterator *x, struct SetIterator *y
+  struct Sarl_SetIterator *x, struct Sarl_SetIterator *y
 )
 {
   int ret_val = 1;
-  SetIterator *u = sarl_set_iterator_copy(x);
-  SetIterator *v = sarl_set_iterator_copy(y);
+  Sarl_SetIterator *u = sarl_set_iterator_copy(x);
+  Sarl_SetIterator *v = sarl_set_iterator_copy(y);
 
   sarl_set_iterator_reset(u);
   sarl_set_iterator_reset(v);
 
   SARL_SET_ITERATOR_FOR(u) {
-    Index val = sarl_set_iterator_val(u);
+    Sarl_Index val = sarl_set_iterator_val(u);
     sarl_set_iterator_next_gte(v, val);
     if ( sarl_set_iterator_val(v) != val ) {
       ret_val = 0;

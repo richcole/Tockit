@@ -1,33 +1,35 @@
 #ifndef SARL_RELATION_ITERATOR_IMPL_H
 #define SARL_RELATION_ITERATOR_IMPL_H
 
-struct RelationIteratorFunctionTable {
-  void  (*next_gte)(struct RelationIterator *, Pair);
-  void  (*next)(struct RelationIterator *);
-  Pair (*val)(struct RelationIterator *);
-  int   (*at_end)(struct RelationIterator *);
-  void  (*reset)(struct RelationIterator *);
-  void  (*decr_ref)(struct RelationIterator *);
-  struct RelationIterator*  (*copy)(struct RelationIterator *);
+#include <sarl/pair.h>
+
+struct Sarl_RelationIteratorFunctionTable {
+  void  (*next_gte)(struct Sarl_RelationIterator *, struct Sarl_Pair);
+  void  (*next)(struct Sarl_RelationIterator *);
+  struct Sarl_Pair (*val)(struct Sarl_RelationIterator *);
+  int   (*at_end)(struct Sarl_RelationIterator *);
+  void  (*reset)(struct Sarl_RelationIterator *);
+  void  (*decr_ref)(struct Sarl_RelationIterator *);
+  struct Sarl_RelationIterator*  (*copy)(struct Sarl_RelationIterator *);
 };
 
-struct RelationIterator
+struct Sarl_RelationIterator
 {
   RefCount m_ref_count;
-  RelationIteratorFunctionTable *mp_funcs;
+  Sarl_RelationIteratorFunctionTable *mp_funcs;
 };
 
-struct PlainRelationIterator : RelationIterator
+struct PlainSarl_RelationIterator : Sarl_RelationIterator
 {
-  typedef Relation::RelationImpl::const_iterator Iterator;
+  typedef Sarl_Relation::Sarl_RelationImpl::const_iterator Iterator;
 
-  Relation* mp_relation;
+  Sarl_Relation* mp_relation;
   Iterator  m_it;
 };
 
 inline void sarl_relation_iterator_init(
-  struct RelationIterator *it,
-  RelationIteratorFunctionTable *ap_funcs)
+  struct Sarl_RelationIterator *it,
+  Sarl_RelationIteratorFunctionTable *ap_funcs)
 {
   it->mp_funcs = ap_funcs;
   sarl_ref_count_init(&it->m_ref_count);

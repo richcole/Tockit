@@ -3,10 +3,10 @@
 
 #include <sarl/set_iterator_impl.h>
 
-struct SetMinusSetIterator : SetIterator
+struct Sarl_SetMinusSetIterator : Sarl_SetIterator
 {
-  struct SetIterator* first;
-  struct SetIterator* second;
+  struct Sarl_SetIterator* first;
+  struct Sarl_SetIterator* second;
 };
 
 

@@ -11,9 +11,9 @@ using namespace std;
 
 int main()
 {
-  Index        i;
-  Set*         set;
-  SetIterator* it;
+  Sarl_Index        i;
+  Sarl_Set*         set;
+  Sarl_SetIterator* it;
 
   set = sarl_set_create();
   

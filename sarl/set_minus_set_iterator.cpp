@@ -12,30 +12,30 @@ extern "C" {
 /* function prototypes used in function table declaired below */
 
 static void sarl_set_iterator_set_minus_next_gte(
-  struct SetIterator *it, 
-  Index value);
+  struct Sarl_SetIterator *it, 
+  Sarl_Index value);
 
 static void sarl_set_iterator_set_minus_next(
-  struct SetIterator *it);
+  struct Sarl_SetIterator *it);
 
-static Index sarl_set_iterator_set_minus_val(
-  struct SetIterator *it);
+static Sarl_Index sarl_set_iterator_set_minus_val(
+  struct Sarl_SetIterator *it);
 
 static int sarl_set_iterator_set_minus_at_end(
-  struct SetIterator *it);
+  struct Sarl_SetIterator *it);
 
 static void sarl_set_iterator_set_minus_reset(
-  struct SetIterator *it);
+  struct Sarl_SetIterator *it);
 
 static void sarl_set_iterator_set_minus_decr_ref(
-  struct SetIterator *it);
+  struct Sarl_SetIterator *it);
 
-static struct SetIterator* sarl_set_iterator_set_minus_copy(
-  struct SetIterator *it);
+static struct Sarl_SetIterator* sarl_set_iterator_set_minus_copy(
+  struct Sarl_SetIterator *it);
 
 /* function prototypes used in function table declaired below */
 
-struct SetIteratorFunctionTable s_set_minus_iterator_table = 
+struct Sarl_SetIteratorFunctionTable s_set_minus_iterator_table = 
 {
   sarl_set_iterator_set_minus_next_gte,
   sarl_set_iterator_set_minus_next,
@@ -47,7 +47,7 @@ struct SetIteratorFunctionTable s_set_minus_iterator_table =
 };
 
 inline void sarl_set_iterator_set_minus_advance(
-  SetMinusSetIterator *it
+  Sarl_SetMinusSetIterator *it
 )
 {
   if ( ! sarl_set_iterator_at_end(it->first) ) {
@@ -73,11 +73,11 @@ inline void sarl_set_iterator_set_minus_advance(
 }
 
 /* construct a meet operation */
-struct SetIterator *sarl_set_iterator_minus(
-  struct SetIterator *a_first, struct SetIterator *a_second
+struct Sarl_SetIterator *sarl_set_iterator_minus(
+  struct Sarl_SetIterator *a_first, struct Sarl_SetIterator *a_second
 )
 {
-  SetMinusSetIterator* it  = new SetMinusSetIterator();
+  Sarl_SetMinusSetIterator* it  = new Sarl_SetMinusSetIterator();
   sarl_set_iterator_init(it, &s_set_minus_iterator_table);
 
   it->first = a_first;
@@ -90,45 +90,45 @@ struct SetIterator *sarl_set_iterator_minus(
 
 /* set_iterator moving operations */
 static void  sarl_set_iterator_set_minus_next_gte(
-  struct SetIterator *a_it, 
-  Index value)
+  struct Sarl_SetIterator *a_it, 
+  Sarl_Index value)
 {
-  SetMinusSetIterator *it = static_cast<SetMinusSetIterator*>(a_it);
+  Sarl_SetMinusSetIterator *it = static_cast<Sarl_SetMinusSetIterator*>(a_it);
   sarl_set_iterator_next_gte(it->first, value);
   sarl_set_iterator_set_minus_advance(it);
 }
 
-static void  sarl_set_iterator_set_minus_next(struct SetIterator *a_it)
+static void  sarl_set_iterator_set_minus_next(struct Sarl_SetIterator *a_it)
 {
-  SetMinusSetIterator *it = static_cast<SetMinusSetIterator*>(a_it);
+  Sarl_SetMinusSetIterator *it = static_cast<Sarl_SetMinusSetIterator*>(a_it);
   sarl_set_iterator_next(it->first);
   sarl_set_iterator_set_minus_advance(it);
 }
 
-static Index sarl_set_iterator_set_minus_val(struct SetIterator *a_it)
+static Sarl_Index sarl_set_iterator_set_minus_val(struct Sarl_SetIterator *a_it)
 {
-  SetMinusSetIterator *it = static_cast<SetMinusSetIterator*>(a_it);
+  Sarl_SetMinusSetIterator *it = static_cast<Sarl_SetMinusSetIterator*>(a_it);
   return sarl_set_iterator_val(it->first);
 }
 
-static int   sarl_set_iterator_set_minus_at_end(struct SetIterator *a_it)
+static int   sarl_set_iterator_set_minus_at_end(struct Sarl_SetIterator *a_it)
 {
-  SetMinusSetIterator *it = static_cast<SetMinusSetIterator*>(a_it);
+  Sarl_SetMinusSetIterator *it = static_cast<Sarl_SetMinusSetIterator*>(a_it);
   return sarl_set_iterator_at_end(it->first);
 };
 
-static void  sarl_set_iterator_set_minus_reset(struct SetIterator *a_it) 
+static void  sarl_set_iterator_set_minus_reset(struct Sarl_SetIterator *a_it) 
 {
-  SetMinusSetIterator *it = static_cast<SetMinusSetIterator*>(a_it);
+  Sarl_SetMinusSetIterator *it = static_cast<Sarl_SetMinusSetIterator*>(a_it);
   sarl_set_iterator_reset(it->first);
   sarl_set_iterator_reset(it->second);
   sarl_set_iterator_set_minus_advance(it);
 };
 
 /* reference counting interface */
-void sarl_set_iterator_set_minus_decr_ref(struct SetIterator *a_it)
+void sarl_set_iterator_set_minus_decr_ref(struct Sarl_SetIterator *a_it)
 {
-  SetMinusSetIterator *it = static_cast<SetMinusSetIterator*>(a_it);
+  Sarl_SetMinusSetIterator *it = static_cast<Sarl_SetMinusSetIterator*>(a_it);
   if ( sarl_ref_count_decr(&it->m_ref_count) ) {
     sarl_set_iterator_decr_ref(it->first);
     sarl_set_iterator_decr_ref(it->second);
@@ -136,13 +136,13 @@ void sarl_set_iterator_set_minus_decr_ref(struct SetIterator *a_it)
   }
 }
 
-static struct SetIterator* sarl_set_iterator_set_minus_copy(
-  struct SetIterator *a_it)
+static struct Sarl_SetIterator* sarl_set_iterator_set_minus_copy(
+  struct Sarl_SetIterator *a_it)
 {
-  SetMinusSetIterator *org_it = 
-    static_cast<SetMinusSetIterator*>(a_it);
+  Sarl_SetMinusSetIterator *org_it = 
+    static_cast<Sarl_SetMinusSetIterator*>(a_it);
   
-  SetMinusSetIterator* copy_it  = new SetMinusSetIterator();
+  Sarl_SetMinusSetIterator* copy_it  = new Sarl_SetMinusSetIterator();
   sarl_set_iterator_init(copy_it, &s_set_minus_iterator_table);
 
   copy_it->first = sarl_set_iterator_copy(org_it->first);

@@ -14,64 +14,80 @@
 
 /* set_iterator moving operations */
 extern void  sarl_relation_iterator_next_gte(
-  struct RelationIterator *, 
-  struct Pair);
+  struct Sarl_RelationIterator *, 
+  struct Sarl_Pair);
 
 extern void  sarl_relation_iterator_next(
-  struct RelationIterator *);
+  struct Sarl_RelationIterator *);
 
-extern struct Pair sarl_relation_iterator_val(
-  struct RelationIterator *);
+extern struct Sarl_Pair sarl_relation_iterator_val(
+  struct Sarl_RelationIterator *);
 
 extern int   sarl_relation_iterator_at_end(
-  struct RelationIterator *);
+  struct Sarl_RelationIterator *);
 
 extern void  sarl_relation_iterator_reset(
-  struct RelationIterator *);
+  struct Sarl_RelationIterator *);
+
+void sarl_relation_iterator_decr_ref(
+  struct Sarl_RelationIterator *);
+
+void sarl_relation_iterator_incr_ref(
+  struct Sarl_RelationIterator *);
+
+struct Sarl_RelationIterator* sarl_relation_iterator_copy(
+  struct Sarl_RelationIterator *);
 
 /* iterator constructive operations */
 
+extern struct Sarl_SetIterator *sarl_relation_iterator_domain(
+  struct Sarl_RelationIterator *);
+
 /* omit ---
 
-extern struct Iterator *sarl_relation_domain(struct RelationIterator *);
-extern struct Iterator *sarl_relation_range(struct RelationIterator *);
-extern struct Iterator *sarl_relation_intent(struct RelationIterator *, Index);
-extern struct Iterator *sarl_relation_extent(struct RelationIterator *, Index);
+extern struct Iterator *sarl_relation_iterator_range(
+  struct Sarl_RelationIterator *);
+extern struct Iterator *sarl_relation_iterator_intent(
+  struct Sarl_RelationIterator *, Index);
+extern struct Iterator *sarl_relation_iterator_extent(
+  struct Sarl_RelationIterator *, Index);
 
 extern struct Iterator *sarl_relation_intent_set(
-  struct RelationIterator *, struct Iterator *
+  struct Sarl_RelationIterator *, struct Iterator *
 );
 
 extern struct Iterator *sarl_relation_extent_set(
-  struct RelationIterator *, struct Iterator *
+  struct Sarl_RelationIterator *, struct Iterator *
 );
 
 extern struct Iterator *sarl_relation_extent_intent_set(
-  struct RelationIterator *, struct Iterator *
+  struct Sarl_RelationIterator *, struct Iterator *
 );
 
 extern struct Iterator *sarl_relation_intent_extent_set(
-  struct RelationIterator *, struct Iterator *
+  struct Sarl_RelationIterator *, struct Iterator *
 );
 
 /*
 
 /* construction of relation objects */
 
+extern struct Sarl_RelationIterator *sarl_relation_iterator_create(
+  struct Sarl_Relation *
+);
+
 /* omit ---
 
-extern struct RelationIterator *sarl_relation_iterator_create(
-  struct Relation *
+extern struct Sarl_RelationIterator *sarl_relation_iterator_join(
+  struct Sarl_RelationIterator *, struct Sarl_RelationIterator *
 );
 
-extern struct RelationIterator *sarl_relation_iterator_join(
-  struct RelationIterator *, struct RelationIterator *
-);
-
-extern struct RelationIterator *sarl_relation_iterator_inverse(
-  struct RelationIterator *
+extern struct Sarl_RelationIterator *sarl_relation_iterator_inverse(
+  struct Sarl_RelationIterator *
 );
 
 -- omit */
+
+
 
 #endif

@@ -3,8 +3,8 @@
 
 #include <sarl/index.h>
 
-struct SetIterator;
-struct Set;
+struct Sarl_SetIterator;
+struct Sarl_Set;
 
 /* iterator macro */
 #define SARL_SET_ITERATOR_FOR(x) \
@@ -15,43 +15,43 @@ struct Set;
   )
 
 /* copy operations */
-extern struct SetIterator *sarl_set_iterator_copy(struct SetIterator *);
+extern struct Sarl_SetIterator *sarl_set_iterator_copy(struct Sarl_SetIterator *);
 
 /* constructive operations */
-extern struct SetIterator *sarl_set_iterator_create(struct Set *);
+extern struct Sarl_SetIterator *sarl_set_iterator_create(struct Sarl_Set *);
 
-extern struct SetIterator *sarl_set_iterator_meet(
-  struct SetIterator *, struct SetIterator *
+extern struct Sarl_SetIterator *sarl_set_iterator_meet(
+  struct Sarl_SetIterator *, struct Sarl_SetIterator *
 );
 
-extern struct SetIterator *sarl_set_iterator_union(
-  struct SetIterator *, struct SetIterator *
+extern struct Sarl_SetIterator *sarl_set_iterator_union(
+  struct Sarl_SetIterator *, struct Sarl_SetIterator *
 );
 
-extern struct SetIterator *sarl_set_iterator_minus(
-  struct SetIterator *, struct SetIterator *
+extern struct Sarl_SetIterator *sarl_set_iterator_minus(
+  struct Sarl_SetIterator *, struct Sarl_SetIterator *
 );
 
 /* boolean operations */
 
 extern int sarl_set_iterator_lexical_compare(
-  struct SetIterator *, struct SetIterator *
+  struct Sarl_SetIterator *, struct Sarl_SetIterator *
 );
 
 extern int sarl_set_iterator_subset(
-  struct SetIterator *, struct SetIterator *
+  struct Sarl_SetIterator *, struct Sarl_SetIterator *
 );
 
 extern int sarl_set_iterator_is_empty(
-  struct SetIterator *
+  struct Sarl_SetIterator *
 );
 
 /* set_iterator moving operations */
-extern void  sarl_set_iterator_next_gte(struct SetIterator *, Index);
-extern void  sarl_set_iterator_next(struct SetIterator *);
-extern Index sarl_set_iterator_val(struct SetIterator *);
-extern int   sarl_set_iterator_at_end(struct SetIterator *);
-extern void  sarl_set_iterator_reset(struct SetIterator *);
+extern void  sarl_set_iterator_next_gte(struct Sarl_SetIterator *, Sarl_Index);
+extern void  sarl_set_iterator_next(struct Sarl_SetIterator *);
+extern Sarl_Index sarl_set_iterator_val(struct Sarl_SetIterator *);
+extern int   sarl_set_iterator_at_end(struct Sarl_SetIterator *);
+extern void  sarl_set_iterator_reset(struct Sarl_SetIterator *);
 
 /** return then number of elements in the sequence without regard to
  *  the current location of the iterator. This doesn't move the
@@ -60,7 +60,7 @@ extern void  sarl_set_iterator_reset(struct SetIterator *);
  *  This is an expensive operation because it involves copying the
  *  iterator and iterating though the entire sequence.
  */
-extern Index  sarl_set_iterator_count(struct SetIterator *);
+extern Sarl_Index  sarl_set_iterator_count(struct Sarl_SetIterator *);
 
 /** return then number of elements in the sequence counting from the
  *  element currently refered to by the iterator to the end of the
@@ -69,10 +69,10 @@ extern Index  sarl_set_iterator_count(struct SetIterator *);
  *  This is an expensive operation because it involves copying the
  *  iterator and iterating though the remaining elements of the sequence.
  */
-extern Index sarl_set_iterator_count_remaining(struct SetIterator *);
+extern Sarl_Index sarl_set_iterator_count_remaining(struct Sarl_SetIterator *);
 
 /* reference counting interface */
-extern void sarl_set_iterator_decr_ref(struct SetIterator *);
-extern void sarl_set_iterator_incr_ref(struct SetIterator *);
+extern void sarl_set_iterator_decr_ref(struct Sarl_SetIterator *);
+extern void sarl_set_iterator_incr_ref(struct Sarl_SetIterator *);
 
 #endif

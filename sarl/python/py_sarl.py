@@ -47,26 +47,26 @@ class SetIterator:
     def count_remaining(self):
         return sarl_set_iterator_count_remaining(self.iterator)
 
-    def copy(self):
+    def clone(self):
         it = sarl_set_iterator_copy(self.iterator)
         return SetIterator(it)
 
-def intersection(first, second):
+def iterator_meet(first, second):
     it = sarl_set_iterator_meet(first.iterator, second.iterator)
     return SetIterator(it)
 
-def union(first, second):
+def iterator_union(first, second):
     it = sarl_set_iterator_union(first.iterator, second.iterator)
     return SetIterator(it)
 
-def set_minus(first, second):
+def iterator_minus(first, second):
     it = sarl_set_iterator_minus(first.iterator, second.iterator)
     return SetIterator(it)
 
-def lexical_compare(first, second):
+def iterator_lexical_compare(first, second):
     return sarl_set_iterator_lexical_compare(first.iterator, second.iterator)
 
-def subset(first, second):
+def iterator_subset(first, second):
     return sarl_set_iterator_subset(first.iterator, second.iterator)
 
 

@@ -8,16 +8,16 @@ extern "C" {
 
 #include "relation_impl.h"
 
-struct Relation *sarl_relation_create()
+struct Sarl_Relation *sarl_relation_create()
 {
-  Relation *r = new Relation();
+  Sarl_Relation *r = new Sarl_Relation();
   sarl_ref_count_init(&r->m_ref_count);
   return r;
 }
 
-struct Relation *sarl_relation_copy(struct RelationIterator *it)
+struct Sarl_Relation *sarl_relation_copy(struct Sarl_RelationIterator *it)
 {
-  struct Relation *s = new Relation();
+  struct Sarl_Relation *s = new Sarl_Relation();
   sarl_ref_count_init(&s->m_ref_count);
   SARL_RELATION_ITERATOR_FOR(it) {
     sarl_relation_insert_pair(s, sarl_relation_iterator_val(it));
@@ -25,42 +25,42 @@ struct Relation *sarl_relation_copy(struct RelationIterator *it)
   return s;
 }
 
-void sarl_relation_insert(struct Relation *r, Index a, Index b)
+void sarl_relation_insert(struct Sarl_Relation *r, Sarl_Index a, Sarl_Index b)
 {
-  Pair p = { a, b };
-  Pair q = { b, a };
+  Sarl_Pair p = { a, b };
+  Sarl_Pair q = { b, a };
        
   r->forward.insert(p);
   r->reverse.insert(q);
 }
   
-void sarl_relation_remove(struct Relation *r, Index a, Index b)
+void sarl_relation_remove(struct Sarl_Relation *r, Sarl_Index a, Sarl_Index b)
 {
-  Pair p = { a, b };
-  Pair q = { b, a };
+  Sarl_Pair p = { a, b };
+  Sarl_Pair q = { b, a };
        
   r->forward.erase(p);
   r->reverse.erase(q);
 }
 
-void sarl_relation_decr_ref(struct Relation *r)
+void sarl_relation_decr_ref(struct Sarl_Relation *r)
 {
   if ( sarl_ref_count_decr(&r->m_ref_count) ) {
     delete r;
   };
 }
 
-void sarl_relation_incr_ref(struct Relation *r)
+void sarl_relation_incr_ref(struct Sarl_Relation *r)
 {
   sarl_ref_count_incr(&r->m_ref_count);
 }
 
-void sarl_relation_insert_pair(struct Relation *r, struct Pair pair)
+void sarl_relation_insert_pair(struct Sarl_Relation *r, struct Sarl_Pair pair)
 {
   sarl_relation_insert(r, pair.dom, pair.rng);
 }
 
-void sarl_relation_remove_pair(struct Relation *r, Pair pair)
+void sarl_relation_remove_pair(struct Sarl_Relation *r, Sarl_Pair pair)
 {
   sarl_relation_remove(r, pair.dom, pair.rng);
 }

@@ -6,21 +6,21 @@
 
 #include <set>
 
-struct Pair_less
+struct Sarl_Pair_less
 {
-  inline bool operator()(Pair const& x, Pair const& y) {
+  inline bool operator()(Sarl_Pair const& x, Sarl_Pair const& y) {
     return sarl_pair_compare(x,y) < 0;
   }
 };
 
-struct Relation
+struct Sarl_Relation
 {
   RefCount m_ref_count;
 
-  typedef std::set<Pair,Pair_less> RelationImpl;
+  typedef std::set<Sarl_Pair,Sarl_Pair_less> Sarl_RelationImpl;
 
-  RelationImpl forward;
-  RelationImpl reverse;
+  Sarl_RelationImpl forward;
+  Sarl_RelationImpl reverse;
 };
 
 #endif

@@ -1,11 +1,11 @@
-from py_sarl import *
+from sarl import *
 
 def checkSequence(seq, len):
     i=1
     it=SetIterator(a)
     while(not it.at_end()):
-        if i <> it.val():
-            print "Error, mismatch i=", i, ", it.val()=" + str(it.val())
+        if i <> it.value():
+            print "Error, mismatch i=", i, ", it.value()=" + str(it.value())
         it.next()
         i = i + 1
     if i <> len:
@@ -31,8 +31,9 @@ for i in range(1,len):
     if i % 2 == 0:
         c.insert(i)
 
-it = intersection(SetIterator(b),SetIterator(c))
-
+b_it = SetIterator(b)
+c_it = SetIterator(c)
+it = b_it.iterator_meet(c_it)
 
 while(not it.at_end()):
     it.next()
@@ -47,26 +48,27 @@ if SetIterator(b).count_remaining() != len/3:
 if it.count() != len/6:
    print "Error, it.count() returned ", it.count()
 
-x = union(SetIterator(a),SetIterator(b))
-y = intersection(SetIterator(a),SetIterator(b))
-z = set_minus(SetIterator(a),SetIterator(b))
+x = SetIterator(a).iterator_union(SetIterator(b))
+y = SetIterator(a).iterator_meet(SetIterator(b))
+z = SetIterator(a).iterator_minus(SetIterator(b))
 
-if subset(x, y):
+if x.subset(y):
     print "Error subset(x,y) returned true"
 
-if not subset(y, x):
+if not y.subset(x):
     print "Error subset(y,x) returned false"
 
-if not subset(y, x):
+if not y.subset(x):
     print "Error subset(y,x) returned false"
 
-if lexical_compare(z, SetIterator(a)) <= 0:
-    print "Error lexical_compare(z,SetIterator(a))"
+if z.lexical_compare(SetIterator(a)) <= 0:
+    print "Error iterator_lexical_compare(z,SetIterator(a))"
 
-if lexical_compare(z.copy(), SetIterator(b)) >= 0:
-    print "Error lexical_compare(z,SetIterator(b))"
+if z.copy().lexical_compare(SetIterator(b)) >= 0:
+    print "Error iterator_lexical_compare(z.copy(),SetIterator(b))"
 
-if lexical_compare(z, y) >= 0:
-    print "Error lexical_compare(z,a)"
+if z.lexical_compare(y) >= 0:
+    print "Error iterator_lexical_compare(z,a)"
     
 print "Test Finished"
+

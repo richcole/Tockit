@@ -13,9 +13,9 @@ int main()
 {
   int          LEN = 100;
 
-  Index        i;
-  Set          *A, *B;
-  SetIterator  *x, *y, *z;
+  Sarl_Index        i;
+  Sarl_Set          *A, *B;
+  Sarl_SetIterator  *x, *y, *z;
 
   A = sarl_set_create();
   B = sarl_set_create();

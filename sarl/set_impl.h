@@ -3,11 +3,11 @@
 
 #include <set>
 
-struct Set 
+struct Sarl_Set 
 {
-  typedef std::set<Index> SetImpl;
+  typedef std::set<Sarl_Index> Sarl_SetImpl;
 
-  SetImpl m_set;
+  Sarl_SetImpl m_set;
   RefCount m_ref_count;
 };
 

@@ -4,6 +4,7 @@ domain_set_iterator.o: ../sarl/set.h ../sarl/index.h ../sarl/set_iterator.h
 domain_set_iterator.o: ../sarl/ref_count.h ../sarl/set_impl.h
 domain_set_iterator.o: ../sarl/domain_set_iterator_impl.h
 domain_set_iterator.o: ../sarl/set_iterator_impl.h
+domain_set_iterator.o: ../sarl/relation_iterator.h ../sarl/pair.h
 intersection_set_iterator.o: ../sarl/set.h ../sarl/index.h
 intersection_set_iterator.o: ../sarl/set_iterator.h ../sarl/ref_count.h
 intersection_set_iterator.o: ../sarl/set_impl.h

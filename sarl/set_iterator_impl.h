@@ -3,33 +3,33 @@
 
 #include <set>
 
-struct SetIteratorFunctionTable {
-  void  (*next_gte)(struct SetIterator *, Index);
-  void  (*next)(struct SetIterator *);
-  Index (*val)(struct SetIterator *);
-  int   (*at_end)(struct SetIterator *);
-  void  (*reset)(struct SetIterator *);
-  void  (*decr_ref)(struct SetIterator *);
-  struct SetIterator*  (*copy)(struct SetIterator *);
+struct Sarl_SetIteratorFunctionTable {
+  void  (*next_gte)(struct Sarl_SetIterator *, Sarl_Index);
+  void  (*next)(struct Sarl_SetIterator *);
+  Sarl_Index (*val)(struct Sarl_SetIterator *);
+  int   (*at_end)(struct Sarl_SetIterator *);
+  void  (*reset)(struct Sarl_SetIterator *);
+  void  (*decr_ref)(struct Sarl_SetIterator *);
+  struct Sarl_SetIterator*  (*copy)(struct Sarl_SetIterator *);
 };
 
-struct SetIterator
+struct Sarl_SetIterator
 {
   RefCount m_ref_count;
-  SetIteratorFunctionTable *mp_funcs;
+  Sarl_SetIteratorFunctionTable *mp_funcs;
 };
 
-struct PlainSetIterator : SetIterator
+struct Sarl_PlainSetIterator : Sarl_SetIterator
 {
-  typedef std::set<Index>::const_iterator Iterator;
+  typedef std::set<Sarl_Index>::const_iterator Iterator;
 
-  Set*     mp_set;
+  Sarl_Set*     mp_set;
   Iterator m_it;
 };
 
 inline void sarl_set_iterator_init(
-  struct SetIterator *it,
-  SetIteratorFunctionTable *ap_funcs)
+  struct Sarl_SetIterator *it,
+  Sarl_SetIteratorFunctionTable *ap_funcs)
 {
   it->mp_funcs = ap_funcs;
   sarl_ref_count_init(&it->m_ref_count);
