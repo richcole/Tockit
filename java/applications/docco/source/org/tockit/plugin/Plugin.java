@@ -7,7 +7,21 @@
  */
 package org.tockit.plugin;
 
-
+/**
+ * Plugin interface. All plugins should implement this interface.
+ */
 public interface Plugin {
+	/**
+	 * Load plugin.
+	 * 
+	 * <p>
+	 * This method is expected to perform all startup actions needed 
+	 * and is also responsible for registering plugin implementation 
+	 * with a corresponding registry. 
+	 * </p>
+	 * <p>
+	 * For instance, DocumentHandler plugin should register itself with DocumentHandlerRegistry.
+	 * </p>
+	 */
 	public void load();
 }

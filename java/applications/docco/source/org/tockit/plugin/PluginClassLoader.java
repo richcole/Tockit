@@ -28,22 +28,39 @@ import java.util.zip.ZipFile;
 
 /**
  * Class loader used to load resources found in the plugins directory.
- * 
+ * <p>
  * This class loader will recurse through given directory and list
  * all resources found, including all resources contained in any jar
  * files found.
- * 
- * For more information on loading classes or resources 
- * @see findClass(String name) 
- * @see findResource(String name)
- * @see loadClass(Resource resource)   
- * 
+ * </p>
+ * <p>
+ * If duplicate class definitions are found - first class found is taken.
+ * At the moment we don't have any control over order of loading, so it is
+ * advisable to have one version of each class, otherwise there could be
+ * some unpredictable behaviour in a plugin. If PluginClassLoader found a
+ * definition of class already defined in the classpath - this class will be
+ * loaded from the classpath. 
+ * </p>
+ * <p>
  * Some info on class loaders:
+ * <ul>
+ * <li>
  * http://developer.java.sun.com/developer/TechTips/2000/tt1027.html#tip1
+ * </li>
+ * <li>
  * http://forum.java.sun.com/thread.jsp?forum=37&thread=160773&tstart=0&trange=15
- * 
+ * </li>
+ * <li>
  * Java hotswap technology:
  * http://developers.sun.com/dev/coolstuff/hotswap/more.html
+ * </li>
+ * </ul>
+ * </p>
+ * <p>
+ * For more information on loading classes or resources 
+ * @see #findClass(String name) 
+ * @see #findResource(String name)
+ * </p>
  */
 public class PluginClassLoader extends ClassLoader {
 
@@ -176,6 +193,15 @@ public class PluginClassLoader extends ClassLoader {
 		logger.exiting("PluginClassLoader", "Constructor", "found num of resources: " + this.foundResources.size());
 	}
 	
+	/**
+	 * Find all classes implementing given interface.
+	 * <p>
+	 * This method will go through all classes found in the plugin directory,
+	 * load each one and check if it implements given interface.
+	 * Note that this could be an expensive process depending on a number of
+	 * classes contained in the plugin directory.
+	 * </p>
+	 */
 	public Class[] findClassesImplementingGivenIterface (Class interfaceClass) 
 						throws ClassNotFoundException, NoClassDefFoundError {
 		List result = new ArrayList();
@@ -201,22 +227,28 @@ public class PluginClassLoader extends ClassLoader {
 	}
 	
 	/**
-	 * Find a resource with given name in this class loader. This
-	 * method will return first resource found with the given name.
+	 * Find a resource with given name in this class loader. 
+	 * <p>
+	 * This method will return first resource found with the given name.
 	 * In case of duplicate resources with the same name there is no 
 	 * guarantee which one will be found first.
+	 * </p>
+	 * <p>
 	 * @param name - this parameter should refer to the resource path
 	 * relative to the class loader directory specified in constructor
-	 * parameter for files. OR zip file entry name in case of jar file 
-	 * For example, if plugins directory is located at 
-	 * C:/projects/someProject/plugins 
-	 * and we want to find file:
-	 * C:/projects/someProject/plugins/img/someFile.jpg, 
+	 * parameter for files. OR zip file entry name in case of jar file
+	 * <br/> 
+	 * For example, if plugins directory is located at <br/>
+	 * C:/projects/someProject/plugins <br/>
+	 * and we want to find file: <br/>
+	 * C:/projects/someProject/plugins/img/someFile.jpg, <br/> 
 	 * parameter name should be "img/someFile.jpg"
 	 * If we are looking for a resource within one of the jar files
 	 * included in plugins directory, then specify path to this resource
 	 * within the jar file.
+	 * </br>
 	 * NOTE: first found resource will be returned.
+	 * </p>
 	 */
 	public URL findResource (String name ) {
 		Resource resource = findResourceLocation(name);
@@ -233,20 +265,24 @@ public class PluginClassLoader extends ClassLoader {
 	 
 	/**
 	 * Find a class with the specified name.
-	 * 
-	 * @param name - fully qualified class name.
-	 * 
+	 * <p>
 	 * If duplicates occur within this class loader - the first one
 	 * found will be returned. At this stage there is no way to inforce
 	 * the order in which we search for classes, therefore there is no
 	 * way to predict which one of the duplicates would be found first.
-	 * 
+	 * </p>
+	 * <p>
 	 * Classes defined in classpath are loaded by default class loader 
 	 * and take precedence to classes found in plugins path.
-	 * 
+	 * </p>
+	 * <p>
 	 * Please note that although we do ignore multiple class definitions
 	 * in a plugin path - it would more efficient if plugins path didn't 
-	 * contain duplicates 
+	 * contain duplicates
+	 * </p>
+	 * <p>
+	 * @param name - fully qualified class name.
+	 * </p>
 	 */
 	public Class findClass(String name) throws ClassNotFoundException {
 		// the ClassNotFoundException will not go up through the native ClassLoader code,
@@ -265,15 +301,6 @@ public class PluginClassLoader extends ClassLoader {
 		return res;
 	 }
 	 
-	 /**
-	  * Assumptions: 
-	  * - We don't support duplicate class definitions within the same 
-	  * 	plugin. In the case of duplicate class definitions we just
-	  * 	use the first class found.
-	  * - Class definitions found in the classpath by default 
-	  * 	class loader are not overriden, therefore
-	  * 	they will be preferred.
-	  */
 	 private Class loadClass (Resource resource) 
 	 								throws ClassNotFoundException, 
 	 								NoClassDefFoundError {
