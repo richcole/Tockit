@@ -293,6 +293,7 @@ public class Canvas extends JPanel implements Printable {
 
     public void removeCanvasItem(CanvasItem item) {
         this.canvasItems.remove(item);
+        this.itemsToRaise.remove(item);
     }
 
     public Collection getCanvasItemsByType(Class type) {
