@@ -7,7 +7,6 @@
  */
 package org.tockit.docco.gui;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -54,7 +53,6 @@ public class FileMappingsEditingDialog extends JDialog {
 	private JLabel docHandlerDisplayLabel = new JLabel();
 	
 	private JButton okButton;
-	private JButton applyButton;
 	
 	
 	private class MappingsListCellRenderer extends DefaultListCellRenderer {
@@ -86,12 +84,37 @@ public class FileMappingsEditingDialog extends JDialog {
 		this.model = new DefaultListModel();
 		loadListModelWithRegistryData(registry);
 		
-		getContentPane().add(createMainPanel(), BorderLayout.CENTER);
-		getContentPane().add(createButtonsPanel(), BorderLayout.SOUTH);
-		
+		JPanel contentPane = new JPanel(new GridBagLayout());
+		contentPane.add(createMappingEditingPanel(),new GridBagConstraints(0, 0, 
+										1, 1, 
+										1, 1,
+										GridBagConstraints.WEST,
+										GridBagConstraints.BOTH,
+										new Insets(5, 5, 5, 5),
+										0, 0
+										)); 
+		contentPane.add(createMappingDetailsDisplayPanel(),new GridBagConstraints(0, 1, 
+										1, 1, 
+										1, 0,
+										GridBagConstraints.NORTH,
+										GridBagConstraints.HORIZONTAL,
+										new Insets(5, 5, 5, 5),
+										0, 0
+										)); 
+		contentPane.add(createButtonsPanel(),new GridBagConstraints(0, 2, 
+										1, 1, 
+										1, 0,
+										GridBagConstraints.NORTH,
+										GridBagConstraints.HORIZONTAL,
+										new Insets(5, 5, 5, 5),
+										0, 0
+										));
+		this.setContentPane(contentPane);
+
 		setManipulatorButtonsStatus();
 		
 		pack();
+		
 		setLocationRelativeTo(parent);
 		setVisible(true);		
 	}
@@ -102,62 +125,6 @@ public class FileMappingsEditingDialog extends JDialog {
 			DocumentHandlerMapping cur = (DocumentHandlerMapping) it.next();
 			this.model.addElement(cur);
 		}
-	}
-
-	private JPanel createMainPanel() {
-		
-		JPanel mainPanel = new JPanel(new BorderLayout());
-		
-		JPanel editingPanel = createMappingEditingPanel();
-		JPanel displayDetailsPanel = createMappingDetailsDisplayPanel();
-
-		JPanel buttonsPanel = new JPanel();
-		applyButton = new JButton("Apply");
-		applyButton.setToolTipText("Save changes");
-		applyButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Object[] mappingArray = model.toArray();
-				docHandlersRegistry.setDocumentMappingList(Arrays.asList(mappingArray));
-				setSaveButtonsStatus(false);
-			}
-		});
-		
-		JButton restoreDefault = new JButton("Restore Default");
-		restoreDefault.setToolTipText("Overwrite currently displayed mappings with default mapping settings.");
-		restoreDefault.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				docHandlersRegistry.restoreDefaultMappingList();
-				model.clear();
-				loadListModelWithRegistryData(docHandlersRegistry);
-			}
-		});
-					
-
-		buttonsPanel.setLayout(new GridBagLayout());
-		buttonsPanel.add(applyButton,new GridBagConstraints(0, 0, 
-											1, 1, 
-											0, 0,
-											GridBagConstraints.EAST,
-											GridBagConstraints.NONE,
-											new Insets(10, 5, 10, 5),
-											0, 0
-											)); 
-		buttonsPanel.add(restoreDefault,new GridBagConstraints(1, 0, 
-											1, 1, 
-											0, 0,
-											GridBagConstraints.WEST,
-											GridBagConstraints.NONE,
-											new Insets(10, 5, 10, 5),
-											0, 0
-											)); 
-
-		buttonsPanel.setBorder(BorderFactory.createEtchedBorder());
-
-		mainPanel.add(editingPanel, BorderLayout.NORTH);
-		mainPanel.add(displayDetailsPanel, BorderLayout.CENTER);
-		mainPanel.add(buttonsPanel, BorderLayout.SOUTH);
-
-		return mainPanel;
 	}
 
 	private JPanel createMappingDetailsDisplayPanel() {
@@ -171,17 +138,17 @@ public class FileMappingsEditingDialog extends JDialog {
 		displayDetailsPanel.add(fileFilterLabel,new GridBagConstraints(0, row, 
 										1, 1, 
 										0, 0,
-										GridBagConstraints.NORTHWEST,
+										GridBagConstraints.WEST,
 										GridBagConstraints.NONE,
-										new Insets(10, 5, 1, 5),
+										new Insets(5, 5, 5, 5),
 										0, 0
 										)); 
 		displayDetailsPanel.add(fileFilterDisplayLabel,new GridBagConstraints(1, row, 
-										GridBagConstraints.REMAINDER, 1, 
-										0, 0,
-										GridBagConstraints.NORTHWEST,
-										GridBagConstraints.NONE,
-										new Insets(10, 5, 1, 5),
+										1, 1, 
+										1, 0,
+										GridBagConstraints.WEST,
+										GridBagConstraints.HORIZONTAL,
+										new Insets(5, 5, 5, 5),
 										0, 0
 										)); 
 		
@@ -189,17 +156,17 @@ public class FileMappingsEditingDialog extends JDialog {
 		displayDetailsPanel.add(docHandlerLabel,new GridBagConstraints(0, row, 
 											1, 1, 
 											0, 0,
-											GridBagConstraints.NORTHWEST,
+											GridBagConstraints.WEST,
 											GridBagConstraints.NONE,
-											new Insets(1, 5, 10, 5),
+											new Insets(5, 5, 5, 5),
 											0, 0
 											)); 
 		displayDetailsPanel.add(docHandlerDisplayLabel,new GridBagConstraints(1, row, 
-											GridBagConstraints.REMAINDER, 1, 
-											0, 0,
-											GridBagConstraints.NORTHWEST,
-											GridBagConstraints.NONE,
-											new Insets(1, 5, 10, 5),
+											1, 1, 
+											1, 0,
+											GridBagConstraints.WEST,
+											GridBagConstraints.HORIZONTAL,
+											new Insets(5, 5, 5, 5),
 											0, 0
 											)); 
 		
@@ -273,9 +240,6 @@ public class FileMappingsEditingDialog extends JDialog {
 		});
 		
 		JScrollPane scrollPane = new JScrollPane(jlist);
-		Dimension d = new Dimension(150, 200);
-		scrollPane.setPreferredSize(d);
-		scrollPane.setMinimumSize(d);
 		
 		
 		JPanel editingPanel = new JPanel(new GridBagLayout());
@@ -284,10 +248,10 @@ public class FileMappingsEditingDialog extends JDialog {
 		JLabel headingLabel = new JLabel( "Specify document handlers for different file types ");
 		
 		editingPanel.add(headingLabel ,new GridBagConstraints(0, row, 	// gridx, gridy
-								1, 1, 							// gridwidth, gridheight
-								0.3, 0.3,  						// weightx, weighty
-								GridBagConstraints.CENTER,	// anchor
-								GridBagConstraints.BOTH,	// fill
+								2, 1, 							// gridwidth, gridheight
+								0, 0,  						// weightx, weighty
+								GridBagConstraints.NORTHWEST,	// anchor
+								GridBagConstraints.NONE,	// fill
 								new Insets(5, 5, 5, 5),		// insets
 								0, 0						// ipadx, ipady
 								)); 
@@ -295,47 +259,46 @@ public class FileMappingsEditingDialog extends JDialog {
 		row++;
 		editingPanel.add(scrollPane ,new GridBagConstraints(0, row, 	
 								1, 4, 							
-								0.4, 0.2,  						
+								1, 1,  						
 								GridBagConstraints.CENTER,	
 								GridBagConstraints.BOTH,	
 								new Insets(5, 5, 5, 5),		
 								0, 0						
 								)); 
 		
-		
 		editingPanel.add(upButton,new GridBagConstraints(1, row, 
 									1, 1, 
-									0.3, 0.1,
-									GridBagConstraints.NORTHWEST,
-									GridBagConstraints.NONE,
-									new Insets(5, 5, 1, 5),
+									0, 0,
+									GridBagConstraints.NORTH,
+									GridBagConstraints.HORIZONTAL,
+									new Insets(5, 5, 5, 5),
 									0, 0
 									)); 
 		row++;											
 		editingPanel.add(downButton,new GridBagConstraints(1, row, 
 									1, 1, 
-									0.3, 0.1,
-									GridBagConstraints.NORTHWEST,
-									GridBagConstraints.NONE,
-									new Insets(0, 5, 60, 5),
+									0, 1,
+									GridBagConstraints.NORTH,
+									GridBagConstraints.HORIZONTAL,
+									new Insets(5, 5, 5, 5),
 									0, 0
 									)); 
 		row++;
 		editingPanel.add(addButton,new GridBagConstraints(1, row, 
 									1, 1, 
-									0.3, 0.1,
-									GridBagConstraints.SOUTHWEST,
-									GridBagConstraints.NONE,
-									new Insets(60, 5, 1, 5),
+									0, 0,
+									GridBagConstraints.SOUTH,
+									GridBagConstraints.HORIZONTAL,
+									new Insets(5, 5, 5, 5),
 									0, 0
 									)); 
 		row++;											
 		editingPanel.add(removeButton,new GridBagConstraints(1, row, 
 									1, 1, 
-									0.3, 0.1,
-									GridBagConstraints.SOUTHWEST,
-									GridBagConstraints.NONE,
-									new Insets(0, 5, 5, 5),
+									0, 0,
+									GridBagConstraints.SOUTH,
+									GridBagConstraints.HORIZONTAL,
+									new Insets(5, 5, 5, 5),
 									0, 0
 									)); 
 		
@@ -396,11 +359,9 @@ public class FileMappingsEditingDialog extends JDialog {
 	private void setSaveButtonsStatus (boolean dataIsChanged) {
 		if (dataIsChanged) {
 			okButton.setEnabled(dataIsChanged);
-			applyButton.setEnabled(dataIsChanged);
 		}
 		else {
 			okButton.setEnabled(dataIsChanged);
-			applyButton.setEnabled(dataIsChanged);
 		}		
 	}
 	
