@@ -94,6 +94,7 @@ public class Indexer extends Thread {
 							this.writer.optimize();
 						} catch (IOException e) {
 							e.printStackTrace();
+							/// @todo I think this is a potential lock
 							showFeedbackMessage("ERROR: " + e.getMessage());
 						}
 					}
