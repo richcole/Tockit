@@ -42,4 +42,8 @@ public abstract class AbstractBinaryRelationOperation implements BinaryRelationO
 	public BinaryRelationOperation concatenate(UnaryRelationOperation leftOperation, UnaryRelationOperation rightOperation) {
 		return new ConcatenatedBinaryRelationOperation(leftOperation, rightOperation, this);
 	}
+	
+	public String toString() {
+		return getName();
+	}
 }

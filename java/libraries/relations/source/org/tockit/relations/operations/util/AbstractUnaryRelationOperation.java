@@ -41,4 +41,8 @@ public abstract class AbstractUnaryRelationOperation implements UnaryRelationOpe
 	public UnaryRelationOperation concatenate(UnaryRelationOperation other) {
 		return new ConcatenatedUnaryRelationOperation(other, this);
 	}
+	
+	public String toString() {
+		return getName();
+	}
 }

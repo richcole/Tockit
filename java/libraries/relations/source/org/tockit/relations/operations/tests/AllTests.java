@@ -24,6 +24,8 @@ public class AllTests extends TestCase {
 		suite.addTest(org.tockit.relations.operations.tests.NegationOperationTest.suite());
 		suite.addTest(org.tockit.relations.operations.tests.UnionOperationTest.suite());
 		suite.addTest(org.tockit.relations.operations.tests.IntersectionOperationTest.suite());
+		suite.addTest(org.tockit.relations.operations.tests.SelectionOperationValueSelectTest.suite());
+		suite.addTest(org.tockit.relations.operations.tests.SelectionOperationColumnCompareTest.suite());
         return suite;
     }
 }
