@@ -94,6 +94,8 @@ public class Indexer implements Runnable {
 										  false);
 			writer.optimize();
 			writer.close();
+			
+			showFeedbackMessage("Ready!");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -147,7 +149,7 @@ public class Indexer implements Runnable {
 
 
 	private void showProgress(int indexed, String dir) {
-		showFeedbackMessage("Indexing: " + indexed + " documents so far" + " (" + dir + ")");
+		showFeedbackMessage("Indexing: " + indexed + " entries in index" + " (" + dir + ")");
 	}
 
 	private void showFeedbackMessage(String string) {
