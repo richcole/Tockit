@@ -70,13 +70,17 @@ public class PluginLoader {
 				try {
 					logger.fine("Loading class loader for " + pluginDirs[i]);
 					PluginClassLoader classLoader = new PluginClassLoader(pluginDirs[i]);
-					Class[] foundPlugins = listPlugins(classLoader);
+					Class[] foundPlugins = classLoader.findClassesImplementingGivenIterface(Plugin.class);
 					loadPlugins(foundPlugins);
 					logger.fine("Finished loading plugins in " + pluginDirs[i]);
 				}
 				catch (FileNotFoundException e) {
 					e.printStackTrace();
 					errors.add(e);
+				} catch (NoClassDefFoundError e) {
+				} catch (ClassNotFoundException e) {
+				} catch (InstantiationException e) {
+				} catch (IllegalAccessException e) {
 				}
 			}
 		}
@@ -88,36 +92,14 @@ public class PluginLoader {
 		logger.fine("FINISHED loading plugins");
 	}
 	
-	private Class[] listPlugins (PluginClassLoader classLoader) {
-		try {
-			Class[] foundPlugins = classLoader.findClassesImplementingGivenIterface(Plugin.class);
-			return foundPlugins;
-		}
-		catch (NoClassDefFoundError e) {
-			e.printStackTrace();
-			errors.add(e);
-		}
-		catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			errors.add(e);
-		}
-		return new Class[0];
-	}
 	
-	private void loadPlugins (Class[] plugins) {
-		try {
-			for (int i = 0; i < plugins.length; i++) {
-				Class cur = plugins[i];
-				Plugin plugin = (Plugin) cur.newInstance();
-				logger.finer("Loading plugin " + plugin.getClass().getName());
-				plugin.load();
-			}
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-			errors.add(e);
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-			errors.add(e);
+	private void loadPlugins (Class[] plugins) throws InstantiationException,
+											IllegalAccessException {
+		for (int i = 0; i < plugins.length; i++) {
+			Class cur = plugins[i];
+			Plugin plugin = (Plugin) cur.newInstance();
+			logger.finer("Loading plugin " + plugin.getClass().getName());
+			plugin.load();
 		}
 	}
 	
