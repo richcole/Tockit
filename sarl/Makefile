@@ -66,10 +66,10 @@ java/libsarlmodule.so: $(OBJECTS:%=%.o) java/sarl_wrap.o libs
           -Llib_d -lstdc++ -lsarl++ -lsarl
 
 lib_d/libsarl.so: $(OBJECTS:%=%.o) lib_d
-	$(CC) $(DEBUG) -shared -o $@ $(OBJECTS) -lstdc++
+	$(CC) $(DEBUG) -shared -o $@ $(OBJECTS:%=%.o) -lstdc++
 
 lib/libsarl.so: $(OBJECTS:%=%.o) lib
-	$(CC) $(OPTIM) -shared -o $@ $(OBJECTS) -lstdc++
+	$(CC) $(OPTIM) -shared -o $@ $(OBJECTS:%=%.o) -lstdc++
 
 lib/libsarl++.so: lib
 	cd cpp; make ../$@
