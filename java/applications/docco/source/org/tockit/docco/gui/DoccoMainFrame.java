@@ -324,7 +324,6 @@ public class DoccoMainFrame extends JFrame {
 		
 		getContentPane().add(queryViewComponent, BorderLayout.NORTH);
 		getContentPane().add(mainPane, BorderLayout.CENTER);
-		getContentPane().add(documentDisplayPane, BorderLayout.SOUTH);
 
 		setSize(this.width, this.height);
 		setBounds(new Rectangle(20, 20, this.width, this.height));
