@@ -11,6 +11,7 @@ import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.FlowLayout;
 import java.awt.Rectangle;
+import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -459,9 +460,6 @@ public class DoccoMainFrame extends JFrame {
 		menuBar.add(createHelpMenu());
 		this.setJMenuBar(menuBar);
 		
-		JComponent queryViewComponent = buildQueryViewComponent();
-		queryViewComponent.setBorder(BorderFactory.createRaisedBevelBorder());
-
 		JComponent viewsComponent = buildViewsComponent();
 		this.documentDisplayPane = new DocumentDisplayPane();
 		
@@ -469,8 +467,7 @@ public class DoccoMainFrame extends JFrame {
 		mainPane.setOneTouchExpandable(true);
 		mainPane.setResizeWeight(0.9);
 		
-		getContentPane().add(queryViewComponent, BorderLayout.NORTH);
-		getContentPane().add(mainPane, BorderLayout.CENTER);
+		setContentPane(mainPane);
 
 		setSize(this.width, this.height);
 		setBounds(new Rectangle(20, 20, this.width, this.height));
@@ -593,6 +590,9 @@ public class DoccoMainFrame extends JFrame {
 	}
 	
 	private JComponent buildViewsComponent() {
+		JComponent queryViewComponent = buildQueryViewComponent();
+		queryViewComponent.setBorder(BorderFactory.createMatteBorder(0,0,1,0,SystemColor.controlDkShadow));
+
 		this.diagramView = new DiagramView(){
 			public String getToolTipText(MouseEvent me) {
 				Point2D canvasPos = getCanvasCoordinates(me.getPoint());
@@ -695,9 +695,13 @@ public class DoccoMainFrame extends JFrame {
 			}
 		});
 		JScrollPane scrollPane = new JScrollPane(this.hitList);
-		
+
+		JPanel leftPane = new JPanel(new BorderLayout());
+		leftPane.add(queryViewComponent, BorderLayout.NORTH);
+		leftPane.add(this.diagramView, BorderLayout.CENTER);
+				
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-								   diagramView, scrollPane);
+								   leftPane, scrollPane);
 		splitPane.setOneTouchExpandable(true);
 		splitPane.setResizeWeight(0.9);
 
