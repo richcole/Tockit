@@ -21,7 +21,6 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Set;
 
 import javax.swing.JPanel;
 
@@ -447,13 +446,13 @@ public class Canvas extends JPanel implements Printable {
     }
 
     /**
-     * Returns a collection of all canvas items of a specific type.
+     * Returns a list of all canvas items of a specific type.
      * 
      * Every layer is searched for items of this type and the matches are
-     * returned as a set.
+     * returned as a list, from the bottommost item upwards.
      */
-    public Collection getCanvasItemsByType(Class type) {
-        Set retVal = new HashSet();
+    public List getCanvasItemsByType(Class type) {
+        List retVal = new ArrayList();
         Iterator layerIt = this.canvasLayers.iterator();
         while (layerIt.hasNext()) {
             List layer = (List) layerIt.next();
@@ -462,6 +461,25 @@ public class Canvas extends JPanel implements Printable {
                 if (type.isAssignableFrom(canvasItem.getClass())) {
                     retVal.add(canvasItem);
                 }
+            }
+        }
+        return retVal;
+    }
+
+    /**
+     * Returns a list of all canvas items.
+     * 
+     * Canvas items (excluding the background) are returned as a single list,
+     * from the bottommost item upwards.
+     */
+    public List getCanvasItems() {
+        List retVal = new ArrayList();
+        Iterator layerIt = this.canvasLayers.iterator();
+        while (layerIt.hasNext()) {
+            List layer = (List) layerIt.next();
+            for (Iterator iterator = layer.iterator(); iterator.hasNext();) {
+                CanvasItem canvasItem = (CanvasItem) iterator.next();
+                retVal.add(canvasItem);
             }
         }
         return retVal;
