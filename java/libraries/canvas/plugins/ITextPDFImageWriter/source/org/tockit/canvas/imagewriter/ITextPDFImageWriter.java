@@ -89,8 +89,9 @@ public class ITextPDFImageWriter implements ImageWriter {
         try {
 			int width = settings.getImageWidth();
             int height = settings.getImageHeight();
-
-            Document document = new Document(new Rectangle(width,height));
+            
+            // create document with the image's size and no margin
+            Document document = new Document(new Rectangle(width,height),0,0,0,0);
 
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
             document.addTitle(metadata.getProperty("title"));
