@@ -20,6 +20,7 @@ import org.tockit.docco.indexer.DocumentContent;
 import org.tockit.docco.indexer.DocumentSummary;
 import org.tockit.docco.documenthandler.DocumentHandler;
 import org.tockit.docco.documenthandler.DocumentHandlerException;
+import org.tockit.plugin.Plugin;
 
 import phelps.lang.Integers;
 import phelps.net.CachedInputStream;
@@ -66,7 +67,7 @@ import multivalent.node.LeafText;
  * ON AN "AS IS" BASIS, AND THE UNIVERSITY OF CALIFORNIA HAS NO OBLIGATION TO
  * PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
  */
-public class MultivalentDocumentHandler implements DocumentHandler {
+public class MultivalentDocumentHandler implements DocumentHandler, Plugin {
 	
 	public DocumentSummary parseDocument(URL url) throws IOException, DocumentHandlerException {
 		DocumentSummary result = new DocumentSummary();
@@ -180,6 +181,10 @@ public class MultivalentDocumentHandler implements DocumentHandler {
 	public String getDisplayName() {
 		return "Handler based on Multivalent tool, capable of parsing " + 
 			"HTML, PDF, scanned paper, UNIX manual pages, TeX DVI";
+	}
+	
+	public void load() {
+		/// @todo should be registering with appropriate registry here
 	}
 
 	

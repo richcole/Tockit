@@ -20,12 +20,13 @@ import org.tockit.docco.indexer.DocumentContent;
 import org.tockit.docco.indexer.DocumentSummary;
 import org.tockit.docco.documenthandler.DocumentHandler;
 import org.tockit.docco.documenthandler.DocumentHandlerException;
+import org.tockit.plugin.Plugin;
 
 import tool.ExtractText;
 
 import multivalent.std.adaptor.pdf.PDFReader;
 
-public class PdfMultivalentDocumentHandler implements DocumentHandler {
+public class PdfMultivalentDocumentHandler implements DocumentHandler, Plugin {
 
 	public DocumentSummary parseDocument(URL url) throws IOException, DocumentHandlerException {
 		try {
@@ -77,4 +78,9 @@ public class PdfMultivalentDocumentHandler implements DocumentHandler {
 	public String getDisplayName() {
 		return "PDF using Multivalent tool";
 	}
+	
+	public void load() {
+		/// @todo should be registering with appropriate registry here
+	}
+	
 }
