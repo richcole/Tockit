@@ -7,14 +7,22 @@
  */
 package query.util;
 
-import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.Iterator;
 
 import query.HitReference;
 
 public class HitReferencesSetImplementation implements HitReferencesSet {
-	private HashSet references = new HashSet();
+	private Set references;
+	
+	public HitReferencesSetImplementation() {
+		this(new HashSet());
+	}
+	
+	public HitReferencesSetImplementation(Set innerSet) {
+		this.references = innerSet;
+	}
 	
 	public int size() {
 		return references.size();
@@ -37,8 +45,8 @@ public class HitReferencesSetImplementation implements HitReferencesSet {
 		return (HitReference[]) references.toArray(new HitReference[size]);
 	}
 
-	public boolean addAll(Collection collection) {
-		Iterator it = collection.iterator();
+	public boolean addAll(HitReferencesSet other) {
+		Iterator it = other.iterator();
 		boolean setIsChanged = false;
 		while (it.hasNext()) {
 			HitReference cur = (HitReference) it.next();
@@ -49,12 +57,12 @@ public class HitReferencesSetImplementation implements HitReferencesSet {
 		return setIsChanged;
 	}
 
-	public boolean retainAll(Collection collection) {
-		return references.retainAll(collection);
+	public boolean retainAll(HitReferencesSet other) {
+		return references.retainAll(other.toSet());
 	}
 
-	public boolean removeAll(Collection collection) {
-		return references.removeAll(collection);
+	public boolean removeAll(HitReferencesSet other) {
+		return references.removeAll(other.toSet());
 	}
 
 	public void clear() {
@@ -78,6 +86,8 @@ public class HitReferencesSetImplementation implements HitReferencesSet {
 		}
 		return str;
 	}
-	
 
+    public Set toSet() {
+        return this.references;
+    }
 }

@@ -7,8 +7,8 @@
  */
 package query.util;
 
-import java.util.Collection;
 import java.util.Iterator;
+import java.util.Set;
 
 import query.HitReference;
 
@@ -16,6 +16,7 @@ public interface HitReferencesSet {
 	public int size();
 	public boolean isEmpty();
 	public Iterator iterator();
+	public Set toSet();
 
 	public boolean contains(HitReference ref);
 
@@ -25,9 +26,9 @@ public interface HitReferencesSet {
 
 	public boolean remove(HitReference ref);
 
-	public boolean addAll(Collection collection);
-	public boolean retainAll(Collection collection);
-	public boolean removeAll(Collection collection);
+	public boolean addAll(HitReferencesSet other);
+	public boolean retainAll(HitReferencesSet other);
+	public boolean removeAll(HitReferencesSet other);
 	
 	public void clear();
 }
