@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Build Plugin Script" default="makeJar" basedir=".">
+	<description>
+		Build file capable of compiling and building given plugin.
+		Assumptions are that this script is called from build.xml
+		located in the same directory. The calling script is expected
+		to specify properties we need.
+		
+		This script can also be run standalone providing that needed
+		properties will be set (see comments below ). To use this
+		script as stanalone - copy it into the plugin directory.
+		
+		Assumptions about plugin directory structure:
+		- plugin directory should contain source subdirectory will all 
+			plugin source files.
+		- plugin directory should contain libs subdirectory containing
+			all libs (jar or zip files) needed by this plugin. 
+	</description>
+
+	<!-- 
+	These properties should be set if this script is run as 
+	standalone
+	-->
+	<property name="plugin.name" value="MultivalentDocumentHandlerPlugin"/>
+	<property name="docco.build.dir" value="../../build/dev"/>
+
+	<!-- Shouldn't need to change anything from now on -->
+	
+	<property name="plugin.build.dir" value="build"/>
+	<property name="plugin.src.dir" value="source"/>
+	<property name="plugin.libs.dir" value="libs"/>
+	<property name="plugin.jar.name" value="${plugin.name}.jar"/>
+
+    <path id="plugin.class.path">
+        <pathelement path="${classpath}"/>
+        <pathelement path="${plugin.build.dir}"/>
+        <pathelement path="${docco.build.dir}"/>
+        <fileset dir="${plugin.libs.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+        <fileset dir="${plugin.libs.dir}">
+            <include name="**/*.zip"/>
+        </fileset>
+    </path>
+    
+	<target name="prepare">
+		<mkdir dir="${plugin.build.dir}"/>
+	</target>
+
+	<target name="clean">
+		<delete dir="${plugin.build.dir}"/>
+		<delete file="${plugin.jar.name}"/>
+	</target>
+
+	<target name="compile" depends="prepare">
+		<echo>plugin.name = ${plugin.name}</echo>
+		<echo>docco.build.dir = ${docco.build.dir}</echo>
+		<echo>basedir = ${basedir}</echo>
+		<javac srcdir="${plugin.src.dir}" destdir="${plugin.build.dir}" debug="on" optimize="off" deprecation="on">
+			<classpath refid="plugin.class.path"/>
+		</javac>
+	</target>
+	
+	<target name="makeJar" depends="prepare,compile">
+		<jar jarfile="${plugin.jar.name}" basedir="${plugin.build.dir}" />
+		<mapper type="flatten"/>
+	</target>
+
+</project>
