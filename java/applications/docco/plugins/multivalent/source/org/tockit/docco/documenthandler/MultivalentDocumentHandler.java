@@ -182,7 +182,7 @@ public class MultivalentDocumentHandler implements DocumentHandler, Plugin {
 	}
 
 	public String getDisplayName() {
-		return "HTML, PDF, scanned paper, UNIX manual pages, TeX DVI document handler based on Multivalent tool"; 
+		return "HTML, PDF, UNIX manual pages, TeX DVI document handler based on Multivalent tool"; 
 	}
 	
 	public void load() {
@@ -190,6 +190,6 @@ public class MultivalentDocumentHandler implements DocumentHandler, Plugin {
 	}
 
 	public DoccoFileFilter getDefaultFilter() {
-		return new ExtensionFileFilterFactory().createNewFilter("pdf;dvi;htm;html;xhtml;man");
+		return new ExtensionFileFilterFactory().createNewFilter("htm;html;xhtml;pdf;man;dvi");
 	}
 }
