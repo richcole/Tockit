@@ -1,4 +1,4 @@
-package org.apache.lucene.demo;
+//package org.apache.lucene.demo;
 
 /* ====================================================================
  * The Apache Software License, Version 1.1
