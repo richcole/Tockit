@@ -161,7 +161,8 @@ public class PluginClassLoader extends ClassLoader {
 		logger.exiting("PluginClassLoader", "Constructor", "found num of resources: " + this.foundResources.size());		
 	}
 	
-	public Class[] findClassesImplementingGivenIterface (Class interfaceClass) {
+	public Class[] findClassesImplementingGivenIterface (Class interfaceClass) 
+						throws ClassNotFoundException, NoClassDefFoundError {
 		List result = new ArrayList();
 		Iterator it = this.foundResources.iterator();
 		while (it.hasNext()) {
@@ -169,18 +170,13 @@ public class PluginClassLoader extends ClassLoader {
 			String name = curResource.getRelativePath();
 			if (name.endsWith(".class")) {
 				String newName = name.replaceAll(".class","");
-				try {
-					Class curClass = loadClass(curResource);
-					Class[] interfaces = curClass.getInterfaces();
-					for (int i = 0; i < interfaces.length; i++) {
-						Class class1 = interfaces[i];
-						if (class1.equals(interfaceClass)) {
-							result.add(curClass);
-						}
+				Class curClass = loadClass(curResource);
+				Class[] interfaces = curClass.getInterfaces();
+				for (int i = 0; i < interfaces.length; i++) {
+					Class class1 = interfaces[i];
+					if (class1.equals(interfaceClass)) {
+						result.add(curClass);
 					}
-				} catch (ClassNotFoundException e) {
-					// @todo deal with exception
-					e.printStackTrace();
 				}
 			}
 		}
@@ -235,7 +231,7 @@ public class PluginClassLoader extends ClassLoader {
 		return loadClass(resource);
 	 }
 	 
-	 private Class loadClass (Resource resource) throws ClassNotFoundException {
+	 private Class loadClass (Resource resource) throws ClassNotFoundException, NoClassDefFoundError {
 	 	if (this.loadedClassesMap.containsKey(resource.getRelativePath())) {
 	 		return (Class) this.loadedClassesMap.get(resource.getRelativePath());
 	 	}	 		
@@ -246,8 +242,6 @@ public class PluginClassLoader extends ClassLoader {
 			return resClass;	 	
 		} catch (IOException e) {
 			throw new ClassNotFoundException("Couldn't find resource " + resource.getRelativePath(), e);			
-		} catch (NoClassDefFoundError e) {
-			throw new ClassNotFoundException("Errors reading resource " + resource.getRelativePath(), e);			
 		}
 	 }
 
