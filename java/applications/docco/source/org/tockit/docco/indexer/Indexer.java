@@ -31,10 +31,10 @@ public class Indexer extends Thread {
     private DocumentProcessingFactory docProcessingFactory;
     private int filesSeen;
 	
-	public Indexer(DocumentHandlerRegistry docHandlerRegistery, CallbackRecipient output) {
+	public Indexer(DocumentHandlerRegistry docHandlerRegistry, CallbackRecipient output) {
 		this.callbackRecipient = output;
 		try {
-            this.docProcessingFactory = new DocumentProcessingFactory(docHandlerRegistery);
+            this.docProcessingFactory = new DocumentProcessingFactory(docHandlerRegistry);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
