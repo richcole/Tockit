@@ -10,7 +10,6 @@ package org.tockit.crepe.gui.datatransfer;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
 
 import org.tockit.cgs.model.Instance;
 
@@ -29,7 +28,7 @@ public class InstanceTransferable implements Transferable {
         return flavor.getRepresentationClass() == Instance.class;
     }
 
-    public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
+    public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException {
         if(flavor.getRepresentationClass() == Instance.class) {
             return instance;
         } else {

@@ -68,18 +68,4 @@ public class PluginClassLoaderTest extends TestCase {
 			fail("Expected ClassNotFoundException");
 		} catch (ClassNotFoundException e) {}
 	}
-
-	public void testFindClassesImplementingGivenIterface() 
-									throws ClassNotFoundException,
-									InstantiationException, 
-									IllegalAccessException {
-//		Class[] classes = classLoader.findClassesImplementingGivenIterface(DocumentHandler.class);
-//		assertEquals("should be able to find and load some classes implementing given interface ",
-//										true, classes.length != 0);
-//		for (int i = 0; i < classes.length; i++) {
-//			Class class1 = classes[i];
-//			Object obj = class1.newInstance();
-//			System.out.println("Instantiated object: " + obj);
-//		}
-	}
 }

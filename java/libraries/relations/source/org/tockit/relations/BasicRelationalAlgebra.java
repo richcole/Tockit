@@ -22,7 +22,7 @@ public class BasicRelationalAlgebra {
 	public static Relation getDelta(Set domain) {
 		RelationImplementation result = new RelationImplementation(2);
 		for (Iterator iter = domain.iterator(); iter.hasNext();) {
-            Object cur = (Object) iter.next();
+            Object cur = iter.next();
             result.addTuple(new Object[]{cur, cur});
         }
         return result;

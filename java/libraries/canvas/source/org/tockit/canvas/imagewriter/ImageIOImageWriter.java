@@ -119,7 +119,7 @@ public class ImageIOImageWriter implements ImageWriter {
 			image = new BufferedImage(settings.getImageWidth(), settings.getImageHeight(),
 							BufferedImage.TYPE_INT_ARGB);
 		}
-		Graphics2D graphics2D = (Graphics2D) image.createGraphics();
+		Graphics2D graphics2D = image.createGraphics();
 		graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         Rectangle2D bounds = new Rectangle2D.Double(

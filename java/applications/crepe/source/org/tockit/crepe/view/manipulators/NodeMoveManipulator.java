@@ -113,7 +113,7 @@ public class NodeMoveManipulator extends ItemMovementManipulator {
         Point2D canvasPosition = dragEvent.getCanvasToPosition();
         Collection items = canvas.getCanvasItemsAt(canvasPosition);
         for (Iterator iterator = items.iterator(); iterator.hasNext();) {
-            Object canvasItem = (Object) iterator.next();
+            Object canvasItem = iterator.next();
             if(canvasItem instanceof NodeView) {
                 if(canvasItem != dragEvent.getSubject()) {
                     NodeView other = (NodeView) canvasItem;
@@ -167,7 +167,7 @@ public class NodeMoveManipulator extends ItemMovementManipulator {
         Point2D canvasPosition = dragEvent.getCanvasToPosition();
         Collection items = canvas.getCanvasItemsAt(canvasPosition);
         for (Iterator iterator = items.iterator(); iterator.hasNext();) {
-            Object canvasItem = (Object) iterator.next();
+            Object canvasItem = iterator.next();
             if(canvasItem instanceof NodeView) {
                 if(canvasItem != dragEvent.getSubject()) {
                     retVal.add(canvasItem);

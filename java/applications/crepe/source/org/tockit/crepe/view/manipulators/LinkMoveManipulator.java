@@ -36,7 +36,7 @@ abstract public class LinkMoveManipulator extends ItemMovementManipulator {
         double yDiff = toPosition.getY() - fromPosition.getY();
         determineItemsToMove(dragEvent, itemsToMove, lineViews, linkView);
         for (Iterator iterator = itemsToMove.iterator(); iterator.hasNext();) {
-            Object o = (Object) iterator.next();
+            Object o = iterator.next();
             if (o instanceof LinkView) {
                 LinkView lv = (LinkView) o;
                 lv.moveBy(xDiff, yDiff);
