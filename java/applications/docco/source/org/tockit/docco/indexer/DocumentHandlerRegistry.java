@@ -117,7 +117,7 @@ public class DocumentHandlerRegistry {
 		return mappings;
 	}
 
-	public void restoreDefaults () {
+	public void restoreDefaultMappingList () {
 		docHandlersList = new LinkedList();
 		try {
 			registerMappings(DocumentHandlerRegistry.DEFAULT_MAPPINGS);	
