@@ -10,10 +10,10 @@ package org.tockit.swing.preferences;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
@@ -178,7 +178,7 @@ public class PreferencePanel extends JTabbedPane {
             field.setPreferredSize(FIELD_SIZE);
             return field;
         } else if(entry.getType() == ConfigurationType.FONT_FAMILY) {
-            return createCombobox(entry, Toolkit.getDefaultToolkit().getFontList());
+            return createCombobox(entry, GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames());
         } else if(entry.getType() instanceof ConfigurationType.Enumeration) {
             return createCombobox(entry, ((ConfigurationType.Enumeration)entry.getType()).getValues());
         } else {
