@@ -56,6 +56,9 @@ public class DocumentHandlerRegistry {
 		docHandlersList.remove(docHandlerMapping);
 	}
 	
+	/**
+	 * @todo do we need this method?...
+	 */
 	public void moveMapping (int originalPositionIndex, int destinationPositionIndex) {
 		Object mapping = docHandlersList.remove(originalPositionIndex);
 		docHandlersList.add(destinationPositionIndex, mapping);
