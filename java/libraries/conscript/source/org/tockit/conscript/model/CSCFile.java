@@ -200,7 +200,7 @@ public class CSCFile {
         List retVal = new ArrayList(structureMap.values());
         for (Iterator iter = this.includeFiles.iterator(); iter.hasNext();) {
             CSCFile includeFile = (CSCFile) iter.next();
-            retVal.addAll(includeFile.getFormalContexts());
+            retVal.addAll(includeFile.getList(structure));
         }
         return retVal;
     }
