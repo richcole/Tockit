@@ -12,6 +12,9 @@
             <file sourceFile="docco01.png" targetFile="docco01.png" type="copy"/>
             <file sourceFile="docco02.png" targetFile="docco02.png" type="copy"/>
         </section>
+        <section name="Tupleware" sourceDir="tupleware" targetDir="tupleware" type="normal">
+            <homepage name="Overview" sourceFile="index.xhtml" targetFile="index.html" type="xhtml" id="Tupleware"/>
+        </section>
         <section name="ToscanaJ" sourceDir="toscanaj" targetDir="toscanaj" type="normal">
             <homepage name="Overview" sourceFile="index.xhtml" targetFile="index.html" type="xhtml"/>
         </section>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+	<head>
+		<title>Tupleware</title>
+	</head>
+	<body>
+        <h1>Tupleware</h1>
+        <p><strong>Warning!</strong> The following program and its description is meant for
+        people experienced in FCA ;-)</p>
+        
+        <p><strong>Tupleware</strong> implements a scaling approach based on relations. It works
+        on a set of tuples which is treated as a crossproduct of the value sets of the columns.
+        These tuples can be read from a text file, queried via SQL (as rows of a result set),
+        created via command line calls (stdout is read in the same way as the text files) or
+        (via plugin) queried with RDQL from RDF/N3 files.</p>
+        
+        <p>For scaling the object and attribute sets are selected as columns. If multiple columns
+        are selected the crossproduct is used. The binary relation used is the projection of the 
+        original tuples onto the crossproduct of the object and attribute sets. The object set is
+        chosen once, afterwards multiple attribute sets can be selected to create a complete CSX
+        file which can then be loaded into ToscanaJ for filtering and nesting.</p>
+
+        <p>The program can be downloaded from the 
+        <a href="http://sourceforge.net/project/showfiles.php?group_id=21448">Sourceforge download page</a>, it
+        requires a recent version of Java to be installed (at least JRE/JDK 1.4.0). If you want to use the RDQL
+        plugin you have to unzip it into the plugin directory found in the normal distribution.</p>
+	</body>
+</html>
+
