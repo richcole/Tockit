@@ -11,19 +11,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.poi.hdf.extractor.WordDocument;
 import org.apache.poi.hpsf.PropertySetFactory;
 import org.apache.poi.hpsf.SummaryInformation;
 import org.apache.poi.poifs.eventfilesystem.POIFSReader;
 import org.apache.poi.poifs.eventfilesystem.POIFSReaderEvent;
 import org.apache.poi.poifs.eventfilesystem.POIFSReaderListener;
 
+import org.textmining.text.extraction.WordExtractor;
 import org.tockit.docco.filefilter.DoccoFileFilter;
 import org.tockit.docco.filefilter.ExtensionFileFilterFactory;
 import org.tockit.docco.indexer.DocumentSummary;
@@ -61,7 +59,7 @@ public class MSWordDocumentHandler implements DocumentHandler, Plugin {
 			
 			DocumentSummary docSummary = new DocumentSummary();
 			docSummary.authors = getAuthors(info);
-			docSummary.contentReader = getDocumentContent(inputStream);
+			docSummary.contentReader = getDocumentContent(url.openStream());
 			docSummary.creationDate = info.getCreateDateTime();
 			docSummary.keywords = new ArrayList();
 			docSummary.keywords.add(info.getKeywords());
@@ -79,11 +77,13 @@ public class MSWordDocumentHandler implements DocumentHandler, Plugin {
 		}
 	}
 	
-	private Reader getDocumentContent(InputStream inputStream) throws IOException, DocumentHandlerException {
-		WordDocument wordDoc = new WordDocument(inputStream);
-		Writer docTextWriter = new StringWriter();
-		wordDoc.writeAllText(docTextWriter);
-		return new StringReader(docTextWriter.toString());
+	private Reader getDocumentContent(InputStream inputStream) throws DocumentHandlerException {
+        WordExtractor extractor = new WordExtractor();
+		try {
+            return new StringReader(extractor.extractText(inputStream));
+        } catch (Exception e) {
+            throw new DocumentHandlerException("Failed to extract text from Word document.", e);
+        }
 	}
 
 	private List getAuthors(SummaryInformation info) {
