@@ -528,12 +528,14 @@ public class DoccoMainFrame extends JFrame {
 		});
 		fileMenu.add(newIndexItem);
 
-		fileMenu.addSeparator();
+		if(this.indexes.size() != 0) {
+			fileMenu.addSeparator();
                 
-        for (Iterator iter = this.indexes.iterator(); iter.hasNext();) {
-            Index currentIndex = (Index) iter.next();
-			addIndexMenu(fileMenu, currentIndex);
-        }
+			for (Iterator iter = this.indexes.iterator(); iter.hasNext();) {
+				Index currentIndex = (Index) iter.next();
+				addIndexMenu(fileMenu, currentIndex);
+			}
+		}
 
 		fileMenu.addSeparator();
 		
