@@ -80,4 +80,15 @@ public class ConceptualGraph {
     public String getId() {
         return this.element.getAttributeValue("id");
     }
+
+    public void remove(Node node) {
+        List nodeChildren = this.element.getChildren("node");
+        for (Iterator iterator = nodeChildren.iterator(); iterator.hasNext();) {
+            Element element = (Element) iterator.next();
+            if(element.getAttributeValue("id").equals(node.getId())) {
+                element.detach();
+            }
+        }
+        ///@todo recurse into descriptors
+    }
 }

@@ -17,7 +17,9 @@ public class Node {
         this.knowledgeBase = knowledgeBase;
         element = new Element("node");
         element.setAttribute("id", knowledgeBase.createNewNodeId());
-        element.setAttribute("type", type.getName());
+        if (type != null) {
+            element.setAttribute("type", type.getName());
+        }
         if(referent != null) {
             element.setAttribute("referent", referent.getIdentifier());
         }
@@ -44,6 +46,9 @@ public class Node {
 
     public Type getType() {
         String typeId = element.getAttributeValue("type");
+        if(typeId == null) {
+            return this.knowledgeBase.UNIVERSAL;
+        }
         return knowledgeBase.getType(typeId);
     }
 
@@ -62,7 +67,12 @@ public class Node {
     }
 
     public void setReferent(Instance referent) {
-        element.setAttribute("referent", referent.getIdentifier());
+        if(referent == null) {
+            element.removeAttribute("referent");
+        }
+        else {
+            element.setAttribute("referent", referent.getIdentifier());
+        }
     }
 
     public ConceptualGraph getDescriptor() {
@@ -86,5 +96,40 @@ public class Node {
      */
     public void detach() {
         this.element.detach();
+    }
+
+    public boolean mergePossible(Node otherNode) {
+        Instance ourReferent = this.getReferent();
+        Instance otherReferent = otherNode.getReferent();
+        if( (ourReferent != null) &&
+            (otherReferent != null ) &&
+            (ourReferent != otherReferent ) ) {
+            return false;
+        }
+        Type ourType = this.getType();
+        Type otherType = otherNode.getType();
+        if( !ourType.hasSupertype(otherType) &&
+            !otherType.hasSupertype(ourType) ) {
+            return false;
+        }
+        return true;
+    }
+
+    public void merge(Node otherNode) {
+        if(!mergePossible(otherNode)) {
+            throw new RuntimeException("Try to merge incompatible nodes");
+        }
+        Type ourType = getType();
+        Type otherType = otherNode.getType();
+        if(otherType.hasSupertype(ourType)) {
+            setType(otherType);
+        }
+        if(getReferent() == null) {
+            setReferent(otherNode.getReferent());
+        }
+    }
+
+    public void destroy() {
+        this.knowledgeBase.remove(this);
     }
 }

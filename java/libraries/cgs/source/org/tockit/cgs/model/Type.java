@@ -11,9 +11,17 @@ import org.jdom.Element;
 
 import java.util.*;
 
+/**
+ * In any place where references to this type are used, a null reference is supposed to refer to the top (universal)
+ * type of the hierarchy. Types themself are supposed to be below this top type unless they have supertypes defined.
+ */
 public class Type {
     private Element element = null;
     private KnowledgeBase knowledgeBase = null;
+
+    protected Type(KnowledgeBase knowledgeBase) {
+        this.knowledgeBase = knowledgeBase;
+    }
 
     public Type(KnowledgeBase knowledgeBase, String name) {
         this.knowledgeBase = knowledgeBase;
@@ -36,7 +44,7 @@ public class Type {
         this.element.setAttribute("name", name);
     }
 
-    public Type[] getSupertypes() {
+    public Type[] getDirectSupertypes() {
         List supertypeChildren = this.element.getChildren("supertype");
         Type[] retVal = new Type[supertypeChildren.size()];
         int pos = 0;
@@ -49,7 +57,7 @@ public class Type {
         return retVal;
     }
 
-    public void addSupertype(Type other) {
+    public void addDirectSupertype(Type other) {
         Element supertypeElem = new Element("supertype");
         supertypeElem.addContent(other.getName());
         this.element.addContent(supertypeElem);
@@ -57,5 +65,19 @@ public class Type {
 
     public Element getElement() {
         return this.element;
+    }
+
+    public boolean hasSupertype(Type otherType) {
+        if(this == otherType) {
+            return true;
+        }
+        Type[] supertypes = getDirectSupertypes();
+        for (int i = 0; i < supertypes.length; i++) {
+            Type supertype = supertypes[i];
+            if(supertype.hasSupertype(otherType)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

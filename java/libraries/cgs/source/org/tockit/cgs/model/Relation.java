@@ -78,4 +78,9 @@ public class Relation {
         return this.element;
     }
 
+    public int getArity() {
+        List signatureChildren = this.element.getChildren("type");
+        return signatureChildren.size();
+    }
+
 }
