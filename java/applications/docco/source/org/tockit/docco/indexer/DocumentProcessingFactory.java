@@ -42,21 +42,16 @@ public class DocumentProcessingFactory {
 		DocumentProcessor docProcessor = (DocumentProcessor) this.docRegistry.get(fileExtension);
 
 		if (docProcessor != null) {
-			try {
-				/// @todo check what else we can get from the JDK side. Every feature we can get from the File API should be
-				/// worthwhile keeping
-				Document doc = docProcessor.getDocument(file);
-				doc.add(Field.Text(GlobalConstants.FIELD_DOC_PATH, file.getPath()));
-				if (doc.get(GlobalConstants.FIELD_DOC_DATE) == null) {
-					doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_DATE,new Date(file.lastModified())));
-				}
-				doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_SIZE, new Long(file.length()).toString()));
-				//printDebug(doc);
-				return doc;								
+			/// @todo check what else we can get from the JDK side. Every feature we can get from the File API should be
+			/// worthwhile keeping
+			Document doc = docProcessor.getDocument(file);
+			doc.add(Field.Text(GlobalConstants.FIELD_DOC_PATH, file.getPath()));
+			if (doc.get(GlobalConstants.FIELD_DOC_DATE) == null) {
+				doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_DATE,new Date(file.lastModified())));
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
-			}
+			doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_SIZE, new Long(file.length()).toString()));
+			//printDebug(doc);
+			return doc;								
 		}
 		else {
 			throw new DocumentProcessingException(
