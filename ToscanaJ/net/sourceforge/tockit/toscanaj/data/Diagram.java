@@ -17,7 +17,7 @@ import java.util.LinkedList;
 public class Diagram implements DiagramObservable, Diagram2D
 {
     /**
-     * The list of objects currently observing changes.
+     * The list of DiagramObserver implementations currently observing changes.
      */
     private List diagramObserver = null;
 
@@ -127,7 +127,7 @@ public class Diagram implements DiagramObservable, Diagram2D
      * Numbers start with zero.
      */
     public DiagramNode getNode( int nodeNumber ) {
-        return (DiagramNode)this.nodes.get( nodeNumber );
+        return (DiagramNode)this.nodes.get(nodeNumber);
     }
 
     /**
@@ -138,10 +138,10 @@ public class Diagram implements DiagramObservable, Diagram2D
     }
 
     /**
-     * Adds a point to the diagram (at the end of the list).
+     * Adds a node to the diagram (at the end of the list).
      */
-    public void addNode( Point2D position ) {
-        this.nodes.add(new DiagramNode(position,null,null));
+    public void addNode(DiagramNode node) {
+        this.nodes.add(node);
     }
 
     /**
@@ -166,13 +166,9 @@ public class Diagram implements DiagramObservable, Diagram2D
 
     /**
      * Adds a line to the diagram (at the end of the list).
-     *
-     * The from and to parameters are assumed to refer to some points already
-     * existing in the points list (not checked yet).
      */
-    public void addLine( int from, int to ) {
-        this.lines.add( new DiagramLine( (DiagramNode)nodes.get(from),
-                                         (DiagramNode)nodes.get(to) ) );
+    public void addLine( DiagramNode from, DiagramNode to ) {
+        this.lines.add( new DiagramLine( from, to ) );
     }
 
     /**

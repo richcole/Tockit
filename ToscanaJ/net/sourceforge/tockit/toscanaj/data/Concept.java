@@ -23,12 +23,6 @@ import java.util.Iterator;
  */
 public interface Concept {
     /**
-     * Returns true if the concept is realised in the current context, false if
-     * it is only in the data model but not supported by the current data.
-     */
-    boolean isRealized();
-
-    /**
      * Returns the size of the intent.
      */
     int getIntentSize();

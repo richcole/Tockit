@@ -141,8 +141,7 @@ public class ConceptualSchema {
             if( conceptNumber > diag.getNumberOfNodes() - 1 ) {
                 throw new NoSuchElementException("Invalid concept number");
             }
-            return new MemoryMappedConcept( diag.getAttributeLabel(conceptNumber),
-                                            diag.getObjectLabel(conceptNumber) );
+            return new MemoryMappedConcept();
         }
     }
 }

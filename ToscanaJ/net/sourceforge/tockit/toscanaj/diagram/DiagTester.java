@@ -7,14 +7,16 @@ import java.awt.geom.Point2D;
 import javax.swing.*;
 
 import net.sourceforge.tockit.toscanaj.data.Diagram;
+import net.sourceforge.tockit.toscanaj.data.DiagramNode;
 import net.sourceforge.tockit.toscanaj.data.LabelInfo;
 
 import net.sourceforge.tockit.toscanaj.diagram.DiagramView;
 
 /**
  * This class is used for testing the diagram drawing code.
+ *
+ * @TODO change code to match refactored version (if further tests are needed)
  */
-
 public class DiagTester extends JFrame {
 
     /**
@@ -101,17 +103,23 @@ public class DiagTester extends JFrame {
      */
     protected void showDiagramOne()
     {
+        /*
         Diagram diagram = new Diagram();
 
-        diagram.addNode( new Point2D.Double( 0, 0 ) );
-        diagram.addNode( new Point2D.Double( -1, -1 ) );
-        diagram.addNode( new Point2D.Double( 1, -1 ) );
-        diagram.addNode( new Point2D.Double( 0, -2 ) );
+        DiagramNode node1 = new Point2D.Double( 0, 0 );
+        DiagramNode node2 = new Point2D.Double( -1, -1 );
+        DiagramNode node3 = new Point2D.Double( 1, -1 );
+        DiagramNode node4 = new Point2D.Double( 0, -2 );
 
-        diagram.addLine( 0, 1 );
-        diagram.addLine( 0, 2 );
-        diagram.addLine( 1, 3 );
-        diagram.addLine( 2, 3 );
+        diagram.addNode( node1 );
+        diagram.addNode( node2 );
+        diagram.addNode( node3 );
+        diagram.addNode( node4 );
+
+        diagram.addLine( node1, node2 );
+        diagram.addLine( node1, node3 );
+        diagram.addLine( node2, node4 );
+        diagram.addLine( node3, node4 );
 
         LabelInfo label;
 
@@ -137,6 +145,7 @@ public class DiagTester extends JFrame {
         label.setTextAligment( LabelInfo.ALIGNRIGHT );
 
         _diagramView.showDiagram( diagram );
+        */
     }
 
     /**
@@ -144,6 +153,7 @@ public class DiagTester extends JFrame {
      */
     protected void showDiagramTwo()
     {
+        /*
         Diagram diagram = new Diagram();
 
         diagram.addNode( new Point2D.Double( 0, 0 ) );
@@ -166,6 +176,7 @@ public class DiagTester extends JFrame {
         diagram.addLine( 6, 7 );
 
         _diagramView.showDiagram( diagram );
+        */
     }
 
     /**
@@ -173,6 +184,7 @@ public class DiagTester extends JFrame {
      */
     protected void showDiagramThree()
     {
+        /*
         Diagram diagram = new Diagram();
 
         diagram.addNode( new Point2D.Double( 1.3247, -.234 ) );
@@ -181,6 +193,7 @@ public class DiagTester extends JFrame {
         diagram.addLine( 0, 1 );
 
         _diagramView.showDiagram( diagram );
+        */
     }
 
     public static void main( String[] args )

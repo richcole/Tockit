@@ -186,11 +186,11 @@ public class DiagramView extends DrawingCanvas implements MouseListener, MouseMo
             addCanvasItem( nodeView );
             LabelInfo attrLabelInfo = _diagram.getAttributeLabel( i );
             if( attrLabelInfo != null ) {
-                addCanvasItem( new LabelView( this, node, LabelView.ABOVE, attrLabelInfo ) );
+                addCanvasItem( new LabelView( this, LabelView.ABOVE, attrLabelInfo ) );
             }
             LabelInfo objLabelInfo = _diagram.getObjectLabel( i );
             if( objLabelInfo != null ) {
-                addCanvasItem( new LabelView( this, node, LabelView.BELOW, objLabelInfo ) );
+                addCanvasItem( new LabelView( this, LabelView.BELOW, objLabelInfo ) );
             }
         }
         repaint();

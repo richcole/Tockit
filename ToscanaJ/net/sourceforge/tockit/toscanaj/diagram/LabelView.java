@@ -2,6 +2,9 @@ package net.sourceforge.tockit.toscanaj.diagram;
 
 import java.awt.*;
 import java.awt.geom.*;
+
+import java.util.Iterator;
+
 import javax.swing.*;
 
 import net.sourceforge.tockit.toscanaj.canvas.CanvasItem;
@@ -59,11 +62,6 @@ public class LabelView extends CanvasItem implements LabelObserver
     private DiagramView diagramView = null;
 
     /**
-     * Stores the node the label belongs to.
-     */
-    private DiagramNode node;
-
-    /**
      * Defines how the label has to be placed in relation to the node.
      */
     private int placement;
@@ -71,12 +69,12 @@ public class LabelView extends CanvasItem implements LabelObserver
     /**
      * Creates a view for the given label information.
      */
-    public LabelView( DiagramView diagramView, DiagramNode node, int placement, LabelInfo label ) {
+    public LabelView( DiagramView diagramView, int placement, LabelInfo label ) {
         this.diagramView = diagramView;
-        this.node = node;
         this.placement = placement;
         _labelInfo = label;
-        _labelInfo.addObserver(this);    }
+        _labelInfo.addObserver(this);
+    }
 
     /**
      * Update label view as label info has change
@@ -128,11 +126,6 @@ public class LabelView extends CanvasItem implements LabelObserver
     public void draw( ToscanajGraphics2D tg )
     {
         Graphics2D graphics = tg.getGraphics2D();
-        // if no entries are there, just do nothing
-        if( _labelInfo.getNumberOfEntries() == 0 )
-        {
-            return;
-        }
 
         // remember some settings to restore them later
         Paint oldPaint = graphics.getPaint();
@@ -141,6 +134,7 @@ public class LabelView extends CanvasItem implements LabelObserver
         FontMetrics fm = graphics.getFontMetrics();
 
         // find the size and position
+        DiagramNode node = this._labelInfo.getNode();
         double x = node.getX();
         double y = node.getY();
         double lw = getWidth( fm );
@@ -172,28 +166,38 @@ public class LabelView extends CanvasItem implements LabelObserver
         // draw the text
         if( _labelInfo.getTextAlignment() == LabelInfo.ALIGNLEFT )
         {
-            for( int j = 0; j < _labelInfo.getNumberOfEntries(); j++ )
-            {
-                tg.drawString( _labelInfo.getEntry( j ),xPos, yPos, fm.getLeading() +
+            Iterator it = _labelInfo.getEntryIterator();
+            int j = 0;
+            while(it.hasNext()) {
+                String cur = it.next().toString();
+                tg.drawString( cur ,xPos, yPos, fm.getLeading() +
                                                 fm.getDescent(), fm.getAscent() +
                                                 fm.getLeading() + j * fm.getHeight() );
+                j++;
             }
         }
         else if( _labelInfo.getTextAlignment() == LabelInfo.ALIGNCENTER )
         {
-            for( int j = 0; j < _labelInfo.getNumberOfEntries(); j++ )
-            {
-                tg.drawString( _labelInfo.getEntry( j ), xPos, yPos,
-                        (int)(fm.getLeading()/2 + fm.getDescent()/2 + ( lw - fm.stringWidth( _labelInfo.getEntry( j )  ))/2  ),
+            Iterator it = _labelInfo.getEntryIterator();
+            int j = 0;
+            while(it.hasNext()) {
+                String cur = it.next().toString();
+                tg.drawString( cur , xPos, yPos,
+                        (int)(fm.getLeading()/2 + fm.getDescent()/2 + ( lw - fm.stringWidth(cur))/2  ),
                         fm.getAscent() + fm.getLeading() + j * fm.getHeight() );
+                j++;
             }
         }
         else if( _labelInfo.getTextAlignment() == LabelInfo.ALIGNRIGHT )
         {
-            for( int j = 0; j < _labelInfo.getNumberOfEntries(); j++ )
-            {
-                tg.drawString( _labelInfo.getEntry( j ),xPos ,yPos ,  (int)(-fm.getLeading() - fm.getDescent() + lw - fm.stringWidth( _labelInfo.getEntry( j )  )),
+            Iterator it = _labelInfo.getEntryIterator();
+            int j = 0;
+            while(it.hasNext()) {
+                String cur = it.next().toString();
+                tg.drawString( cur ,xPos ,yPos ,
+                            (int)(-fm.getLeading() - fm.getDescent() + lw - fm.stringWidth(cur)),
                             fm.getAscent() + fm.getLeading() + j * fm.getHeight() );
+                j++;
             }
         }
 
@@ -214,9 +218,10 @@ public class LabelView extends CanvasItem implements LabelObserver
         double result = 0;
 
         // find maximum width of string
-        for( int i = 0; i < _labelInfo.getNumberOfEntries(); i++ )
-        {
-            double w = fontMetrics.stringWidth( _labelInfo.getEntry( i ) );
+        Iterator it = _labelInfo.getEntryIterator();
+        while(it.hasNext()) {
+            String cur = it.next().toString();
+            double w = fontMetrics.stringWidth( cur );
             if( w > result )
             {
                 result = w;

@@ -162,22 +162,21 @@ public class CSXParser
             // build a list of concepts (as points in the diagram and as
             // Hashtable for building the edges later)
             List concepts = diagElem.getChildren( "concept" );
-            Hashtable points = new Hashtable( elements.size() );
+            Hashtable nodes = new Hashtable( elements.size() );
             Iterator it2 = concepts.iterator();
             int number = 0; // for counting the points
             while( it2.hasNext() )
             {
-                Element concept = (Element)it2.next();
-                points.put( concept.getAttribute( "id" ).getValue(),
-                            new Integer(number) );
+                Element conceptElem = (Element)it2.next();
 
                 // get the position
-                Element point = concept.getChild( "position" );
+                Element posElem = conceptElem.getChild( "position" );
+                Point2D position;
                 try
                 {
-                    diagram.addNode( new Point2D.Double(
-                                point.getAttribute( "x" ).getDoubleValue(),
-                                point.getAttribute( "y" ).getDoubleValue() ) );
+                    position = new Point2D.Double(
+                                posElem.getAttribute( "x" ).getDoubleValue(),
+                                posElem.getAttribute( "y" ).getDoubleValue() );
                 }
                 catch ( DataConversionException e )
                 {
@@ -186,39 +185,65 @@ public class CSXParser
                           "Position of some concept does not contain double." );
                 }
 
-                // get the object labels
-                LabelInfo label = new LabelInfo();
-                Element contElem = concept.getChild( "objectContingent" );
-                Element style = contElem.getChild( "labelStyle" );
-                if( style != null )
-                {
-                    parseLabelStyle( label, style );
-                    diagram.getNode(number).setObjectLabelInfo(label);
-                }
+                // create the concept
+                MemoryMappedConcept concept = new MemoryMappedConcept();
+
+                // get the object contingent
+                Element contElem = conceptElem.getChild( "objectContingent" );
                 List contingent = contElem.getChildren( "objectRef" );
                 Iterator it3 = contingent.iterator();
                 while( it3.hasNext() )
                 {
                     Element ref = (Element) it3.next();
-                    label.addEntry( (String) _Objects.get( ref.getText() ) );
+                    concept.addObject((String) _Objects.get( ref.getText() ));
                 }
 
-                // get the attribute labels
-                label = new LabelInfo();
-                contElem = concept.getChild( "attributeContingent" );
-                style = contElem.getChild( "labelStyle" );
-                if( style != null )
-                {
-                    parseLabelStyle( label, style );
-                    diagram.getNode(number).setAttributeLabelInfo(label);
+                // parse the label layout information
+                LabelInfo objLabel;
+                if(contingent.isEmpty()) {
+                    objLabel = null;
                 }
+                else {
+                    objLabel = new ObjectLabelInfo();
+                    Element style = contElem.getChild( "labelStyle" );
+                    if( style != null )
+                    {
+                        parseLabelStyle(objLabel, style);
+                    }
+                }
+
+                // get the attribute contingent
+                contElem = conceptElem.getChild( "attributeContingent" );
                 contingent = contElem.getChildren( "attributeRef" );
                 it3 = contingent.iterator();
                 while( it3.hasNext() )
                 {
                     Element ref = (Element) it3.next();
-                    label.addEntry( (String) _Attributes.get( ref.getText() ) );
+                    concept.addAttribute((String) _Attributes.get( ref.getText() ));
                 }
+
+                // parse the label layout information
+                LabelInfo attrLabel;
+                if(contingent.isEmpty()) {
+                    attrLabel = null;
+                }
+                else {
+                    attrLabel = new AttributeLabelInfo();
+                    Element style = contElem.getChild( "labelStyle" );
+                    if( style != null )
+                    {
+                        parseLabelStyle(attrLabel, style);
+                    }
+                }
+
+                // create the node
+                DiagramNode node = new DiagramNode(position,concept,attrLabel,objLabel);
+
+                // put in into the diagram
+                diagram.addNode(node);
+
+                // store the node for later retrieval (lines)
+                nodes.put( conceptElem.getAttribute( "id" ).getValue(), node );
 
                 // increase counter (not above since it is used in some places)
                 number++;
@@ -230,11 +255,11 @@ public class CSXParser
             while( it2.hasNext() )
             {
                 Element edge = (Element) it2.next();
-                Integer from = (Integer) points.get(
+                DiagramNode from = (DiagramNode) nodes.get(
                                     edge.getAttribute( "from" ).getValue());
-                Integer to   = (Integer) points.get(
+                DiagramNode to   = (DiagramNode) nodes.get(
                                     edge.getAttribute( "to" ).getValue());
-                diagram.addLine( from.intValue(), to.intValue() );
+                diagram.addLine( from, to );
             }
 
             _Schema.addDiagram( diagram );

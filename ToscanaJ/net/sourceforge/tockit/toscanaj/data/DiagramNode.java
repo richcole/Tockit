@@ -11,14 +11,27 @@ import java.awt.geom.Point2D;
 public class DiagramNode {
 
     /**
-     * The size of a point.
+     * The size of nodes.
+     *
+     * This is currently a fixed value common for all nodes, but the access is
+     * already done using a method on each instance, thus allowing easy extension
+     * later.
      */
     private static final int RADIUS = 10;
 
     /**
-     * Point2D hold the point for a node in the diagram
+     * The concept the node represents.
+     *
+     * If this is set to null the node points to a not realised concept in the
+     * diagram, i.e. the concept theoretically could exist but is not supported
+     * by the current set of data.
      */
-    Point2D point2D = null;
+    private Concept concept = null;
+
+    /**
+     * The position of the node.
+     */
+    private Point2D position = null;
 
     /**
      * The layout information for the attribute label.
@@ -31,46 +44,61 @@ public class DiagramNode {
     private LabelInfo objectLabel;
 
     /**
-     * Construct a node at a point with two labels attached.
+     * Construct a node for a concept at a position with two labels attached.
      *
-     * The labels can be null if there is no label in this position.
+     * The labels can be null if there is no label in this position. The concept
+     * can be null if there is no concept realised for this node.
      */
-    public DiagramNode(Point2D point2D, LabelInfo attributeLabel, LabelInfo objectLabel){
-        this.point2D = point2D;
+    public DiagramNode(Point2D position, Concept concept, LabelInfo attributeLabel, LabelInfo objectLabel){
+        this.position = position;
+        this.concept = concept;
         this.attributeLabel = attributeLabel;
+        if(attributeLabel != null) {
+            attributeLabel.attachNode(this);
+        }
         this.objectLabel = objectLabel;
+        if(objectLabel != null) {
+            objectLabel.attachNode(this);
+        }
     }
 
     /**
-     * Get the current node position
+     * Get the current node position.
      */
     public Point2D getPosition(){
-        return point2D;
+        return position;
     }
 
     /**
-     * Set the node position
+     * Set the node position in the model space.
      */
-    public void setPoint(Point2D point2D){
-       this.point2D = point2D;
+    public void setPosition(Point2D position){
+       this.position = position;
     }
 
     /**
-     * Get the x coordinate
+     * Get the concept for this node.
+     */
+    public Concept getConcept(){
+        return concept;
+    }
+
+    /**
+     * Get the x coordinatein the model space.
      */
     public double getX() {
-       return point2D.getX();
+       return position.getX();
     }
 
     /**
-     * Get the y coordinate
+     * Get the y coordinate in the model space.
      */
     public double getY() {
-        return point2D.getY();
+        return position.getY();
     }
 
     /**
-     * Get the radius set for the point.
+     * Get the radius set for the node.
      */
     public double getRadius() {
         return RADIUS;
@@ -112,6 +140,6 @@ public class DiagramNode {
      * Debug output.
      */
     public String toString() {
-      return "X = " + point2D.getX() + " Y = " + point2D.getY();
+      return "X = " + position.getX() + " Y = " + position.getY();
     }
 }

@@ -12,60 +12,37 @@ import java.util.*;
  * This class encapsulates all information needed to paint a label.
  */
 
-public class LabelInfo implements LabelObservable
+abstract public class LabelInfo implements LabelObservable
 {
-    //
+    /**
+     * List of LabelObserver implementations currently observing the instance.
+     */
     private Vector labelObservers = null;
 
     /**
-     * Method to add observer
+     * The node the label belongs to.
      */
-    public void addObserver(LabelObserver observer){
-        this.labelObservers.addElement(observer);
-    }
-
-    /**
-     * Notifies all observes about a change.
-     */
-    private void emitChangeSignal(){
-        if(labelObservers != null){
-            Iterator iterator = labelObservers.iterator();
-            while(iterator.hasNext()) {
-                ((LabelObserver)iterator.next()).diagramChanged();
-            }
-        }
-    }
-
-    /**
-     * The list of entries in the label.
-     *
-     * These are just plain String instances.
-     *
-     * This member uses currently package access to allow the Concept
-     * implementations to iterate over it. @TODO switch to iterator access on
-     * the class interface, maybe dropping the index based access completely.
-     */
-    Vector _entries;
+    private DiagramNode node;
 
     /**
      * The offset for the label position.
      */
-    private Point2D _offset;
+    private Point2D offset;
 
     /**
      * The background color for the label.
      */
-    private Color _backgroundColor;
+    private Color backgroundColor;
 
     /**
      * The background color for the label.
      */
-    private Color _textColor;
+    private Color textColor;
 
     /**
      * The alignment of the text in the label.
      */
-    private int _textAlignment;
+    private int textAlignment;
 
     /**
      * A constant for left alignment.
@@ -83,49 +60,53 @@ public class LabelInfo implements LabelObservable
     public static final int ALIGNRIGHT = 2;
 
     /**
-     * The default constructor creates an empty label with default settings.
+     * The default constructor creates a label with default settings.
+     *
+     * A node has to be attached to it by calling attachNode(DiagramNode).
+     * The node is used for finding the position for the diagram line and to
+     * access the concept with the information on the contingents (strings).
      */
     public LabelInfo()
     {
-        _entries = new Vector();
-        _offset = new Point2D.Double( 0, 0 );
-        _backgroundColor = Color.white;
-        _textColor = Color.black;
-        _textAlignment = ALIGNLEFT;
+        this.offset = new Point2D.Double( 0, 0 );
+        this.backgroundColor = Color.white;
+        this.textColor = Color.black;
+        this.textAlignment = ALIGNLEFT;
         labelObservers = new Vector();
     }
 
     /**
-     * Adds an entry add the end of the label.
+     * Attaches the node as the node belonging to the label.
+     *
+     * Access is package level here since this should be called from DiagramNode.
      */
-    public void addEntry( String entry )
-    {
-        _entries.add( entry );
-        emitChangeSignal();
+    void attachNode(DiagramNode node) {
+        this.node = node;
+    }
+
+    /**
+     * Returns the node the label belongs to.
+     */
+    public DiagramNode getNode() {
+        return this.node;
     }
 
     /**
      * Returns the number of entries in the label.
      */
-    public int getNumberOfEntries()
-    {
-        return _entries.size();
-    }
+    abstract public int getNumberOfEntries();
 
     /**
-     * Returns an entry from the label.
+     * Returns an iterator on the entries in the label.
      */
-    public String getEntry( int num )
-    {
-        return (String) _entries.get( num );
-    }
+    abstract public Iterator getEntryIterator();
 
     /**
      * Returns the current offset.
      */
     public Point2D getOffset()
     {
-        return _offset;
+        return this.offset;
     }
 
     /**
@@ -139,7 +120,7 @@ public class LabelInfo implements LabelObservable
      */
     public void setOffset( Point2D offset )
     {
-        _offset = offset;
+        this.offset = offset;
         emitChangeSignal();
     }
 
@@ -155,7 +136,7 @@ public class LabelInfo implements LabelObservable
      */
     public Color getBackgroundColor()
     {
-        return _backgroundColor;
+        return this.backgroundColor;
     }
 
     /**
@@ -163,7 +144,7 @@ public class LabelInfo implements LabelObservable
      */
     public void setBackgroundColor( Color color )
     {
-        _backgroundColor = color;
+        this.backgroundColor = color;
         emitChangeSignal();
     }
 
@@ -172,7 +153,7 @@ public class LabelInfo implements LabelObservable
      */
     public Color getTextColor()
     {
-        return _textColor;
+        return this.textColor;
     }
 
     /**
@@ -180,7 +161,7 @@ public class LabelInfo implements LabelObservable
      */
     public void setTextColor( Color color )
     {
-        _textColor = color;
+        this.textColor = color;
         emitChangeSignal();
     }
 
@@ -189,7 +170,7 @@ public class LabelInfo implements LabelObservable
      */
     public int getTextAlignment()
     {
-        return _textAlignment;
+        return this.textAlignment;
     }
 
     /**
@@ -197,7 +178,26 @@ public class LabelInfo implements LabelObservable
      */
     public void setTextAligment( int alignment )
     {
-        _textAlignment = alignment;
+        this.textAlignment = alignment;
         emitChangeSignal();
+    }
+
+    /**
+     * Method to add an observer.
+     */
+    public void addObserver(LabelObserver observer){
+        this.labelObservers.addElement(observer);
+    }
+
+    /**
+     * Notifies all observes about a change.
+     */
+    private void emitChangeSignal(){
+        if(labelObservers != null){
+            Iterator iterator = labelObservers.iterator();
+            while(iterator.hasNext()) {
+                ((LabelObserver)iterator.next()).diagramChanged();
+            }
+        }
     }
 }

@@ -13,9 +13,6 @@ import java.util.NoSuchElementException;
  * efforts for these operations. The calculation of intent and extent size is
  * done in this class, the joins on the sets themselves are done by creating an
  * iterator which iterates over all contingents in filter and ideal resp.
- *
- * The only tasks left to implement is the handling of the contingents themself
- * and the implementation of isRealised(), the rest is done in this class.
  */
 abstract class AbstractConceptImplementation implements Concept
 {

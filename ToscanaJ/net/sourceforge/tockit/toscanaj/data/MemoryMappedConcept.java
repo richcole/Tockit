@@ -1,6 +1,8 @@
 package net.sourceforge.tockit.toscanaj.data;
 
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
@@ -16,58 +18,60 @@ public class MemoryMappedConcept
     /**
      * Stores the information on the attribute contingent.
      */
-    LabelInfo attributeContingent;
+    List attributeContingent = new LinkedList();
 
     /**
      * Stores the information on the object contingent.
      */
-    LabelInfo objectContingent;
+    List objectContingent = new LinkedList();
 
     /**
-     * Initialisation constructor which takes the information on the two
-     * contingents in form of LabelInfo instances.
+     * Creates a concept without contingents.
      */
-    public MemoryMappedConcept( LabelInfo attrContingent, LabelInfo objContingent ) {
+    public MemoryMappedConcept() {
         super();
-        attributeContingent = attrContingent;
-        objectContingent = objContingent;
-    }
-
-    /**
-     * Returns if the concept is realized or not.
-     *
-     * @TODO Implement correctly once we have to handle not realized concepts.
-     */
-    public boolean isRealized() {
-        return true;
     }
 
     /**
      * Implements Concept.getAttributeContingentSize().
      */
     public int getAttributeContingentSize() {
-        return attributeContingent._entries.size();
+        return attributeContingent.size();
     }
 
     /**
      * Implements Concept.getObjectContingentSize().
      */
     public int getObjectContingentSize() {
-        return objectContingent._entries.size();
+        return objectContingent.size();
     }
 
     /**
      * Implements Concept.getAttributeContingentIterator().
      */
     public Iterator getAttributeContingentIterator() {
-        return attributeContingent._entries.iterator();
+        return attributeContingent.iterator();
     }
 
     /**
      * Implements Concept.getObjectContingentIterator().
      */
     public Iterator getObjectContingentIterator() {
-        return objectContingent._entries.iterator();
+        return objectContingent.iterator();
+    }
+
+    /**
+     * Adds an attribute to the contingent.
+     */
+    public void addAttribute(Object attribute) {
+        this.attributeContingent.add(attribute);
+    }
+
+    /**
+     * Adds an object to the contingent.
+     */
+    public void addObject(Object object) {
+        this.objectContingent.add(object);
     }
 
     /**
