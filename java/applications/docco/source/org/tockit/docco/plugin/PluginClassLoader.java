@@ -115,9 +115,10 @@ public class PluginClassLoader extends ClassLoader {
 		}
 		
 		public String getRelativePath() {
-			String relZipFilePath = getPathRelativeToPluginsBaseDir(this.jarFile);
-			String result = relZipFilePath + "/!/" + this.zipEntry.getName();
-			return result;
+			//String relZipFilePath = getPathRelativeToPluginsBaseDir(this.jarFile);
+			//String result = relZipFilePath + "/!/" + this.zipEntry.getName();
+			//return result;
+			return this.zipEntry.getName();
 		}
 		
 		public URL getURL() throws MalformedURLException {
@@ -191,12 +192,8 @@ public class PluginClassLoader extends ClassLoader {
 	 * parameter name should be "img/someFile.jpg"
 	 * If we are looking for a resource within one of the jar files
 	 * included in plugins directory, then specify path to this resource
-	 * within the jar file, this path should still be relative to plugins
-	 * directory. For instance, if we are looking for an entry in the 
-	 * jar file, jar file: 
-	 * C:/projects/someProject/plugins/libs/someJar.jar with entry:
-	 * "img/someFile.jpg" then we should use parameter:
-	 * "libs/someJar.jar/!/img/someFile.jpg"
+	 * within the jar file.
+	 * NOTE: first found resource will be returned.
 	 */
 	public URL findResource (String name ) {
 		Resource resource = findResourceLocation(name);
