@@ -18,8 +18,7 @@ import org.tockit.cgs.model.Node;
 
 import java.awt.geom.*;
 import java.awt.*;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.*;
 
 public class NodeMoveManipulator extends ItemMovementManipulator {
     private class InvalidSymbol extends MovableCanvasItem {
@@ -48,7 +47,34 @@ public class NodeMoveManipulator extends ItemMovementManipulator {
         }
     }
 
-    private InvalidSymbol symbol = new InvalidSymbol();
+    private class MergeSymbol extends MovableCanvasItem {
+        private Point2D position;
+        public static final int RADIUS = 15;
+
+        public void setPosition(Point2D newPosition) {
+            this.position = newPosition;
+        }
+
+        public void draw(Graphics2D g) {
+            g.setPaint(Color.green);
+            g.fill(new Ellipse2D.Double(position.getX() - RADIUS/2, position.getY() - RADIUS/2, RADIUS, RADIUS));
+        }
+
+        public Point2D getPosition() {
+            return position;
+        }
+
+        public boolean containsPoint(Point2D point) {
+            return false;
+        }
+
+        public Rectangle2D getCanvasBounds(Graphics2D g) {
+            return null;
+        }
+    }
+
+    private InvalidSymbol invalidSymbol = new InvalidSymbol();
+    private MergeSymbol mergeSymbol = new MergeSymbol();
     private Point2D oldPos = null;
 
     public NodeMoveManipulator(Canvas canvas, EventBroker eventBroker) {
@@ -57,11 +83,19 @@ public class NodeMoveManipulator extends ItemMovementManipulator {
 
     protected void moveItem(CanvasItemDraggedEvent dragEvent) {
         super.moveItem(dragEvent);
-        symbol.setPosition(((CanvasItem) (dragEvent.getSubject())).getPosition());
+        Point2D position = ((CanvasItem) (dragEvent.getSubject())).getPosition();
+        invalidSymbol.setPosition(position);
+        mergeSymbol.setPosition(position);
         if(dropValid(dragEvent)) {
-            canvas.removeCanvasItem(symbol);
+            canvas.removeCanvasItem(invalidSymbol);
+            if(!getOtherNodeViewsAtPosition(dragEvent).isEmpty()) {
+                canvas.addCanvasItem(mergeSymbol);
+            } else {
+                canvas.removeCanvasItem(mergeSymbol);
+            }
         } else {
-            canvas.addCanvasItem(symbol);
+            canvas.removeCanvasItem(mergeSymbol);
+            canvas.addCanvasItem(invalidSymbol);
         }
     }
 
@@ -94,32 +128,43 @@ public class NodeMoveManipulator extends ItemMovementManipulator {
         else {
             nodeView.setPosition(oldPos);
         }
-        canvas.removeCanvasItem(symbol);
+        canvas.removeCanvasItem(invalidSymbol);
+        canvas.removeCanvasItem(mergeSymbol);
     }
 
     private void mergeNodes(CanvasItemDroppedEvent dragEvent) {
+        Collection otherNodeViewsAtPosition = getOtherNodeViewsAtPosition(dragEvent);
+        if(otherNodeViewsAtPosition.isEmpty()) {
+            //nothing to merge
+            return;
+        }
         NodeView nodeView = (NodeView)dragEvent.getSubject();
-        NodeView otherNodeView = null;
         Node ourNode = nodeView.getNode();
         Node otherNode = null;
-        Point2D canvasPosition = dragEvent.getCanvasToPosition();
-        Collection items = canvas.getCanvasItemsAt(canvasPosition);
-        for (Iterator iterator = items.iterator(); iterator.hasNext();) {
-            Object canvasItem = (Object) iterator.next();
-            if(canvasItem instanceof NodeView) {
-                if(canvasItem != dragEvent.getSubject()) {
-                    otherNodeView = (NodeView) canvasItem;
-                    otherNode = otherNodeView.getNode();
-                }
-            }
-        }
-        if(otherNode != null) {
+        NodeView otherNodeView = (NodeView) otherNodeViewsAtPosition.iterator().next();
+        if(otherNodeView != null) {
+            otherNode = otherNodeView.getNode();
             otherNode.merge(ourNode);
             relink(nodeView, otherNodeView);
             ourNode.destroy();
             canvas.raiseItem(otherNodeView);
             canvas.removeCanvasItem(nodeView);
         }
+    }
+
+    private Collection getOtherNodeViewsAtPosition(CanvasItemDraggedEvent dragEvent) {
+        Set retVal = new HashSet();
+        Point2D canvasPosition = dragEvent.getCanvasToPosition();
+        Collection items = canvas.getCanvasItemsAt(canvasPosition);
+        for (Iterator iterator = items.iterator(); iterator.hasNext();) {
+            Object canvasItem = (Object) iterator.next();
+            if(canvasItem instanceof NodeView) {
+                if(canvasItem != dragEvent.getSubject()) {
+                    retVal.add(canvasItem);
+                }
+            }
+        }
+        return retVal;
     }
 
     private void relink(NodeView nodeView, NodeView otherNodeView) {
