@@ -94,7 +94,8 @@ import org.tockit.docco.query.util.QueryWithResultSet;
 
 
 public class DoccoMainFrame extends JFrame {
-	private DocumentDisplayPane documentDisplayPane;
+	private static final int VISIBLE_TREE_DEPTH = 2;
+    private DocumentDisplayPane documentDisplayPane;
     private JTree hitList;
     private JTextField queryField = new JTextField(20);
 	private JButton searchButton = new JButton("Submit");
@@ -421,15 +422,16 @@ public class DoccoMainFrame extends JFrame {
 	
 	private void unfoldTree(DefaultTreeModel treeModel) {
 		List q = new LinkedList();
-		TreeNode rootNode = (TreeNode) treeModel.getRoot();
-		q.add(rootNode);
-
+		q.add(treeModel.getRoot());
+		
 		while (! q.isEmpty()) {
-			TreeNode curNode = (TreeNode) q.remove(0);
-			Enumeration children = curNode.children();
-			while (children.hasMoreElements())  {
-				TreeNode curChild = (TreeNode) children.nextElement();
-				q.add(curChild);
+			DefaultMutableTreeNode curNode = (DefaultMutableTreeNode) q.remove(0);
+			if (curNode.getLevel() < VISIBLE_TREE_DEPTH) {
+				Enumeration children = curNode.children();
+				while (children.hasMoreElements())  {
+					TreeNode curChild = (TreeNode) children.nextElement();
+					q.add(curChild);
+				}
 			}
 			TreeNode[] pathToRoot = treeModel.getPathToRoot(curNode);
 			hitList.expandPath(new TreePath(pathToRoot));
