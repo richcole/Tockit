@@ -26,6 +26,8 @@ import java.util.Set;
 import javax.swing.JPanel;
 
 import org.tockit.canvas.controller.CanvasController;
+import org.tockit.canvas.exceptions.IllegalLayerNameException;
+import org.tockit.canvas.exceptions.NoSuchLayerException;
 import org.tockit.events.EventBroker;
 
 /**
@@ -333,7 +335,7 @@ public class Canvas extends JPanel implements Printable {
     }
 
     /**
-     * Adds a canvas item to the canvas.
+     * Adds a canvas item to the uppermost layer in the canvas.
      *
      * It will appear on top of all other items in the highest layer.
      */
@@ -346,7 +348,23 @@ public class Canvas extends JPanel implements Printable {
     	List uppermostLayer = (List) this.canvasLayers.get(this.canvasLayers.size() - 1);
         uppermostLayer.add(node);
     }
+    
+    /**
+     * Adds a canvas item to a specific layer.
+     * 
+     * The item will be the uppermost item in the layer.
+     */
+    public void addCanvasItem(CanvasItem node, String layerName) {
+    	List layer = (List) layerNameMapping.get(layerName);
+    	if(layer == null) {
+    		throw new NoSuchLayerException("Could not find layer with name \"" + layerName + "\"");
+    	}
+        layer.add(node);
+    }
 
+    /**
+     * Removes an item from the canvas.
+     */
     public void removeCanvasItem(CanvasItem item) {
         ListIterator layerIt = this.canvasLayers.listIterator(this.canvasLayers.size());
         while(layerIt.hasPrevious()) {
@@ -356,6 +374,12 @@ public class Canvas extends JPanel implements Printable {
         this.itemsToRaise.remove(item);
     }
 
+	/**
+	 * Returns a collection of all canvas items of a specific type.
+	 * 
+	 * Every layer is searched for items of this type and the matches are
+	 * returned as a set.
+	 */
     public Collection getCanvasItemsByType(Class type) {
         Set retVal = new HashSet();
         Iterator layerIt = this.canvasLayers.iterator();
@@ -369,5 +393,22 @@ public class Canvas extends JPanel implements Printable {
 	        }
         }
         return retVal;
+    }
+    
+    /**
+     * Creates a new layer with the given name.
+     * 
+     * The new layer will be the uppermost one in the canvas.
+     */
+    public void addLayer(String layerName) {
+    	if(layerName == null) {
+    		throw new IllegalLayerNameException("Layer name must be given to create a new layer");
+    	}
+    	if(layerName.length() == 0) {
+    		throw new IllegalLayerNameException("Layer name must not be empty");
+    	}
+    	List newLayer = new ArrayList();
+    	this.canvasLayers.add(newLayer);
+    	this.layerNameMapping.put(layerName, newLayer);
     }
 }
