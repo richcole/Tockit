@@ -8,8 +8,13 @@
 package org.tockit.conscript.parser.sectionparsers;
 
 import java.io.IOException;
+import java.util.logging.Level;
 
 import org.tockit.conscript.model.CSCFile;
+import org.tockit.conscript.model.ConceptualFile;
+import org.tockit.conscript.model.RealisedScale;
+import org.tockit.conscript.model.StringMap;
+import org.tockit.conscript.parser.CSCParser;
 import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
@@ -18,8 +23,32 @@ class ConceptualFileParser extends CSCFileSectionParser {
 		return "CONCEPTUAL_FILE";
 	}
 
-	public void parse(CSCTokenizer tokenizer, CSCFile targetFile) throws IOException, DataFormatException {
-		throw new SectionTypeNotSupportedException("parse() in " + this.getClass().getName() + " not yet implemented.");
-        //CSCParser.logger.log(Level.FINER, "Conceptual file added: '" + scale.getName() + "'");
+	public void parse(CSCTokenizer tokenizer, CSCFile file) throws IOException, DataFormatException {
+        String fileId = tokenizer.popCurrentToken();
+        tokenizer.consumeToken("=");
+        ConceptualFile conceptualFile = getConceptualFile(file, fileId);
+        
+        parseTitleRemarkSpecials(tokenizer, conceptualFile);
+        
+        tokenizer.consumeToken("(");
+        
+        String objectMapId = tokenizer.popCurrentToken();
+        StringMap objectMap = getStringMap(file, objectMapId);
+        conceptualFile.setObjectMap(objectMap);
+        
+        tokenizer.consumeToken(",");
+        
+        do {
+            tokenizer.consumeToken(",");
+            String scaleId = tokenizer.popCurrentToken();
+            RealisedScale scale = getRealisedScale(file, scaleId);
+            conceptualFile.addRealisedScale(scale);
+        } while( tokenizer.getCurrentToken().equals(","));
+        
+        tokenizer.consumeToken(")");
+        tokenizer.consumeToken(";");
+        
+        conceptualFile.setInitialized();
+        CSCParser.logger.log(Level.FINER, "Conceptual file added: '" + conceptualFile.getName() + "'");
 	}
 }

@@ -7,9 +7,13 @@
  */
 package org.tockit.conscript.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class ConceptualFile extends ConscriptStructure {
 	private StringMap objectMap;
-	private RealisedScale[] realisedScales;
+	private List realisedScales = new ArrayList();
 	
 	public ConceptualFile(String name) {
         super(name);
@@ -19,11 +23,15 @@ public class ConceptualFile extends ConscriptStructure {
 		return objectMap;
 	}
 
-	public RealisedScale[] getRealisedScales() {
-		return realisedScales;
+	public List getRealisedScales() {
+		return Collections.unmodifiableList(realisedScales);
 	}
 
 	public void setObjectMap(StringMap objectMap) {
 		this.objectMap = objectMap;
 	}
+    
+    public void addRealisedScale(RealisedScale scale) {
+        this.realisedScales.add(scale);
+    }
 }
