@@ -7,14 +7,19 @@ import javax.swing.*;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseEvent;
-import java.util.Vector;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+
+import net.sourceforge.tockit.toscanaj.canvas.CanvasItem;
 import net.sourceforge.tockit.toscanaj.data.Diagram;
 import net.sourceforge.tockit.toscanaj.data.Diagram2D;
 import net.sourceforge.tockit.toscanaj.data.LabelInfo;
 import net.sourceforge.tockit.toscanaj.diagram.LabelView;
-import net.sourceforge.tockit.toscanaj.diagram.ScalingInfo;
 import net.sourceforge.tockit.toscanaj.gui.MainPanel;
+import net.sourceforge.tockit.toscanaj.gui.ToscanajGraphics2D;
 
 
 /**
@@ -23,20 +28,12 @@ import net.sourceforge.tockit.toscanaj.gui.MainPanel;
 
 public class DiagramView extends JComponent implements MouseListener, MouseMotionListener, DiagramObserver
 {
-  /**
-   * vector to store objectLabels
-   */
-  Vector objectLabels = null;
-
-  /**
-   * vector to store attributeLabels
-   */
-  Vector attributeLabels = null;
-
     /**
-     * Holds sacaling info. Is updated on each redraw
+     * A list of all canvas items to draw.
      */
-    ScalingInfo si;
+    List canvasItems;
+
+    ToscanajGraphics2D tg = null;
 
     /**
      * The size of a point.
@@ -56,32 +53,25 @@ public class DiagramView extends JComponent implements MouseListener, MouseMotio
     private Diagram2D _diagram = null;
 
     /**
-     * load object and attribute labels on first paint;
-     */
-    private boolean firstPaint = true;
-
-    /**
-     * Holds the LabelInfo for selected label view
+     * Holds the LabelView for selected label view
      * that the user has clicked on with intent to move
      */
-    private LabelInfo li = null;
-    /**
-     * Flag to signal that a label has been selected for reposition
-     */
-    private boolean labelSelected = false;
+    private LabelView selectedLabel = null;
+
     /**
      * Flag to prevent label from being moved when just clicked on
      */
     private boolean dragMode = false;
+
     /**
      * Distance that label has to be moved to enable dragMode
      */
     private int dragMin = 5;
+
     /**
-     * Holds the last point that the current label being move
-     * was move to
+     * The position where the mouse was when the last event came.
      */
-    private Point2D lastPoint = null;
+    private Point2D lastMousePos = null;
 
     /**
      * Creates a new vew displaying an empty digram (i.e. nothing at all).
@@ -90,9 +80,7 @@ public class DiagramView extends JComponent implements MouseListener, MouseMotio
     {
         addMouseListener(this);
         addMouseMotionListener(this);
-        objectLabels = new Vector();
-        attributeLabels = new Vector();
-    }
+   }
 
     /**
     * method to notify observer that a change has been made
@@ -126,8 +114,7 @@ public class DiagramView extends JComponent implements MouseListener, MouseMotio
         int w = getWidth() - insets.top - insets.bottom - 2 * MARGIN;
 
         // check if there is enough left to paint on, otherwise abort
-        if( ( h < RADIUS ) || ( w < RADIUS ) )
-        {
+        if( ( h < RADIUS ) || ( w < RADIUS ) ) {
             return;
         }
 
@@ -144,14 +131,11 @@ public class DiagramView extends JComponent implements MouseListener, MouseMotio
         // in combination with absolute Y coordinates like e.g. the predefined
         // RADIUS of the points
         int invY = 1;
-        if( _diagram.getNumberOfPoints() > 0 )
-        {
-            if( diagBounds.getY() < _diagram.getPoint(0).getY() )
-            {
+        if( _diagram.getNumberOfPoints() > 0 ) {
+            if( diagBounds.getY() < _diagram.getPoint(0).getY() ) {
                 invY = -1;
             }
         }
-
         // we need some values to do the projection -- the initial values are
         // centered and no size change. This is useful if the diagram has no
         // extent in a direction
@@ -176,50 +160,14 @@ public class DiagramView extends JComponent implements MouseListener, MouseMotio
             yScale = h / diagBounds.getHeight() * invY;
             yOrigin = y - _diagram.getPoint(0).getY() * yScale;
         }
-
-        // store the scaling information for further use
-        si = new ScalingInfo(
-                     new Point2D.Double( xOrigin, yOrigin ), xScale, yScale );
-
-        // paint all lines
-        for( int i = 0; i < _diagram.getNumberOfLines(); i++ )
-        {
-            Point2D pf = _diagram.getFromPoint( i );
-            Point2D pt = _diagram.getToPoint( i );
-
-            g2d.draw( new Line2D.Double( si.projectX( pf.getX() ),
-                                         si.projectY( pf.getY() ),
-                                         si.projectX( pt.getX() ),
-                                         si.projectY( pt.getY() ) ) );
+        //store updated ToscanajGraphics2D
+        tg = new ToscanajGraphics2D(g2d, new Point2D.Double( xOrigin, yOrigin ), xScale, yScale );
+        // paint all items on canvas
+        Iterator it = this.canvasItems.iterator();
+        while( it.hasNext() ) {
+            CanvasItem cur = (CanvasItem) it.next();
+            cur.draw(tg);
         }
-        // paint all points and labels
-        for( int i = 0; i < _diagram.getNumberOfPoints(); i++ )
-        {
-            Point2D p = _diagram.getPoint(i);
-
-            double px = si.projectX( p.getX() );
-            double py = si.projectY( p.getY() );
-
-            // paint the point
-            g2d.fill( new Ellipse2D.Double( px - RADIUS, py - RADIUS,
-                                            RADIUS * 2, RADIUS * 2 ) );
-            if(firstPaint == true){
-              LabelView label = new LabelView( this, _diagram.getAttributeLabel( i ) );
-              label.draw( g2d, si, px, py + RADIUS * invY, LabelView.ABOVE );
-              attributeLabels.insertElementAt(label, i);
-
-              label = new LabelView( this, _diagram.getObjectLabel( i ) );
-              label.draw( g2d, si, px, py - RADIUS * invY, LabelView.BELOW );
-              objectLabels.insertElementAt(label, i);
-
-            } else {
-              LabelView label = (LabelView)attributeLabels.elementAt(i);
-              label.draw( g2d, si, px, py + RADIUS * invY, LabelView.ABOVE );
-              label = (LabelView)objectLabels.elementAt(i);
-              label.draw( g2d, si, px, py - RADIUS * invY, LabelView.BELOW );
-            }
-        }
-        firstPaint = false;
     }
 
     // mouse listeners for diagram events
@@ -230,11 +178,8 @@ public class DiagramView extends JComponent implements MouseListener, MouseMotio
     }
 
     public void mouseReleased(MouseEvent e) {
-      //System.out.println("mouseReleased");
-      if(labelSelected == true && dragMode == true) {
         dragMode = false;
-        labelSelected = false;
-      }
+        selectedLabel = null;
     }
     public void mouseEntered(MouseEvent e) {
       //System.out.println("mouseEntered");
@@ -246,87 +191,35 @@ public class DiagramView extends JComponent implements MouseListener, MouseMotio
     // Mouse Motion Listener for label drag events
 
     public void mouseDragged(MouseEvent e) {
-      if(li != null && (dragMode || ((getDistance(lastPoint.getX(), lastPoint.getY(), e.getX(), e.getY()) >= dragMin) && labelSelected == true))) {
-        li.emitChangeSignal(new Point2D.Double(li.getOffset().getX() -
-                        si.inverseScaleX(lastPoint.getX() - e.getX()),
-                        li.getOffset().getY() -
-                        si.inverseScaleY(lastPoint.getY() - e.getY())
-                      ));
-        lastPoint = new Point2D.Double(e.getX(), e.getY());
-        dragMode = true;
-      }
+        if(selectedLabel != null && (dragMode || ((getDistance(lastMousePos.getX(), lastMousePos.getY(), e.getX(), e.getY()) >= dragMin)))) {
+            selectedLabel.moveBy(tg.inverseScaleX(e.getX() - lastMousePos.getX()),
+                                 tg.inverseScaleY(e.getY() - lastMousePos.getY()));
+            lastMousePos = new Point2D.Double(e.getX(), e.getY());
+            dragMode = true;
+        }
     }
 
     public void mouseMoved(MouseEvent e) {
       //System.out.println("mouseMoved");
     }
-    public void mousePressed(MouseEvent e) {
-      int index = 0;
-      double min = getDistance(0, 0, getWidth(), getHeight());
-      double distNode = 0;
-      double x, y;
-      String type = "";
-      Point2D node, found = null;
-      LabelView objectLabel, attributeLabel;
-      lastPoint = new Point2D.Double(e.getX(), e.getY());
-      //if (e.getClickCount() == 2){
-        for( int i = 0; i < _diagram.getNumberOfPoints(); i++ ) {
-          node = si.project(_diagram.getPoint(i));
-          distNode = getDistance(e.getX(), e.getY(), node.getX(), node.getY());
-          if(distNode < min) {
-            min = distNode;
-            found = node;
-            index = i;
-            type = "Node";
-          }
-          objectLabel = (LabelView)objectLabels.elementAt(i);
-          x = e.getX() - objectLabel.getLabelX();
-          y = e.getY() - objectLabel.getLabelY();
-          if(!(x < 0 || y < 0)  && (x <= objectLabel.getLabelWidth()) && (y <= objectLabel.getLabelHeight())  ) {
-            System.out.println("\nObject label clicked on");
-            if(MainPanel.debug) {
-              System.out.println("ObjectLabel " + _diagram.getObjectLabel(i).getEntry(0));
-            }
-            li = _diagram.getObjectLabel(i);
-            labelSelected = true;
-            return;
-          }
-          attributeLabel = (LabelView)attributeLabels.elementAt(i);
-          x = e.getX() - attributeLabel.getLabelX();
-          y = e.getY() - attributeLabel.getLabelY();
-          if(!(x < 0 || y < 0)  && (x <= attributeLabel.getLabelWidth()) && (y <= attributeLabel.getLabelHeight())  ) {
-            System.out.println("\nAttribute labelLabel clicked on");
-            if(MainPanel.debug) {
-              System.out.println("AttributeLabel " + _diagram.getAttributeLabel(i).getEntry(0));
-            }
-            li = _diagram.getAttributeLabel(i);
-            labelSelected = true;
-            return;
-          }
-        }
-        labelSelected = false;
-        if(found != null && MainPanel.debug) {
-          System.out.println("\nx y " + e.getX() + " " + e.getY());
-          System.out.println("Clostest point is " + found);
-          System.out.println("Type is " + type);
-          System.out.println("min dist " + min);
-        }
-    }
 
-    private void printLabelInfo(int index) {
-      Point2D p;
-      LabelInfo objectLabel = _diagram.getObjectLabel(index);
-      LabelInfo attributeLabel = _diagram.getAttributeLabel(index);
-      p = si.project(objectLabel.getOffset());
-      System.out.println("objectLabels offsets" + p);
-      for(int o = 0; o < objectLabel.getNumberOfEntries(); o++) {
-        System.out.println("objectLabels " + objectLabel.getEntry(o));
-      }
-      p = si.project(attributeLabel.getOffset());
-      System.out.println("attributeLabel offsets" + p);
-      for(int a = 0; a < attributeLabel.getNumberOfEntries(); a++) {
-        System.out.println("objectLabels " + attributeLabel.getEntry(a));
-      }
+    public void mousePressed(MouseEvent e) {
+        ListIterator it = this.canvasItems.listIterator(this.canvasItems.size());
+        while(it.hasPrevious()) {
+            CanvasItem cur = (CanvasItem) it.previous();
+            Point2D point = this.tg.inverseProject(e.getPoint());
+            if(cur.containsPoint(point)) {
+                if(cur instanceof LabelView) {
+                    // store the information needed for moving the label
+                    this.selectedLabel = (LabelView) cur;
+                    this.lastMousePos = e.getPoint();
+                    // raise the label
+                    it.remove();
+                    this.canvasItems.add(cur);
+                    break;
+                }
+            }
+        }
     }
 
     private double getDistance(double x1, double y1, double x2, double y2){
@@ -346,6 +239,20 @@ public class DiagramView extends JComponent implements MouseListener, MouseMotio
     {
         _diagram = diagram;
         ((Diagram)_diagram).addObserver(this);
-        repaint();
+        this.canvasItems = new LinkedList();
+        // add all lines to the canvas
+        for( int i = 0; i < _diagram.getNumberOfLines(); i++ )
+        {
+            this.canvasItems.add( new DiagramLine( _diagram.getFromPoint( i ), _diagram.getToPoint( i )) );
+        }
+        // add all points and labels to the canvas
+        for( int i = 0; i < _diagram.getNumberOfPoints(); i++ )
+        {
+            DiagramNode node = new DiagramNode(_diagram.getPoint(i));
+            this.canvasItems.add( node );
+            this.canvasItems.add( new LabelView( this, node, LabelView.ABOVE, _diagram.getAttributeLabel( i ) ) );
+            this.canvasItems.add( new LabelView( this, node, LabelView.BELOW, _diagram.getObjectLabel( i ) ) );
+        }
+       repaint();
     }
 }

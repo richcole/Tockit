@@ -15,24 +15,26 @@ import java.util.*;
 public class LabelInfo implements LabelObservable
 {
     //
-    private Vector labelObserver = null;
+    private Vector labelObservers = null;
 
-  /**
-   * Method to add observer
-   */
-  public void addObserver(LabelObserver observer){
-    this.labelObserver.addElement(observer);
-  }
-
-  public void emitChangeSignal(Point2D offset){
-    if(labelObserver != null){
-      _offset = offset;
-      Iterator iterator = labelObserver.iterator();
-      while(iterator.hasNext()){
-        ((LabelObserver)iterator.next()).diagramChanged();
-      }
+    /**
+     * Method to add observer
+     */
+    public void addObserver(LabelObserver observer){
+        this.labelObservers.addElement(observer);
     }
-  }
+
+    /**
+     * Notifies all observes about a change.
+     */
+    private void emitChangeSignal(){
+        if(labelObservers != null){
+            Iterator iterator = labelObservers.iterator();
+            while(iterator.hasNext()) {
+                ((LabelObserver)iterator.next()).diagramChanged();
+            }
+        }
+    }
 
     /**
      * The list of entries in the label.
@@ -86,7 +88,7 @@ public class LabelInfo implements LabelObservable
         _backgroundColor = Color.white;
         _textColor = Color.black;
         _textAlignment = ALIGNLEFT;
-        labelObserver = new Vector();
+        labelObservers = new Vector();
     }
 
     /**
@@ -95,6 +97,7 @@ public class LabelInfo implements LabelObservable
     public void addEntry( String entry )
     {
         _entries.add( entry );
+        emitChangeSignal();
     }
 
     /**
@@ -133,6 +136,14 @@ public class LabelInfo implements LabelObservable
     public void setOffset( Point2D offset )
     {
         _offset = offset;
+        emitChangeSignal();
+    }
+
+    /**
+     * A convenience method mapping to setOffset(Point2D).
+     */
+    public void setOffset( double x, double y ) {
+        setOffset(new Point2D.Double(x,y));
     }
 
     /**
@@ -149,6 +160,7 @@ public class LabelInfo implements LabelObservable
     public void setBackgroundColor( Color color )
     {
         _backgroundColor = color;
+        emitChangeSignal();
     }
 
     /**
@@ -165,6 +177,7 @@ public class LabelInfo implements LabelObservable
     public void setTextColor( Color color )
     {
         _textColor = color;
+        emitChangeSignal();
     }
 
     /**
@@ -180,6 +193,7 @@ public class LabelInfo implements LabelObservable
      */
     public void setTextAligment( int alignment )
     {
-         _textAlignment = alignment;
+        _textAlignment = alignment;
+        emitChangeSignal();
     }
 }

@@ -13,6 +13,4 @@ public interface LabelObservable{
    * Method to add observer
    */
   public void addObserver(LabelObserver diagramObserver);
-
-  public void emitChangeSignal(Point2D point2D);
 }

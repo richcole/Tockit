@@ -4,31 +4,32 @@ import java.awt.*;
 import java.awt.geom.*;
 import javax.swing.*;
 
+import net.sourceforge.tockit.toscanaj.canvas.CanvasItem;
 import net.sourceforge.tockit.toscanaj.data.LabelInfo;
-import net.sourceforge.tockit.toscanaj.diagram.ScalingInfo;
+import net.sourceforge.tockit.toscanaj.gui.ToscanajGraphics2D;
 import net.sourceforge.tockit.toscanaj.data.Diagram;
 
 /**
  * This class encapsulates all label drawing code.
  */
-public class LabelView extends JComponent implements LabelObserver
+public class LabelView extends CanvasItem implements LabelObserver
 {
     /**
-     * Label current width
+     * Label current width.
      */
-    private double lw;
+    private double width;
     /**
-     * Label current height
+     * Label current height.
      */
-    private double lh;
+    private double height;
     /**
-     * Label current x coordinate
+     * Label current x coordinate.
      */
-    private double lx;
+    private double xPos;
     /**
-     * Label current y coordinate
+     * Label current y coordinate.
      */
-    private double ly;
+    private double yPos;
 
     /**
      * Used when the label should be drawn above the given point.
@@ -50,15 +51,29 @@ public class LabelView extends JComponent implements LabelObserver
     private LabelInfo _labelInfo;
 
     /**
-     * Store the diagram view that the label belongs to
+     * Store the diagram view that the label belongs to.
+     *
+     * This is used only for message passing whenever an update is needed.
      */
     private DiagramView diagramView = null;
 
     /**
+     * Stores the node the label belongs to.
+     */
+    private DiagramNode node;
+
+    /**
+     * Defines how the label has to be placed in relation to the node.
+     */
+    private int placement;
+
+    /**
      * Creates a view for the given label information.
      */
-    public LabelView( DiagramView diagramView, LabelInfo label ) {
+    public LabelView( DiagramView diagramView, DiagramNode node, int placement, LabelInfo label ) {
         this.diagramView = diagramView;
+        this.node = node;
+        this.placement = placement;
         _labelInfo = label;
         _labelInfo.addObserver(this);    }
 
@@ -73,25 +88,28 @@ public class LabelView extends JComponent implements LabelObserver
      * Return Label width
      */
     public double getLabelWidth() {
-      return lw;
+      return width;
     }
+
     /**
      * Return Label height
      */
     public double getLabelHeight() {
-      return lh;
+      return height;
     }
+
     /**
      * Return label x coordinate
      */
     public double getLabelX() {
-      return lx;
+      return xPos;
     }
+
     /**
      * Return label y coordinate
      */
     public double getLabelY() {
-      return ly;
+      return yPos;
     }
 
     /**
@@ -106,9 +124,9 @@ public class LabelView extends JComponent implements LabelObserver
      *
      * The scaling information is needed to scale the offset.
      */
-    public void draw( Graphics2D graphics, ScalingInfo scInfo,
-                      double x, double y, int placement )
+    public void draw( ToscanajGraphics2D tg )
     {
+        Graphics2D graphics = tg.getGraphics2D();
         // if no entries are there, just do nothing
         if( _labelInfo.getNumberOfEntries() == 0 )
         {
@@ -122,63 +140,59 @@ public class LabelView extends JComponent implements LabelObserver
         FontMetrics fm = graphics.getFontMetrics();
 
         // find the size and position
-        lw = getWidth( fm );
-        lh = getHeight( fm );
-        lx = x - lw/2 + scInfo.scaleX( _labelInfo.getOffset().getX() );
+        double x = node.getX();
+        double y = node.getY();
+        double lw = getWidth( fm );
+        width = tg.inverseScaleX(lw);
+        double lh = getHeight( fm );
+        height = tg.inverseScaleY(lh);
+        xPos = x - tg.inverseScaleX(lw/2) + _labelInfo.getOffset().getX();
         if( placement == ABOVE )
         {
-            ly = y - lh + scInfo.scaleY( _labelInfo.getOffset().getY() );
+            y = y - tg.inverseScaleY(node.getRadius());
+            yPos = y - tg.inverseScaleY(lh) + _labelInfo.getOffset().getY();
         }
         else
         {
-            ly = y + scInfo.scaleY( _labelInfo.getOffset().getY() );
+            y = y + tg.inverseScaleY(node.getRadius());
+            yPos = y + _labelInfo.getOffset().getY();
         }
         // draw a dashed line from the given point to the calculated
         Stroke oldStroke = graphics.getStroke();
         float[] dashstyle = { 4, 4 };
-        graphics.setStroke( new BasicStroke( 1, BasicStroke.CAP_BUTT,
+        tg.setStroke( new BasicStroke( 1, BasicStroke.CAP_BUTT,
                                     BasicStroke.JOIN_BEVEL, 1, dashstyle, 0 ) );
-        graphics.draw( new Line2D.Double( x, y, lx + lw/2,  y + scInfo.scaleY( _labelInfo.getOffset().getY() ) ) );
-        graphics.setStroke( oldStroke );
+        tg.drawLine( x, y, xPos + tg.inverseScaleX(lw/2),  y + _labelInfo.getOffset().getY() );
+        tg.setStroke( oldStroke );
 
         // draw the label itself
-        graphics.setPaint( _labelInfo.getBackgroundColor() );
-        graphics.fill( new Rectangle2D.Double( lx, ly, lw, lh ) );
-        graphics.setPaint( _labelInfo.getTextColor() );
-        graphics.draw( new Rectangle2D.Double( lx, ly, lw, lh ) );
+        tg.drawFilledRectangle(xPos, yPos, lw, lh, _labelInfo.getBackgroundColor(), _labelInfo.getTextColor() );
 
         // draw the text
         if( _labelInfo.getTextAlignment() == LabelInfo.ALIGNLEFT )
         {
             for( int j = 0; j < _labelInfo.getNumberOfEntries(); j++ )
             {
-                graphics.drawString( _labelInfo.getEntry( j ),
-                           (int) lx + fm.getLeading() + fm.getDescent(),
-                           (int) ly + fm.getAscent() + fm.getLeading() +
-                                      j * fm.getHeight() );
+                tg.drawString( _labelInfo.getEntry( j ),xPos, yPos, fm.getLeading() +
+                                                fm.getDescent(), fm.getAscent() +
+                                                fm.getLeading() + j * fm.getHeight() );
             }
         }
         else if( _labelInfo.getTextAlignment() == LabelInfo.ALIGNCENTER )
         {
             for( int j = 0; j < _labelInfo.getNumberOfEntries(); j++ )
             {
-                graphics.drawString( _labelInfo.getEntry( j ),
-                           (int) (lx + fm.getLeading()/2 + fm.getDescent()/2 +
-                                    ( lw - fm.stringWidth(
-                                              _labelInfo.getEntry( j ) ) )/2 ),
-                           (int) ly + fm.getAscent() + fm.getLeading() +
-                                      j * fm.getHeight() );
+                tg.drawString( _labelInfo.getEntry( j ), xPos, yPos,
+                        (int)(fm.getLeading()/2 + fm.getDescent()/2 + ( lw - fm.stringWidth( _labelInfo.getEntry( j )  ))/2  ),
+                        fm.getAscent() + fm.getLeading() + j * fm.getHeight() );
             }
         }
         else if( _labelInfo.getTextAlignment() == LabelInfo.ALIGNRIGHT )
         {
             for( int j = 0; j < _labelInfo.getNumberOfEntries(); j++ )
             {
-                graphics.drawString( _labelInfo.getEntry( j ),
-                           (int) (lx - fm.getLeading() - fm.getDescent() + lw -
-                                  fm.stringWidth( _labelInfo.getEntry( j ) ) ),
-                           (int) ly + fm.getAscent() + fm.getLeading() +
-                                      j * fm.getHeight() );
+                tg.drawString( _labelInfo.getEntry( j ),xPos ,yPos ,  (int)(-fm.getLeading() - fm.getDescent() + lw - fm.stringWidth( _labelInfo.getEntry( j )  )),
+                            fm.getAscent() + fm.getLeading() + j * fm.getHeight() );
             }
         }
 
@@ -221,5 +235,34 @@ public class LabelView extends JComponent implements LabelObserver
     public int getHeight( FontMetrics fontMetrics )
     {
         return _labelInfo.getNumberOfEntries() * fontMetrics.getHeight();
+    }
+
+    /**
+     * Returns true whenever the point is in the bounding rectangle.
+     */
+    public boolean containsPoint(Point2D point) {
+        double x = point.getX();
+        if( x < this.xPos ) {
+            return false;
+        }
+        if( x > this.xPos + this.width ) {
+            return false;
+        }
+        double y = point.getY();
+        if( y > this.yPos ) {
+            return false;
+        }
+        if( y < this.yPos + this.height ) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Moves the label by the given distance.
+     */
+    public void moveBy(double deltaX, double deltaY) {
+        _labelInfo.setOffset(_labelInfo.getOffset().getX() + deltaX,
+                             _labelInfo.getOffset().getY() + deltaY );
     }
 }

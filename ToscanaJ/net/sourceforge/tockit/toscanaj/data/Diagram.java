@@ -1,6 +1,7 @@
 package net.sourceforge.tockit.toscanaj.data;
 
 import net.sourceforge.tockit.toscanaj.diagram.DiagramObserver;
+import net.sourceforge.tockit.toscanaj.diagram.DiagramNode;
 import net.sourceforge.tockit.toscanaj.gui.MainPanel;
 
 import java.awt.geom.Point2D;
@@ -14,26 +15,10 @@ import java.util.*;
 
 public class Diagram implements DiagramObservable, Diagram2D
 {
-
-  private Vector diagramObserver = null;
-
-  /**
-   * Method to add observer
-   */
-  public void addObserver(DiagramObserver observer){
-    this.diagramObserver.addElement(observer);
-  }
-
-  /**
-   *
-   */
-  public void emitChangeSignal(){
-      Iterator iterator = diagramObserver.iterator();
-      while(iterator.hasNext()){
-        ((DiagramObserver)iterator.next()).diagramChanged();
-      }
-  }
-
+    /**
+     * vector holds all observers
+     */
+    private Vector diagramObserver = null;
 
     /**
      * The title used for this diagram.
@@ -59,6 +44,8 @@ public class Diagram implements DiagramObservable, Diagram2D
      */
     private Vector _attributeLabels;
 
+
+    //***************************************************************************
     /**
      * The list of starting points of lines in the diagram.
      *
@@ -75,6 +62,8 @@ public class Diagram implements DiagramObservable, Diagram2D
      */
     private Vector _lineEndPoints;
 
+    //**************************************************************************
+
     /**
      * The default constructor creates a diagram with just nothing in it at all.
      */
@@ -87,6 +76,23 @@ public class Diagram implements DiagramObservable, Diagram2D
         _lineStartPoints = new Vector();
         _lineEndPoints = new Vector();
         diagramObserver = new Vector();
+    }
+
+    /**
+    * Method to add observer
+    */
+    public void addObserver(DiagramObserver observer){
+      this.diagramObserver.addElement(observer);
+    }
+
+    /**
+    * Send to all obvservers that a change has been made
+    */
+    public void emitChangeSignal(){
+      Iterator iterator = diagramObserver.iterator();
+      while(iterator.hasNext()){
+        ((DiagramObserver)iterator.next()).diagramChanged();
+      }
     }
 
     /**
@@ -172,7 +178,7 @@ public class Diagram implements DiagramObservable, Diagram2D
      */
     public void addPoint( Point2D point )
     {
-        _points.add( point );
+        _points.add(point);
         _objectLabels.add( new LabelInfo() );
         _attributeLabels.add( new LabelInfo() );
     }
