@@ -5,7 +5,7 @@
  *
  * $Id$
  */
-package org.tockit.docco.indexer;
+package org.tockit.docco.indexer.documenthandler;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,6 +21,8 @@ import org.pdfbox.pdfparser.PDFParser;
 import org.pdfbox.pdmodel.PDDocument;
 import org.pdfbox.pdmodel.PDDocumentInformation;
 import org.pdfbox.util.PDFTextStripper;
+import org.tockit.docco.indexer.DocumentContent;
+import org.tockit.docco.indexer.DocumentSummary;
 
 public class PdfDocumentProcessor implements DocumentProcessor {
 	

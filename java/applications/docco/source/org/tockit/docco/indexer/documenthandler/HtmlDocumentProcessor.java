@@ -5,7 +5,7 @@
  *
  * $Id$
  */
-package org.tockit.docco.indexer;
+package org.tockit.docco.indexer.documenthandler;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -21,6 +21,9 @@ import java.util.List;
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.*;
 import javax.swing.text.html.parser.ParserDelegator;
+
+import org.tockit.docco.indexer.DocumentContent;
+import org.tockit.docco.indexer.DocumentSummary;
 
 public class HtmlDocumentProcessor implements DocumentProcessor {
 

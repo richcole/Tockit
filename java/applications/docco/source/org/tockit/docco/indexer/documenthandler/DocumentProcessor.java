@@ -5,10 +5,12 @@
  *
  * $Id$
  */
-package org.tockit.docco.indexer;
+package org.tockit.docco.indexer.documenthandler;
 
 import java.io.File;
 import java.io.IOException;
+
+import org.tockit.docco.indexer.DocumentSummary;
 
 public interface DocumentProcessor {
 	public DocumentSummary parseDocument(File file) throws IOException, DocumentProcessingException;

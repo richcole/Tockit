@@ -5,7 +5,7 @@
  *
  * $Id$
  */
-package org.tockit.docco.indexer;
+package org.tockit.docco.indexer.documenthandler;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,6 +17,8 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.tockit.docco.indexer.DocumentContent;
+import org.tockit.docco.indexer.DocumentSummary;
 
 
 public class MSExcelDocProcessor implements DocumentProcessor {

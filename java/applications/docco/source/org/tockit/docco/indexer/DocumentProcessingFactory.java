@@ -18,6 +18,7 @@ import java.util.Iterator;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.tockit.docco.GlobalConstants;
+import org.tockit.docco.indexer.documenthandler.*;
 import org.tockit.docco.indexer.filefilter.*;
 import org.tockit.docco.indexer.filefilter.FileExtensionExtractor;
 

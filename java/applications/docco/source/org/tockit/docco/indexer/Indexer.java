@@ -11,6 +11,7 @@ package org.tockit.docco.indexer;
 import org.apache.lucene.index.IndexWriter;
 import org.tockit.docco.ConfigurationManager;
 import org.tockit.docco.GlobalConstants;
+import org.tockit.docco.indexer.documenthandler.*;
 import org.tockit.docco.indexer.filefilter.*;
 import org.tockit.docco.indexer.filefilter.ExtensionFileFilter;
 

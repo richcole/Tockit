@@ -5,7 +5,7 @@
  *
  * $Id$
  */
-package org.tockit.docco.indexer;
+package org.tockit.docco.indexer.documenthandler;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,6 +21,8 @@ import org.apache.poi.hpsf.SummaryInformation;
 import org.apache.poi.poifs.eventfilesystem.POIFSReader;
 import org.apache.poi.poifs.eventfilesystem.POIFSReaderEvent;
 import org.apache.poi.poifs.eventfilesystem.POIFSReaderListener;
+import org.tockit.docco.indexer.DocumentContent;
+import org.tockit.docco.indexer.DocumentSummary;
 
 public class MSWordProcessor implements DocumentProcessor {
 	

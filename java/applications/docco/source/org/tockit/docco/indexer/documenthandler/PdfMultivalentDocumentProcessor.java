@@ -5,7 +5,7 @@
  *
  * $Id$
  */
-package org.tockit.docco.indexer;
+package org.tockit.docco.indexer.documenthandler;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,6 +15,9 @@ import java.text.DateFormat;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import org.tockit.docco.indexer.DocumentContent;
+import org.tockit.docco.indexer.DocumentSummary;
 
 import tool.ExtractText;
 

@@ -7,6 +7,8 @@
  */
 package org.tockit.docco.indexer;
 
+import org.tockit.docco.indexer.documenthandler.*;
+
 
 public class UnknownFileExtensionException extends DocumentProcessingException {
 
