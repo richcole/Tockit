@@ -16,6 +16,7 @@ public class CSCTokenizer {
     private String currentToken;
     private int currentLine = 1;
     private boolean newLineStarted = true;
+    private boolean commaFound = false;
 
 	public CSCTokenizer(Reader in) throws IOException, DataFormatException {
 	    this.inputReader = new BufferedReader(in);
@@ -25,15 +26,37 @@ public class CSCTokenizer {
 	public String getCurrentToken() {
 		return this.currentToken;
 	}
+
+    /**
+     * Advances and then return the token current before.
+     * 
+     * Convenience method equivalent to calling getCurrentToken() and then advance().
+     */
+    public String popCurrentToken() throws IOException, DataFormatException {
+        String token = this.currentToken;
+        advance();
+        return token;
+    }
 	
 	/**
 	 * Returns the current token as a string with all escape codes resolved.
 	 */
-	public String getCurrentString() {
+	private String getCurrentString() {
 		return resolveEscapes(this.currentToken);
 	}
 	
 	public void advance() throws IOException, DataFormatException {
+        if(done()) {
+            throw new IOException("CSCTokenizer.advance() called after end of file");
+        }
+        
+        if(this.commaFound) {
+            this.commaFound = false;
+            this.currentToken = ",";
+            CSCParser.logger.log(Level.FINEST, "Tokenizer generized token '" + this.currentToken + "'");
+            return;
+        }
+        
 		int character;
 		this.newLineStarted = false;
 		do {
@@ -46,14 +69,12 @@ public class CSCTokenizer {
 		this.currentToken = "";
 		if(character == '\"') {
 			advanceString();
-		} else if (character == '(') {
-			advanceTupel();
 		} else {
             advanceNormal(character);
 		}
 	}
 
-    public void advanceString() throws IOException, DataFormatException {
+    private void advanceString() throws IOException, DataFormatException {
         int character = this.inputReader.read();
         int startLine = this.currentLine;
         while( character != -1 && character != '\"' ) {
@@ -70,27 +91,22 @@ public class CSCTokenizer {
         CSCParser.logger.log(Level.FINEST, "Tokenizer found string '" + this.currentToken + "'");
     }
 
-    public void advanceTupel() throws IOException, DataFormatException {
-        int character = '(';
-        int startLine = this.currentLine;
-        do {
-            this.currentToken += (char) character;
-            character = this.inputReader.read();
-        } while( character != -1 && character != ')' );
-        if(character != ')') {
-        	throw new DataFormatException("Open parenthesis from line " + startLine + " not matched.");
+    private void advanceNormal(int character) throws IOException {
+        if(character == ',') {
+            this.currentToken = ",";
         } else {
-        	this.currentToken += ")";
-        }
-		CSCParser.logger.log(Level.FINEST, "Tokenizer found tupel '" + this.currentToken + "'");
-    }
-
-
-    public void advanceNormal(int character) throws IOException {
-        while( character != -1 && !Character.isWhitespace((char)character) &&
-                character != '\"' && character != '(' ) {
-            this.currentToken += (char) character;
-            character = this.inputReader.read();
+            while( character != -1 && !Character.isWhitespace((char)character) &&
+                    character != '\"') {
+                if(character == ',') {
+                    this.commaFound = true;
+                    break;
+                }
+                this.currentToken += (char) character;
+                if(character == '(' || character == ')') {
+                    break;
+                }
+                character = this.inputReader.read();
+            }
         }
 		CSCParser.logger.log(Level.FINEST, "Tokenizer found token '" + this.currentToken + "'");
     }
@@ -120,4 +136,14 @@ public class CSCTokenizer {
 		}
 		return output;
 	}
+
+    public void consumeToken(String token) throws IOException, DataFormatException{
+        if(!this.currentToken.equals(token)) {
+            throw new DataFormatException("Expected token '" + token + "' but found '" + this.currentToken + 
+                                          "' in line " + getCurrentLine());
+        }
+        if(!done()) {
+            advance();
+        }
+    }
 }

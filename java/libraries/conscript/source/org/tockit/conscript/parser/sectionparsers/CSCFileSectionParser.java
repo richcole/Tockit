@@ -36,13 +36,6 @@ public abstract class CSCFileSectionParser {
 	
 	abstract public void parse(CSCTokenizer tokenizer, ConceptualFile targetFile) throws IOException, DataFormatException;
 	
-	protected void consumeToken(CSCTokenizer tokenizer, String token) throws IOException, DataFormatException{
-		if(!tokenizer.getCurrentToken().equals(token)) {
-			throw new DataFormatException("Expected token '" + token + "' in line " + tokenizer.getCurrentLine());
-		}
-		tokenizer.advance();
-	}
-	
 	public static CSCFileSectionParser[] getParsers() {
 		return CSC_FILE_SECTIONS_PARSERS;
 	}

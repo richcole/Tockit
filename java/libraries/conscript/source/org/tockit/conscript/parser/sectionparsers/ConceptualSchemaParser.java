@@ -8,8 +8,14 @@
 package org.tockit.conscript.parser.sectionparsers;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.tockit.conscript.model.ConceptualFile;
+import org.tockit.conscript.model.ConceptualSchema;
+import org.tockit.conscript.model.ConcreteScale;
+import org.tockit.conscript.model.DatabaseDefinition;
+import org.tockit.conscript.model.FormattedString;
 import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
@@ -19,6 +25,47 @@ class ConceptualSchemaParser extends CSCFileSectionParser {
 	}
 
 	public void parse(CSCTokenizer tokenizer, ConceptualFile targetFile) throws IOException, DataFormatException {
-		throw new SectionTypeNotSupportedException("parse() in " + this.getClass().getName() + " not yet implemented.");
+        String identifier = tokenizer.popCurrentToken();
+        tokenizer.consumeToken("=");
+        ConceptualSchema schema = new ConceptualSchema(targetFile.getFile(), identifier);
+        String nextToken = tokenizer.getCurrentToken();
+        if(nextToken.equals("TITLE")) {
+            String title = tokenizer.popCurrentToken();
+            schema.setTitle(new FormattedString(title, null));
+        }
+        nextToken = tokenizer.getCurrentToken();
+        while(!nextToken.equals("(")) {
+            nextToken = tokenizer.popCurrentToken();
+        }
+        String dbIdentifier = tokenizer.popCurrentToken();
+        DatabaseDefinition[] dbDefs = targetFile.getDatabaseDefinitions().getDatabases();
+        for (int i = 0; i < dbDefs.length; i++) {
+            DatabaseDefinition definition = dbDefs[i];
+            if(definition.getIdentifier().equals(dbIdentifier)) {
+                schema.setDatabase(definition);
+                break;
+            }
+        }
+        if(schema.getDatabase() == null) {
+            // @todo support reverse lookup
+            throw new DataFormatException("Could not find database with name '" + dbIdentifier + "' -- reverse lookup not yet supported");
+        }
+        List scales = new ArrayList();
+        while(tokenizer.getCurrentToken().equals(",")) {
+            tokenizer.advance();
+            String scaleId = tokenizer.popCurrentToken();
+            ConcreteScale scale = findScale(targetFile, scaleId);
+            if(scale == null) {
+                scale = new ConcreteScale(targetFile.getFile(), scaleId);
+            }
+            scales.add(scale);
+        }
+        schema.setConcreteScales((ConcreteScale[]) scales.toArray(new ConcreteScale[scales.size()]));
+        tokenizer.consumeToken(")");
+        tokenizer.consumeToken(";");
 	}
+
+    private ConcreteScale findScale(ConceptualFile targetFile, String scaleId) {
+        return null;
+    }
 }

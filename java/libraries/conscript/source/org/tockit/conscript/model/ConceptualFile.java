@@ -19,6 +19,7 @@ public class ConceptualFile {
 	private FormattedString title;
 	private String remark;
 	private Hashtable specials;
+    private DatabaseDefinitions databaseDefinitions;
 	
 	public ConceptualFile(URL file, String identifier, FormattedString title, 
 						   String remark, Hashtable specials, StringMap objectMap, 
@@ -87,4 +88,12 @@ public class ConceptualFile {
 	public void setTitle(FormattedString title) {
 		this.title = title;
 	}
+    
+    public DatabaseDefinitions getDatabaseDefinitions() {
+        return this.databaseDefinitions;
+    }
+    
+    public void setDatabaseDefinitions(DatabaseDefinitions databaseDefinitions) {
+        this.databaseDefinitions = databaseDefinitions;
+    }
 }

@@ -26,15 +26,14 @@ class QueryMapParser extends CSCFileSectionParser {
         tokenizer.advance();
 
         int line = tokenizer.getCurrentLine();
-        consumeToken(tokenizer, "=");
+        tokenizer.consumeToken("=");
         while (tokenizer.getCurrentLine() == line) {
             tokenizer.advance(); // skip possible remarks
         }
 
         /// @todo tupels should be send as a couple of tokens
         while (!tokenizer.getCurrentToken().equals(";")) {
-            String tupel = tokenizer.getCurrentString();
-            tokenizer.advance();
+            String tupel = tokenizer.popCurrentToken();
             tupel = tupel.substring(1, tupel.length() - 1);
             int commaPos = tupel.indexOf(',');
             String clause = tupel.substring(0, commaPos).trim();
@@ -43,6 +42,6 @@ class QueryMapParser extends CSCFileSectionParser {
             retval.getMap().put(id, clause);
         }
 
-        consumeToken(tokenizer, ";");
+        tokenizer.consumeToken(";");
     }
 }

@@ -8,17 +8,25 @@
 package org.tockit.conscript.parser.sectionparsers;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.tockit.conscript.model.ConceptualFile;
+import org.tockit.conscript.parser.CSCParser;
 import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
 class IncludeParser extends CSCFileSectionParser {
-	public String getStartToken() {
+    public String getStartToken() {
 		return "#INCLUDE";
 	}
 
 	public void parse(CSCTokenizer tokenizer, ConceptualFile targetFile) throws IOException, DataFormatException {
-		throw new SectionTypeNotSupportedException("parse() in " + this.getClass().getName() + " not yet implemented.");
+        String includeLocation = tokenizer.popCurrentToken();
+        tokenizer.consumeToken(";");
+        URL includeURL = new URL(targetFile.getFile(), includeLocation);
+        CSCParser.logger.log(Level.FINER, "Including URL: '" + includeURL + "'");
+		ConceptualFile includeFile = CSCParser.importCSCFile(includeURL);
 	}
 }

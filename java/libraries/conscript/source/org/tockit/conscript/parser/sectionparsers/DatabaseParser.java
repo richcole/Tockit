@@ -8,8 +8,11 @@
 package org.tockit.conscript.parser.sectionparsers;
 
 import java.io.IOException;
+import java.util.Hashtable;
 
 import org.tockit.conscript.model.ConceptualFile;
+import org.tockit.conscript.model.DatabaseDefinition;
+import org.tockit.conscript.model.DatabaseDefinitions;
 import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
@@ -19,6 +22,28 @@ class DatabaseParser extends CSCFileSectionParser {
 	}
 
 	public void parse(CSCTokenizer tokenizer, ConceptualFile targetFile) throws IOException, DataFormatException {
-		throw new SectionTypeNotSupportedException("parse() in " + this.getClass().getName() + " not yet implemented.");
+        String identifier = tokenizer.popCurrentToken();
+        
+        tokenizer.consumeToken("=");
+        
+        // ignore specials for now
+        // @todo add specials
+        while(!tokenizer.getCurrentToken().equals("(")) {
+            tokenizer.advance();
+        }
+        tokenizer.consumeToken("(");
+        String name = tokenizer.popCurrentToken();
+        tokenizer.consumeToken(",");
+        String table = tokenizer.popCurrentToken();
+        tokenizer.consumeToken(",");
+        String primaryKey = tokenizer.popCurrentToken();
+        tokenizer.consumeToken(")");
+        DatabaseDefinition dbDefinition = new DatabaseDefinition(identifier, name, table, primaryKey);
+        
+        DatabaseDefinitions dbDefinitions = new DatabaseDefinitions(targetFile.getFile(), identifier, null,
+                                                                    "", new Hashtable(), new DatabaseDefinition[] {dbDefinition});
+        targetFile.setDatabaseDefinitions(dbDefinitions);
+        
+        tokenizer.consumeToken(";");
 	}
 }

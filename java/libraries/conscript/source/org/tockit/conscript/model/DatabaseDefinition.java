@@ -8,11 +8,13 @@
 package org.tockit.conscript.model;
 
 public class DatabaseDefinition {
+    private String identifier;
 	private String name;
 	private String table;
 	private String primaryKey;
 	
-	public DatabaseDefinition(String name, String table, String primaryKey) {
+	public DatabaseDefinition(String identifier, String name, String table, String primaryKey) {
+        this.identifier = identifier;
 		this.name = name;
 		this.table = table;
 		this.primaryKey = primaryKey;
@@ -41,4 +43,12 @@ public class DatabaseDefinition {
 	public void setTable(String table) {
 		this.table = table;
 	}
+    
+    public String getIdentifier() {
+        return this.identifier;
+    }
+    
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
 }

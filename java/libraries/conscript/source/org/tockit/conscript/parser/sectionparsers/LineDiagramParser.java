@@ -26,7 +26,7 @@ class LineDiagramParser extends CSCFileSectionParser {
 		String identifier = tokenizer.getCurrentToken();
 		tokenizer.advance();
 
-		consumeToken(tokenizer, "=");
+        tokenizer.consumeToken("=");
 
 		if (tokenizer.getCurrentToken().equals("TITLE")) {
 			tokenizer.advance();
@@ -143,7 +143,7 @@ class LineDiagramParser extends CSCFileSectionParser {
 			// we ignore the concept definitions 
 			tokenizer.advance();
 		}
-		consumeToken(tokenizer, ";");
+        tokenizer.consumeToken(";");
 	}
 
 	private String[] extractFormattingStringSegment(String formattingString) {

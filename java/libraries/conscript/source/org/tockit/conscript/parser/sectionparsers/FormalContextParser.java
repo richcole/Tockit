@@ -90,7 +90,7 @@ class FormalContextParser extends CSCFileSectionParser {
 			tokenizer.advance(); // next row
 		}
 
-		consumeToken(tokenizer, ";");
+        tokenizer.consumeToken(";");
 	}
 
 	public String getStartToken() {

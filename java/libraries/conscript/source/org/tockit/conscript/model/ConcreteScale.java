@@ -23,19 +23,9 @@ public class ConcreteScale extends SchemaPart{
 	private String remark;
 	private Hashtable specials;
 	
-	public ConcreteScale(URL file, String identifier, FormattedString title, 
-						  String remark, Hashtable specials, String[] tables, String[] fields,
-						  AbstractScale abstractScale, QueryMap queryMap, StringMap attributeMap) {
+	public ConcreteScale(URL file, String identifier) {
 		this.file = file;
 		this.identifier = identifier;
-		this.title = title;
-		this.remark = remark;
-		this.specials = specials;
-		this.tables = tables;
-		this.fields = fields;
-		this.abstractScale = abstractScale;
-		this.queryMap = queryMap;
-		this.attributeMap = attributeMap;
 	}
 
 	public AbstractScale getAbstractScale() {
