@@ -10,7 +10,6 @@ import java.io.IOException;
 
 import net.sourceforge.toscanaj.gui.dialog.ErrorDialog;
 
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.tockit.docco.events.QueryEvent;
 import org.tockit.docco.gui.DoccoMainFrame;
 import org.tockit.docco.handlers.QueryEventHandler;
@@ -28,10 +27,14 @@ public class Docco {
 	
 	public Docco () {
 		try {
-			QueryDecomposer queryDecomposer = new QueryDecomposer(GlobalConstants.FIELD_QUERY_BODY, new StandardAnalyzer());
-			QueryEngine queryEngine = new QueryEngine(GlobalConstants.DEFAULT_INDEX_LOCATION, 
+			QueryDecomposer queryDecomposer = new QueryDecomposer(
 													GlobalConstants.FIELD_QUERY_BODY, 
-													new StandardAnalyzer(),
+													GlobalConstants.DEFAULT_ANALYZER);
+			
+			QueryEngine queryEngine = new QueryEngine(
+													GlobalConstants.DEFAULT_INDEX_LOCATION, 
+													GlobalConstants.FIELD_QUERY_BODY, 
+													GlobalConstants.DEFAULT_ANALYZER,
 													queryDecomposer);
 
 			this.eventBroker.subscribe(new QueryEventHandler(eventBroker, queryEngine), QueryEvent.class, Object.class);
@@ -41,7 +44,7 @@ public class Docco {
 		}
 		catch (IOException e) {
 			ErrorDialog.showError(null, e, "Error", "\nPlease check if you have created an index using docsearcher.\n" + 
-							" Index name should be '" + GlobalConstants.DEFAULT_INDEX_NAME + "'");
+							" Index name should be '" + GlobalConstants.DEFAULT_INDEX_LOCATION + "'");
 		}
 		catch (Exception e) {
 			ErrorDialog.showError(null, e, "Error");

@@ -6,11 +6,16 @@
  * $Id$
  */
 package org.tockit.docco;
-import docsearcher.DocSearch;
+
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 
 public class GlobalConstants {
-	public static final String DEFAULT_INDEX_NAME = "test";
-	public static final String DEFAULT_INDEX_LOCATION = DocSearch.indexDir + "/" + DEFAULT_INDEX_NAME;
+	private static final String INDEX_DIR = System.getProperty("user.dir") + System.getProperty("file.separator") + ".doccoIndex";	
+	private static final String DEFAULT_INDEX_NAME = "test";
+
+	public static final String DEFAULT_INDEX_LOCATION = INDEX_DIR + System.getProperty("file.separator") + DEFAULT_INDEX_NAME;
+	public static final Analyzer DEFAULT_ANALYZER = new StandardAnalyzer();
 	
 	public static final String FIELD_QUERY_BODY = "body";
 	
