@@ -151,6 +151,77 @@ libsarl_la_LDFLAGS = @VERSION_INFO@
 #
 # Tests
 #
-check_PROGRAMS = test_relation_005
+check_PROGRAMS = \
+  test_dictionary_001.cpp \
+  test_lattice_001.cpp \
+  test_lectic_001.cpp \
+  test_lectic_002.cpp \
+  test_lectic_003.cpp \
+  test_map_001.cpp \
+  test_read_cxt_context_001.cpp \
+  test_relation_001.cpp \
+  test_relation_002.cpp \
+  test_relation_003.cpp \
+  test_relation_004.cpp \
+  test_relation_005.cpp \
+  test_relation.cpp \
+  test_set.cpp \
+  test_set_iterator_interval_001.cpp \
+  test_set_iterator_meet.cpp \
+  test_set_iterator_set_minus.cpp \
+  test_set_iterator_union.cpp 
 
 test_relation_005_SOURCES = test_relation_005.cpp
+test_relation_005_LDADD   = libsarl.la
+
+test_set_iterator_union_SOURCES = test_set_iterator_union.cpp
+test_set_iterator_union_LDADD   = libsarl.la
+
+test_set_iterator_set_minus_SOURCES = test_set_iterator_set_minus.cpp
+test_set_iterator_set_minus_LDADD   = libsarl.la
+
+test_set_iterator_meet_SOURCES = test_set_iterator_meet.cpp
+test_set_iterator_meet_LDADD   = libsarl.la
+
+test_set_iterator_interval_001_SOURCES = test_set_iterator_interval_001.cpp
+test_set_iterator_interval_001_LDADD   = libsarl.la
+
+test_set_SOURCES = test_set.cpp
+test_set_LDADD   = libsarl.la
+
+test_relation_SOURCES = test_relation.cpp
+test_relation_LDADD   = libsarl.la
+
+test_relation_004_SOURCES = test_relation_004.cpp
+test_relation_004_LDADD   = libsarl.la
+
+test_relation_003_SOURCES = test_relation_003.cpp
+test_relation_003_LDADD   = libsarl.la
+
+test_relation_002_SOURCES = test_relation_002.cpp
+test_relation_002_LDADD   = libsarl.la
+
+test_relation_001_SOURCES = test_relation_001.cpp
+test_relation_001_LDADD   = libsarl.la
+
+test_read_cxt_context_001_SOURCES = test_read_cxt_context_001.cpp
+test_read_cxt_context_001_LDADD   = libsarl.la
+
+test_map_001_SOURCES = test_map_001.cpp
+test_map_001_LDADD   = libsarl.la
+
+test_lectic_003_SOURCES = test_lectic_003.cpp
+test_lectic_003_LDADD   = libsarl.la
+
+test_lectic_002_SOURCES = test_lectic_002.cpp
+test_lectic_002_LDADD   = libsarl.la
+
+test_lectic_001_SOURCES = test_lectic_001.cpp
+test_lectic_001_LDADD   = libsarl.la
+
+test_lattice_001_SOURCES = test_lattice_001.cpp
+test_lattice_001_LDADD   = libsarl.la
+
+test_dictionary_001_SOURCES = test_dictionary_001.cpp
+test_dictionary_001_LDADD   = libsarl.la
+
