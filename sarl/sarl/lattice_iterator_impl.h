@@ -9,10 +9,13 @@ struct Sarl_SetIterator;
 
 struct Sarl_LatticeIteratorFunctionTable {
   void  (*next_gte)(Sarl_LatticeIterator *, Sarl_ConceptIterator *);
+  void  (*prev_leq)(Sarl_LatticeIterator *, Sarl_ConceptIterator *);
   void  (*next)(Sarl_LatticeIterator *);
+  void  (*prev)(Sarl_LatticeIterator *);
   Sarl_ConceptIterator* (*value)(Sarl_LatticeIterator *);
   int   (*at_end)(Sarl_LatticeIterator *);
   void  (*reset)(Sarl_LatticeIterator *);
+  void  (*reset_last)(Sarl_LatticeIterator *);
   void  (*decr_ref)(Sarl_LatticeIterator *);
   Sarl_LatticeIterator*  (*copy)(Sarl_LatticeIterator *);
 

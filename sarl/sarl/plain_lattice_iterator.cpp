@@ -21,7 +21,14 @@ static void sarl_lattice_iterator_plain_next_gte(
   struct Sarl_LatticeIterator *it, 
   struct Sarl_ConceptIterator* value);
 
+static void sarl_lattice_iterator_plain_prev_leq(
+  struct Sarl_LatticeIterator *it, 
+  struct Sarl_ConceptIterator* value);
+
 static void sarl_lattice_iterator_plain_next(
+  struct Sarl_LatticeIterator *it);
+
+static void sarl_lattice_iterator_plain_prev(
   struct Sarl_LatticeIterator *it);
 
 static Sarl_ConceptIterator* sarl_lattice_iterator_plain_value(
@@ -31,6 +38,9 @@ static int sarl_lattice_iterator_plain_at_end(
   struct Sarl_LatticeIterator *it);
 
 static void sarl_lattice_iterator_plain_reset(
+  struct Sarl_LatticeIterator *it);
+
+static void sarl_lattice_iterator_plain_reset_last(
   struct Sarl_LatticeIterator *it);
 
 static void sarl_lattice_iterator_plain_decr_ref(
@@ -59,11 +69,14 @@ static struct Sarl_LatticeIterator*
 
 struct Sarl_LatticeIteratorFunctionTable s_plainLatticeIteratorTable = 
 {
+  sarl_lattice_iterator_plain_prev_leq,
   sarl_lattice_iterator_plain_next_gte,
   sarl_lattice_iterator_plain_next,
+  sarl_lattice_iterator_plain_prev,
   sarl_lattice_iterator_plain_value,
   sarl_lattice_iterator_plain_at_end,
   sarl_lattice_iterator_plain_reset,
+  sarl_lattice_iterator_plain_reset_last,
   sarl_lattice_iterator_plain_decr_ref,
   sarl_lattice_iterator_plain_copy,
 
@@ -112,6 +125,30 @@ void
   it->A = sarl_context_iterator_extent_set(it->context, it->B);
 };
 
+void 
+  sarl_lattice_iterator_plain_reset_last(
+    struct Sarl_LatticeIterator *a_it)
+{
+  Sarl_PlainLatticeIterator* it = 
+    static_cast<struct Sarl_PlainLatticeIterator*>(a_it);
+
+  struct Sarl_SetIterator* A;
+  struct Sarl_SetIterator* B;
+
+  if ( it->A != 0 ) {
+    sarl_set_iterator_decr_ref(it->A);
+    A = 0;
+  };
+  
+  if ( it->B != 0 ) {
+    sarl_set_iterator_decr_ref(it->B);
+    B = 0;
+  };
+
+  it->A = sarl_context_iterator_objects(it->context);
+  it->B = sarl_context_iterator_intent_set(it->context, it->A);
+};
+
 
 void 
   sarl_lattice_iterator_plain_next(
@@ -132,6 +169,35 @@ void
   }
   else {
     next_A = next_B = 0;
+  }
+
+  sarl_set_iterator_decr_ref(it->A);
+  sarl_set_iterator_decr_ref(it->B);
+  
+  it->A = next_A;
+  it->B = next_B;
+};
+
+
+void 
+  sarl_lattice_iterator_plain_prev(
+     struct Sarl_LatticeIterator *a_it
+  )
+{
+  Sarl_PlainLatticeIterator* it = 
+    static_cast<struct Sarl_PlainLatticeIterator*>(a_it);
+
+  struct Sarl_SetIterator* next_A;
+  struct Sarl_SetIterator* next_B;
+  
+  sarl_set_iterator_release_ownership(it->B);
+  next_B = sarl_context_iterator_next_intent(it->context, it->B);
+
+  if ( next_B != 0 ) {
+    next_A = sarl_context_iterator_extent_set(it->context, next_B);
+  }
+  else {
+    next_A = 0;
   }
 
   sarl_set_iterator_decr_ref(it->A);
@@ -187,6 +253,14 @@ void
   }
 };
 
+void 
+  sarl_lattice_iterator_plain_prev_leq(
+    struct Sarl_LatticeIterator *a_it,
+     struct Sarl_ConceptIterator *c
+  )
+{
+  SARL_NOT_IMPLEMENTED;
+};
 
 struct Sarl_LatticeIterator *
   sarl_lattice_iterator_plain_ideal_from_intent(

@@ -129,6 +129,19 @@ struct Sarl_SetIterator*
     Sarl_SetIterator     *parent_extent
   );
 
+extern struct Sarl_SetIterator* 
+  sarl_context_iterator_next_intent(
+    Sarl_ContextIterator *K,
+    Sarl_SetIterator     *B
+  );
+
+struct Sarl_SetIterator* 
+  sarl_context_iterator_next_intent_superseteq(
+    Sarl_ContextIterator *K,
+    Sarl_SetIterator     *B, 
+    Sarl_SetIterator     *parent_intent
+  );
+
 /* reference counting interface */
 extern void 
   sarl_context_iterator_decr_ref(

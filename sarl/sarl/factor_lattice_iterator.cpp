@@ -20,7 +20,14 @@ static void sarl_lattice_iterator_factor_next_gte(
   struct Sarl_LatticeIterator *it, 
   struct Sarl_ConceptIterator* value);
 
+static void sarl_lattice_iterator_factor_prev_leq(
+  struct Sarl_LatticeIterator *it, 
+  struct Sarl_ConceptIterator* value);
+
 static void sarl_lattice_iterator_factor_next(
+  struct Sarl_LatticeIterator *it);
+
+static void sarl_lattice_iterator_factor_prev(
   struct Sarl_LatticeIterator *it);
 
 static Sarl_ConceptIterator* sarl_lattice_iterator_factor_value(
@@ -30,6 +37,9 @@ static int sarl_lattice_iterator_factor_at_end(
   struct Sarl_LatticeIterator *it);
 
 static void sarl_lattice_iterator_factor_reset(
+  struct Sarl_LatticeIterator *it);
+
+static void sarl_lattice_iterator_factor_reset_last(
   struct Sarl_LatticeIterator *it);
 
 static void sarl_lattice_iterator_factor_decr_ref(
@@ -53,10 +63,13 @@ static struct Sarl_SetIterator*
 struct Sarl_LatticeIteratorFunctionTable s_factorLatticeIteratorTable = 
 {
   sarl_lattice_iterator_factor_next_gte,
+  sarl_lattice_iterator_factor_prev_leq,
   sarl_lattice_iterator_factor_next,
+  sarl_lattice_iterator_factor_prev,
   sarl_lattice_iterator_factor_value,
   sarl_lattice_iterator_factor_at_end,
   sarl_lattice_iterator_factor_reset,
+  sarl_lattice_iterator_factor_reset_last,
   sarl_lattice_iterator_factor_decr_ref,
   sarl_lattice_iterator_factor_copy,
 
@@ -93,6 +106,13 @@ void
   sarl_set_iterator_reset(it->A);
 };
 
+void 
+  sarl_lattice_iterator_factor_reset_last(
+    struct Sarl_LatticeIterator *a_it)
+{
+  SARL_NOT_IMPLEMENTED;
+};
+
 
 void 
   sarl_lattice_iterator_factor_next(
@@ -125,6 +145,14 @@ void
   sarl_set_iterator_decr_ref(prev_extent);
 };
 
+void 
+  sarl_lattice_iterator_factor_prev(
+     struct Sarl_LatticeIterator *a_it
+  )
+{
+  SARL_NOT_IMPLEMENTED;
+};
+
 int  
   sarl_lattice_iterator_factor_at_end(
     struct Sarl_LatticeIterator *a_it)
@@ -151,6 +179,15 @@ void
   SARL_NOT_IMPLEMENTED;
 };
 
+
+void 
+  sarl_lattice_iterator_factor_prev_leq(
+    struct Sarl_LatticeIterator *a_it,
+     struct Sarl_ConceptIterator *c
+  )
+{
+  SARL_NOT_IMPLEMENTED;
+};
 
 struct Sarl_SetIterator *
   sarl_lattice_iterator_factor_extent(

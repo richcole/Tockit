@@ -16,7 +16,14 @@ static void sarl_set_iterator_plain_next_gte(
   struct Sarl_SetIterator *it, 
   Sarl_Index value);
 
+static void sarl_set_iterator_plain_prev_leq(
+  struct Sarl_SetIterator *it, 
+  Sarl_Index value);
+
 static void sarl_set_iterator_plain_next(
+  struct Sarl_SetIterator *it);
+
+static void sarl_set_iterator_plain_prev(
   struct Sarl_SetIterator *it);
 
 static Sarl_Index sarl_set_iterator_plain_value(
@@ -26,6 +33,9 @@ static int sarl_set_iterator_plain_at_end(
   struct Sarl_SetIterator *it);
 
 static void sarl_set_iterator_plain_reset(
+  struct Sarl_SetIterator *it);
+
+static void sarl_set_iterator_plain_reset_last(
   struct Sarl_SetIterator *it);
 
 static void sarl_set_iterator_plain_decr_ref(
@@ -39,10 +49,13 @@ static struct Sarl_SetIterator* sarl_set_iterator_plain_copy(
 struct Sarl_SetIteratorFunctionTable s_plainIteratorTable = 
 {
   sarl_set_iterator_plain_next_gte,
+  sarl_set_iterator_plain_prev_leq,
   sarl_set_iterator_plain_next,
+  sarl_set_iterator_plain_prev,
   sarl_set_iterator_plain_value,
   sarl_set_iterator_plain_at_end,
   sarl_set_iterator_plain_reset,
+  sarl_set_iterator_plain_reset_last,
   sarl_set_iterator_plain_decr_ref,
   sarl_set_iterator_plain_copy
 };
@@ -72,6 +85,13 @@ static void  sarl_set_iterator_plain_next_gte(
   }
 }
 
+static void  sarl_set_iterator_plain_prev_leq(
+  struct Sarl_SetIterator *a_it, 
+  Sarl_Index value)
+{
+  SARL_NOT_IMPLEMENTED;
+};
+
 static void  sarl_set_iterator_plain_next(struct Sarl_SetIterator *a_it)
 {
   Sarl_PlainSetIterator *it = static_cast<Sarl_PlainSetIterator*>(a_it);
@@ -79,6 +99,11 @@ static void  sarl_set_iterator_plain_next(struct Sarl_SetIterator *a_it)
     it->it++;
   }
 }
+
+static void  sarl_set_iterator_plain_prev(struct Sarl_SetIterator *a_it)
+{
+  SARL_NOT_IMPLEMENTED;
+};
 
 static Sarl_Index sarl_set_iterator_plain_value(struct Sarl_SetIterator *a_it)
 {
@@ -101,6 +126,11 @@ static void  sarl_set_iterator_plain_reset(struct Sarl_SetIterator *a_it)
 {
   Sarl_PlainSetIterator *it = static_cast<Sarl_PlainSetIterator*>(a_it);
   it->it = it->set->set.begin();
+};
+
+static void  sarl_set_iterator_plain_reset_last(struct Sarl_SetIterator *a_it) 
+{
+  SARL_NOT_IMPLEMENTED;
 };
 
 /* reference counting interface */

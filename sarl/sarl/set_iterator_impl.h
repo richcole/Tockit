@@ -7,10 +7,13 @@
 
 struct Sarl_SetIteratorFunctionTable {
   void  (*next_gte)(struct Sarl_SetIterator *, Sarl_Index);
+  void  (*prev_leq)(struct Sarl_SetIterator *, Sarl_Index);
   void  (*next)(struct Sarl_SetIterator *);
+  void  (*prev)(struct Sarl_SetIterator *);
   Sarl_Index (*value)(struct Sarl_SetIterator *);
   int   (*at_end)(struct Sarl_SetIterator *);
   void  (*reset)(struct Sarl_SetIterator *);
+  void  (*reset_last)(struct Sarl_SetIterator *);
   void  (*decr_ref)(struct Sarl_SetIterator *);
   struct Sarl_SetIterator*  (*copy)(struct Sarl_SetIterator *);
 };

@@ -15,7 +15,14 @@ static void sarl_set_iterator_domain_next_gte(
   struct Sarl_SetIterator *it, 
   Sarl_Index value);
 
+static void sarl_set_iterator_domain_prev_leq(
+  struct Sarl_SetIterator *it, 
+  Sarl_Index value);
+
 static void sarl_set_iterator_domain_next(
+  struct Sarl_SetIterator *it);
+
+static void sarl_set_iterator_domain_prev(
   struct Sarl_SetIterator *it);
 
 static Sarl_Index sarl_set_iterator_domain_value(
@@ -25,6 +32,9 @@ static int sarl_set_iterator_domain_at_end(
   struct Sarl_SetIterator *it);
 
 static void sarl_set_iterator_domain_reset(
+  struct Sarl_SetIterator *it);
+
+static void sarl_set_iterator_domain_reset_last(
   struct Sarl_SetIterator *it);
 
 static void sarl_set_iterator_domain_decr_ref(
@@ -41,10 +51,13 @@ static struct Sarl_SetIterator* sarl_set_iterator_domain_inverse(
 struct Sarl_SetIteratorFunctionTable s_domain_iterator_table = 
 {
   sarl_set_iterator_domain_next_gte,
+  sarl_set_iterator_domain_prev_leq,
   sarl_set_iterator_domain_next,
+  sarl_set_iterator_domain_prev,
   sarl_set_iterator_domain_value,
   sarl_set_iterator_domain_at_end,
   sarl_set_iterator_domain_reset,
+  sarl_set_iterator_domain_reset_last,
   sarl_set_iterator_domain_decr_ref,
   sarl_set_iterator_domain_copy
 };
@@ -58,11 +71,23 @@ static void  sarl_set_iterator_domain_next_gte(
   sarl_relation_iterator_next_gte(it->rel_it, sarl_pair(value, 0));
 }
 
+static void  sarl_set_iterator_domain_prev_leq(
+  struct Sarl_SetIterator *a_it, 
+  Sarl_Index value)
+{
+  SARL_NOT_IMPLEMENTED;
+}
+
 static void  sarl_set_iterator_domain_next(struct Sarl_SetIterator *a_it)
 {
   Sarl_DomainSetIterator *it = static_cast<Sarl_DomainSetIterator*>(a_it);
   sarl_relation_iterator_next_gte(it->rel_it, 
     sarl_pair(sarl_relation_iterator_value(it->rel_it).dom+1, 0));
+}
+
+static void  sarl_set_iterator_domain_prev(struct Sarl_SetIterator *a_it)
+{
+  SARL_NOT_IMPLEMENTED;
 }
 
 static Sarl_Index sarl_set_iterator_domain_value(struct Sarl_SetIterator *a_it)
@@ -77,10 +102,21 @@ static int   sarl_set_iterator_domain_at_end(struct Sarl_SetIterator *a_it)
   return sarl_relation_iterator_at_end(it->rel_it);
 };
 
-static void  sarl_set_iterator_domain_reset(struct Sarl_SetIterator *a_it) 
+static void  
+  sarl_set_iterator_domain_reset(
+    struct Sarl_SetIterator *a_it
+  ) 
 {
   Sarl_DomainSetIterator *it = static_cast<Sarl_DomainSetIterator*>(a_it);
   return sarl_relation_iterator_reset(it->rel_it);
+};
+
+static void  
+  sarl_set_iterator_domain_reset_last(
+    struct Sarl_SetIterator *a_it
+  ) 
+{
+  SARL_NOT_IMPLEMENTED;
 };
 
 /* reference counting interface */

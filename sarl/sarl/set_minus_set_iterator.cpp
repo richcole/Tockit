@@ -15,7 +15,14 @@ static void sarl_set_iterator_set_minus_next_gte(
   struct Sarl_SetIterator *it, 
   Sarl_Index value);
 
+static void sarl_set_iterator_set_minus_prev_leq(
+  struct Sarl_SetIterator *it, 
+  Sarl_Index value);
+
 static void sarl_set_iterator_set_minus_next(
+  struct Sarl_SetIterator *it);
+
+static void sarl_set_iterator_set_minus_prev(
   struct Sarl_SetIterator *it);
 
 static Sarl_Index sarl_set_iterator_set_minus_value(
@@ -25,6 +32,9 @@ static int sarl_set_iterator_set_minus_at_end(
   struct Sarl_SetIterator *it);
 
 static void sarl_set_iterator_set_minus_reset(
+  struct Sarl_SetIterator *it);
+
+static void sarl_set_iterator_set_minus_reset_last(
   struct Sarl_SetIterator *it);
 
 static void sarl_set_iterator_set_minus_decr_ref(
@@ -38,10 +48,13 @@ static struct Sarl_SetIterator* sarl_set_iterator_set_minus_copy(
 struct Sarl_SetIteratorFunctionTable s_set_minus_iterator_table = 
 {
   sarl_set_iterator_set_minus_next_gte,
+  sarl_set_iterator_set_minus_prev_leq,
   sarl_set_iterator_set_minus_next,
+  sarl_set_iterator_set_minus_prev,
   sarl_set_iterator_set_minus_value,
   sarl_set_iterator_set_minus_at_end,
   sarl_set_iterator_set_minus_reset,
+  sarl_set_iterator_set_minus_reset_last,
   sarl_set_iterator_set_minus_decr_ref,
   sarl_set_iterator_set_minus_copy
 };
@@ -96,12 +109,24 @@ static void  sarl_set_iterator_set_minus_next_gte(
   sarl_set_iterator_set_minus_advance(it);
 }
 
+static void  sarl_set_iterator_set_minus_prev_leq(
+  struct Sarl_SetIterator *a_it, 
+  Sarl_Index value)
+{
+  SARL_NOT_IMPLEMENTED;
+};
+
 static void  sarl_set_iterator_set_minus_next(struct Sarl_SetIterator *a_it)
 {
   Sarl_SetMinusSetIterator *it = static_cast<Sarl_SetMinusSetIterator*>(a_it);
   sarl_set_iterator_next(it->first);
   sarl_set_iterator_set_minus_advance(it);
 }
+
+static void  sarl_set_iterator_set_minus_prev(struct Sarl_SetIterator *a_it)
+{
+  SARL_NOT_IMPLEMENTED;
+};
 
 static Sarl_Index sarl_set_iterator_set_minus_value(struct Sarl_SetIterator *a_it)
 {
@@ -121,6 +146,11 @@ static void  sarl_set_iterator_set_minus_reset(struct Sarl_SetIterator *a_it)
   sarl_set_iterator_reset(it->first);
   sarl_set_iterator_reset(it->second);
   sarl_set_iterator_set_minus_advance(it);
+};
+
+static void  sarl_set_iterator_set_minus_reset_last(struct Sarl_SetIterator *a_it) 
+{
+  SARL_NOT_IMPLEMENTED;
 };
 
 /* reference counting interface */

@@ -21,7 +21,14 @@ static void sarl_lattice_iterator_filter_next_gte(
   struct Sarl_LatticeIterator *it, 
   struct Sarl_ConceptIterator* value);
 
+static void sarl_lattice_iterator_filter_prev_leq(
+  struct Sarl_LatticeIterator *it, 
+  struct Sarl_ConceptIterator* value);
+
 static void sarl_lattice_iterator_filter_next(
+  struct Sarl_LatticeIterator *it);
+
+static void sarl_lattice_iterator_filter_prev(
   struct Sarl_LatticeIterator *it);
 
 static Sarl_ConceptIterator* sarl_lattice_iterator_filter_value(
@@ -31,6 +38,9 @@ static int sarl_lattice_iterator_filter_at_end(
   struct Sarl_LatticeIterator *it);
 
 static void sarl_lattice_iterator_filter_reset(
+  struct Sarl_LatticeIterator *it);
+
+static void sarl_lattice_iterator_filter_reset_last(
   struct Sarl_LatticeIterator *it);
 
 static void sarl_lattice_iterator_filter_decr_ref(
@@ -66,10 +76,13 @@ static struct Sarl_LatticeIterator *
 struct Sarl_LatticeIteratorFunctionTable s_filterLatticeIteratorTable = 
 {
   sarl_lattice_iterator_filter_next_gte,
+  sarl_lattice_iterator_filter_prev_leq,
   sarl_lattice_iterator_filter_next,
+  sarl_lattice_iterator_filter_prev,
   sarl_lattice_iterator_filter_value,
   sarl_lattice_iterator_filter_at_end,
   sarl_lattice_iterator_filter_reset,
+  sarl_lattice_iterator_filter_reset_last,
   sarl_lattice_iterator_filter_decr_ref,
   sarl_lattice_iterator_filter_copy,
 
@@ -126,6 +139,12 @@ void
   it->A = sarl_context_iterator_extent_set(it->context, it->B);
 };
 
+void 
+  sarl_lattice_iterator_filter_reset_last(
+    struct Sarl_LatticeIterator *a_it)
+{
+  SARL_NOT_IMPLEMENTED;
+};
 
 void 
   sarl_lattice_iterator_filter_next(
@@ -154,6 +173,14 @@ void
   
   it->A = next_A;
   it->B = next_B;
+};
+
+void 
+  sarl_lattice_iterator_filter_prev(
+     struct Sarl_LatticeIterator *a_it
+  )
+{
+  SARL_NOT_IMPLEMENTED;
 };
 
 int  
@@ -201,6 +228,15 @@ void
     it->A = next_A;
     it->B = next_B;
   }
+};
+
+void 
+  sarl_lattice_iterator_filter_prev_leq(
+    struct Sarl_LatticeIterator *a_it,
+     struct Sarl_ConceptIterator *c
+  )
+{
+  SARL_NOT_IMPLEMENTED;
 };
 
 

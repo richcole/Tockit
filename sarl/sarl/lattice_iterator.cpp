@@ -23,11 +23,28 @@ void
 
 
 void 
+  sarl_lattice_iterator_reset_last(
+    struct Sarl_LatticeIterator *it
+  )
+{
+  it->funcs->reset_last(it);
+};
+
+
+void 
   sarl_lattice_iterator_next(
      struct Sarl_LatticeIterator *it
   )
 {
   it->funcs->next(it);
+};
+
+void 
+  sarl_lattice_iterator_prev(
+     struct Sarl_LatticeIterator *it
+  )
+{
+  it->funcs->prev(it);
 };
 
 int  
@@ -115,5 +132,22 @@ struct Sarl_LatticeIterator*
 {
   return it->funcs->copy(it);
 };
+
+struct Sarl_LatticeIterator *
+  sarl_lattice_iterator_obtain_ownership(
+    struct Sarl_LatticeIterator *it
+  )
+{
+  return sarl_iterator_obtain_ownership(it, sarl_lattice_iterator_copy);
+};
+
+struct Sarl_LatticeIterator *
+  sarl_lattice_iterator_release_ownership(
+    struct Sarl_LatticeIterator *it
+  )
+{
+  return sarl_iterator_release_ownership(it);
+};
+
 
 

@@ -71,6 +71,11 @@ void  sarl_set_iterator_next(struct Sarl_SetIterator *it)
   it->funcs->next(it);
 }
 
+void  sarl_set_iterator_prev(struct Sarl_SetIterator *it)
+{
+  it->funcs->prev(it);
+}
+
 Sarl_Index sarl_set_iterator_value(struct Sarl_SetIterator *it)
 {
   return it->funcs->value(it);
@@ -84,6 +89,11 @@ int   sarl_set_iterator_at_end(struct Sarl_SetIterator *it)
 void  sarl_set_iterator_reset(struct Sarl_SetIterator *it) 
 {
   it->funcs->reset(it);
+};
+
+void  sarl_set_iterator_reset_last(struct Sarl_SetIterator *it) 
+{
+  it->funcs->reset_last(it);
 };
 
 void sarl_set_iterator_decr_ref(struct Sarl_SetIterator *it)

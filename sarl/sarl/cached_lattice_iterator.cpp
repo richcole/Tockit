@@ -23,7 +23,14 @@ static void sarl_lattice_iterator_cached_next_gte(
   struct Sarl_LatticeIterator *it, 
   struct Sarl_ConceptIterator* value);
 
+static void sarl_lattice_iterator_cached_prev_leq(
+  struct Sarl_LatticeIterator *it, 
+  struct Sarl_ConceptIterator* value);
+
 static void sarl_lattice_iterator_cached_next(
+  struct Sarl_LatticeIterator *it);
+
+static void sarl_lattice_iterator_cached_prev(
   struct Sarl_LatticeIterator *it);
 
 static Sarl_ConceptIterator* sarl_lattice_iterator_cached_value(
@@ -33,6 +40,9 @@ static int sarl_lattice_iterator_cached_at_end(
   struct Sarl_LatticeIterator *it);
 
 static void sarl_lattice_iterator_cached_reset(
+  struct Sarl_LatticeIterator *it);
+
+static void sarl_lattice_iterator_cached_reset_last(
   struct Sarl_LatticeIterator *it);
 
 static void sarl_lattice_iterator_cached_decr_ref(
@@ -62,10 +72,13 @@ static struct Sarl_LatticeIterator*
 struct Sarl_LatticeIteratorFunctionTable s_CachedLatticeIteratorTable = 
 {
   sarl_lattice_iterator_cached_next_gte,
+  sarl_lattice_iterator_cached_prev_leq,
   sarl_lattice_iterator_cached_next,
+  sarl_lattice_iterator_cached_prev,
   sarl_lattice_iterator_cached_value,
   sarl_lattice_iterator_cached_at_end,
   sarl_lattice_iterator_cached_reset,
+  sarl_lattice_iterator_cached_reset_last,
   sarl_lattice_iterator_cached_decr_ref,
   sarl_lattice_iterator_cached_copy,
 
@@ -123,6 +136,16 @@ void
   sarl_set_iterator_reset(it->concept);
 };
 
+void 
+  sarl_lattice_iterator_cached_reset_last(
+    struct Sarl_LatticeIterator *a_it)
+{
+  Sarl_CachedLatticeIterator* it = 
+   static_cast<struct Sarl_CachedLatticeIterator*>(a_it);
+
+  sarl_set_iterator_reset_last(it->concept);
+};
+
 
 void 
   sarl_lattice_iterator_cached_next(
@@ -133,6 +156,17 @@ void
    static_cast<struct Sarl_CachedLatticeIterator*>(a_it);
 
   sarl_set_iterator_next(it->concept);
+};
+
+void 
+  sarl_lattice_iterator_cached_prev(
+     struct Sarl_LatticeIterator *a_it
+  )
+{
+  Sarl_CachedLatticeIterator* it = 
+   static_cast<struct Sarl_CachedLatticeIterator*>(a_it);
+
+  sarl_set_iterator_prev(it->concept);
 };
 
 int  
@@ -168,6 +202,14 @@ void
   sarl_set_iterator_decr_ref(B_i);
 };
 
+void 
+  sarl_lattice_iterator_cached_prev_leq(
+    struct Sarl_LatticeIterator *a_it,
+     struct Sarl_ConceptIterator *c
+  )
+{
+  SARL_NOT_IMPLEMENTED;
+};
 
 struct Sarl_LatticeIterator *
   sarl_lattice_iterator_cached_ideal_from_intent(

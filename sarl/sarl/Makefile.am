@@ -93,6 +93,7 @@ libsarl_la_SOURCES =           \
 	dictionary.cpp \
 	dictionary_indexes_set_iterator.cpp \
 	domain_set_iterator.cpp \
+        factor_lattice_iterator.cpp \
 	filter_lattice_iterator.cpp \
 	input_stream.cpp \
 	intent_set_iterator.cpp \
@@ -127,6 +128,7 @@ libsarl_la_SOURCES =           \
         context_iterator_impl.h \
         dictionary_impl.h \
         domain_set_iterator_impl.h \
+        factor_lattice_iterator_impl.h \
         intersection_set_iterator_impl.h \
         iterator_impl.h \
         lattice_impl.h \

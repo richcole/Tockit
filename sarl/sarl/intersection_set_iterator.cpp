@@ -15,7 +15,14 @@ static void sarl_set_iterator_intersection_next_gte(
   struct Sarl_SetIterator *it, 
   Sarl_Index value);
 
+static void sarl_set_iterator_intersection_prev_leq(
+  struct Sarl_SetIterator *it, 
+  Sarl_Index value);
+
 static void sarl_set_iterator_intersection_next(
+  struct Sarl_SetIterator *it);
+
+static void sarl_set_iterator_intersection_prev(
   struct Sarl_SetIterator *it);
 
 static Sarl_Index sarl_set_iterator_intersection_value(
@@ -25,6 +32,9 @@ static int sarl_set_iterator_intersection_at_end(
   struct Sarl_SetIterator *it);
 
 static void sarl_set_iterator_intersection_reset(
+  struct Sarl_SetIterator *it);
+
+static void sarl_set_iterator_intersection_reset_last(
   struct Sarl_SetIterator *it);
 
 static void sarl_set_iterator_intersection_decr_ref(
@@ -38,10 +48,13 @@ static struct Sarl_SetIterator* sarl_set_iterator_intersection_copy(
 struct Sarl_SetIteratorFunctionTable s_intersectionIteratorTable = 
 {
   sarl_set_iterator_intersection_next_gte,
+  sarl_set_iterator_intersection_prev_leq,
   sarl_set_iterator_intersection_next,
+  sarl_set_iterator_intersection_prev,
   sarl_set_iterator_intersection_value,
   sarl_set_iterator_intersection_at_end,
   sarl_set_iterator_intersection_reset,
+  sarl_set_iterator_intersection_reset_last,
   sarl_set_iterator_intersection_decr_ref,
   sarl_set_iterator_intersection_copy
 };
@@ -97,6 +110,13 @@ static void  sarl_set_iterator_intersection_next_gte(
   sarl_set_iterator_intersection_advance(it);
 }
 
+static void  sarl_set_iterator_intersection_prev_leq(
+  struct Sarl_SetIterator *a_it, 
+  Sarl_Index value)
+{
+  SARL_NOT_IMPLEMENTED;
+};
+
 static void  sarl_set_iterator_intersection_next(struct Sarl_SetIterator *a_it)
 {
   Sarl_IntersectionSetIterator *it = 
@@ -105,6 +125,11 @@ static void  sarl_set_iterator_intersection_next(struct Sarl_SetIterator *a_it)
   sarl_set_iterator_next(it->second);
   sarl_set_iterator_intersection_advance(it);
 }
+
+static void  sarl_set_iterator_intersection_prev(struct Sarl_SetIterator *a_it)
+{
+  SARL_NOT_IMPLEMENTED;
+};
 
 static Sarl_Index sarl_set_iterator_intersection_value(
   struct Sarl_SetIterator *a_it)
@@ -131,6 +156,12 @@ static void  sarl_set_iterator_intersection_reset(
   sarl_set_iterator_reset(it->first);
   sarl_set_iterator_reset(it->second);
   sarl_set_iterator_intersection_advance(it);
+};
+
+static void  sarl_set_iterator_intersection_reset_last(
+  struct Sarl_SetIterator *a_it) 
+{
+  SARL_NOT_IMPLEMENTED;
 };
 
 /* reference counting interface */
