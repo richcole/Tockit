@@ -33,7 +33,7 @@ int main(int num_args, char **args)
   Sarl_SetIterator      *curr, *next;
 
   int            i, j;
-  int            LEN = 100;
+  int            LEN = 50;
 
   empty  = sarl_set_create();
   parent = sarl_set_create();

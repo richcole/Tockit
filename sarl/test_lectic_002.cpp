@@ -6,6 +6,7 @@ extern "C" {
   #include <sarl/set.h>
   #include <sarl/context_iterator.h>
   #include <sarl/lectic.h>
+  #include <sarl/test.h>
   
 }
 #include <sys/time.h>
@@ -34,10 +35,11 @@ int main(int num_args, char **args)
   Sarl_Set              *empty;
   Sarl_SetIterator      *curr, *next;
 
-	Sarl_SetIterator      *M;
+  Sarl_SetIterator      *M;
 
   int            i, j;
-  int            LEN = 100;
+  int            LEN = 50;
+  int            concept_count;
 
   r     = sarl_relation_create();
 
@@ -51,15 +53,15 @@ int main(int num_args, char **args)
 
   r_it = sarl_relation_iterator_create(r);
   K    = sarl_context_iterator_create_from_relation(r_it);
-	M    = sarl_context_iterator_attributes(K);
-	sarl_set_iterator_release_ownership(M);
+  M    = sarl_context_iterator_attributes(K);
+  sarl_set_iterator_release_ownership(M);
   curr = sarl_context_iterator_extent_set(K, M);
 
+  concept_count = 0;
   timeval t1, t2;
   gettimeofday(&t1, 0);
   do {
-    //    print_extent(curr);
-
+    ++concept_count;
     sarl_set_iterator_release_ownership(curr);
     next = sarl_context_iterator_next_extent(K, curr);
     sarl_set_iterator_decr_ref(curr);
@@ -74,5 +76,7 @@ int main(int num_args, char **args)
   sarl_relation_decr_ref(r);
   sarl_relation_iterator_decr_ref(r_it);
   sarl_context_iterator_decr_ref(K);
-	sarl_set_iterator_decr_ref(M);
+  sarl_set_iterator_decr_ref(M);
+
+  SARL_TEST_ASSERT_EQ(concept_count, LEN+1);
 };

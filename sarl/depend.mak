@@ -1,5 +1,17 @@
 # DO NOT DELETE
 
+objs/assert.o: assert.h
+objs/cached_lattice_iterator.o: ../sarl/config.h ../sarl/concept_iterator.h
+objs/cached_lattice_iterator.o: ../sarl/index.h ../sarl/context_iterator.h
+objs/cached_lattice_iterator.o: ../sarl/pair.h ../sarl/lattice_iterator.h
+objs/cached_lattice_iterator.o: ../sarl/set_iterator.h ../sarl/ref_count.h
+objs/cached_lattice_iterator.o: ../sarl/lattice.h
+objs/cached_lattice_iterator.o: ../sarl/filter_lattice_iterator.h
+objs/cached_lattice_iterator.o: ../sarl/relation_iterator.h
+objs/cached_lattice_iterator.o: ../sarl/concept_iterator_impl.h
+objs/cached_lattice_iterator.o: ../sarl/iterator_impl.h ../sarl/ownership.h
+objs/cached_lattice_iterator.o: ../sarl/test.h ../sarl/lattice_iterator_impl.h
+objs/cached_lattice_iterator.o: ../sarl/lattice_impl.h
 objs/concept_iterator.o: ../sarl/concept_iterator.h ../sarl/index.h
 objs/concept_iterator.o: ../sarl/set_iterator.h ../sarl/ref_count.h
 objs/concept_iterator.o: ../sarl/concept_iterator_impl.h ../sarl/iterator_impl.h
@@ -82,6 +94,13 @@ objs/join_relation_iterator-new.o: ../sarl/ref_count.h ../sarl/relation_impl.h
 objs/join_relation_iterator-new.o: ../sarl/relation_iterator_impl.h
 objs/join_relation_iterator-new.o: ../sarl/iterator_impl.h ../sarl/ownership.h
 objs/join_relation_iterator-new.o: ../sarl/test.h ../sarl/join_relation_iterator.h
+objs/lattice.o: ../sarl/lattice.h ../sarl/index.h ../sarl/set.h ../sarl/relation.h
+objs/lattice.o: ../sarl/pair.h ../sarl/transitive_relation.h
+objs/lattice.o: ../sarl/lattice_iterator.h ../sarl/set_iterator.h
+objs/lattice.o: ../sarl/relation_iterator.h ../sarl/lattice_impl.h
+objs/lattice.o: ../sarl/ref_count.h ../sarl/lattice_iterator_impl.h
+objs/lattice.o: ../sarl/iterator_impl.h ../sarl/ownership.h ../sarl/test.h
+objs/lattice.o: ../sarl/set_impl.h ../sarl/relation_impl.h
 objs/lattice_iterator.o: ../sarl/config.h ../sarl/concept_iterator.h
 objs/lattice_iterator.o: ../sarl/index.h ../sarl/context_iterator.h ../sarl/pair.h
 objs/lattice_iterator.o: ../sarl/lattice_iterator.h ../sarl/set_iterator.h
@@ -182,6 +201,12 @@ objs/test_set_iterator_set_minus.o: ../sarl/set.h ../sarl/index.h
 objs/test_set_iterator_set_minus.o: ../sarl/set_iterator.h
 objs/test_set_iterator_union.o: ../sarl/set.h ../sarl/index.h
 objs/test_set_iterator_union.o: ../sarl/set_iterator.h
+objs/transitive_relation.o: ../sarl/config.h ../sarl/set.h ../sarl/index.h
+objs/transitive_relation.o: ../sarl/set_iterator.h ../sarl/relation.h
+objs/transitive_relation.o: ../sarl/pair.h ../sarl/transitive_relation.h
+objs/transitive_relation.o: ../sarl/relation_iterator.h ../sarl/ref_count.h
+objs/transitive_relation.o: relation_impl.h transitive_relation_impl.h
+objs/transitive_relation.o: ../sarl/relation_impl.h
 objs/union_set_iterator.o: ../sarl/set.h ../sarl/index.h ../sarl/set_iterator.h
 objs/union_set_iterator.o: ../sarl/ref_count.h ../sarl/set_impl.h
 objs/union_set_iterator.o: ../sarl/union_set_iterator_impl.h
@@ -189,6 +214,18 @@ objs/union_set_iterator.o: ../sarl/set_iterator_impl.h ../sarl/iterator_impl.h
 objs/union_set_iterator.o: ../sarl/ownership.h ../sarl/test.h
 # DO NOT DELETE
 
+objs_d/assert.o: assert.h
+objs_d/cached_lattice_iterator.o: ../sarl/config.h ../sarl/concept_iterator.h
+objs_d/cached_lattice_iterator.o: ../sarl/index.h ../sarl/context_iterator.h
+objs_d/cached_lattice_iterator.o: ../sarl/pair.h ../sarl/lattice_iterator.h
+objs_d/cached_lattice_iterator.o: ../sarl/set_iterator.h ../sarl/ref_count.h
+objs_d/cached_lattice_iterator.o: ../sarl/lattice.h
+objs_d/cached_lattice_iterator.o: ../sarl/filter_lattice_iterator.h
+objs_d/cached_lattice_iterator.o: ../sarl/relation_iterator.h
+objs_d/cached_lattice_iterator.o: ../sarl/concept_iterator_impl.h
+objs_d/cached_lattice_iterator.o: ../sarl/iterator_impl.h ../sarl/ownership.h
+objs_d/cached_lattice_iterator.o: ../sarl/test.h ../sarl/lattice_iterator_impl.h
+objs_d/cached_lattice_iterator.o: ../sarl/lattice_impl.h
 objs_d/concept_iterator.o: ../sarl/concept_iterator.h ../sarl/index.h
 objs_d/concept_iterator.o: ../sarl/set_iterator.h ../sarl/ref_count.h
 objs_d/concept_iterator.o: ../sarl/concept_iterator_impl.h ../sarl/iterator_impl.h
@@ -271,6 +308,13 @@ objs_d/join_relation_iterator-new.o: ../sarl/ref_count.h ../sarl/relation_impl.h
 objs_d/join_relation_iterator-new.o: ../sarl/relation_iterator_impl.h
 objs_d/join_relation_iterator-new.o: ../sarl/iterator_impl.h ../sarl/ownership.h
 objs_d/join_relation_iterator-new.o: ../sarl/test.h ../sarl/join_relation_iterator.h
+objs_d/lattice.o: ../sarl/lattice.h ../sarl/index.h ../sarl/set.h ../sarl/relation.h
+objs_d/lattice.o: ../sarl/pair.h ../sarl/transitive_relation.h
+objs_d/lattice.o: ../sarl/lattice_iterator.h ../sarl/set_iterator.h
+objs_d/lattice.o: ../sarl/relation_iterator.h ../sarl/lattice_impl.h
+objs_d/lattice.o: ../sarl/ref_count.h ../sarl/lattice_iterator_impl.h
+objs_d/lattice.o: ../sarl/iterator_impl.h ../sarl/ownership.h ../sarl/test.h
+objs_d/lattice.o: ../sarl/set_impl.h ../sarl/relation_impl.h
 objs_d/lattice_iterator.o: ../sarl/config.h ../sarl/concept_iterator.h
 objs_d/lattice_iterator.o: ../sarl/index.h ../sarl/context_iterator.h ../sarl/pair.h
 objs_d/lattice_iterator.o: ../sarl/lattice_iterator.h ../sarl/set_iterator.h
@@ -371,6 +415,12 @@ objs_d/test_set_iterator_set_minus.o: ../sarl/set.h ../sarl/index.h
 objs_d/test_set_iterator_set_minus.o: ../sarl/set_iterator.h
 objs_d/test_set_iterator_union.o: ../sarl/set.h ../sarl/index.h
 objs_d/test_set_iterator_union.o: ../sarl/set_iterator.h
+objs_d/transitive_relation.o: ../sarl/config.h ../sarl/set.h ../sarl/index.h
+objs_d/transitive_relation.o: ../sarl/set_iterator.h ../sarl/relation.h
+objs_d/transitive_relation.o: ../sarl/pair.h ../sarl/transitive_relation.h
+objs_d/transitive_relation.o: ../sarl/relation_iterator.h ../sarl/ref_count.h
+objs_d/transitive_relation.o: relation_impl.h transitive_relation_impl.h
+objs_d/transitive_relation.o: ../sarl/relation_impl.h
 objs_d/union_set_iterator.o: ../sarl/set.h ../sarl/index.h ../sarl/set_iterator.h
 objs_d/union_set_iterator.o: ../sarl/ref_count.h ../sarl/set_impl.h
 objs_d/union_set_iterator.o: ../sarl/union_set_iterator_impl.h
