@@ -8,11 +8,9 @@
 package org.tockit.docco.query;
 
 import org.apache.lucene.document.Document;
+import org.tockit.docco.GlobalVars;
 
 public class HitReference {
-	
-	private static final String DOC_PATH_FIELD = "path";
-	
 	private Document doc;
 	private float score;
 	
@@ -35,12 +33,15 @@ public class HitReference {
 			return false;
 		}
 		HitReference otherHR = (HitReference) other;
-		return this.getDocument().getField(DOC_PATH_FIELD).toString().equals(
-								otherHR.getDocument().getField(DOC_PATH_FIELD).toString());
+		return this.getDocument().getField(GlobalVars.FIELD_DOC_PATH).toString().equals(
+								otherHR.getDocument().getField(GlobalVars.FIELD_DOC_PATH).toString());
 	}
 	
 	public int hashCode() {
-		return this.getDocument().getField(DOC_PATH_FIELD).toString().hashCode();
+		return this.getDocument().getField(GlobalVars.FIELD_DOC_PATH).toString().hashCode();
 	}
 
+	public String toString() {
+		return this.getDocument().getField(GlobalVars.FIELD_DOC_TITLE).stringValue();
+	}
 }

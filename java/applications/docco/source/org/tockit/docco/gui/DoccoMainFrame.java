@@ -8,7 +8,6 @@
 package org.tockit.docco.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -27,12 +26,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
-import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -41,7 +38,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.ListCellRenderer;
 
 import net.sourceforge.toscanaj.controller.fca.ConceptInterpretationContext;
 import net.sourceforge.toscanaj.controller.fca.ConceptInterpreter;
@@ -62,7 +58,6 @@ import net.sourceforge.toscanaj.model.lattice.Lattice;
 import net.sourceforge.toscanaj.view.diagram.DiagramView;
 import net.sourceforge.toscanaj.view.diagram.NodeView;
 
-import org.apache.lucene.document.Document;
 import org.tockit.canvas.CanvasItem;
 import org.tockit.canvas.events.CanvasItemSelectedEvent;
 import org.tockit.events.Event;
@@ -70,7 +65,6 @@ import org.tockit.events.EventBroker;
 import org.tockit.events.EventBrokerListener;
 
 
-import org.tockit.docco.GlobalVars;
 import org.tockit.docco.events.QueryEvent;
 import org.tockit.docco.events.QueryFinishedEvent;
 import org.tockit.docco.query.HitReference;
@@ -295,88 +289,8 @@ public class DoccoMainFrame extends JFrame {
 				resListModel.addElement(cur);
 			}
 			
-			/// @todo add object contingent display
-			
+			/// @todo highlight object contingent
 		}
-		
-	}
-
-	///@todo remove one renderer
-	private class ResultsListRenderer extends JEditorPane implements ListCellRenderer {
-		public ResultsListRenderer () {
-			super("text/html", "");
-		}
-		
-		public Component getListCellRendererComponent(JList list, Object value, 
-											int index, boolean isSelected, 
-											boolean cellHasFocus) {
-			HitReference hitRef = (HitReference) value;
-
-			if (isSelected) {
-				setBackground(list.getSelectionBackground());
-				setForeground(list.getSelectionForeground());
-			} else {
-				setBackground(list.getBackground());
-				setForeground(list.getForeground());
-			}
-			
-			Document doc = hitRef.getDocument();
-			String text = doc.getField(GlobalVars.FIELD_DOC_TITLE).stringValue();
-			
-			String entryText = "<html>" + "<p>" +
-				"<a href=\"" + doc.getField(GlobalVars.FIELD_DOC_PATH).stringValue() + 
-				"\">" + text + "</a>" +
-				"<br>" + doc.getField(GlobalVars.FIELD_DOC_SUMMARY).stringValue() +
-				"<br>Score: " + hitRef.getScore() +
-				"</p>" + "</html>";
-			this.setText(entryText);	
-			
-			setFont(list.getFont());
-			return this;
-		}
-		
-	}
-	
-	///@todo remove one renderer
-	private class ResultsListRenderer2 extends JPanel implements ListCellRenderer {
-		JLabel titleLabel = new JLabel();
-		JLabel scoreLabel = new JLabel();
-		JButton testButton = new JButton("Open this document");
-		public ResultsListRenderer2 () {
-			super();
-			setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-			testButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent event) {
-					System.out.println("button pressed" + titleLabel.getText());
-				}
-			});
-			add(titleLabel);
-			add(scoreLabel);
-			add(testButton);
-		}
-		
-		public Component getListCellRendererComponent(JList list, Object value, 
-											int index, boolean isSelected, 
-											boolean cellHasFocus) {
-			HitReference hitRef = (HitReference) value;
-
-			if (isSelected) {
-				setBackground(list.getSelectionBackground());
-				setForeground(list.getSelectionForeground());
-			} else {
-				setBackground(list.getBackground());
-				setForeground(list.getForeground());
-			}
-			
-			Document doc = hitRef.getDocument();
-			String text = doc.getField(GlobalVars.FIELD_DOC_TITLE).stringValue();
-			titleLabel.setText(text);
-			scoreLabel.setText("score: " + hitRef.getScore());
-			
-			setFont(list.getFont());
-			return this;
-		}
-		
 	}
 
 	public DoccoMainFrame (EventBroker eventBroker) {
@@ -408,10 +322,7 @@ public class DoccoMainFrame extends JFrame {
 				System.exit(0);
 			}
 		});
-		
 	}
-	
-	
 	
 	private JComponent buildQueryViewComponent() {
 		JPanel queryPanel = new JPanel(new FlowLayout());
@@ -490,7 +401,6 @@ public class DoccoMainFrame extends JFrame {
 									NodeView.class);
 
 		JList resList = new JList(this.resListModel);
-		resList.setCellRenderer(new ResultsListRenderer());
 		JScrollPane scrollPane = new JScrollPane(resList);
 		
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
