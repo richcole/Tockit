@@ -35,6 +35,7 @@ filter_lattice_iterator.o: ../sarl/config.h ../sarl/concept_iterator.h
 filter_lattice_iterator.o: ../sarl/index.h ../sarl/context_iterator.h
 filter_lattice_iterator.o: ../sarl/pair.h ../sarl/lattice_iterator.h
 filter_lattice_iterator.o: ../sarl/set_iterator.h ../sarl/ref_count.h
+filter_lattice_iterator.o: ../sarl/filter_lattice_iterator.h
 filter_lattice_iterator.o: ../sarl/concept_iterator_impl.h
 filter_lattice_iterator.o: ../sarl/iterator_impl.h ../sarl/test.h
 filter_lattice_iterator.o: ../sarl/lattice_iterator_impl.h
@@ -128,6 +129,7 @@ set_minus_set_iterator.o: ../sarl/set_impl.h
 set_minus_set_iterator.o: ../sarl/set_minus_set_iterator_impl.h
 set_minus_set_iterator.o: ../sarl/set_iterator_impl.h ../sarl/iterator_impl.h
 set_minus_set_iterator.o: ../sarl/test.h
+string.o: ../sarl/string.h ../sarl/index.h ../sarl/ref_count.h string_impl.h
 test_lattice_001.o: ../sarl/test.h args.cpp
 test_lectic_001.o: ../sarl/relation.h ../sarl/index.h ../sarl/pair.h
 test_lectic_001.o: ../sarl/relation_iterator.h ../sarl/set_iterator.h
