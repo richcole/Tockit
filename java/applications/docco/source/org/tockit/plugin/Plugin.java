@@ -5,7 +5,7 @@
  *
  * $Id$
  */
-package org.tockit.docco.plugin;
+package org.tockit.plugin;
 
 
 public interface Plugin {
