@@ -164,7 +164,6 @@ public class FileMappingsEditingDialog extends JDialog {
 				if (index >= 1) {
 					model.moveMapping(index, index -1);
 					jlist.setSelectedIndex(index - 1);
-					// @todo store mappings in index ???
 					setSaveButtonsStatus(true);
 				}
 			}
@@ -177,7 +176,6 @@ public class FileMappingsEditingDialog extends JDialog {
 				if (index + 1 < model.getSize()) {
 					model.moveMapping(index, index + 1);
 					jlist.setSelectedIndex(index + 1);
-					// @todo store mappings in index ???
 					setSaveButtonsStatus(true);
 				}
 			}
