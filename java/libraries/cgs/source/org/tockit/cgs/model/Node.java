@@ -127,10 +127,18 @@ public class Node {
     public boolean mergePossible(Node otherNode) {
         Instance ourReferent = this.getReferent();
         Instance otherReferent = otherNode.getReferent();
-        if( (ourReferent != null) &&
-            (otherReferent != null ) &&
-            (ourReferent != otherReferent ) ) {
-            return false;
+        if(ourReferent != null) {
+            if( (otherReferent != null ) &&
+                (ourReferent != otherReferent ) ) {
+                return false;
+            }
+            if( !(ourReferent.getType().hasSupertype(otherNode.getType())) ) {
+                return false;
+            }
+        } else if (otherReferent != null) {
+            if( !(otherReferent.getType().hasSupertype(this.getType())) ) {
+                return false;
+            }
         }
         Type ourType = this.getType();
         Type otherType = otherNode.getType();

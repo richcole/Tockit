@@ -52,8 +52,9 @@ public class NodeContextMenuHandler implements EventListener {
         // create the menu
         JPopupMenu popupMenu = new JPopupMenu();
         Node node = nodeView.getNode();
-        /// @todo restricted type has to match instance!
-        createRestrictTypeMenu(popupMenu, node, node.getType());
+        if(node.getReferent() == null || node.getReferent().getType() != node.getType()) {
+            createRestrictTypeMenu(popupMenu, node, node.getType());
+        }
         if(node.getReferent() == null) {
             createInstantiateMenu(popupMenu, node);
         }
@@ -147,11 +148,15 @@ public class NodeContextMenuHandler implements EventListener {
     private void createRestrictTypeMenu(JPopupMenu parentMenu, final Node node, final Type type) {
         JMenuItem menuItem;
         JMenu restrictTypeMenu = new JMenu("Restrict Type");
-        menuItem = new JMenuItem("New type");
-        menuItem.addActionListener(new CreateNewTypeListener(node, type));
-        restrictTypeMenu.add(menuItem);
+        boolean first = true;
+        if( node.getReferent() == null ) {
+            menuItem = new JMenuItem("New type");
+            menuItem.addActionListener(new CreateNewTypeListener(node, type));
+            restrictTypeMenu.add(menuItem);
+            first = false;
+        }
         Type[] directSubtypes = type.getDirectSubtypes();
-        if(directSubtypes.length != 0) {
+        if(directSubtypes.length != 0 && !first) {
             restrictTypeMenu.addSeparator();
         }
         for (int i = 0; i < directSubtypes.length; i++) {
@@ -173,18 +178,24 @@ public class NodeContextMenuHandler implements EventListener {
             }
         });
         parentMenu.add(menuItem);
-        menuItem = new JMenuItem("New type");
-        menuItem.addActionListener((new CreateNewTypeListener(node, type)));
-        parentMenu.add(menuItem);
-        Type[] directSubtypes = type.getDirectSubtypes();
-        if(directSubtypes.length != 0) {
-            parentMenu.addSeparator();
+        if( node.getReferent() == null ) {
+            menuItem = new JMenuItem("New type");
+            menuItem.addActionListener((new CreateNewTypeListener(node, type)));
+            parentMenu.add(menuItem);
         }
+        Type[] directSubtypes = type.getDirectSubtypes();
+        boolean first = true;
         for (int i = 0; i < directSubtypes.length; i++) {
             Type directSubtype = directSubtypes[i];
-            JMenu subMenu = new JMenu(directSubtype.getName());
-            createRestrictTypeSubMenu(subMenu, node, directSubtype);
-            parentMenu.add(subMenu);
+            if( node.getReferent() == null || node.getReferent().getType().hasSupertype(directSubtype)) {
+                if(first) {
+                    parentMenu.addSeparator();
+                    first = false;
+                }
+                JMenu subMenu = new JMenu(directSubtype.getName());
+                createRestrictTypeSubMenu(subMenu, node, directSubtype);
+                parentMenu.add(subMenu);
+            }
         }
     }
 
