@@ -6,7 +6,8 @@ JAVAC = javac
 # DEBUG = -march=i686 -O3 -pg -ggdb # -ggdb
 # DEBUG = -ggdb 
 
-DEBUG = -O2 -march=i686 
+DEBUG = -ggdb
+OPTIM = -O3 -march=i686
 
 # Sarl Root
 

@@ -23,5 +23,23 @@ extern struct Sarl_SetIterator*
     struct Sarl_SetIterator *G
     );
 
+extern bool
+  sarl_set_iterator_lectic_is_leq(
+    struct Sarl_SetIterator *A,
+    struct Sarl_SetIterator *B
+    );
+
+extern bool
+  sarl_set_iterator_lectic_is_le(
+    struct Sarl_SetIterator *A,
+    struct Sarl_SetIterator *B
+    );
+
+extern bool
+  sarl_set_iterator_lectic_is_eq(
+    struct Sarl_SetIterator *A,
+    struct Sarl_SetIterator *B
+    );
+
 #endif
 

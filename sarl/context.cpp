@@ -40,6 +40,15 @@ sarl_context_copy(
 void 
 sarl_context_insert(
   struct Sarl_Context *ap_context, 
+  Sarl_Index g, Sarl_Index m)
+{
+  Sarl_Pair pair = sarl_pair(g,m);
+  sarl_context_insert_pair(ap_context, pair);
+}
+
+void 
+sarl_context_insert_pair(
+  struct Sarl_Context *ap_context, 
   Sarl_Pair            a_pair)
 {
   sarl_relation_insert_pair(ap_context->I, a_pair);
@@ -65,11 +74,19 @@ sarl_context_insert_attribute(
 }
 
 void 
+sarl_context_remove_pair(
+  struct Sarl_Context *ap_context, 
+  Sarl_Pair a_pair)
+{
+  sarl_relation_insert_pair(ap_context->I, a_pair);
+}
+
+void 
 sarl_context_remove(
   struct Sarl_Context *ap_context, 
-	Sarl_Pair a_pair)
+  Sarl_Index g, Sarl_Index m)
 {
-	sarl_relation_insert_pair(ap_context->I, a_pair);
+  sarl_relation_insert_pair(ap_context->I, sarl_pair(g,m));
 }
 
 void 

@@ -86,7 +86,7 @@ $(TESTS) : $(TESTS:%=%.exe)
 libs: lib/libsarl.so lib_d/libsarl.so lib/libsarl++.so lib_d/libsarl++.so
 
 $(PYTHON_SARL_LIB): lib_d/libsarl.so lib_d/libsarl++.so \
-        $(OBJECTS:%=objs_d/objs_d/%.o) python/sarl_wrap.o
+        $(OBJECTS:%=objs_d/%.o) python/sarl_wrap.o
 	$(CC) $(DEBUG) -shared -o $@ $(OBJECTS:%=objs_d/%.o) python/sarl_wrap.o \
          -Llib_d -lstdc++ -lsarl++ -lsarl
 
@@ -99,7 +99,7 @@ lib_d/libsarl.so: $(OBJECTS:%=objs_d/%.o) lib_d
 	$(CC) $(DEBUG) -shared -o $@ $(OBJECTS:%=objs_d/%.o) -lstdc++
 
 lib/libsarl.so: $(OBJECTS:%=objs/%.o) lib
-	$(CC) $(OPTIM) -shared -o $@ $(OBJECTS:%=objs_d/%.o) -lstdc++
+	$(CC) $(OPTIM) -shared -o $@ $(OBJECTS:%=objs/%.o) -lstdc++
 
 lib/libsarl++.so: lib
 	$(MAKE) -C cpp ../$@
@@ -109,11 +109,11 @@ lib_d/libsarl++.so: lib_d
 
 # Rules.
 
-objs_d/%.o: %.cpp objs_d
+objs_d/%.o: %.cpp
 	$(CCC) $(DEBUG) -c -I../ -o $@ $< 
 
-objs/%.o: %.cpp objs
-	$(CCC) $(DEBUG) -c -I../ -o $@ $< 
+objs/%.o: %.cpp
+	$(CCC) $(OPTIM) -c -I../ -o $@ $< 
 
 %.exe: objs_d/%.o
 	$(CCC) $(DEBUG) -I../ -o $@ $^ -lstdc++ -Llib_d -lsarl
@@ -186,7 +186,10 @@ lib_clean:
 # Depend.
 
 depend:
-	makedepend -Y../ *.cpp -fdepend.mak 
+	makedepend -Y../ *.cpp -fdepend.mak >& /dev/null
+	sed -e 's/\(^.*\.o:\)/objs\/\1/' depend.mak > depend.mak.tmp
+	sed -e 's/\(^.*\.o:\)/objs_d\/\1/' depend.mak >> depend.mak.tmp
+	mv depend.mak.tmp depend.mak
 
 # Dirs.
 
