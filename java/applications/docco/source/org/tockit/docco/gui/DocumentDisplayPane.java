@@ -12,6 +12,9 @@ import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.text.DateFormat;
+import java.text.NumberFormat;
+import java.util.Date;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -19,6 +22,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import org.apache.lucene.document.DateField;
 import org.tockit.docco.GlobalConstants;
 import org.tockit.docco.query.HitReference;
 
@@ -138,8 +142,10 @@ public class DocumentDisplayPane extends JPanel {
 		this.titleField.setText(reference.getDocument().get(GlobalConstants.FIELD_DOC_TITLE));
 		this.authorField.setText(reference.getDocument().get(GlobalConstants.FIELD_DOC_AUTHOR));
 		this.pathField.setText(reference.getDocument().get(GlobalConstants.FIELD_DOC_PATH));
-		this.dateField.setText(reference.getDocument().get(GlobalConstants.FIELD_DOC_DATE));
-		this.sizeField.setText(reference.getDocument().get(GlobalConstants.FIELD_DOC_SIZE));
+		Date date = DateField.stringToDate(reference.getDocument().get(GlobalConstants.FIELD_DOC_DATE));
+		this.dateField.setText(DateFormat.getDateTimeInstance().format(date));
+		long size = Long.parseLong(reference.getDocument().get(GlobalConstants.FIELD_DOC_SIZE));
+        this.sizeField.setText(NumberFormat.getIntegerInstance().format(size) + " bytes");
 		this.summaryArea.setText(reference.getDocument().get(GlobalConstants.FIELD_DOC_SUMMARY));
 	}
 	
