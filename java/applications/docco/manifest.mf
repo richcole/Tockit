@@ -1,2 +1,2 @@
 Main-Class: org/tockit/docco/Docco
-Class-Path: libs/PDFBox-0.6.1.jar libs/jakarta-poi-1.5.1-final-20020615.jar libs/jakarta-poi-scratchpad-1.5.1-final-20020615.jar libs/lucene-1.3-rc1.jar libs/canvas.jar libs/events.jar libs/jdom.jar
+Class-Path: libs/PDFBox.jar libs/jakarta-poi.jar libs/jakarta-poi-scratchpad.jar libs/lucene.jar libs/canvas.jar libs/events.jar libs/jdom.jar
