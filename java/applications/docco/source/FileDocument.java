@@ -54,71 +54,58 @@
  * <http://www.apache.org/>.
  */
 
+import java.io.File;
+import java.io.Reader;
+import java.io.FileInputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.search.Searcher;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.Hits;
-import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.DateField;
 
-class SearchFiles {
-  public static void main(String[] args) {
-    try {
-      Searcher searcher = new IndexSearcher("index1");
-//	  Searcher searcher = new IndexSearcher("file://c:/Documents and Settings/nataliya/.docSearcher/indexes/docSearchTest");
-      Analyzer analyzer = new StandardAnalyzer();
+/** A utility for making Lucene Documents from a File. */
 
-      BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-      while (true) {
-	System.out.print("Query: ");
-	String line = in.readLine();
+public class FileDocument {
+  /** Makes a document for a File.
+    <p>
+    The document has three fields:
+    <ul>
+    <li><code>path</code>--containing the pathname of the file, as a stored,
+    tokenized field;
+    <li><code>modified</code>--containing the last modified date of the file as
+    a keyword field as encoded by <a
+    href="lucene.document.DateField.html">DateField</a>; and
+    <li><code>contents</code>--containing the full contents of the file, as a
+    Reader field;
+    */
+  public static Document Document(File f)
+       throws java.io.FileNotFoundException {
+	 
+    // make a new, empty document
+    Document doc = new Document();
 
-	if (line.length() == -1)
-	  break;
+    // Add the path of the file as a field named "path".  Use a Text field, so
+    // that the index stores the path, and so that the path is searchable
+    doc.add(Field.Text("path", f.getPath()));
 
-	Query query = QueryParser.parse(line, "contents", analyzer);
-	System.out.println("Searching for: " + query.toString("contents"));
+    // Add the last modified date of the file a field named "modified".  Use a
+    // Keyword field, so that it's searchable, but so that no attempt is made
+    // to tokenize the field into words.
+    doc.add(Field.Keyword("modified",
+			  DateField.timeToString(f.lastModified())));
 
-	Hits hits = searcher.search(query);
-	System.out.println(hits.length() + " total matching documents");
+    // Add the contents of the file a field named "contents".  Use a Text
+    // field, specifying a Reader, so that the text of the file is tokenized.
+    // ?? why doesn't FileReader work here ??
+    FileInputStream is = new FileInputStream(f);
+    Reader reader = new BufferedReader(new InputStreamReader(is));
+    doc.add(Field.Text("contents", reader));
 
-	final int HITS_PER_PAGE = 10;
-	for (int start = 0; start < hits.length(); start += HITS_PER_PAGE) {
-	  int end = Math.min(hits.length(), start + HITS_PER_PAGE);
-	  for (int i = start; i < end; i++) {
-	    Document doc = hits.doc(i);
-	    String path = doc.get("path");
-	    if (path != null) {
-              System.out.println(i + ". " + path);
-	    } else {
-              String url = doc.get("url");
-	      if (url != null) {
-		System.out.println(i + ". " + url);
-		System.out.println("   - " + doc.get("title"));
-	      } else {
-		System.out.println(i + ". " + "No path nor URL for this document");
-	      }
-	    }
-	  }
-
-	  if (hits.length() > end) {
-	    System.out.print("more (y/n) ? ");
-	    line = in.readLine();
-	    if (line.length() == 0 || line.charAt(0) == 'n')
-	      break;
-	  }
-	}
-      }
-      searcher.close();
-
-    } catch (Exception e) {
-      System.out.println(" caught a " + e.getClass() +
-			 "\n with message: " + e.getMessage());
-    }
+    // return the document
+    return doc;
   }
+
+  private FileDocument() {}
 }
+    

@@ -54,71 +54,44 @@
  * <http://www.apache.org/>.
  */
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
-import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.search.Searcher;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.Hits;
-import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.index.IndexWriter;
 
-class SearchFiles {
+import java.io.File;
+import java.util.Date;
+
+class IndexFiles {
   public static void main(String[] args) {
     try {
-      Searcher searcher = new IndexSearcher("index1");
-//	  Searcher searcher = new IndexSearcher("file://c:/Documents and Settings/nataliya/.docSearcher/indexes/docSearchTest");
-      Analyzer analyzer = new StandardAnalyzer();
+      Date start = new Date();
 
-      BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-      while (true) {
-	System.out.print("Query: ");
-	String line = in.readLine();
+      IndexWriter writer = new IndexWriter("index1", new StandardAnalyzer(), true);
+      indexDocs(writer, new File(args[0]));
 
-	if (line.length() == -1)
-	  break;
+      writer.optimize();
+      writer.close();
 
-	Query query = QueryParser.parse(line, "contents", analyzer);
-	System.out.println("Searching for: " + query.toString("contents"));
+      Date end = new Date();
 
-	Hits hits = searcher.search(query);
-	System.out.println(hits.length() + " total matching documents");
-
-	final int HITS_PER_PAGE = 10;
-	for (int start = 0; start < hits.length(); start += HITS_PER_PAGE) {
-	  int end = Math.min(hits.length(), start + HITS_PER_PAGE);
-	  for (int i = start; i < end; i++) {
-	    Document doc = hits.doc(i);
-	    String path = doc.get("path");
-	    if (path != null) {
-              System.out.println(i + ". " + path);
-	    } else {
-              String url = doc.get("url");
-	      if (url != null) {
-		System.out.println(i + ". " + url);
-		System.out.println("   - " + doc.get("title"));
-	      } else {
-		System.out.println(i + ". " + "No path nor URL for this document");
-	      }
-	    }
-	  }
-
-	  if (hits.length() > end) {
-	    System.out.print("more (y/n) ? ");
-	    line = in.readLine();
-	    if (line.length() == 0 || line.charAt(0) == 'n')
-	      break;
-	  }
-	}
-      }
-      searcher.close();
+      System.out.print(end.getTime() - start.getTime());
+      System.out.println(" total milliseconds");
 
     } catch (Exception e) {
+    	e.printStackTrace();
       System.out.println(" caught a " + e.getClass() +
 			 "\n with message: " + e.getMessage());
+    }
+  }
+
+  public static void indexDocs(IndexWriter writer, File file)
+       throws Exception {
+    if (file.isDirectory()) {
+      String[] files = file.list();
+      for (int i = 0; i < files.length; i++)
+	indexDocs(writer, new File(file, files[i]));
+    } else {
+      System.out.println("adding " + file);
+      writer.addDocument(FileDocument.Document(file));
     }
   }
 }
