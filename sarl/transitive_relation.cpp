@@ -63,6 +63,8 @@ void sarl_transitive_relation_insert(struct Sarl_TransitiveRelation *r,
     return; 
   };
 
+  sarl_relation_iterator_decr_ref(ordering_it);
+
   Sarl_SetIterator* upper_it =
     sarl_set_iterator_cache_and_decr_ref(
       sarl_transitive_relation_up_set(r, b)
@@ -185,7 +187,9 @@ struct Sarl_SetIterator*
     Sarl_Index index)
 {
   Sarl_RelationIterator* it = sarl_relation_iterator_create(r->covering);
-  return sarl_relation_iterator_intent(it, index);
+  Sarl_SetIterator *result = sarl_relation_iterator_intent(it, index);
+  sarl_relation_iterator_decr_ref(it);
+  return result;
 };
 
 
@@ -195,7 +199,9 @@ struct Sarl_SetIterator*
     Sarl_Index index)
 {
   Sarl_RelationIterator* it = sarl_relation_iterator_create(r->covering);
-  return sarl_relation_iterator_extent(it, index);
+  Sarl_SetIterator *result = sarl_relation_iterator_extent(it, index);
+  sarl_relation_iterator_decr_ref(it);
+  return result;
 };
 
 
@@ -204,15 +210,22 @@ struct Sarl_SetIterator*
     struct Sarl_TransitiveRelation* r, 
     Sarl_Index index)
 {
-  Sarl_RelationIterator* it = sarl_relation_iterator_create(r->ordering);
-  Sarl_SetIterator* index_set = sarl_set_iterator_create_from_index(index);
+  Sarl_RelationIterator* it = 
+    sarl_relation_iterator_create(r->ordering);
+
+  Sarl_SetIterator*      index_set = 
+    sarl_set_iterator_create_from_index(index);
+
+  Sarl_SetIterator*      intent =       
+    sarl_relation_iterator_intent(it, index);
+  
   Sarl_SetIterator* result = 
-    sarl_set_iterator_union(
-      index_set, 
-      sarl_relation_iterator_intent(it, index)
-    );
+    sarl_set_iterator_union(index_set, intent);
+
   sarl_set_iterator_decr_ref(index_set);
+  sarl_set_iterator_decr_ref(intent);
   sarl_relation_iterator_decr_ref(it);
+
   return result;
 };
 
@@ -222,14 +235,16 @@ struct Sarl_SetIterator*
     struct Sarl_TransitiveRelation* r, 
     Sarl_Index index)
 {
-  Sarl_RelationIterator* it = sarl_relation_iterator_create(r->ordering);
+  Sarl_RelationIterator* it   = sarl_relation_iterator_create(r->ordering);
   Sarl_SetIterator* index_set = sarl_set_iterator_create_from_index(index);
-  Sarl_SetIterator* result = 
+  Sarl_SetIterator* extent    = sarl_relation_iterator_extent(it, index);
+  Sarl_SetIterator* result    = 
     sarl_set_iterator_union(
       index_set, 
-      sarl_relation_iterator_extent(it, index)
+      extent
     );
   sarl_set_iterator_decr_ref(index_set);
+  sarl_set_iterator_decr_ref(extent);
   sarl_relation_iterator_decr_ref(it);
   return result;
 };

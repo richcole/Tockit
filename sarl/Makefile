@@ -26,6 +26,7 @@ OBJECTS = \
   lattice_iterator \
   plain_lattice_iterator \
   filter_lattice_iterator \
+  factor_lattice_iterator \
   string \
   transitive_relation \
   lattice \

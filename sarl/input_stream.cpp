@@ -126,7 +126,8 @@ sarl_input_stream_create_from_string(Sarl_String *s)
 {
   Sarl_InputStream *result = new Sarl_InputStream();
   sarl_iterator_init(result);
-  result->input = new istringstream(string(sarl_string_get_chars(s)));
+  string tmp_s(sarl_string_get_chars(s));
+  result->input = new istringstream(tmp_s);
   return result;
 };
 

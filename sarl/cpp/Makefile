@@ -1,4 +1,6 @@
-CCC = g++
+CCC   = g++
+DEBUG = -ggdb
+OPTIM = -O3
 
 CPP_FLAGS = -DSARL_NATIVE
 
@@ -10,6 +12,7 @@ OBJECTS = \
   RefCount
 
 TESTS = \
+  test_object_factor_001 \
   test_additive_layout \
   test_input_stream \
   test_context_reader \
@@ -36,12 +39,12 @@ $(TEST):
 	LD_LIBRARY_PATH=$$LD_LIBRARY_PATH:$(SARL_LIB_DIR_D); echo $@; ./$@.exe
 
 objs/%.o: %.cpp
-	$(CCC) -ggdb $(CPP_FLAGS) $(OPTIM) -c -I../.. -o $@ $< 
+	$(CCC) $(CPP_FLAGS) $(OPTIM) -c -I../.. -o $@ $< 
 
 objs_d/%.o: %.cpp objs
-	$(CCC) -ggdb $(CPP_FLAGS) $(DEBUG) -c -I../.. -o $@ $< 
+	$(CCC) $(CPP_FLAGS) $(DEBUG) -c -I../.. -o $@ $< 
 
-tests/%.exe: objs/%.o $(SARL_LIB_DIR_D)/libsarl++.so
+tests/%.exe: objs_d/%.o $(SARL_LIB_DIR_D)/libsarl++.so
 	$(CCC) $(DEBUG) -o $@ $< -L$(SARL_LIB_DIR_D) \
         -Wl,-rpath,../lib_d -lsarl++ -lsarl 
 
@@ -59,6 +62,9 @@ clean:
 
 depend:
 	makedepend -Y../ *.cpp -fdepend.mak >& /dev/null
+	sed -e 's/\(^.*\.o:\)/objs\/\1/' depend.mak > depend.mak.tmp
+	sed -e 's/\(^.*\.o:\)/objs_d\/\1/' depend.mak >> depend.mak.tmp
+	mv depend.mak.tmp depend.mak
 
 dirs: lib lib_d objs objs_d bin bin_d tests
 

@@ -49,12 +49,6 @@ static struct Sarl_SetIterator*
     struct Sarl_LatticeIterator *it
   );
 
-static struct Sarl_LatticeIterator* 
-  sarl_lattice_iterator_plain_filter_from_extent(
-    struct Sarl_LatticeIterator *it,
-    struct Sarl_SetIterator* filter
-  );
-
 /* function prototypes used in function table declaired below */
 
 struct Sarl_LatticeIteratorFunctionTable s_plainLatticeIteratorTable = 
@@ -195,19 +189,6 @@ struct Sarl_LatticeIterator *
 {
   SARL_NOT_IMPLEMENTED;
 	return 0;
-};
-
-
-struct Sarl_LatticeIterator *
-  sarl_lattice_iterator_plain_filter_from_extent(
-    struct Sarl_LatticeIterator *a_it,
-    struct Sarl_SetIterator *filter)
-{
-  struct Sarl_PlainLatticeIterator *it = 
-    static_cast<struct Sarl_PlainLatticeIterator*>(a_it);
-
-  return sarl_lattice_iterator_filter_create(
-    it->context, it->A, filter);
 };
 
 struct Sarl_LatticeIterator *

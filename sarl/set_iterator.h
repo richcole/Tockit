@@ -74,6 +74,10 @@ extern int sarl_set_iterator_subseteq(
   struct Sarl_SetIterator *, struct Sarl_SetIterator *
 );
 
+extern int sarl_set_iterator_eq(
+  struct Sarl_SetIterator *, struct Sarl_SetIterator *
+);
+
 extern int sarl_set_iterator_is_empty(
   struct Sarl_SetIterator *
 );

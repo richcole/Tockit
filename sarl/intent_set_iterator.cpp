@@ -35,8 +35,10 @@ static void sarl_set_iterator_intent_decr_ref(
 static struct Sarl_SetIterator* sarl_set_iterator_intent_copy(
   struct Sarl_SetIterator *it);
 
+/*
 static struct Sarl_SetIterator* sarl_set_iterator_intent_inverse(
   struct Sarl_SetIterator *it);
+*/
 
 /* function prototypes used in function table declaired below */
 

@@ -20,6 +20,7 @@ class Context;
 class Lattice {
 
   friend class LatticeIterator;
+  friend LatticeIterator object_factor(Lattice& L, SetIterator& G_s);
 
 public: 
 
@@ -169,6 +170,16 @@ inline Lattice& Lattice::operator=(Lattice const& L) {
     sarl_lattice_incr_ref(mp_latticeRef);
   }
   return *this;
+};
+
+inline LatticeIterator object_factor(Lattice& L, SetIterator& G_s)
+{
+  SARL_ASSERT(L.mp_latticeRef != 0 && G_s.mp_itRef != 0);
+  LatticeIterator it(L);
+  return 
+    LatticeIterator(
+      sarl_lattice_iterator_create_object_factor(it.mp_itRef, G_s.mp_itRef)
+    ).retn();
 };
 
 #endif

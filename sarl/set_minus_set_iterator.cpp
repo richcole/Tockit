@@ -50,7 +50,10 @@ inline void sarl_set_iterator_set_minus_advance(
   Sarl_SetMinusSetIterator *it
 )
 {
-  if ( ! sarl_set_iterator_at_end(it->first) ) {
+  if ( 
+    ! sarl_set_iterator_at_end(it->first) && 
+    ! sarl_set_iterator_at_end(it->second) ) 
+  {
     sarl_set_iterator_next_gte(
       it->second,
       sarl_set_iterator_value(it->first)

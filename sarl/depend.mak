@@ -88,7 +88,10 @@ objs/factor_lattice_iterator.o: ../sarl/global.h ../sarl/concept_iterator.h
 objs/factor_lattice_iterator.o: ../sarl/index.h ../sarl/context_iterator.h
 objs/factor_lattice_iterator.o: ../sarl/pair.h ../sarl/lattice_iterator.h
 objs/factor_lattice_iterator.o: ../sarl/set_iterator.h ../sarl/ref_count.h
-objs/factor_lattice_iterator.o: ../sarl/filter_lattice_iterator.h ../sarl/test.h
+objs/factor_lattice_iterator.o: ../sarl/filter_lattice_iterator.h
+objs/factor_lattice_iterator.o: ../sarl/factor_lattice_iterator_impl.h
+objs/factor_lattice_iterator.o: ../sarl/iterator_impl.h ../sarl/test.h
+objs/factor_lattice_iterator.o: ../sarl/lattice_iterator_impl.h
 objs/filter_lattice_iterator.o: ../sarl/global.h ../sarl/concept_iterator.h
 objs/filter_lattice_iterator.o: ../sarl/index.h ../sarl/context_iterator.h
 objs/filter_lattice_iterator.o: ../sarl/pair.h ../sarl/lattice_iterator.h
@@ -144,8 +147,8 @@ objs/lattice.o: ../sarl/test.h ../sarl/set_impl.h ../sarl/relation_impl.h
 objs/lattice_iterator.o: ../sarl/global.h ../sarl/concept_iterator.h
 objs/lattice_iterator.o: ../sarl/index.h ../sarl/context_iterator.h ../sarl/pair.h
 objs/lattice_iterator.o: ../sarl/lattice_iterator.h ../sarl/set_iterator.h
-objs/lattice_iterator.o: ../sarl/ref_count.h ../sarl/concept_iterator_impl.h
-objs/lattice_iterator.o: ../sarl/iterator_impl.h ../sarl/test.h
+objs/lattice_iterator.o: ../sarl/ref_count.h ../sarl/iterator_impl.h
+objs/lattice_iterator.o: ../sarl/test.h ../sarl/concept_iterator_impl.h
 objs/lattice_iterator.o: ../sarl/lattice_iterator_impl.h
 objs/lectic.o: ../sarl/set.h ../sarl/index.h ../sarl/set_iterator.h
 objs/lectic.o: ../sarl/lectic.h ../sarl/pair.h ../sarl/context_iterator.h
@@ -380,7 +383,10 @@ objs_d/factor_lattice_iterator.o: ../sarl/global.h ../sarl/concept_iterator.h
 objs_d/factor_lattice_iterator.o: ../sarl/index.h ../sarl/context_iterator.h
 objs_d/factor_lattice_iterator.o: ../sarl/pair.h ../sarl/lattice_iterator.h
 objs_d/factor_lattice_iterator.o: ../sarl/set_iterator.h ../sarl/ref_count.h
-objs_d/factor_lattice_iterator.o: ../sarl/filter_lattice_iterator.h ../sarl/test.h
+objs_d/factor_lattice_iterator.o: ../sarl/filter_lattice_iterator.h
+objs_d/factor_lattice_iterator.o: ../sarl/factor_lattice_iterator_impl.h
+objs_d/factor_lattice_iterator.o: ../sarl/iterator_impl.h ../sarl/test.h
+objs_d/factor_lattice_iterator.o: ../sarl/lattice_iterator_impl.h
 objs_d/filter_lattice_iterator.o: ../sarl/global.h ../sarl/concept_iterator.h
 objs_d/filter_lattice_iterator.o: ../sarl/index.h ../sarl/context_iterator.h
 objs_d/filter_lattice_iterator.o: ../sarl/pair.h ../sarl/lattice_iterator.h
@@ -436,8 +442,8 @@ objs_d/lattice.o: ../sarl/test.h ../sarl/set_impl.h ../sarl/relation_impl.h
 objs_d/lattice_iterator.o: ../sarl/global.h ../sarl/concept_iterator.h
 objs_d/lattice_iterator.o: ../sarl/index.h ../sarl/context_iterator.h ../sarl/pair.h
 objs_d/lattice_iterator.o: ../sarl/lattice_iterator.h ../sarl/set_iterator.h
-objs_d/lattice_iterator.o: ../sarl/ref_count.h ../sarl/concept_iterator_impl.h
-objs_d/lattice_iterator.o: ../sarl/iterator_impl.h ../sarl/test.h
+objs_d/lattice_iterator.o: ../sarl/ref_count.h ../sarl/iterator_impl.h
+objs_d/lattice_iterator.o: ../sarl/test.h ../sarl/concept_iterator_impl.h
 objs_d/lattice_iterator.o: ../sarl/lattice_iterator_impl.h
 objs_d/lectic.o: ../sarl/set.h ../sarl/index.h ../sarl/set_iterator.h
 objs_d/lectic.o: ../sarl/lectic.h ../sarl/pair.h ../sarl/context_iterator.h

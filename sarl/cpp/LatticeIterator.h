@@ -16,11 +16,14 @@ class ContextIterator;
 class LatticeIterator {
 
   friend class Lattice;
+  friend LatticeIterator object_factor(LatticeIterator& L, SetIterator& G_s);
+  friend LatticeIterator object_factor(Lattice& L, SetIterator& G_s);
 
 public:
   LatticeIterator(ContextIterator  const& K);
   LatticeIterator(RelationIterator const& r);
   LatticeIterator(Lattice          const& L);
+  LatticeIterator(LatticeIterator  const& L);
 
   LatticeIterator& operator=(LatticeIterator const& it);
 
@@ -54,6 +57,13 @@ public:
 
   inline SetIterator extent();
 
+protected:
+  LatticeIterator retn() 
+  {
+    sarl_lattice_iterator_release_ownership(mp_itRef);
+    return *this;
+  };
+
 private:
   Sarl_LatticeIterator* mp_itRef;
 
@@ -72,6 +82,11 @@ public: // nasty hack for SWIG
 #include <sarl/cpp/ConceptIterator.h>
 #include <sarl/cpp/SetIterator.h>
 #include <sarl/cpp/Lattice.h>
+
+inline LatticeIterator::LatticeIterator(LatticeIterator  const& L)
+{
+  mp_itRef = sarl_lattice_iterator_obtain_ownership(L.mp_itRef);
+};
 
 inline LatticeIterator::LatticeIterator(ContextIterator  const& K)
 {
@@ -105,5 +120,16 @@ SetIterator LatticeIterator::extent() {
   return SetIterator(sarl_lattice_iterator_extent(mp_itRef)).retn();
 };
 
+
+inline LatticeIterator object_factor(LatticeIterator& L, SetIterator& G_s)
+{
+  SARL_ASSERT(L.mp_itRef != 0 && G_s.mp_itRef != 0);
+  return 
+    LatticeIterator(
+      sarl_lattice_iterator_create_object_factor(
+        L.mp_itRef, 
+        G_s.mp_itRef)
+    ).retn();
+};
 
 #endif

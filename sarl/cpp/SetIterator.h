@@ -34,6 +34,8 @@ public:
   friend SetIterator meet(SetIterator& a_it, SetIterator& b_it);
   friend SetIterator join(SetIterator& a_it, SetIterator& b_it);
   friend SetIterator minus(SetIterator& a_it, SetIterator& b_it);
+  friend LatticeIterator object_factor(LatticeIterator& L, SetIterator& G_s);
+  friend LatticeIterator object_factor(Lattice& L, SetIterator& G_s);
 
 public:
 
@@ -93,6 +95,13 @@ public:
     SARL_ASSERT(mp_itRef != 0);
     return
       sarl_set_iterator_subseteq(mp_itRef, a_it.mp_itRef);
+  };
+
+  bool eq(SetIterator& a_it)
+  {
+    SARL_ASSERT(mp_itRef != 0);
+    return
+      sarl_set_iterator_eq(mp_itRef, a_it.mp_itRef);
   };
 
   int lexical_compare(SetIterator& a_it)

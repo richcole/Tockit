@@ -46,19 +46,21 @@ struct Sarl_String *
   sarl_string_init(result);
 
   result->length = s->length;
-  result->capacity = s->length;
+  result->capacity = s->length + 1;
 
   if ( s->char_buf != 0 && s->length != 0 ) {
-    result->char_buf = new Sarl_Char[s->length];
+    result->char_buf = new Sarl_Char[result->capacity];
     memcpy(result->char_buf, s->char_buf, sizeof(Sarl_Char)*s->length);
+    result->char_buf[result->length] = 0;
   }
   else {
     s->char_buf = 0;
   }
   
   if ( s->short_buf != 0 && s->length != 0 ) {
-    result->short_buf = new Sarl_Short[s->length];
+    result->short_buf = new Sarl_Short[result->capacity];
     memcpy(result->short_buf, s->short_buf, sizeof(Sarl_Short)*s->length);
+    result->short_buf[result->length] = 0;
   }
   else {
     result->short_buf = 0;

@@ -22,6 +22,7 @@ class String {
   friend class OutputStream;
   friend class InputStream;
   friend class InputFileStream;
+  friend class InputStringStream;
   friend class ContextReader;
 
 protected:

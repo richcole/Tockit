@@ -6,9 +6,9 @@ extern "C" {
 #include <sarl/lattice_iterator.h>
 #include <sarl/set_iterator.h>
 #include <sarl/ref_count.h>
-  
 }
 
+#include <sarl/iterator_impl.h>  
 #include <sarl/concept_iterator_impl.h>
 #include <sarl/lattice_iterator_impl.h>
 #include <sarl/test.h>
@@ -116,4 +116,19 @@ struct Sarl_LatticeIterator*
   return it->funcs->copy(it);
 };
 
+struct Sarl_LatticeIterator *
+  sarl_lattice_iterator_obtain_ownership(
+    struct Sarl_LatticeIterator *it
+  )
+{
+  return sarl_iterator_obtain_ownership(it, sarl_lattice_iterator_copy);
+};
+
+struct Sarl_LatticeIterator *
+  sarl_lattice_iterator_release_ownership(
+    struct Sarl_LatticeIterator *it
+  )
+{
+  return sarl_iterator_release_ownership(it);
+};
 

@@ -276,8 +276,17 @@ struct Sarl_LatticeIterator*
     struct Sarl_LatticeIterator *a_it
   )
 {
-  SARL_NOT_IMPLEMENTED;
-  return SARL_ERROR;
+  Sarl_CachedLatticeIterator* it = 
+    static_cast<struct Sarl_CachedLatticeIterator*>(a_it);
+
+  struct Sarl_CachedLatticeIterator *result = new Sarl_CachedLatticeIterator;
+  sarl_lattice_iterator_init(result, &s_CachedLatticeIteratorTable);
+  
+  sarl_lattice_incr_ref(it->lattice);
+  result->lattice = it->lattice; 
+  result->concept = sarl_set_iterator_copy(it->concept);
+
+  return result;
 };
 
 struct Sarl_LatticeIterator *

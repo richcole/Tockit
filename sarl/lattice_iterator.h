@@ -25,6 +25,12 @@ extern struct Sarl_LatticeIterator *
     struct Sarl_Lattice *
   );
 
+struct Sarl_LatticeIterator *
+  sarl_lattice_iterator_create_object_factor(
+    struct Sarl_LatticeIterator *L, 
+    struct Sarl_SetIterator *G_s
+  );
+
 extern void 
   sarl_lattice_iterator_reset(
     struct Sarl_LatticeIterator *
@@ -80,5 +86,23 @@ extern struct Sarl_SetIterator *
   sarl_lattice_iterator_extent(
     struct Sarl_LatticeIterator *it
   );
+
+extern struct Sarl_LatticeIterator *
+  sarl_lattice_iterator_copy(
+    struct Sarl_LatticeIterator*
+  );
+
+/*! the function will return either _it_, or _it->copy()_. 
+ *  In anycase the returned object will have a reference count of
+ *  1 and so decr_ref_count, should be called on it.
+ */
+extern struct Sarl_LatticeIterator *
+  sarl_lattice_iterator_obtain_ownership(struct Sarl_LatticeIterator *);
+
+/*! the function will set the object to be not owned but will not
+ *  decrement the reference count. 
+ */
+extern struct Sarl_LatticeIterator *
+  sarl_lattice_iterator_release_ownership(struct Sarl_LatticeIterator *);
 
 #endif
