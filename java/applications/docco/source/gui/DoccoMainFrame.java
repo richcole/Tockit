@@ -89,13 +89,13 @@ public class DoccoMainFrame extends JFrame {
 		}
 
 		public Point2D[] createBase(QueryWithResultSet queryResultSet) {
-			final double scale = 140;
+			final double scale = 200;
 			
 			int n = queryResultSet.size();
 			Point2D[] baseVectors = new Point2D[n];
 			for (int i = 0; i < baseVectors.length; i++) {
 				double x = -1 + 2 * i / (n-1.0); // ranges from -1 to 1
-				double y = (1 - Math.abs(x))*0.1 + 0.3;
+				double y = (1 - Math.abs(x))* (-0.2) + 0.5;
 				baseVectors[i] = new Point2D.Double(scale * x, scale * y);
 			}
 			return baseVectors;
