@@ -10,6 +10,9 @@ package org.tockit.docco.gui;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
@@ -95,7 +98,7 @@ import org.tockit.docco.query.util.QueryWithResultSet;
 public class DoccoMainFrame extends JFrame {
 	
     private Thread indexThread;
-    private JLabel statusBar;
+	private JLabel statusBarMessage;
     private static final int VISIBLE_TREE_DEPTH = 2;
     private static final int DEFAULT_VERTICAL_DIVIDER_LOCATION = 600;
 	private static final int DEFAULT_HORIZONTAL_DIVIDER_LOCATION = 500;
@@ -302,10 +305,11 @@ public class DoccoMainFrame extends JFrame {
 									CONFIGURATION_HORIZONTAL_DIVIDER_LOCATION,
 									DEFAULT_HORIZONTAL_DIVIDER_LOCATION));
 								
-		this.statusBar = new JLabel("Ready!");	
+		this.statusBarMessage = new JLabel("Ready!");
+
 		JPanel contentPane = new JPanel(new BorderLayout());
 		contentPane.add(mainPane, BorderLayout.CENTER);
-		contentPane.add(this.statusBar, BorderLayout.SOUTH);
+		contentPane.add(this.statusBarMessage, BorderLayout.SOUTH);
 		
 		setContentPane(contentPane);	
 		
@@ -485,8 +489,8 @@ public class DoccoMainFrame extends JFrame {
         Runnable indexRunner = new Runnable() {
             public void run() {
         		new Indexer(dirToIndex, indexTo, new Indexer.CallbackRecipient(){
-        			public void showCurrentDirectory(String dir) {
-						statusBar.setText("Indexing: " + dir);
+        			public void showFeedbackMessage(String message) {
+						statusBarMessage.setText(message);
                     }
         		});
             }

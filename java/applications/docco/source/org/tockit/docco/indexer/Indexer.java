@@ -21,13 +21,13 @@ import java.util.Date;
  */
 public class Indexer {
 	public interface CallbackRecipient {
-		void showCurrentDirectory(String dir);
+		void showFeedbackMessage(String message);
 	}
 
 	private CallbackRecipient callbackRecipient;
     private DocumentProcessingFactory docProcessingFactory = new DocumentProcessingFactory();
-	private int docCount = 0;
 	
+	private String curDir;
 	public Indexer (String filesToIndexLocation, String indexLocation, CallbackRecipient output) {
 		this.callbackRecipient = output;
 		try {
@@ -62,11 +62,18 @@ public class Indexer {
 			writer.close();
 
 			Date end = new Date();
-
-			System.out.println("\ntotal processed documents: " + this.docCount);
-			System.out.print(end.getTime() - start.getTime());
-			System.out.println(" total milliseconds");
-
+			long diff = end.getTime() - start.getTime();
+			diff /= 1000;
+			long secs = diff % 60;
+			diff /= 60;
+			long mins = diff % 60;
+			diff /= 60;
+			long hours = diff;
+			
+			if(this.callbackRecipient != null) {
+				this.callbackRecipient.showFeedbackMessage("Indexing took " + 
+												hours + " hours " + mins + " mins " + secs + " secs");
+			}
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -75,23 +82,21 @@ public class Indexer {
 
 
 	private void indexDocs(IndexWriter writer, File file) {
+		showFeedback(writer.docCount());
 		try {
 			if (file.isDirectory()) {
-				if(this.callbackRecipient != null) {
-					this.callbackRecipient.showCurrentDirectory(file.getAbsolutePath());
-				}
 				String[] files = file.list();
 				if(files == null) {
 					// seems to happen if dir access denied
 					return; 
 				}
 				for (int i = 0; i < files.length; i++) {
+					this.curDir = file.getAbsolutePath();
 					indexDocs(writer, new File(file, files[i]));
 				}
 			}
 			else {
 				writer.addDocument(this.docProcessingFactory.processDocument(file));
-				docCount++;
 			}
 		}
 		catch (Exception e) {
@@ -99,6 +104,15 @@ public class Indexer {
 			// might be broken. We don't want to stop indexing whenever one document fails to be
 			// read properly, so we just ignore it for now. Of course we should consider
 			// @todo some error handling/reporting
+		}
+	}
+
+
+	private void showFeedback(int docCount) {
+		if(this.callbackRecipient != null) {
+			this.callbackRecipient.showFeedbackMessage("Indexing: " +
+														docCount + " documents so far" +
+														" (" + curDir + ")");
 		}
 	}
 
