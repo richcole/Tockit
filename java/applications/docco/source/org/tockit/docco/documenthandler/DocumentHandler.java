@@ -18,4 +18,7 @@ public interface DocumentHandler {
 	 * return name of this handler suitable for displaying in UI.
 	 */
 	public String getDisplayName ();
+	
+	// @todo add this method
+	//public FileFilter getDefaultFilter();
 }
