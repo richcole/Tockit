@@ -14,11 +14,11 @@ import java.util.List;
 import org.tockit.docco.GlobalConstants;
 
 
-public class DocumentHandlersRegistry {
+public class DocumentHandlerRegistry {
 
 	private static List docHandlers = new ArrayList();
 	
-	private DocumentHandlersRegistry() {
+	private DocumentHandlerRegistry() {
 	}
 	
 	public static void registerDefaults () {

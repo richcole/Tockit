@@ -41,7 +41,7 @@ import org.tockit.docco.indexer.DocumentHandlerMapping;
 import org.tockit.docco.documenthandler.DocumentHandler;
 import org.tockit.docco.filefilter.FileFilterFactory;
 import org.tockit.docco.filefilter.FileFilterFactoryRegistry;
-import org.tockit.docco.documenthandler.DocumentHandlersRegistry;
+import org.tockit.docco.documenthandler.DocumentHandlerRegistry;
 
 
 // @todo needs relayouting and code cleanup
@@ -120,7 +120,7 @@ public class CreateNewFileMappingDialog extends JDialog {
 
 	private void initAllComboBoxModels() {
 		this.docHandlerImplementationsModel = new DefaultComboBoxModel();
-		Iterator docHandlersIterator = DocumentHandlersRegistry.getIterator();
+		Iterator docHandlersIterator = DocumentHandlerRegistry.getIterator();
 		while (docHandlersIterator.hasNext()) {
 			DocumentHandler curDocHandler = (DocumentHandler) docHandlersIterator.next();
 			this.docHandlerImplementationsModel.addElement(curDocHandler);			

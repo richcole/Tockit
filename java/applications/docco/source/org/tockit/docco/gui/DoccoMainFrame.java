@@ -95,7 +95,7 @@ import org.tockit.plugin.PluginLoaderException;
 
 import org.tockit.docco.ConfigurationManager;
 import org.tockit.docco.GlobalConstants;
-import org.tockit.docco.documenthandler.DocumentHandlersRegistry;
+import org.tockit.docco.documenthandler.DocumentHandlerRegistry;
 import org.tockit.docco.fca.DiagramGenerator;
 import org.tockit.docco.index.Index;
 import org.tockit.docco.indexer.Indexer;
@@ -387,7 +387,7 @@ public class DoccoMainFrame extends JFrame {
 	
 	private void loadDefaultSettings () {
 		try {
-			DocumentHandlersRegistry.registerDefaults();
+			DocumentHandlerRegistry.registerDefaults();
 		} catch (Exception e) {
 			ErrorDialog.showError(this, e, "Error loading default Document Handlers");
 		}
