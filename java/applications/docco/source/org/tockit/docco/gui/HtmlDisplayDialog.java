@@ -28,6 +28,7 @@ import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.WindowConstants;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.text.html.HTMLDocument;
@@ -95,7 +96,7 @@ public class HtmlDisplayDialog {
 				contentPane.add(scrollview, BorderLayout.CENTER);
 				contentPane.add(buttonPane, BorderLayout.SOUTH);
             
-				this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+				this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 				this.addWindowListener(new WindowAdapter() {
 					public void windowClosing(WindowEvent e) {
 						closeDialog();
@@ -130,6 +131,7 @@ public class HtmlDisplayDialog {
 		}
 
 		private HtmlDisplayDialog() {
+        	// nothing to do
 		}
 
 		public static void show(Frame parent, String title, URL relativePathToHtmlFile, Dimension dialogSize) {

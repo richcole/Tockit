@@ -13,7 +13,7 @@ import java.util.Iterator;
 
 import org.tockit.docco.query.QueryWithResult;
 
-;
+
 
 public class QueryWithResultSetImplementation implements QueryWithResultSet {
 	private HashSet qwrSet = new HashSet();

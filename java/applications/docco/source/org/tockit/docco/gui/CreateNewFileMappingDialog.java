@@ -17,8 +17,8 @@ import java.awt.HeadlessException;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -37,11 +37,11 @@ import javax.swing.JTextField;
 
 import net.sourceforge.toscanaj.gui.dialog.ErrorDialog;
 
-import org.tockit.docco.indexer.DocumentHandlerMapping;
 import org.tockit.docco.documenthandler.DocumentHandler;
+import org.tockit.docco.documenthandler.DocumentHandlerRegistry;
 import org.tockit.docco.filefilter.FileFilterFactory;
 import org.tockit.docco.filefilter.FileFilterFactoryRegistry;
-import org.tockit.docco.documenthandler.DocumentHandlerRegistry;
+import org.tockit.docco.indexer.DocumentHandlerMapping;
 
 
 // @todo needs relayouting and code cleanup
@@ -143,11 +143,7 @@ public class CreateNewFileMappingDialog extends JDialog {
 			}
 		});
 			
-		extensionField.addKeyListener(new KeyListener() {
-			public void keyTyped(KeyEvent e) {
-			}
-			public void keyPressed(KeyEvent e) {
-			}
+		extensionField.addKeyListener(new KeyAdapter() {
 			public void keyReleased(KeyEvent e) {
 				setOkButtonStatus();
 			}

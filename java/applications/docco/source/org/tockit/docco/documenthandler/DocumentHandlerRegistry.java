@@ -21,6 +21,7 @@ public class DocumentHandlerRegistry {
 	private static List docHandlers = new ArrayList();
 	
 	private DocumentHandlerRegistry() {
+		// no instances needed
 	}
 	
 	public static void registerDefaults() {

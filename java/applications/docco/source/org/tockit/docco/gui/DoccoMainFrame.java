@@ -7,8 +7,8 @@
  */
 package org.tockit.docco.gui;
 
-import java.awt.*;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -17,12 +17,14 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.SystemColor;
-import java.awt.event.*;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -35,8 +37,8 @@ import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -46,11 +48,13 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-import javax.swing.*;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -65,6 +69,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.JTree;
+import javax.swing.KeyStroke;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import javax.swing.event.TreeSelectionEvent;
@@ -101,16 +106,6 @@ import org.tockit.canvas.events.CanvasItemDraggedEvent;
 import org.tockit.canvas.events.CanvasItemEventFilter;
 import org.tockit.canvas.events.CanvasItemSelectedEvent;
 import org.tockit.canvas.imagewriter.DiagramExportSettings;
-import org.tockit.events.Event;
-import org.tockit.events.EventBroker;
-import org.tockit.events.EventBrokerListener;
-import org.tockit.events.filters.EventFilter;
-import org.tockit.events.filters.EventTypeFilter;
-import org.tockit.events.filters.SubjectTypeFilter;
-import org.tockit.plugin.PluginLoader;
-import org.tockit.swing.preferences.ExtendedPreferences;
-
-
 import org.tockit.docco.GlobalConstants;
 import org.tockit.docco.documenthandler.DocumentHandlerRegistry;
 import org.tockit.docco.fca.DiagramGenerator;
@@ -120,6 +115,14 @@ import org.tockit.docco.query.HitReference;
 import org.tockit.docco.query.QueryDecomposer;
 import org.tockit.docco.query.QueryEngine;
 import org.tockit.docco.query.util.QueryWithResultSet;
+import org.tockit.events.Event;
+import org.tockit.events.EventBroker;
+import org.tockit.events.EventBrokerListener;
+import org.tockit.events.filters.EventFilter;
+import org.tockit.events.filters.EventTypeFilter;
+import org.tockit.events.filters.SubjectTypeFilter;
+import org.tockit.plugin.PluginLoader;
+import org.tockit.swing.preferences.ExtendedPreferences;
 
 public class DoccoMainFrame extends JFrame {
     private int indexingPriority;
@@ -231,9 +234,9 @@ public class DoccoMainFrame extends JFrame {
 					if(curNode == null) {
 						curNode = new DefaultMutableTreeNode(curPath.toString()){
 							public String toString() {
-								DefaultMutableTreeNode parent = (DefaultMutableTreeNode) getParent();
+								DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) getParent();
 								String userObjectString = getUserObject().toString();
-                                return userObjectString.substring(parent.getUserObject().toString().length(), userObjectString.length() - 1);
+                                return userObjectString.substring(parentNode.getUserObject().toString().length(), userObjectString.length() - 1);
                             }
 						};
 						lastNode.add(curNode);
@@ -243,8 +246,8 @@ public class DoccoMainFrame extends JFrame {
 				} else {
 					DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(reference){
 						public String toString() {
-							String path = super.toString();
-                            return path.substring(path.lastIndexOf(File.separator) + 1);
+							String result = super.toString();
+                            return result.substring(result.lastIndexOf(File.separator) + 1);
                         }
 					};
 					lastNode.add(newNode);
@@ -585,8 +588,10 @@ public class DoccoMainFrame extends JFrame {
                 fillFileMenu(fileMenu);
             }
             public void menuDeselected(MenuEvent e) {
+            	// nothing to do
             }
             public void menuCanceled(MenuEvent e) {
+            	// nothing to do
             }
 		});
 
@@ -876,11 +881,7 @@ public class DoccoMainFrame extends JFrame {
         this.queryField = new JComboBox(queryHistory.toArray());
         
 		Component editorComponent = this.queryField.getEditor().getEditorComponent();
-        editorComponent.addKeyListener(new KeyListener() {
-			public void keyTyped(KeyEvent arg0) {
-			}
-			public void keyPressed(KeyEvent arg0) {
-			}
+        editorComponent.addKeyListener(new KeyAdapter() {
 			public void keyReleased(KeyEvent arg0) {
                 setSearchEnabledStatus();
 			}

@@ -34,7 +34,7 @@ public class MSPowerPointDocumentHandler implements DocumentHandler, Plugin {
 		public POIFSException(Exception ex) {
 			super(ex);
 		}
-	};
+	}
 	
 	private static class ContentReaderListener implements POIFSReaderListener {
 		private String text = null;

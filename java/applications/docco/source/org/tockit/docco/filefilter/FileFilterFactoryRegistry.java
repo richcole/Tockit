@@ -23,6 +23,7 @@ public class FileFilterFactoryRegistry {
 	}
 	
 	private FileFilterFactoryRegistry () {
+		// no instances needed
 	}
 	
 	
