@@ -8,7 +8,8 @@
 package org.tockit.plugin.tests;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,42 +32,34 @@ public class PluginClassLoaderTest extends TestCase {
 		super(name);
 		String pluginsDirLoc1 = System.getProperty("user.dir") 
 							+ System.getProperty("file.separator")
-							+ "plugins";
-		String pluginsDirLoc2 = System.getProperty("user.dir") 
-							+ System.getProperty("file.separator")
-							+ "docco"
-							+ System.getProperty("file.separator")
-							+ "plugins/multivalent";
+							+ "pluginmodel/thirdParty/testJars";
 		try {	
 			Logger logger = Logger.getLogger(PluginClassLoader.class.getName());
 			logger.setLevel(Level.FINE);
 //			logger.addHandler(new FileHandler("%h/log%u.log"));
 
-			try {
-				classLoader = new PluginClassLoader(new File(pluginsDirLoc1));
-			}
-			catch (FileNotFoundException e) {
-				classLoader = new PluginClassLoader(new File(pluginsDirLoc2));
-			}
+			classLoader = new PluginClassLoader(new File(pluginsDirLoc1));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
 	}
 
-	public void testFindResource() {
-		assertNotNull(classLoader.getResource("pdfbox/libs/PDFBox.jar"));
-		assertNotNull(classLoader.getResource("org/pdfbox/pdfparser/PDFParser.class"));
-		assertNull(classLoader.getResource("PDFParser.class"));
-		assertNull(classLoader.getResource("PdfDocumentHandler.class"));
-		//assertNotNull(classLoader.getResource("org\\tockit\\docco\\indexer\\documenthandler\\plugins\\pdfbox\\PdfDocumentHandler.class"));
-		//assertNotNull(classLoader.getResource("doc/UQlogo.jpg"));
-		//assertEquals(true, classLoader.getResource("test/doc.jar/!/doc/UQlogo.jpg") != null);		
+	public void testFindResource() throws IOException {
+		assertNotNull(classLoader.getResource("Multivalent.jar"));
+		assertNotNull(classLoader.getResource("multivalent/Multivalent.class"));
+		assertNotNull(classLoader.getResource("org/tockit/docco/documenthandler/MultivalentDocumentHandler.class"));
+		assertNull(classLoader.getResource("Multivalent.class"));
+		assertNotNull(classLoader.getResource("sys/Preferences.txt"));
+
+		Enumeration enum = classLoader.getResources("sys/Preferences.txt");
+		assertNotNull(enum);
+		assertEquals(true, enum.hasMoreElements());
 	}
 
 	public void testFindClass() throws ClassNotFoundException {
-		assertNotNull("load class ", classLoader.loadClass("org.tockit.docco.indexer.documenthandler.plugins.pdfbox.PdfDocumentHandler"));
-		assertNotNull("load class from jar file", classLoader.loadClass("org.pdfbox.pdfparser.PDFParser"));
+		assertNotNull("load class ", classLoader.loadClass("org.tockit.docco.documenthandler.MultivalentDocumentHandler.class"));
+		assertNotNull("load class from jar file", classLoader.loadClass("multivalent.Multivalent.class"));
 	}
 	
 	public void testFindClassException () {
