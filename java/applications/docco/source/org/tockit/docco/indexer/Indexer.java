@@ -121,6 +121,9 @@ public class Indexer implements Runnable {
 		}
 	}
 
+	/**
+	 * @todo try to run indexing only on documents we know how to handle -- exceptions are dear
+	 */
 	private void indexFile(File file) throws IOException {
 		IndexWriter writer = new IndexWriter(indexLocation,
 									  GlobalConstants.DEFAULT_ANALYZER,
