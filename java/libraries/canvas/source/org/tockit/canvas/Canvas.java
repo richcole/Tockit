@@ -26,6 +26,7 @@ import java.util.Set;
 import javax.swing.JPanel;
 
 import org.tockit.canvas.controller.CanvasController;
+import org.tockit.canvas.events.CanvasDrawnEvent;
 import org.tockit.canvas.exceptions.IllegalLayerNameException;
 import org.tockit.canvas.exceptions.NoSuchLayerException;
 import org.tockit.events.EventBroker;
@@ -139,6 +140,7 @@ public class Canvas extends JPanel implements Printable {
 		        cur.draw(graphics);
         	}
         }
+        this.controller.getEventBroker().processEvent(new CanvasDrawnEvent(this));
     }
 
 	/**
