@@ -104,8 +104,8 @@ struct Sarl_SetIterator* sarl_set_iterator_copy(
 
 Sarl_Index  sarl_set_iterator_count(struct Sarl_SetIterator *a_it)
 {
-  Sarl_SetIterator *it_copy = sarl_set_iterator_copy(a_it);
-  Sarl_Index count = 0;
+  Sarl_SetIterator *it_copy = sarl_set_iterator_obtain_ownership(a_it);
+  Sarl_Index        count   = 0;
   
   SARL_SET_ITERATOR_FOR(it_copy) {
     ++count;

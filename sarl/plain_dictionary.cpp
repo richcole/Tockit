@@ -69,7 +69,11 @@ static Sarl_Index
   Sarl_Index               result;
 
   if ( it == d->index_map.end() ) {
-    for(result=d->index_map.size(); result!=d->index_map.size()-1; ++result) {
+    for(
+      result=d->index_map.size(); 
+      result!=(Sarl_Index)d->index_map.size()-1; 
+      ++result) 
+    {
       if ( result == 0 ) continue;
       if ( d->label_map.find(result) == d->label_map.end() ) {
         d->index_map[str] = result;

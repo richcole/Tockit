@@ -194,7 +194,7 @@ struct Sarl_SetIterator *sarl_relation_iterator_aggregate(
     sarl_set_iterator_decr_ref(v[i]);
   };
   
-  delete v;
+  delete[] v;
   return result;
 };
 

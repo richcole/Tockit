@@ -15,6 +15,8 @@ extern "C" {
 #include <sarl/cpp/Map.h>
 #include <sarl/cpp/Lattice.h>
 
+#include <iostream>
+
 class AdditiveLayout {
 public:
   AdditiveLayout() {
@@ -30,7 +32,7 @@ public:
     return result;
   }
 
-  int count;
+  Index count;
   Index x, y;
 
   void reset() { 
@@ -41,7 +43,7 @@ public:
   {
     ++count;
     x = (count % 2 ? 1 : -1) * 10;
-    y = ((count / 2) + 1) * 10;
+    y = (((count - 1) / 2) + 1) * 10;
   };
 
   Index value_x() 
@@ -54,7 +56,7 @@ public:
     return y;
   };
 
-  int layout(
+  Index layout(
     Lattice const& L, 
     Map& Dx, 
     Map& Dy
@@ -65,6 +67,8 @@ public:
 
     reset();
     SARL_FOR(M) {
+      std::cerr << "m=" << M.value() << ", x=" << value_x();
+      std::cerr << ", y=" << value_y() << std::endl;
       Mx.insert(M.value(), value_x());
       My.insert(M.value(), value_y());
       next();
@@ -72,9 +76,11 @@ public:
       
     SetIterator C = L.concepts();
     SARL_FOR(C) {
-      SetIterator intent = L.concept_intent(C.value());
+      SetIterator intent = L.ordering().intent(C.value());
       Dx.insert(C.value(), sum(intent, Mx));
       Dy.insert(C.value(), sum(intent, My));
+      std::cerr << "c=" << C.value() << ", x=" << sum(intent, Mx);
+      std::cerr << ", y=" << sum(intent, My) << std::endl;
     }
 
     return SARL_OK;

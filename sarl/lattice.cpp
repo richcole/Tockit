@@ -13,6 +13,10 @@ extern "C" {
 #include <sarl/set_impl.h>
 #include <sarl/relation_impl.h>
 
+#include <iostream>
+
+using namespace std;
+
 struct Sarl_SetIterator* sarl_relation_iterator_return_empty_set(
   Sarl_RelationIterator* r_it)
 {
@@ -55,6 +59,8 @@ struct Sarl_Lattice* sarl_lattice_copy(
   
   lattice->intent = sarl_relation_create();
   lattice->extent = sarl_relation_create();
+  lattice->intent_contingent = sarl_relation_create();
+  lattice->extent_contingent = sarl_relation_create();
   lattice->order  = sarl_transitive_relation_create();
 
   Sarl_Index concept = 1;
@@ -82,7 +88,8 @@ struct Sarl_Lattice* sarl_lattice_copy(
 
     Sarl_RelationIterator* intent_it = 
       sarl_relation_iterator_create(lattice->intent);
-    
+
+    sarl_relation_iterator_release_ownership(intent_it);
     Sarl_SetIterator* down_set = 
       sarl_relation_iterator_extent_set(intent_it, intent);
     
@@ -90,11 +97,14 @@ struct Sarl_Lattice* sarl_lattice_copy(
       sarl_transitive_relation_insert(
         lattice->order, sarl_set_iterator_value(down_set), concept
       );
+      cerr << "insert_ordering: " << sarl_set_iterator_value(down_set);
+      cerr << " < " << concept << endl;
     };
 
     sarl_set_iterator_decr_ref(intent);
     sarl_set_iterator_decr_ref(extent);
     sarl_set_iterator_decr_ref(down_set);
+    sarl_relation_iterator_decr_ref(intent_it);
 
     // advance to the next concept
     ++concept;
@@ -181,6 +191,7 @@ struct Sarl_Lattice* sarl_lattice_copy(
     sarl_set_iterator_decr_ref(contingent);
   };
   sarl_relation_iterator_decr_ref(extent_it);
+  sarl_set_iterator_decr_ref(c_it);
   
   return lattice;
 }

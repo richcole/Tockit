@@ -10,11 +10,12 @@ extern "C" {
 #include <sarl/cpp/SetIterator.h>
 #include <sarl/cpp/RelationIterator.h>
 
+#include <iostream>
+
+class LatticeIterator;
 class ContextIterator;
 class Context;
 
-class LatticeIterator;
-class LatticeIterator;
 
 class Lattice {
 
@@ -102,6 +103,8 @@ public:
     Set              irr;
     
     SARL_FOR(C) {
+      std::cerr << "concept=" << C.value() << ", count=";
+      std::cerr << R_cover.intent(C.value()).count() << std::endl;
       if ( R_cover.intent(C.value()).count() == 1 ) {
         irr.insert(C.value());
       }
@@ -118,6 +121,8 @@ public:
     Set              irr;
     
     SARL_FOR(C) {
+      std::cerr << "concept=" << C.value() << ", count=";
+      std::cerr << R_cover.extent(C.value()).count() << std::endl;
       if ( R_cover.extent(C.value()).count() == 1 ) {
         irr.insert(C.value());
       }
@@ -138,9 +143,10 @@ private:
 #include <sarl/cpp/LatticeIterator.h>
 
 inline Lattice::Lattice(Lattice const& lattice) {
-  SARL_ASSERT(lattice.mp_latticeRef);
-  LatticeIterator it(lattice);
-  mp_latticeRef = sarl_lattice_copy(it.mp_itRef);
+  mp_latticeRef = lattice.mp_latticeRef;
+  if ( lattice.mp_latticeRef ) {
+    sarl_lattice_incr_ref(mp_latticeRef);
+  }
 };
 
 inline Lattice::Lattice(LatticeIterator const& it) {
@@ -154,8 +160,10 @@ inline Lattice& Lattice::operator=(Lattice const& L) {
   if ( mp_latticeRef != 0 ) {
     sarl_lattice_decr_ref(mp_latticeRef);
   }
-  LatticeIterator it(L);
-  mp_latticeRef = sarl_lattice_copy(it.mp_itRef);
+  mp_latticeRef = L.mp_latticeRef;
+  if ( mp_latticeRef ) {
+    sarl_lattice_incr_ref(mp_latticeRef);
+  }
   return *this;
 };
 

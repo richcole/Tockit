@@ -17,7 +17,6 @@ public:
   inline InputFileStream& operator=(InputFileStream const& it);
   
   virtual ~InputFileStream() {
-    sarl_input_stream_decr_ref(mp_inRef);
   };
 
  private:

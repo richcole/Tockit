@@ -104,21 +104,25 @@ void sarl_transitive_relation_insert(struct Sarl_TransitiveRelation *r,
   sarl_set_iterator_release_ownership(lower_cover_it);
   
   Sarl_SetIterator* upper_ferrels =
-    sarl_set_iterator_minus(upper_cover_it, upper_it);
+    sarl_set_iterator_meet(upper_cover_it, upper_it);
   
   Sarl_SetIterator* lower_ferrels =
-    sarl_set_iterator_minus(lower_cover_it, lower_it);
+    sarl_set_iterator_meet(lower_cover_it, lower_it);
   
   SARL_SET_ITERATOR_FOR(upper_ferrels) {
-    sarl_relation_remove(
-      r->covering, a, sarl_set_iterator_value(upper_ferrels)
-    );
+    if ( sarl_set_iterator_value(upper_ferrels) != b ) {
+      sarl_relation_remove(
+        r->covering, a, sarl_set_iterator_value(upper_ferrels)
+      );
+    }
   };
 
   SARL_SET_ITERATOR_FOR(lower_ferrels) {
-    sarl_relation_remove(
-      r->covering, a, sarl_set_iterator_value(lower_ferrels)
-    );
+    if ( sarl_set_iterator_value(lower_ferrels) != a ) {
+      sarl_relation_remove(
+        r->covering, sarl_set_iterator_value(lower_ferrels), b
+      );
+    }
   };
 
   sarl_set_iterator_decr_ref(upper_ferrels);

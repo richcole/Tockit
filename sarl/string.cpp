@@ -240,7 +240,7 @@ void
     struct Sarl_String *t
   )
 {
-  size_t t_len = sarl_string_length(t);
+  Sarl_Index t_len = sarl_string_length(t);
 
   Sarl_Char*  dest_char_buf  = 0;
   Sarl_Short* dest_short_buf = 0;
@@ -287,7 +287,7 @@ void
     Sarl_Char   *t
   )
 {
-  size_t t_len = strlen(t);
+  Sarl_Index t_len = strlen(t);
 
   Sarl_Char*  dest_char_buf  = 0;
   Sarl_Short* dest_short_buf = 0;
