@@ -9,7 +9,6 @@ package org.tockit.docco.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -35,8 +34,9 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import net.sourceforge.toscanaj.controller.fca.ConceptInterpretationContext;
 import net.sourceforge.toscanaj.controller.fca.ConceptInterpreter;
@@ -76,10 +76,10 @@ import org.tockit.docco.query.util.QueryWithResultSet;
 
 
 public class DoccoMainFrame extends JFrame {
-	private JList resList;
+	private DocumentDisplayPane documentDisplayPane;
+    private JList hitList;
     private JTextField queryField = new JTextField(20);
 	private JButton searchButton = new JButton("Submit");
-	private JTextArea resultArea = new JTextArea(40, 80);
 	private JCheckBox showPhantomNodesCheckBox = new JCheckBox("Show phantom nodes");
 
 	private DiagramView diagramView;
@@ -298,7 +298,7 @@ public class DoccoMainFrame extends JFrame {
 				newContent[i++] = cur;
 			}
 			
-			resList.setListData(newContent);
+			hitList.setListData(newContent);
 						
 			/// @todo highlight object contingent
 		}
@@ -316,14 +316,15 @@ public class DoccoMainFrame extends JFrame {
 		queryViewComponent.setBorder(BorderFactory.createRaisedBevelBorder());
 
 		JComponent viewsComponent = buildViewsComponent();
-		viewsComponent.setBorder(BorderFactory.createRaisedBevelBorder());
+		this.documentDisplayPane = new DocumentDisplayPane();
 		
-		JComponent resultsComponent = buildResultAreaComponent();
-		resultsComponent.setBorder(BorderFactory.createRaisedBevelBorder());
+		JSplitPane mainPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, viewsComponent, documentDisplayPane);
+		mainPane.setOneTouchExpandable(true);
+		mainPane.setResizeWeight(0.9);
 		
 		getContentPane().add(queryViewComponent, BorderLayout.NORTH);
-		getContentPane().add(viewsComponent, BorderLayout.CENTER);
-		getContentPane().add(resultsComponent, BorderLayout.SOUTH);
+		getContentPane().add(mainPane, BorderLayout.CENTER);
+		getContentPane().add(documentDisplayPane, BorderLayout.SOUTH);
 
 		setSize(this.width, this.height);
 		setBounds(new Rectangle(20, 20, this.width, this.height));
@@ -414,8 +415,18 @@ public class DoccoMainFrame extends JFrame {
 									CanvasItemSelectedEvent.class,
 									LabelView.class);
 
-		this.resList = new JList();
-		JScrollPane scrollPane = new JScrollPane(resList);
+		this.hitList = new JList();
+		this.hitList.addListSelectionListener(new ListSelectionListener(){
+            public void valueChanged(ListSelectionEvent e) {
+            	HitReference reference = (HitReference) hitList.getSelectedValue();
+            	if(reference != null) {
+					documentDisplayPane.displayDocument(reference);
+            	} else {
+            		documentDisplayPane.clearDisplay();
+            	}
+            }
+		});
+		JScrollPane scrollPane = new JScrollPane(hitList);
 		
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
 								   diagramView, scrollPane);
@@ -423,21 +434,6 @@ public class DoccoMainFrame extends JFrame {
 		splitPane.setResizeWeight(0.9);
 
 		return splitPane;
-	}
-	
-	private JComponent buildResultAreaComponent() {
-		JPanel resultsPanel = new JPanel();
-		
-		this.resultArea.setEditable(false);
-		this.resultArea.setBorder(BorderFactory.createLoweredBevelBorder());
-
-		JScrollPane scrollPane = new JScrollPane(this.resultArea);
-		scrollPane.setPreferredSize(new Dimension(this.width - 40, this.height/4 - 40));
-				
-		resultsPanel.add(new JLabel("Search Results:"), BorderLayout.NORTH);
-		resultsPanel.add(scrollPane, BorderLayout.CENTER);
-		
-		return resultsPanel;
 	}
 	
 	private void setSearchEnabledStatus() {
