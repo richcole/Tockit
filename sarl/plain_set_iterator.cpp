@@ -67,9 +67,9 @@ static void  sarl_set_iterator_plain_next_gte(
 {
   Sarl_PlainSetIterator *it = static_cast<Sarl_PlainSetIterator*>(a_it);
 	
-	if ( value > *(it->it) ) {
-		it->it = it->set->set.lower_bound(value);
-	}
+  if ( value > *(it->it) ) {
+    it->it = it->set->set.lower_bound(value);
+  }
 }
 
 static void  sarl_set_iterator_plain_next(struct Sarl_SetIterator *a_it)

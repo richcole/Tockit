@@ -72,16 +72,24 @@ public:
 
   inline RelationIterator intent() const {
     RelationIterator result(
-      sarl_lattice_object_contingent(mp_latticeRef)
+      sarl_lattice_intent(mp_latticeRef)
     );
     return result.retn();
   }
 
+  inline SetIterator intent(Index g) const {
+    return intent().intent(g).retn();
+  };
+
   inline RelationIterator extent() const {
     RelationIterator result(
-      sarl_lattice_object_contingent(mp_latticeRef)
+      sarl_lattice_extent(mp_latticeRef)
     );
     return result.retn();
+  }
+
+  inline SetIterator extent(Index m) const {
+    return extent().intent(m).retn();
   }
 
   inline SetIterator concept_intent(Index c) const

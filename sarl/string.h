@@ -85,6 +85,11 @@ extern struct Sarl_String *
     struct Sarl_String *s
   );
 
+extern int
+  sarl_string_eq(
+    struct Sarl_String *s, struct Sarl_String *t
+  );
+
 /* reference counting interface */
 
 extern void 

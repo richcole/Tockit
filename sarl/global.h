@@ -17,4 +17,7 @@
 #define SARL_ERROR 0
 #define SARL_OK    1
 
+#define SARL_FALSE 0
+#define SARL_TRUE  1
+
 #endif

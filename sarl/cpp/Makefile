@@ -42,10 +42,10 @@ $(TEST):
 	$(CCC) -ggdb -o $@ $< -L$(SARL_LIB_DIR_D) -lsarl++ -lsarl -Wl,-rpath,../lib_d
 
 $(SARL_LIB_DIR_D)/libsarl++.so: $(OBJECTS:%=%.o)
-	$(CC) $(DEBUG) -shared -o $@ $^
+	$(CCC) $(DEBUG) -shared -o $@ $^
 
 $(SARL_LIB_DIR)/libsarl++.so: $(OBJECTS:%=%.o)
-	$(CC) $(OPTIM) -shared -o $@ $^
+	$(CCC) $(OPTIM) -shared -o $@ $^
 
 clean: 
 	rm -f *.o *.so *.exe depend.mak.bak

@@ -275,9 +275,9 @@ void
     t_len * sizeof(Sarl_Short)
   );
 
-  s->char_buf[t_len] = 0;
-  s->short_buf[t_len] = 0;
   s->length = s->length + t_len;
+  s->char_buf[s->length] = 0;
+  s->short_buf[s->length] = 0;
 };
 
 
@@ -312,9 +312,9 @@ void
     
   memcpy(s->char_buf + s->length, t, t_len * sizeof(Sarl_Char));
   memcpy(s->short_buf + s->length, t, t_len * sizeof(Sarl_Short));
-  s->char_buf[t_len] = 0;
-  s->short_buf[t_len] = 0;
   s->length = s->length + t_len;
+  s->char_buf[s->length] = 0;
+  s->short_buf[s->length] = 0;
 };
 
 void
@@ -351,4 +351,23 @@ void
   s->length = s->length + 1;
 };
  
- 
+int sarl_string_eq(struct Sarl_String *s, struct Sarl_String *t)
+{
+  if ( s->length != t->length ) {
+    return SARL_FALSE;
+  }
+  else {
+    Sarl_Index i;
+    for(i=0;i<s->length;++i) {
+      if ( 
+        s->char_buf[i] != t->char_buf[i] || 
+        s->short_buf[i] != t->short_buf[i]
+      ) {
+        return SARL_FALSE;
+      }
+    }
+    return SARL_TRUE;
+  }
+};
+
+
