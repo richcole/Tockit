@@ -53,6 +53,8 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.border.BevelBorder;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -77,7 +79,6 @@ import net.sourceforge.toscanaj.view.diagram.LabelView;
 import net.sourceforge.toscanaj.view.diagram.NodeView;
 
 import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.store.FSDirectory;
 import org.tockit.canvas.CanvasBackground;
@@ -306,17 +307,7 @@ public class DoccoMainFrame extends JFrame {
 		
 		setContentPane(contentPane);	
 		
-		String indexLocation = GlobalConstants.INDEX_DIR + 
-								ConfigurationManager.fetchString(CONFIGURATION_SECTION_NAME,
-											CONFIGURATION_INDEX_NAME,
-											DEFAULT_INDEX_NAME);
-
-		Indexer.CallbackRecipient callbackRecipient = new Indexer.CallbackRecipient(){
-			public void showFeedbackMessage(String message) {
-				statusBarMessage.setText(message);
-			}
-		};
-
+        String indexLocation = getIndexLocation().getPath();
 		if(IndexReader.indexExists(indexLocation)) {
 			try {
 				if(IndexReader.isLocked(indexLocation)) {
@@ -333,16 +324,20 @@ public class DoccoMainFrame extends JFrame {
 						// they are not there
 					}
 				}
-				this.index = new Index(indexLocation, callbackRecipient);
+				Indexer.CallbackRecipient callbackRecipient = new Indexer.CallbackRecipient(){
+					public void showFeedbackMessage(String message) {
+						statusBarMessage.setText(message);
+					}
+				};
+				this.index = Index.openIndex(new File(indexLocation), callbackRecipient);
 				createQueryEngine();
-				this.index.start();
 			} catch (IOException e) {
 				ErrorDialog.showError(this, e, "Couldn't access index -- program will exit");
 				System.exit(1);
 			}
 		} else {
 			createNewIndex();
-			if(!IndexReader.indexExists(indexLocation)) {
+			if(!IndexReader.indexExists(getIndexLocation())) {
 				System.exit(1);
 			}
 		}
@@ -359,6 +354,14 @@ public class DoccoMainFrame extends JFrame {
 			}
 		});
 	}
+
+    private File getIndexLocation() {
+        String indexLocation = GlobalConstants.INDEX_DIR + 
+        						ConfigurationManager.fetchString(CONFIGURATION_SECTION_NAME,
+        									CONFIGURATION_INDEX_NAME,
+        									DEFAULT_INDEX_NAME);
+        return new File(indexLocation);
+    }
 
     private JMenu createHelpMenu() {
 		JMenu helpMenu = new JMenu("Help");
@@ -433,16 +436,7 @@ public class DoccoMainFrame extends JFrame {
 		});
 		fileMenu.add(newIndexItem);
 
-		JMenuItem addFilesItem = new JMenuItem("Add Files Into Index...");
-		addFilesItem.setMnemonic('a');
-		addFilesItem.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e) {
-				addFilesIntoIndex();
-			}
-		});
-		fileMenu.add(addFilesItem);
-
-		JMenuItem updateIndexItem = new JMenuItem("Update Index");
+		final JMenuItem updateIndexItem = new JMenuItem("Update Index");
 		updateIndexItem.setMnemonic('u');
 		updateIndexItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -461,7 +455,6 @@ public class DoccoMainFrame extends JFrame {
 		});
 		fileMenu.add(editFileMappings);
 
-
 		fileMenu.addSeparator();
 		JMenuItem exitItem = new JMenuItem("Exit");
 		exitItem.setMnemonic('x');
@@ -471,67 +464,75 @@ public class DoccoMainFrame extends JFrame {
 			}
 		});
 		fileMenu.add(exitItem);
+		
+		fileMenu.addMenuListener(new MenuListener(){
+            public void menuSelected(MenuEvent e) {
+            	updateIndexItem.setEnabled(!index.isWorking());
+            }
+            public void menuDeselected(MenuEvent e) {
+            }
+            public void menuCanceled(MenuEvent e) {
+            }
+		});
 
         return fileMenu;
     }
     
     private void createNewIndex(){
 		try {
-			if(IndexReader.indexExists(this.index.getIndexLocation())) {
+			if(IndexReader.indexExists(getIndexLocation())) {
 				int result = JOptionPane.showConfirmDialog(this, "This will delete the existing index. Continue?", "Delete Index?",
 				                                           JOptionPane.OK_CANCEL_OPTION);
 				if(result != JOptionPane.OK_OPTION) {
 					return;
 				}
 			}
-			
-			this.index.stop();
-			createDirPath(new File(this.index.getIndexLocation()));
-            IndexWriter writer = new IndexWriter(
-            						this.index.getIndexLocation(),
-            						GlobalConstants.DEFAULT_ANALYZER,
-            						true);
-            writer.close();
-            
-            this.index.setFilesToIndex(new File[0]);
-			this.index.start();
+			File inputDir = getDirectoryToIndex();
+			if(inputDir == null) {
+				return;
+			}
+			if(this.index != null) {
+				this.index.shutdown();			
+			}
+			Indexer.CallbackRecipient callbackRecipient = new Indexer.CallbackRecipient(){
+				public void showFeedbackMessage(String message) {
+					statusBarMessage.setText(message);
+				}
+			};
+			this.index = Index.createIndex(getIndexLocation(),inputDir, callbackRecipient);
         } catch (IOException e) {
 			ErrorDialog.showError(this, e, "There has been an error creating a new index");
         }
 
 		createQueryEngine();
 		
-		addFilesIntoIndex();
-		
 		this.diagramView.showDiagram(null);
     }
 
-    private void addFilesIntoIndex() {
-		JFileChooser fileDialog = new JFileChooser(getIndexLocation());
+    private File getDirectoryToIndex() {
+		JFileChooser fileDialog;
+		if(this.index == null) { 
+			fileDialog = new JFileChooser();
+		} else {
+			fileDialog = new JFileChooser(this.index.getBaseDirectory());
+		}
 		fileDialog.setDialogTitle("Select directories and files to index");
-		fileDialog.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-		fileDialog.setMultiSelectionEnabled(true);
+		fileDialog.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		fileDialog.setMultiSelectionEnabled(false);
 		int rv = fileDialog.showDialog(this, "Index");
 		if(rv != JFileChooser.APPROVE_OPTION) {
-			return;
+			return null;
 		}
 		ConfigurationManager.storeString(CONFIGURATION_SECTION_NAME, CONFIGURATION_LAST_INDEX_DIR,
-									fileDialog.getSelectedFile().getAbsolutePath());
+									fileDialog.getSelectedFile().getPath());
 
-		this.index.addFilesToIndex(fileDialog.getSelectedFiles());
+		return fileDialog.getSelectedFile();
     }
     
     private void updateIndex() {
-    	if(this.index.isWorking()) {
-    		int result = JOptionPane.showConfirmDialog(this, "Do you want to stop the current indexing process?", 
-						                			   "Indexer running", JOptionPane.YES_NO_OPTION);
-			if(result != JOptionPane.YES_OPTION) {
-				return;
-			}
-    	}
     	try {
             this.index.updateIndex();
-        } catch (IOException e) {
+        } catch (Exception e) {
         	ErrorDialog.showError(this, e, "Error updating the index");
         }
     }
@@ -541,13 +542,6 @@ public class DoccoMainFrame extends JFrame {
 						new FileMappingsEditingDialog(this, this.index.getDocHandlersRegistry());
 
 		// @todo store changed info in config manager?
-	}
-
-
-	private String getIndexLocation() {
-		return ConfigurationManager.fetchString(CONFIGURATION_SECTION_NAME,
-											CONFIGURATION_LAST_INDEX_DIR,
-											null);
 	}
 
     private void createQueryEngine() {
@@ -791,17 +785,5 @@ public class DoccoMainFrame extends JFrame {
 		
 		ConfigurationManager.saveConfiguration();
 		System.exit(0);
-	}
-	
-	private void createDirPath(File file) {
-		if (!file.exists()) {
-			File parent = file.getParentFile();
-			if (!parent.exists()) {
-				createDirPath(parent);
-			}
-			else {
-				file.mkdir();
-			}
-		}
 	}
 }

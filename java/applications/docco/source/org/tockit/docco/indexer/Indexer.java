@@ -8,6 +8,9 @@
 
 package org.tockit.docco.indexer;
 
+import org.apache.lucene.document.DateField;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.tockit.docco.GlobalConstants;
 import org.tockit.docco.indexer.documenthandler.DocumentHandlerException;
@@ -15,23 +18,25 @@ import org.tockit.docco.indexer.filefilter.NotFoundFileExtensionException;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
-public class Indexer extends Thread {
+public class Indexer implements Runnable {
     public interface CallbackRecipient {
 		void showFeedbackMessage(String message);
 	}
 
-    private IndexWriter writer = null;
-	private boolean stateChangeRequested = false;
-	private boolean running = true;
-    private List fileQueue = new LinkedList();
+    private File baseDirectory;
+    private File indexLocation;
 	private CallbackRecipient callbackRecipient;
     private DocumentProcessingFactory docProcessingFactory;
-    private int filesSeen;
+    private boolean shuttingDown = false;
 	
-	public Indexer(DocumentHandlerRegistry docHandlerRegistry, CallbackRecipient output) {
+	public Indexer(File indexLocation, File baseDirectory, DocumentHandlerRegistry docHandlerRegistry, CallbackRecipient output) {
+		this.indexLocation = indexLocation;
+		this.baseDirectory = baseDirectory;
 		this.callbackRecipient = output;
 		try {
             this.docProcessingFactory = new DocumentProcessingFactory(docHandlerRegistry);
@@ -41,115 +46,107 @@ public class Indexer extends Thread {
 		}
 	}
 	
-	synchronized public void startIndexing(String indexLocation) throws IOException {
-		this.writer = new IndexWriter(indexLocation,
-									  GlobalConstants.DEFAULT_ANALYZER,
-								      false);
-		this.filesSeen = 0;
-	}
-
-	synchronized public void stopIndexing() throws IOException {
-		if(this.writer == null) {
-			return; // nothing to stop
-		}
-		this.writer.close();
-		this.fileQueue.clear();
-		this.writer = null;
-	}
-
-	synchronized public boolean isIndexing() {
-		return !this.fileQueue.isEmpty();
+	public void stopIndexing() {
+		this.shuttingDown = true;
 	}
 
 	public void run() {
-		while(true) {
-			File file;
-			if(!this.fileQueue.isEmpty()) {  
-				file = (File) this.fileQueue.remove(0);
-			} else {
-				synchronized(this) {
-					if(this.writer!=null){
-						try {
-							this.writer.optimize();
-						} catch (IOException e) {
-							e.printStackTrace();
-							/// @todo I think this is a potential lock
-							showFeedbackMessage("ERROR: " + e.getMessage());
+		try {
+			// first check all documents in the index if they disappeared or changed
+			IndexReader reader = IndexReader.open(this.indexLocation);
+			Set knownDocuments = new HashSet(reader.numDocs());
+			Set documentsToUpdate = new HashSet();
+			for(int i = 0; i < reader.maxDoc(); i++) {
+				if(this.shuttingDown) {
+					break;
+				}
+				if(!reader.isDeleted(i)) {
+					Document doc = reader.document(i);
+					String path = doc.get(GlobalConstants.FIELD_DOC_PATH);
+					knownDocuments.add(path);
+					File file = new File(path);
+					if(!file.exists()) {
+						reader.delete(i);
+					} else {
+						String dateIndex = doc.get(GlobalConstants.FIELD_DOC_MODIFICATION_DATE);
+						String dateFS = DateField.dateToString(new Date(file.lastModified()));
+						if(!dateFS.equals(dateIndex)) {
+							reader.delete(i);
+							documentsToUpdate.add(file);	
 						}
 					}
 				}
-				file = null;
 			}
-			if(this.writer != null && file != null) {
-				indexDocs(file);
-			} else {
-				if(this.callbackRecipient != null) {
-					this.callbackRecipient.showFeedbackMessage("Ready!");
-				}
-			}
-		}
-	}
+			reader.close();
+			
+			// add the files we need to update
+			for (Iterator iter = documentsToUpdate.iterator(); iter.hasNext();) {
+                File file = (File) iter.next();
+                indexFile(file);
+            }
 	
-	synchronized public void enqueue(File file) {
-		/// @todo check what the story is with the exception here -- what can go wrong?
-		try {
-			this.fileQueue.add(file.getCanonicalFile());
+			// then search for new files
+			findNewFiles(this.baseDirectory, knownDocuments);
+			
+			// and optimize in the end
+			IndexWriter writer = new IndexWriter(indexLocation,
+										  GlobalConstants.DEFAULT_ANALYZER,
+										  false);
+			writer.optimize();
+			writer.close();
 		} catch (IOException e) {
-			this.fileQueue.add(file);
+			e.printStackTrace();
 		}
 	}
 
-	public void enqueue(File[] files) {	
-		for (int i = 0; i < files.length; i++) {
-			enqueue(files[i]);
+	private void findNewFiles(File file, Set knownDocuments) throws IOException {
+		if(this.shuttingDown) {
+			return;
 		}
-	}
-	
-	private void indexDocs(File file) {
-		showProgress(writer.docCount(), this.filesSeen, file.getAbsolutePath());
-		try {
-			synchronized(this) {
-				if (this.writer == null) {
-					return;
-				}
-				if (file.isDirectory()) {
-					String[] files = file.list();
-					if(files == null) {
-						// seems to happen if dir access denied
-						return; 
-					}
-					for (int i = 0; i < files.length; i++) {
-						enqueue(new File(file, files[i]));
-					}
-				}
-				else {
-					this.filesSeen++;
-					writer.addDocument(this.docProcessingFactory.processDocument(file));
-				}
+		if (file.isDirectory()) {
+			String[] files = file.list();
+			if(files == null) {
+				// seems to happen if dir access denied
+				return; 
+			}
+			for (int i = 0; i < files.length; i++) {
+				findNewFiles(new File(file, files[i]), knownDocuments);
 			}
 		}
-		catch (UnknownFileTypeException e) {
+		else {
+			if(!knownDocuments.contains(file.getPath())) {
+				indexFile(file);
+			}
 		}
-		catch (NotFoundFileExtensionException e) {
-		}
-		catch (DocumentHandlerException e) {
+	}
+
+	private void indexFile(File file) throws IOException {
+		IndexWriter writer = new IndexWriter(indexLocation,
+									  GlobalConstants.DEFAULT_ANALYZER,
+									  false);
+		showProgress(writer.docCount(), file.getAbsolutePath());
+		try {
+			writer.addDocument(this.docProcessingFactory.processDocument(file));
+		} catch (UnknownFileTypeException e) {
+		} catch (NotFoundFileExtensionException e) {
+		} catch (DocumentHandlerException e) {
 			System.err.println("Error processing document " + file.getAbsolutePath() + ": " + e.getMessage());
-		}
-		catch (DocumentProcessingException e) {
+		} catch (DocumentProcessingException e) {
 			System.err.println("Error processing document " + file.getAbsolutePath() + ": " + e.getMessage());
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			// sometimes shit happens. E.g. the PDF header might be screwed. Some other things
 			// might be broken. We don't want to stop indexing whenever one document fails to be
 			// read properly, so we just ignore it for now. Of course we should consider
 			// @todo some error handling/reporting
 			//e.printStackTrace();
 			System.err.println("Error processing document " + file.getAbsolutePath() + ": " + e.getMessage());
+		} finally {
+			writer.close();
 		}
 	}
 
 
-	private void showProgress(int indexed, int total, String dir) {
+	private void showProgress(int indexed, String dir) {
 		showFeedbackMessage("Indexing: " + indexed + " documents so far" + " (" + dir + ")");
 	}
 

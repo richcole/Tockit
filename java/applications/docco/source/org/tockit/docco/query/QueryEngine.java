@@ -8,6 +8,7 @@
 
 package org.tockit.docco.query;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
@@ -22,12 +23,12 @@ import org.tockit.docco.query.util.*;
 
 
 public class QueryEngine {
-	private String indexLocation;
+	private File indexLocation;
 	private String defaultQueryField;
 	private Analyzer analyzer;
 	private QueryDecomposer queryDecomposer;
 	
-	public QueryEngine (String indexLocation, String defaultQueryField, 
+	public QueryEngine (File indexLocation, String defaultQueryField, 
 								Analyzer analyzer, QueryDecomposer queryDecomposer) 
 								throws IOException {
 		// we store only the location, not the searcher since the searcher has to be
@@ -41,7 +42,7 @@ public class QueryEngine {
 	public QueryWithResultSet executeQueryUsingDecomposer (String queryString) throws ParseException, IOException {
 		QueryWithResultSet queryResult = new QueryWithResultSetImplementation();
 		List queryTermsCombinations = this.queryDecomposer.breakQueryIntoTerms(queryString);
-		IndexSearcher searcher = new IndexSearcher(indexLocation);
+		IndexSearcher searcher = new IndexSearcher(indexLocation.getPath());
 		Iterator it = queryTermsCombinations.iterator();
 		while (it.hasNext()) {
 			QueryDecomposer.LabeledQuery cur = (QueryDecomposer.LabeledQuery) it.next();
