@@ -45,122 +45,122 @@ public class FileMappingsEditingDialog extends JDialog {
 
 	private JPanel createMainPanel() {
 		
-		
-		GridBagLayout gridbag = new GridBagLayout();
-		JPanel mainPanel = new JPanel(gridbag);
+		JPanel mainPanel = new JPanel(new GridBagLayout());
 		
 		JLabel heading = new JLabel("Not fully layed out yet (ugly layout), and there is no functionality attached");
 		
-		gridbag.setConstraints(heading,new GridBagConstraints(0, 0, 	// gridx, gridy
-											GridBagConstraints.REMAINDER, 1, // gridwidth, gridheight
-											0.5, 0.5,					// weightx, weighty
-											GridBagConstraints.WEST,	// anchor
-											GridBagConstraints.NONE,	// fill
-											new Insets(0, 0, 0, 0),	// insets
-											0, 0						// ipadx, ipady
-											)); 
-		mainPanel.add(heading);
+		int row = 0;
+		mainPanel.add(heading,new GridBagConstraints(0, row, 	// gridx, gridy
+								GridBagConstraints.REMAINDER, 1, // gridwidth, gridheight
+								0.5, 0.5,  						// weightx, weighty
+								GridBagConstraints.WEST,	// anchor
+								GridBagConstraints.NONE,	// fill
+								new Insets(10, 5, 10, 5),	// insets
+								0, 0						// ipadx, ipady
+								)); 
 		
 		DefaultListModel listModel = new DefaultListModel();
 		JList jlist = new JList(listModel);
 		JScrollPane scrollPane = new JScrollPane(jlist);
-		gridbag.setConstraints(scrollPane,new GridBagConstraints(0, 1, 
-											1, 8, 
-											0.5, 0.5,
-											GridBagConstraints.CENTER,
-											GridBagConstraints.NONE,
-											new Insets(0, 0, 0, 0),
-											0, 0
-											)); 
-		mainPanel.add(scrollPane);
-		
+		Dimension d = new Dimension(200, 200);
+		scrollPane.setPreferredSize(d);
+		scrollPane.setMinimumSize(d);
+
 		JButton upButton = new JButton("Move Up");
 		JButton downButton = new JButton("Move Down");
-		gridbag.setConstraints(upButton,new GridBagConstraints(1, 1, 
-											1, 1, 
-											0.5, 0.5,
-											GridBagConstraints.CENTER,
-											GridBagConstraints.NONE,
-											new Insets(0, 0, 0, 0),
-											0, 0
-											)); 
-		gridbag.setConstraints(downButton,new GridBagConstraints(1, 2, 
-											1, 1, 
-											0.5, 0.5,
-											GridBagConstraints.CENTER,
-											GridBagConstraints.NONE,
-											new Insets(0, 0, 0, 0),
-											0, 0
-											)); 
-		mainPanel.add(upButton);
-		mainPanel.add(downButton);
-		
-		
+
 		JButton addButton = new JButton("Add");
 		JButton removeButton = new JButton("Remove");
-		gridbag.setConstraints(addButton,new GridBagConstraints(1, 7, 
-											1, 1, 
-											0.5, 0.5,
-											GridBagConstraints.CENTER,
-											GridBagConstraints.NONE,
-											new Insets(0, 0, 0, 0),
-											0, 0
-											)); 
-		gridbag.setConstraints(removeButton,new GridBagConstraints(1, 8, 
-											1, 1, 
-											0.5, 0.5,
-											GridBagConstraints.CENTER,
-											GridBagConstraints.NONE,
-											new Insets(0, 0, 0, 0),
-											0, 0
-											)); 
-		mainPanel.add(addButton);
-		mainPanel.add(removeButton);
-		
+
+		row++;
+		mainPanel.add(scrollPane,new GridBagConstraints(0, row, 
+									1, 4, 
+									0.4, 0.2,
+									GridBagConstraints.CENTER,
+									GridBagConstraints.BOTH,
+									new Insets(5, 5, 5, 5),
+									0, 0
+									)); 
+			
+		mainPanel.add(upButton,new GridBagConstraints(1, row, 
+									1, 1, 
+									0.3, 0.1,
+									GridBagConstraints.NORTHWEST,
+									GridBagConstraints.NONE,
+									new Insets(5, 5, 1, 5),
+									0, 0
+									)); 
+		row++;											
+		mainPanel.add(downButton,new GridBagConstraints(1, row, 
+									1, 1, 
+									0.3, 0.1,
+									GridBagConstraints.NORTHWEST,
+									GridBagConstraints.NONE,
+									new Insets(0, 5, 60, 5),
+									0, 0
+									)); 
+		row++;
+		mainPanel.add(addButton,new GridBagConstraints(1, row, 
+									1, 1, 
+									0.3, 0.1,
+									GridBagConstraints.SOUTHWEST,
+									GridBagConstraints.NONE,
+									new Insets(60, 5, 1, 5),
+									0, 0
+									)); 
+		row++;											
+		mainPanel.add(removeButton,new GridBagConstraints(1, row, 
+									1, 1, 
+									0.3, 0.1,
+									GridBagConstraints.SOUTHWEST,
+									GridBagConstraints.NONE,
+									new Insets(0, 5, 5, 5),
+									0, 0
+									)); 
 		
 		JLabel fileFilterLabel = new JLabel("File Filter:");
 		JLabel fileFilterValue = new JLabel();
-		gridbag.setConstraints(fileFilterLabel,new GridBagConstraints(0, 9, 
-											1, 1, 
-											0.5, 0.5,
-											GridBagConstraints.WEST,
-											GridBagConstraints.NONE,
-											new Insets(0, 0, 0, 0),
-											0, 0
-											)); 
-		gridbag.setConstraints(fileFilterValue,new GridBagConstraints(0, 10, 
-											1, 1, 
-											0.5, 0.5,
-											GridBagConstraints.CENTER,
-											GridBagConstraints.NONE,
-											new Insets(0, 0, 0, 0),
-											0, 0
-											)); 
-		mainPanel.add(fileFilterLabel);
-		mainPanel.add(fileFilterValue);
-		
+
+		row++;
+		mainPanel.add(fileFilterLabel,new GridBagConstraints(0, row, 
+										1, 1, 
+										0, 0,
+										GridBagConstraints.WEST,
+										GridBagConstraints.NONE,
+										new Insets(10, 5, 1, 5),
+										0, 0
+										)); 
+		row++;											
+		mainPanel.add(fileFilterValue,new GridBagConstraints(0, row, 
+										1, 1, 
+										0, 0,
+										GridBagConstraints.CENTER,
+										GridBagConstraints.NONE,
+										new Insets(10, 5, 1, 5),
+										0, 0
+										)); 
 		
 		JLabel docHandlerLabel = new JLabel("Document Handler:");
 		JLabel docHandlerValue = new JLabel();
-		gridbag.setConstraints(docHandlerLabel,new GridBagConstraints(0, 11, 
+		
+		row++;
+		mainPanel.add(docHandlerLabel,new GridBagConstraints(0, row, 
 											1, 1, 
-											0.5, 0.5,
+											0, 0,
 											GridBagConstraints.WEST,
 											GridBagConstraints.NONE,
-											new Insets(0, 0, 0, 0),
+											new Insets(1, 5, 10, 5),
 											0, 0
 											)); 
-		gridbag.setConstraints(docHandlerValue,new GridBagConstraints(0, 12, 
+		row++;											
+		mainPanel.add(docHandlerValue,new GridBagConstraints(0, row, 
 											1, 1, 
-											0.5, 0.5,
+											0, 0,
 											GridBagConstraints.CENTER,
 											GridBagConstraints.NONE,
-											new Insets(0, 0, 0, 0),
+											new Insets(1, 5, 10, 5),
 											0, 0
 											)); 
-		mainPanel.add(docHandlerLabel);
-		mainPanel.add(docHandlerValue);
-		
 		return mainPanel;
 	}
 	
