@@ -13,6 +13,7 @@ import org.tockit.crepe.controller.ConfigurationManager;
 import org.tockit.crepe.Crepe;
 import org.tockit.crepe.view.GraphView;
 import org.tockit.cgs.model.*;
+import org.tockit.cgs.util.IdPool;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.adapters.DOMAdapter;
@@ -58,6 +59,7 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
     private Action saveFileAction;
     private Action saveFileAsAction;
     private Action exportGraphicAction;
+    private Action exportPigAction;
     private Action addNodeAction;
     private Action addLinkAction;
 
@@ -301,6 +303,115 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
         this.exportGraphicAction.putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_E));
         this.exportGraphicAction.putValue(Action.ACCELERATOR_KEY,
                 KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.CTRL_MASK));
+        this.exportPigAction = new AbstractAction("Export PIG...") {
+            public void actionPerformed(ActionEvent e) {
+                exportPig();
+            }
+        };
+    }
+
+    private void exportPig() {
+        final JFileChooser saveDialog = new JFileChooser();
+        int rv = saveDialog.showSaveDialog(this);
+        if (rv != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+        exportPig(saveDialog.getSelectedFile());
+    }
+
+    private void exportPig(File file) {
+        try {
+            /// @todo escape quotes and backslashes in names
+            PrintWriter writer = new PrintWriter(new FileWriter(file));
+            IdPool refIdPool = new IdPool();
+            Collection types = this.knowledgeBase.getTypes();
+            if(types.size() == 0) {
+                throw new RuntimeException("Need types!");
+            }
+            boolean first = true;
+            for (Iterator iterator = types.iterator(); iterator.hasNext();) {
+                Type type = (Type) iterator.next();
+                Type[] supertypes = type.getDirectSupertypes();
+                for (int i = 0; i < supertypes.length; i++) {
+                    Type supertype = supertypes[i];
+                    if(first) {
+                        first = false;
+                    }
+                    else {
+                        writer.println(",");
+                    }
+                    writer.print("\"" + type.getName() + "\" is-a \"" + supertype.getName() + "\"");
+                }
+            }
+            Collection relations = this.knowledgeBase.getRelations();
+            for (Iterator iterator = relations.iterator(); iterator.hasNext();) {
+                Relation relation = (Relation) iterator.next();
+                Relation[] superrelations = relation.getDirectSupertypes();
+                for (int i = 0; i < superrelations.length; i++) {
+                    Relation superrelation = superrelations[i];
+                    writer.println(",");
+                    writer.print("\"" + relation.getName() + "\" is-a \"" + superrelation.getName() + "\"");
+                }
+            }
+            Collection individuals = this.knowledgeBase.getInstances();
+            for (Iterator iterator = individuals.iterator(); iterator.hasNext();) {
+                Instance instance = (Instance) iterator.next();
+                Type type = instance.getType();
+                writer.println(",");
+                writer.print("\"" + instance.getIdentifier() + "\" is-a \"" + type.getName() + "\"");
+                refIdPool.reserveId(instance.getIdentifier());
+            }
+            Hashtable extraReferents = new Hashtable();
+            Collection graphs = this.knowledgeBase.getGraphs();
+            for (Iterator iterator = graphs.iterator(); iterator.hasNext();) {
+                ConceptualGraph graph = (ConceptualGraph) iterator.next();
+                Node[] nodes = graph.getNodes();
+                for (int i = 0; i < nodes.length; i++) {
+                    Node node = nodes[i];
+                    if( node.getReferent() == null ) {
+                        extraReferents.put(node, "__v" + refIdPool.getFreeId());
+                        writer.println(",");
+                        writer.print("\"" + extraReferents.get(node) + "\" is-a \"" + node.getType().getName() + "\"");
+                    }
+                }
+                Link[] links = graph.getLinks();
+                for (int i = 0; i < links.length; i++) {
+                    Link link = links[i];
+                    Node[] references = link.getReferences();
+                    if(references.length == 1) {
+                        writer.println(",");
+                        writer.print("\"" + getReferentIdentifier(references[0], extraReferents) + "\" attr \"" +
+                                     link.getType().getName() + "\""
+                        );
+                    }
+                    else if (references.length == 2) {
+                        writer.println(",");
+                        writer.print("\"" + getReferentIdentifier(references[0], extraReferents) + "\" \"" +
+                                       link.getType().getName() + "\" \"" +
+                                       getReferentIdentifier(references[1], extraReferents) + "\"");
+                    }
+                    else {
+                        /// @todo give feedback that we don't do that
+                    }
+                }
+            }
+            writer.println(".");
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            /// @todo do something
+        }
+    }
+
+    private String getReferentIdentifier(Node reference, Hashtable extraReferents) {
+        String identifier;
+        if(reference.getReferent() != null) {
+            identifier = reference.getReferent().getIdentifier();
+        }
+        else {
+            identifier = (String) extraReferents.get(reference);
+        }
+        return identifier;
     }
 
     private void saveKnowledgeBase(boolean forceDialog) {
@@ -422,6 +533,9 @@ public class CrepeMainPanel extends JFrame implements ActionListener {
         fileMenu.add(this.openFileAction);
         fileMenu.add(this.saveFileAction);
         fileMenu.add(this.saveFileAsAction);
+
+        fileMenu.addSeparator();
+        fileMenu.add(this.exportPigAction);
 
         // we add the export options only if we can export at all
         if (this.diagramExportSettings != null) {

@@ -17,12 +17,14 @@ import java.util.*;
  */
 public class Type {
     private static class ImplicitType extends Type {
-        public ImplicitType(KnowledgeBase knowledgeBase) {
+        private String name;
+        public ImplicitType(KnowledgeBase knowledgeBase, String name) {
             super(knowledgeBase);
+            this.name = name;
         }
 
         public String getName() {
-            return "";
+            return name;
         }
 
         public Type[] getDirectSupertypes() {
@@ -44,8 +46,8 @@ public class Type {
      * @todo evil hack -- do something better
      */
     public static void setDefaultKnowledgeBase(KnowledgeBase knowledgeBase) {
-        Type.UNIVERSAL = new ImplicitType(knowledgeBase);
-        Type.ABSURD = new ImplicitType(knowledgeBase);
+        Type.UNIVERSAL = new ImplicitType(knowledgeBase, "[universal]");
+        Type.ABSURD = new ImplicitType(knowledgeBase, "[absurd]");
     }
 
     private Type(KnowledgeBase knowledgeBase) {

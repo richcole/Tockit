@@ -175,7 +175,7 @@ public class KnowledgeBase {
         return this.typeDict.keySet();
     }
 
-    public Collection getRelationDict() {
+    public Collection getRelations() {
         return this.relationDict.values();
     }
 
@@ -235,10 +235,6 @@ public class KnowledgeBase {
         return retVal;
     }
 
-    private Collection getRelations() {
-        return this.relationDict.values();
-    }
-
     public Collection getInstancesForType(Type type) {
         Collection retVal = new HashSet();
         Iterator it = this.instanceDict.values().iterator();
@@ -249,5 +245,13 @@ public class KnowledgeBase {
             }
         }
         return retVal;
+    }
+
+    public Collection getInstances() {
+        return this.instanceDict.values();
+    }
+
+    public Collection getGraphs() {
+        return this.graphDict.values();
     }
 }
