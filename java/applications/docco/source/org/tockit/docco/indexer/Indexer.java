@@ -35,7 +35,8 @@ public class Indexer extends Thread {
 	private boolean running = true;
     private List fileQueue = new LinkedList();
 	private CallbackRecipient callbackRecipient;
-    private DocumentProcessingFactory docProcessingFactory = new DocumentProcessingFactory();
+    private DocumentProcessingFactory docProcessingFactory;
+    private DocumentHandlersRegistery handlersRegistery = new DocumentHandlersRegistery();
     private int filesSeen;
 	
 	public Indexer(CallbackRecipient output) {
@@ -44,13 +45,13 @@ public class Indexer extends Thread {
 			List mappings = ConfigurationManager.fetchStringList(CONFIGURATION_SECTION_NAME, CONFIGURATION_MAPPING_ENTRY_NAME, 50);
 			if(mappings.size() == 0) {
 				mappings = new ArrayList(20);
-				mappings.add("html:org.tockit.docco.indexer.HtmlDocumentProcessor");
-				mappings.add("htm:org.tockit.docco.indexer.HtmlDocumentProcessor");
-				//mappings.add("pdf:org.tockit.docco.indexer.PdfDocumentProcessor");
-				mappings.add("pdf:org.tockit.docco.indexer.PdfMultivalentDocumentProcessor");
-				mappings.add("doc:org.tockit.docco.indexer.MSWordProcessor");
-				mappings.add("txt:org.tockit.docco.indexer.PlainTextDocumentProcessor");
-				mappings.add("xls:org.tockit.docco.indexer.MSExcelDocProcessor");
+				mappings.add("html:org.tockit.docco.indexer.documenthandler.HtmlDocumentHandler");
+				mappings.add("htm:org.tockit.docco.indexer.documenthandler.HtmlDocumentHandler");
+				//mappings.add("pdf:org.tockit.docco.indexer.documenthandler.PdfDocumentHandler");
+				mappings.add("pdf:org.tockit.docco.indexer.documenthandler.PdfMultivalentDocumentHandler");
+				mappings.add("doc:org.tockit.docco.indexer.documenthandler.MSWordHandler");
+				mappings.add("txt:org.tockit.docco.indexer.documenthandler.PlainTextDocumentHandler");
+				mappings.add("xls:org.tockit.docco.indexer.documenthandler.MSExcelDocHandler");
 				ConfigurationManager.storeStringList(CONFIGURATION_SECTION_NAME, CONFIGURATION_MAPPING_ENTRY_NAME, mappings);
 			}
 			for (Iterator iter = mappings.iterator(); iter.hasNext();) {
@@ -60,12 +61,14 @@ public class Indexer extends Thread {
 				String className = mapping.substring(colonIndex + 1);
 				try {
 					FileFilter fileFilter = new ExtensionFileFilter(extension);
-					this.docProcessingFactory.registerExtension(fileFilter,Class.forName(className));
+					DocumentHandler docHandler = (DocumentHandler) Class.forName(className).newInstance();
+					this.handlersRegistery.register(fileFilter, docHandler);
 				} catch(ClassCastException e) {
 					System.err.println("WARNING: class " + className + " could not be loaded due to this error:");
 					e.printStackTrace();
 				}
             }
+            this.docProcessingFactory = new DocumentProcessingFactory(this.handlersRegistery);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
