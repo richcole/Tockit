@@ -29,7 +29,7 @@ public class Docco {
 			DoccoMainFrame mainFrame = new DoccoMainFrame(forceIndexAccess);
 			mainFrame.setVisible(true);
 			/// @todo where should we call PluginLoader from?
-			new PluginLoader();
+			//new PluginLoader();
 		}
 		catch (Exception e) {
 			ErrorDialog.showError(null, e, "Error");

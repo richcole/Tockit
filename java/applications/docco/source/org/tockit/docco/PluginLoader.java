@@ -8,6 +8,7 @@
 package org.tockit.docco;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,15 @@ public class PluginLoader {
 	
 	private List errors = new ArrayList();
 	
+	private class DirectoryFileFilter implements FileFilter {
+		public boolean accept(File pathname) {
+			if (pathname.isDirectory()) {
+				return true;
+			}
+			return false;
+		}
+	}
+	
 	public PluginLoader () {
 		/// @todo this should be read from config manager?...
 		String pluginsDirName = "plugins";
@@ -35,34 +45,52 @@ public class PluginLoader {
 										pluginsDirName);
 		
 		File[] pluginsBaseFiles = { pluginsDirFile1, pluginsDirFile2	};
-
+		
+		File[] pluginDirs = null;
 		for (int i = 0; i < pluginsBaseFiles.length; i++) {
-			try {
-				System.out.println("loading plugin loader for dir " + pluginsBaseFiles[i]);
-				PluginClassLoader classLoader = new PluginClassLoader(pluginsBaseFiles[i]);
-				System.out.println("loaded plugin loader, looking for plugins now");
-				Class[] foundPlugins = listPlugins(classLoader);
-				System.out.println("trying to load each plugin");
-				loadPlugins(foundPlugins);
-				if (errors.size() > 0) {
-					/// @todo need to deal with errors in a better fashion. 
-					ErrorDialog.showError(null, null, "There were errors loading plugins. Check exceptions stack trace");
-				}
-				System.out.println("finished loading all plugins");
-				break;
+			File file = pluginsBaseFiles[i];
+			if (file.exists()) {
+				pluginDirs = file.listFiles(new DirectoryFileFilter());
+				break; 
 			}
-			catch (FileNotFoundException e) {
-				if (i == pluginsBaseFiles.length) {
-					// @todo don't like this: could be confusing if user gets only exception for the last 
-					// directory tried. 
-					ErrorDialog.showError(null, e, "Couldn't create class loader for given plugins directories");
+		}
+		
+		if (pluginDirs == null) {
+			ErrorDialog.showError(null, null, "Didn't find any plugins");			
+		}
+		else {
+			for (int i = 0; i < pluginDirs.length; i++) {
+				try {
+					System.out.println("\nloading plugin loader for dir " + pluginDirs[i]);
+					PluginClassLoader classLoader = new PluginClassLoader(pluginDirs[i]);
+
+					System.out.println("loaded plugin loader, looking for plugins now");
+					Class[] foundPlugins = listPlugins(classLoader);
+
+					System.out.println("trying to load each plugin");
+					loadPlugins(foundPlugins);
+
+					System.out.println("finished loading all plugins");
+					break;
+				}
+				catch (FileNotFoundException e) {
+					e.printStackTrace();
+					errors.add(e);
 				}
 			}
 		}
+		
+		System.out.println("errors: " + errors.size());
+		if (errors.size() > 0) {
+			/// @todo need to deal with errors in a better fashion. 
+			ErrorDialog.showError(null, null, "There were errors loading plugins. Check exceptions stack trace");
+		}
+		
+
 		System.out.println("finished");
 		
 	}
-
+	
 	private Class[] listPlugins (PluginClassLoader classLoader) {
 		try {
 			Class[] foundPlugins = classLoader.findClassesImplementingGivenIterface(Plugin.class);
@@ -85,6 +113,7 @@ public class PluginLoader {
 			for (int i = 0; i < plugins.length; i++) {
 				Class cur = plugins[i];
 				Plugin plugin = (Plugin) cur.newInstance();
+				System.out.println("\t loading plugin " + plugin.getClass().getName());
 				plugin.load();
 			}
 		} catch (InstantiationException e) {
