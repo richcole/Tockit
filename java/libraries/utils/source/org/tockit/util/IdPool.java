@@ -1,19 +1,12 @@
-/*
- * Created by IntelliJ IDEA.
- * User: Administrator
- * Date: Aug 21, 2002
- * Time: 5:52:53 PM
- * To change template for new class use 
- * Code Style | Class Templates options (Tools | IDE Options).
- */
 package org.tockit.util;
 
 import java.util.HashSet;
+import java.util.Set;
 
 
 public class IdPool {
-    HashSet allocatedIds = new HashSet();
-    int nextNumber = 1;
+    private Set allocatedIds = new HashSet();
+    private int nextNumber = 1;
 
     public String getFreeId() {
         String retVal;
