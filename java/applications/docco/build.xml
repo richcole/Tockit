@@ -9,11 +9,6 @@
 		<property name="dist.dir" value="${dist.base.dir}/${dist.name}"/>
   	</target>
   	
-  	<!-- IMPORTANT! We assume the source and libs of ToscanaJ in these spots. -->
-  	<!-- BIG TODO: move all resued code into Tockit -->
-  	<property name="toscanaj.src.dir" value="../source"/>
-  	<property name="toscanaj.libs.dir" value="../libs"/>
-
 	<property name="app.name" value="Docco"/>
 	<property name="build.dev.dir" value="build/dev"/>
 	<property name="build.release.dir" value="build/release"/>
@@ -32,15 +27,6 @@
         <fileset dir="${libs.dir}">
             <include name="**/*.zip"/>
         </fileset>
-        <fileset dir="${toscanaj.libs.dir}">
-            <include name="**/*.jar"/>
-        </fileset>
-        <fileset dir="${toscanaj.libs.dir}">
-            <include name="**/*.zip"/>
-        </fileset>
-        <fileset dir="${toscanaj.libs.dir}/testing">
-            <include name="**/*.zip"/>
-        </fileset>
     </path>
     <path id="project.release.class.path">
         <pathelement path="${classpath}"/>
@@ -49,15 +35,6 @@
             <include name="**/*.jar"/>
         </fileset>
         <fileset dir="${libs.dir}">
-            <include name="**/*.zip"/>
-        </fileset>
-        <fileset dir="${toscanaj.libs.dir}">
-            <include name="**/*.jar"/>
-        </fileset>
-        <fileset dir="${toscanaj.libs.dir}">
-            <include name="**/*.zip"/>
-        </fileset>
-        <fileset dir="${toscanaj.libs.dir}/testing">
             <include name="**/*.zip"/>
         </fileset>
     </path>
@@ -72,17 +49,11 @@
 		<ant antfile="build.xml" dir="plugins" target="clean"/>
 	</target>
 	<target name="compile" depends="_prepare">
-		<javac srcdir="${toscanaj.src.dir}" destdir="${build.dev.dir}" debug="on" optimize="off" deprecation="on">
-			<classpath refid="project.dev.class.path"/>
-		</javac>
 		<javac srcdir="${src.dir}" destdir="${build.dev.dir}" debug="on" optimize="off" deprecation="on">
 			<classpath refid="project.dev.class.path"/>
 		</javac>
 	</target>
 	<target name="_compileRelease" depends="_prepare">
-		<javac srcdir="${toscanaj.src.dir}" destdir="${build.release.dir}" debug="off" optimize="on" deprecation="off">
-			<classpath refid="project.release.class.path"/>
-		</javac>
 		<javac srcdir="${src.dir}" destdir="${build.release.dir}" debug="off" optimize="on" deprecation="off">
 			<classpath refid="project.release.class.path"/>
 		</javac>

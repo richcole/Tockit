@@ -9,3 +9,6 @@ lucene.jar:
   
 ant-contrib.jar
   ant extras, 0.3 (http://sourceforge.net/projects/ant-contrib/, license in LICENSE-ant-contrib.txt)
+  
+ToscanaJ.jar
+  ToscanaJ. (http://toscanaj.sourceforge.net, license in LICENSE-ToscanaJ.txt).  
