@@ -86,6 +86,10 @@ public interface Concept {
      * This is the concept in the direct product of the two lattices of the
      * input concepts which is created by the union of the intents and the
      * join on the extents.
+     *
+     * @TODO check terms here. This is basically the infimum of the two input
+     * concepts in the new lattice, plus some additional information on realized
+     * or not.
      */
     Concept directProduct(Concept other);
 }

@@ -52,14 +52,14 @@ abstract class AbstractConceptImplementation implements Concept
          * Returns true if we didn't iterate through all attributes in the filter
          * yet.
          */
-        boolean hasNext() {
+        public boolean hasNext() {
             return this.mainIterator.hasNext() && this.secondaryIterator.hasNext();
         }
 
         /**
          * Returns the next attribute.
          */
-         Object next() {
+        public Object next() {
             if( this.secondaryIterator == null ) {
                 throw new NoSuchElementException();
             }
@@ -77,12 +77,13 @@ abstract class AbstractConceptImplementation implements Concept
                 Concept next = (Concept) this.mainIterator.next();
                 this.secondaryIterator = next.getAttributeContingentIterator();
             }
+            return this.secondaryIterator.next();
          }
 
          /**
           * Throws UnsupportedOperationException.
           */
-         void remove() {
+         public void remove() {
             throw new UnsupportedOperationException();
          }
     }
@@ -120,14 +121,14 @@ abstract class AbstractConceptImplementation implements Concept
          * Returns true if we didn't iterate through all objects in the ideal
          * yet.
          */
-        boolean hasNext() {
+        public boolean hasNext() {
             return this.mainIterator.hasNext() && this.secondaryIterator.hasNext();
         }
 
         /**
          * Returns the next object.
          */
-         Object next() {
+        public Object next() {
             if( this.secondaryIterator == null ) {
                 throw new NoSuchElementException();
             }
@@ -145,12 +146,13 @@ abstract class AbstractConceptImplementation implements Concept
                 Concept next = (Concept) this.mainIterator.next();
                 this.secondaryIterator = next.getObjectContingentIterator();
             }
+            return this.secondaryIterator.next();
          }
 
          /**
           * Throws UnsupportedOperationException.
           */
-         void remove() {
+         public void remove() {
             throw new UnsupportedOperationException();
          }
     }
@@ -196,11 +198,11 @@ abstract class AbstractConceptImplementation implements Concept
     /**
      * Calculates the intent size based on the contingent sizes in the filter.
      */
-    int getIntentSize() {
+    public int getIntentSize() {
         int retVal = this.getAttributeContingentSize();
         Iterator it = ideal.iterator();
         while( it.hasNext() ) {
-            Concept cur = it.next();
+            Concept cur = (Concept) it.next();
             retVal += cur.getAttributeContingentSize();
         }
         return retVal;
@@ -209,11 +211,11 @@ abstract class AbstractConceptImplementation implements Concept
     /**
      * Calculates the extent size based on the contingent sizes in the ideal.
      */
-    int getExtentSize() {
+    public int getExtentSize() {
         int retVal = this.getObjectContingentSize();
         Iterator it = ideal.iterator();
         while( it.hasNext() ) {
-            Concept cur = it.next();
+            Concept cur = (Concept) it.next();
             retVal += cur.getObjectContingentSize();
         }
         return retVal;
@@ -222,14 +224,14 @@ abstract class AbstractConceptImplementation implements Concept
     /**
      * Iterates over all attribute contingents in the filter.
      */
-    Iterator getIntentIterator() {
+    public Iterator getIntentIterator() {
         return new AttributeIterator( this.filter.iterator() );
     }
 
     /**
      * Iterates over all object contingents in the ideal.
      */
-    Iterator getExtentIterator() {
+    public Iterator getExtentIterator() {
         return new ObjectIterator( this.ideal.iterator() );
     }
 }

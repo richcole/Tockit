@@ -44,8 +44,6 @@ public class Diagram implements DiagramObservable, Diagram2D
      */
     private Vector _attributeLabels;
 
-
-    //***************************************************************************
     /**
      * The list of starting points of lines in the diagram.
      *
@@ -62,8 +60,6 @@ public class Diagram implements DiagramObservable, Diagram2D
      */
     private Vector _lineEndPoints;
 
-    //**************************************************************************
-
     /**
      * The default constructor creates a diagram with just nothing in it at all.
      */
@@ -79,20 +75,20 @@ public class Diagram implements DiagramObservable, Diagram2D
     }
 
     /**
-    * Method to add observer
-    */
+     * Method to add observer
+     */
     public void addObserver(DiagramObserver observer){
-      this.diagramObserver.addElement(observer);
+        this.diagramObserver.addElement(observer);
     }
 
     /**
-    * Send to all obvservers that a change has been made
-    */
+     * Send to all obvservers that a change has been made
+     */
     public void emitChangeSignal(){
-      Iterator iterator = diagramObserver.iterator();
-      while(iterator.hasNext()){
-        ((DiagramObserver)iterator.next()).diagramChanged();
-      }
+        Iterator iterator = diagramObserver.iterator();
+        while(iterator.hasNext()){
+            ((DiagramObserver)iterator.next()).diagramChanged();
+        }
     }
 
     /**

@@ -2,8 +2,6 @@ package net.sourceforge.tockit.toscanaj.data;
 
 import java.util.*;
 
-import net.sourceforge.tockit.toscanaj.data.DatabaseInfo;
-
 /**
  * This is the main interface for the data structures.
  *
@@ -89,11 +87,27 @@ public class ConceptualSchema {
     }
 
     /**
-     * Returns a diagram from the list.
+     * Returns a diagram from the list using the index.
      */
     public Diagram getDiagram( int number )
     {
         return (Diagram)_diagrams.get( number );
+    }
+
+    /**
+     * Returns a diagram from the list using the diagram title as key.
+     */
+    public Diagram getDiagram( String title ) {
+        Diagram retVal = null;
+        Iterator it = this._diagrams.iterator();
+        while( it.hasNext() ) {
+            Diagram cur = (Diagram) it.next();
+            if( cur.getTitle().equals( title ) ) {
+                retVal = cur;
+                break;
+            }
+        }
+        return retVal;
     }
 
     /**
@@ -104,5 +118,31 @@ public class ConceptualSchema {
     public void addDiagram( Diagram diagram )
     {
         _diagrams.add( diagram );
+    }
+
+    /**
+     * Creates a concept directly from the input data (i.e. for a non-nested
+     * diagram).
+     *
+     * If the concept could not be created an NoSuchElementException
+     * will be thrown.
+     */
+    public Concept getConcept( int diagramNumber, int conceptNumber ) {
+        if( this._useDatabase ) {
+            /// @TODO add DB version
+            // just to get things going
+            return null;
+        }
+        else {
+            Diagram diag = (Diagram) this._diagrams.get( diagramNumber );
+            if( diag == null ) {
+                throw new NoSuchElementException("Invalid diagram number");
+            }
+            if( conceptNumber > diag.getNumberOfPoints() - 1 ) {
+                throw new NoSuchElementException("Invalid concept number");
+            }
+            return new MemoryMappedConcept( diag.getAttributeLabel(conceptNumber),
+                                            diag.getObjectLabel(conceptNumber) );
+        }
     }
 }

@@ -40,8 +40,12 @@ public class LabelInfo implements LabelObservable
      * The list of entries in the label.
      *
      * These are just plain String instances.
+     *
+     * This member uses currently package access to allow the Concept
+     * implementations to iterate over it. @TODO switch to iterator access on
+     * the class interface, maybe dropping the index based access completely.
      */
-    private Vector _entries;
+    Vector _entries;
 
     /**
      * The offset for the label position.
