@@ -34,6 +34,7 @@ public class MSExcelDocProcessor implements DocumentProcessor {
 		int numOfSheets = workbook.getNumberOfSheets();
 		for (int i = 0; i < numOfSheets; i++) {
 			HSSFSheet curSheet = workbook.getSheetAt(i);
+			/// @todo should we also look at Header and Footer?
 			Iterator rowIterator = curSheet.rowIterator();
 			while (rowIterator.hasNext()) {
 				HSSFRow curRow = (HSSFRow) rowIterator.next();
