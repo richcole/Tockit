@@ -44,7 +44,6 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import net.sourceforge.toscanaj.controller.fca.ConceptInterpretationContext;
-import net.sourceforge.toscanaj.controller.fca.ConceptInterpreter;
 import net.sourceforge.toscanaj.controller.fca.DiagramHistory;
 import net.sourceforge.toscanaj.controller.fca.DirectConceptInterpreter;
 import net.sourceforge.toscanaj.controller.ndimlayout.DefaultDimensionStrategy;
@@ -224,19 +223,6 @@ public class DoccoMainFrame extends JFrame {
 			return diagram;
 		}
 
-        private boolean nodeIsShown(Concept concept) {
-            if(showPhantomNodesCheckBox.isSelected()) {
-            	return true;
-            } else {
-				ConceptInterpreter interpreter = new DirectConceptInterpreter();
-				ConceptInterpretationContext interpretationContext = new ConceptInterpretationContext(new DiagramHistory(), new EventBroker());
-            	if(interpreter.isRealized(concept, interpretationContext)) {
-            		return true;
-            	}
-            }
-            return false;
-        }
-		
 		public Concept[] createConcepts(QueryWithResultSet queryResultSet) {
 			HitReferencesSet allObjects = new HitReferencesSetImplementation();
 			for (Iterator iter = queryResultSet.iterator(); iter.hasNext();) {
