@@ -18,7 +18,9 @@ public abstract class AbstractRelationOperationTest extends TestCase {
 	protected static class RelationTestSetup {
 		public Relation[] input;
 		public int expectedOutputArity;
-		public int expectedOutputSize; 	 
+		public int expectedOutputSize;
+		public Object[][] expectedTuples;
+		public Object[][] unexpectedTuples;
 	}
 	
 	public AbstractRelationOperationTest(String s) {
@@ -60,7 +62,19 @@ public abstract class AbstractRelationOperationTest extends TestCase {
             RelationTestSetup test = tests[i];
 			Relation result = op.apply(test.input);
 			assertEquals("Result of operation has wrong arity", test.expectedOutputArity, result.getArity());            
-			assertEquals("Result of operation has wrong size", test.expectedOutputSize, result.getSize());            
+			assertEquals("Result of operation has wrong size", test.expectedOutputSize, result.getSize());
+			if(test.expectedTuples != null) {
+				for (int j = 0; j < test.expectedTuples.length; j++) {
+					Object[] tuple = test.expectedTuples[j];
+					assertTrue("Expected tuple not found in result", result.isRelated(tuple));                
+				}          
+			}
+			if(test.unexpectedTuples != null) {
+				for (int j = 0; j < test.unexpectedTuples.length; j++) {
+					Object[] tuple = test.unexpectedTuples[j];
+					assertTrue("Unexpected tuple found in result", !result.isRelated(tuple));                
+				}          
+			}
         }
 	}
 	

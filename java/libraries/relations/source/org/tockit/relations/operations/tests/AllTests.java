@@ -19,6 +19,7 @@ public class AllTests extends TestCase {
     public static Test suite() {
         TestSuite suite = new TestSuite();
 		suite.addTest(org.tockit.relations.operations.tests.IdentityTest.suite());
+		suite.addTest(org.tockit.relations.operations.tests.PermuteProjectRelationOperationTest.suite());
         return suite;
     }
 }

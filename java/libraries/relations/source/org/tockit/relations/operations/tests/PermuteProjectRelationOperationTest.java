@@ -13,21 +13,21 @@ import junit.framework.TestSuite;
 import org.tockit.relations.model.Relation;
 import org.tockit.relations.model.Tuple;
 import org.tockit.relations.model.tests.RelationImplementationTest;
-import org.tockit.relations.operations.IdentityRelationOperation;
+import org.tockit.relations.operations.PermuteProjectRelationOperation;
 import org.tockit.relations.operations.RelationOperation;
 
 
-public class IdentityTest extends AbstractRelationOperationTest {
-    public IdentityTest(String s) {
+public class PermuteProjectRelationOperationTest extends AbstractRelationOperationTest {
+    public PermuteProjectRelationOperationTest(String s) {
         super(s);
     }
 
 	public static Test suite() {
-		return new TestSuite(IdentityTest.class);
+		return new TestSuite(PermuteProjectRelationOperationTest.class);
 	}
 
     protected RelationOperation getOperation() {
-        return new IdentityRelationOperation();
+        return new PermuteProjectRelationOperation(new int[]{1,2,1,2});
     }
 
     protected int getExpectedArity() {
@@ -41,10 +41,11 @@ public class IdentityTest extends AbstractRelationOperationTest {
     	RelationTestSetup one = new RelationTestSetup();
     	Relation testRelOne = RelationImplementationTest.stringRelation;
         one.input = new Relation[]{testRelOne};
-    	one.expectedOutputArity = testRelOne.getArity();
+    	one.expectedOutputArity = 4;
     	one.expectedOutputSize = testRelOne.getSize();
-    	Tuple firstInputTuple = (Tuple) testRelOne.getTuples().iterator().next();
-        one.expectedTuples = new Object[][]{firstInputTuple.getData()};
+    	Tuple first = (Tuple) testRelOne.getTuples().iterator().next();
+		one.expectedTuples = new Object[][]{new String[]{"6","1","6","1"}};
+		one.unexpectedTuples = new Object[][]{new String[]{"1","6","6","1"}};
     	
         return new RelationTestSetup[]{one};
     }
