@@ -31,11 +31,11 @@ public:
   };
 
   inline void insert(Index g, Index m) {
-    sarl_context_insert(mp_contextRef, sarl_pair(g, m));
+    sarl_context_insert_pair(mp_contextRef, sarl_pair(g, m));
   };
 
   inline void remove(Index g, Index m) {
-    sarl_context_remove(mp_contextRef, sarl_pair(g, m));
+    sarl_context_remove_pair(mp_contextRef, sarl_pair(g, m));
   };
 
   Context copy() {
