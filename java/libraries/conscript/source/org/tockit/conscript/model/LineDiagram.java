@@ -7,7 +7,7 @@
  */
 package org.tockit.conscript.model;
 
-public class LineDiagram extends SchemaPart{
+public class LineDiagram extends ConscriptStructure{
 	private TypedSize unitLength;
 	private Point[] points;
 	private Line[] lines;

@@ -7,7 +7,7 @@
  */
 package org.tockit.conscript.model;
 
-public class RealisedScale extends SchemaPart{
+public class RealisedScale extends ConscriptStructure{
     private ConcreteScale concreteScale;
 	private IdentifierMap identifierMap;
 	

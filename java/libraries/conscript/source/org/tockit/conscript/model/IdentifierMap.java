@@ -9,7 +9,7 @@ package org.tockit.conscript.model;
 
 import java.util.Map;
 
-public class IdentifierMap extends SchemaPart{
+public class IdentifierMap extends ConscriptStructure{
     private Map map;
     
 	public IdentifierMap(CSCFile file, String identifier) {

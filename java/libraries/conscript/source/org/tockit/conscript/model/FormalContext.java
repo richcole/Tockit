@@ -7,7 +7,7 @@
  */
 package org.tockit.conscript.model;
 
-public class FormalContext extends SchemaPart{
+public class FormalContext extends ConscriptStructure{
     private FCAObject[] objects;
 	private FCAAttribute[] attributes;
 	private BinaryRelation relation;

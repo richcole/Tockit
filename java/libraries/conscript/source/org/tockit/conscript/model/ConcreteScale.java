@@ -7,7 +7,7 @@
  */
 package org.tockit.conscript.model;
 
-public class ConcreteScale extends SchemaPart{
+public class ConcreteScale extends ConscriptStructure{
 	private String[] tables;
 	private String[] fields;
 	private AbstractScale abstractScale;

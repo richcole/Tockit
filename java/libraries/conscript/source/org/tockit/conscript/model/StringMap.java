@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Map;
 
-public class StringMap extends SchemaPart{
+public class StringMap extends ConscriptStructure{
 	private Map map = new Hashtable();;
 		
 	public StringMap(CSCFile file, String identifier) {

@@ -11,7 +11,7 @@ import java.io.IOException;
 
 import org.tockit.conscript.model.CSCFile;
 import org.tockit.conscript.model.FormattedString;
-import org.tockit.conscript.model.SchemaPart;
+import org.tockit.conscript.model.ConscriptStructure;
 import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
@@ -42,7 +42,7 @@ public abstract class CSCFileSectionParser {
 		return CSC_FILE_SECTIONS_PARSERS;
 	}
 
-    protected void parseTitleRemarkSpecials(CSCTokenizer tokenizer, SchemaPart schemaPart) throws IOException, DataFormatException {
+    protected void parseTitleRemarkSpecials(CSCTokenizer tokenizer, ConscriptStructure schemaPart) throws IOException, DataFormatException {
         if (tokenizer.getCurrentToken().equals("TITLE")) {
             tokenizer.advance();
             String title = tokenizer.popCurrentToken();

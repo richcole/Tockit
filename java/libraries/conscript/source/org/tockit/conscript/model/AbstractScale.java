@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class AbstractScale extends SchemaPart{
+public class AbstractScale extends ConscriptStructure{
 	private FormalContext context;
 	private List lineDiagrams = new ArrayList();
 	

@@ -7,7 +7,7 @@
  */
 package org.tockit.conscript.model;
 
-public class DatabaseDefinition extends SchemaPart {
+public class DatabaseDefinition extends ConscriptStructure {
     private String databaseName;
 	private String table;
 	private String primaryKey;

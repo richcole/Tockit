@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Map;
 
-public class QueryMap extends SchemaPart{
+public class QueryMap extends ConscriptStructure{
     private Map map = new Hashtable();;
 		
 	public QueryMap(CSCFile file, String identifier) {

@@ -8,7 +8,7 @@
 package org.tockit.conscript.model;
 
 
-public class ConceptualSchema extends SchemaPart{
+public class ConceptualSchema extends ConscriptStructure{
 	private DatabaseDefinition database;
 	private ConcreteScale[] concreteScales;
 	

@@ -19,19 +19,19 @@ import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
 class FormalContextParser extends CSCFileSectionParser {
-	public void parse(CSCTokenizer tokenizer, CSCFile targetFile)
+	public void parse(CSCTokenizer tokenizer, CSCFile file)
 		throws IOException, DataFormatException {
 		List objects = new ArrayList();
 		List attributes = new ArrayList();
 		String contextId = tokenizer.popCurrentToken();
-        FormalContext context = new FormalContext(targetFile, contextId);
+        FormalContext context = new FormalContext(file, contextId);
 
         parseTitleRemarkSpecials(tokenizer, context);
         
 		while (!tokenizer.getCurrentToken().equals("OBJECTS")) {
 			tokenizer.advance();
 		}
-		tokenizer.consumeToken("OBJECTS", targetFile);
+		tokenizer.consumeToken("OBJECTS", file);
 
 		while (!tokenizer.getCurrentToken().equals("ATTRIBUTES")) {
 			// find objects until attributes come
@@ -41,7 +41,7 @@ class FormalContextParser extends CSCFileSectionParser {
 			objects.add(tokenizer.getCurrentToken()); // use name
 			tokenizer.advance(); // next
 		}
-		tokenizer.consumeToken("ATTRIBUTES", targetFile);
+		tokenizer.consumeToken("ATTRIBUTES", file);
 
 		while (!tokenizer.getCurrentToken().equals("RELATION")) {
 			// find attributes until relation comes
@@ -50,20 +50,20 @@ class FormalContextParser extends CSCFileSectionParser {
             attributes.add(tokenizer.getCurrentToken()); // use name
 			tokenizer.advance(); // next
 		}
-        tokenizer.consumeToken("RELATION", targetFile);
+        tokenizer.consumeToken("RELATION", file);
         
         int height = Integer.parseInt(tokenizer.popCurrentToken());
         if(height != objects.size()) {
             throw new DataFormatException("Relation height does not match number of objects in context '" +
                                           contextId + "', line " + tokenizer.getCurrentLine() + ", file '" +
-                                          targetFile.getLocation() + "'");
+                                          file.getLocation() + "'");
         }
-        tokenizer.consumeToken(",", targetFile);
+        tokenizer.consumeToken(",", file);
         int width = Integer.parseInt(tokenizer.popCurrentToken());
         if(width != attributes.size()) {
             throw new DataFormatException("Relation width does not match number of attributes in context '" +
                                           contextId + "', line " + tokenizer.getCurrentLine() + ", file '" +
-                                          targetFile.getLocation() + "'");
+                                          file.getLocation() + "'");
         }
 
 		// create relation
@@ -94,7 +94,9 @@ class FormalContextParser extends CSCFileSectionParser {
 			tokenizer.advance(); // next row
 		}
 
-        tokenizer.consumeToken(";", targetFile);
+        tokenizer.consumeToken(";", file);
+        
+        file.add(context);
 	}
 
 	public String getStartToken() {

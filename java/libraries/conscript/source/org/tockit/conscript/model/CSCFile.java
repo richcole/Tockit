@@ -225,7 +225,7 @@ public class CSCFile {
         return (ConceptualFile) findSchemaPartGlobal(CONCEPTUAL_FILE, name);
     }    
     
-    private SchemaPart findSchemaPartGlobal(StructureId structure, String name) {
+    private ConscriptStructure findSchemaPartGlobal(StructureId structure, String name) {
         if(this.parent != null) {
             return this.parent.findSchemaPartGlobal(structure, name);
         } else {
@@ -233,9 +233,9 @@ public class CSCFile {
         }
     }
 
-    private SchemaPart findSchemaPart(StructureId structure, String name) {
+    private ConscriptStructure findSchemaPart(StructureId structure, String name) {
         Map structureMap = (Map) this.structures.get(structure);
-        SchemaPart part = (SchemaPart) structureMap.get(name);
+        ConscriptStructure part = (ConscriptStructure) structureMap.get(name);
         if(part != null) {
             return part;
         }

@@ -7,7 +7,7 @@
  */
 package org.tockit.conscript.model;
 
-public class ConceptualFile extends SchemaPart {
+public class ConceptualFile extends ConscriptStructure {
 	private StringMap objectMap;
 	private RealisedScale[] realisedScales;
 	
