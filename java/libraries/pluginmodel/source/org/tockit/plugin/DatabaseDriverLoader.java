@@ -80,8 +80,6 @@ public class DatabaseDriverLoader extends LoaderBase {
 	}
 		
 	public static DatabaseDriverLoader.Error[] loadDrivers (File driversDir) {
-		logger.setLevel(Level.FINER);
-
 		File[] driverDirs = findSubDirectories(driversDir);
 		if (driverDirs == null) {
 			return new Error[0];
