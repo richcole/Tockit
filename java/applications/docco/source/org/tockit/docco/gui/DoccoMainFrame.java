@@ -436,6 +436,17 @@ public class DoccoMainFrame extends JFrame {
 		fileMenu.add(addFilesItem);
 
 		fileMenu.addSeparator();
+
+		JMenuItem editFileMappings = new JMenuItem("Edit File Mappings...");
+		editFileMappings.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				editFileMappings();
+			}
+		});
+		fileMenu.add(editFileMappings);
+
+
+		fileMenu.addSeparator();
 		JMenuItem exitItem = new JMenuItem("Exit");
 		exitItem.setMnemonic('x');
 		exitItem.addActionListener(new ActionListener(){
@@ -497,6 +508,14 @@ public class DoccoMainFrame extends JFrame {
 			this.indexThread.enqueue(files[i]);
         }
     }
+
+
+	private void editFileMappings() {
+		FileMappingsEditingDialog fileMappingsEditingDialog = new FileMappingsEditingDialog(this);
+
+		// @todo store changed info in config manager?
+	}
+
 
 	private String getIndexLocation() {
 		return ConfigurationManager.fetchString(CONFIGURATION_SECTION_NAME,
