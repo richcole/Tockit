@@ -94,6 +94,8 @@ import org.tockit.docco.query.util.QueryWithResultSet;
 
 public class DoccoMainFrame extends JFrame {
 	
+    private Thread indexThread;
+    private JLabel statusBar;
     private static final int VISIBLE_TREE_DEPTH = 2;
     private static final int DEFAULT_VERTICAL_DIVIDER_LOCATION = 600;
 	private static final int DEFAULT_HORIZONTAL_DIVIDER_LOCATION = 500;
@@ -299,8 +301,13 @@ public class DoccoMainFrame extends JFrame {
 									CONFIGURATION_SECTION_NAME, 
 									CONFIGURATION_HORIZONTAL_DIVIDER_LOCATION,
 									DEFAULT_HORIZONTAL_DIVIDER_LOCATION));
+								
+		this.statusBar = new JLabel("Ready!");	
+		JPanel contentPane = new JPanel(new BorderLayout());
+		contentPane.add(mainPane, BorderLayout.CENTER);
+		contentPane.add(this.statusBar, BorderLayout.SOUTH);
 		
-		setContentPane(mainPane);	
+		setContentPane(contentPane);	
 		
 		indexLocation = GlobalConstants.INDEX_DIR + 
 								ConfigurationManager.fetchString(CONFIGURATION_SECTION_NAME,
@@ -477,11 +484,16 @@ public class DoccoMainFrame extends JFrame {
         final String indexTo = new String(indexLocation); 
         Runnable indexRunner = new Runnable() {
             public void run() {
-        		new Indexer(dirToIndex, indexTo);
+        		new Indexer(dirToIndex, indexTo, new Indexer.CallbackRecipient(){
+        			public void showCurrentDirectory(String dir) {
+						statusBar.setText("Indexing: " + dir);
+                    }
+        		});
             }
         };
-        Thread indexThread = new Thread(indexRunner, "indexer");
-        indexThread.start();
+        /// @todo implement a proper stop to get rid of the write lock
+        this.indexThread = new Thread(indexRunner, "indexer");
+        this.indexThread.start();
     }
 
 	private String getIndexLocation() {

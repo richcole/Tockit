@@ -20,11 +20,16 @@ import java.util.Date;
  * @todo this could all be static 
  */
 public class Indexer {
+	public interface CallbackRecipient {
+		void showCurrentDirectory(String dir);
+	}
 
-	private DocumentProcessingFactory docProcessingFactory = new DocumentProcessingFactory();
+	private CallbackRecipient callbackRecipient;
+    private DocumentProcessingFactory docProcessingFactory = new DocumentProcessingFactory();
 	private int docCount = 0;
 	
-	public Indexer (String filesToIndexLocation, String indexLocation) {
+	public Indexer (String filesToIndexLocation, String indexLocation, CallbackRecipient output) {
+		this.callbackRecipient = output;
 		try {
 			Date start = new Date();
 			
@@ -72,7 +77,9 @@ public class Indexer {
 	private void indexDocs(IndexWriter writer, File file) {
 		try {
 			if (file.isDirectory()) {
-				System.out.print("\ndir: " + file.getAbsolutePath());
+				if(this.callbackRecipient != null) {
+					this.callbackRecipient.showCurrentDirectory(file.getAbsolutePath());
+				}
 				String[] files = file.list();
 				if(files == null) {
 					// seems to happen if dir access denied
@@ -84,7 +91,6 @@ public class Indexer {
 			}
 			else {
 				writer.addDocument(this.docProcessingFactory.processDocument(file));
-				System.out.print(".");
 				docCount++;
 			}
 		}
@@ -119,7 +125,7 @@ public class Indexer {
 			System.out.println("Usage: Indexer path_to_files_to_index indexLocation");
 			System.exit(1);
 		}
-		new Indexer(args[0], args[1]);
+		new Indexer(args[0], args[1], null);
 
 	}
 }
