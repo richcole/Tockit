@@ -11,10 +11,13 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.net.URL;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
-import org.xml.sax.*;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-import javax.xml.parsers.*;
 
 import org.tockit.docco.indexer.DocumentSummary;
 
@@ -29,16 +32,17 @@ public class XmlDocumentHandler extends DefaultHandler implements DocumentHandle
 		try {
 			DocumentSummary documentSummary = new DocumentSummary();
 			SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+			parserFactory.setValidating(false);
 			SAXParser parser = parserFactory.newSAXParser();
 			parser.parse(url.openStream(), this);
 			documentSummary.contentReader = new StringReader(content.toString());
 			return documentSummary;
 		}
 		catch (SAXException e) {
-			throw new DocumentHandlerException("Couldn't parse XML ", e);
+			throw new DocumentHandlerException("Couldn't parse XML: " + e.getMessage(), e);
 		}
 		catch (ParserConfigurationException e) {
-			throw new DocumentHandlerException("Couldn't parse XML ", e);
+			throw new DocumentHandlerException("Couldn't parse XML: " + e.getMessage(), e);
 		}
 	}
 
