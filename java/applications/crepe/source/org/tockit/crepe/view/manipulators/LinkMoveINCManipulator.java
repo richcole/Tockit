@@ -24,8 +24,8 @@ public class LinkMoveINCManipulator extends LinkMoveManipulator {
     }
 
     protected void determineItemsToMove(CanvasItemDraggedEvent dragEvent, HashSet itemsToMove, Collection lineViews, LinkView linkView) {
-        if ((dragEvent.getModifiers() & InputEvent.CTRL_MASK) == 0 &&
-                (dragEvent.getModifiers() & InputEvent.SHIFT_MASK) == 0) {
+        if ((dragEvent.getModifiers() & InputEvent.CTRL_DOWN_MASK) == 0 &&
+                (dragEvent.getModifiers() & InputEvent.SHIFT_DOWN_MASK) == 0) {
 
             // if CTRL not pressed: add all directly connected nodes
             itemsToMove.add(linkView);
