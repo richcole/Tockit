@@ -321,6 +321,8 @@ public class DoccoMainFrame extends JFrame {
 		
 		this.indexingPriority = ConfigurationManager.fetchInt(CONFIGURATION_SECTION_NAME, 
 															  CONFIGURATION_INDEXING_PRIORITY_NAME, MEDIUM_PRIORITY);	
+		this.lastDirectoryIndexed = new File(ConfigurationManager.fetchString(CONFIGURATION_SECTION_NAME, CONFIGURATION_LAST_INDEX_DIR,
+										     null));
 		
         openIndexes(forceIndexAccess);
 
@@ -359,6 +361,7 @@ public class DoccoMainFrame extends JFrame {
             }
         }
 		createQueryEngine();
+		//@todo add force access into Index class
 //        			if(!forceIndexAccess) {
 //        				JOptionPane.showMessageDialog(this, "The index is locked. You can run only one instance of Docco at one time.\n" +
 //        											  "If you want to override this error run Docco with the '-forceIndexAccess' option.",
@@ -636,19 +639,66 @@ public class DoccoMainFrame extends JFrame {
 
     private void createNewIndex(){
 		try {
-			File inputDir = getDirectoryToIndex();
-			if(inputDir == null) {
-				return;
-			}
+            JFileChooser fileDialog = new JFileChooser(this.lastDirectoryIndexed);
+            fileDialog.setDialogTitle("Select directory to index");
+            fileDialog.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            fileDialog.setMultiSelectionEnabled(false);
+            
+            final DocumentHandlerRegistry fileMappings = new DocumentHandlerRegistry();
+            
+            JPanel optionsPanel = new JPanel(new GridBagLayout());
+            JTextField nameField = new JTextField("Index " + (this.indexes.size() + 1));
+            JButton mappingsButton = new JButton("Edit Mappings...");
+            mappingsButton.addActionListener(new ActionListener(){
+            	public void actionPerformed(ActionEvent e) {
+					editFileMappings(fileMappings);
+                }
+            });
+            
+            GridBagConstraints constraints = new GridBagConstraints();
+            constraints.weightx = 1;
+            constraints.fill = GridBagConstraints.HORIZONTAL;
+            constraints.insets = new Insets(0,6,0,0);
+            
+            constraints.gridy = 0;
+            optionsPanel.add(new JLabel("Index name:"), constraints);
+            
+            constraints.gridy++;
+            optionsPanel.add(nameField, constraints);
+            
+            constraints.gridy++;
+            constraints.anchor = GridBagConstraints.CENTER;
+            constraints.fill = GridBagConstraints.NONE;
+            constraints.weighty = 1;
+            optionsPanel.add(mappingsButton, constraints);
+            
+            fileDialog.setAccessory(optionsPanel);
+            int rv = fileDialog.showDialog(this, "Index");
+            if(rv != JFileChooser.APPROVE_OPTION) {
+            	return;
+            }
+			this.lastDirectoryIndexed = fileDialog.getSelectedFile().getParentFile();
+
+            // @todo the next bit should be in the file chooser
+			String indexName = nameField.getText();
+			for (Iterator iter = this.indexes.iterator(); iter.hasNext();) {
+                Index index = (Index) iter.next();
+                if(index.getName().equals(indexName)) {
+                	JOptionPane.showMessageDialog(this, "Index name already in use, please choose another name.",
+                	                              "Duplicate Name", JOptionPane.ERROR_MESSAGE);
+                	createNewIndex();
+                	return;
+                }
+            }
+            							
+			File inputDir = fileDialog.getSelectedFile().getCanonicalFile();
 			Indexer.CallbackRecipient callbackRecipient = new Indexer.CallbackRecipient(){
 				public void showFeedbackMessage(String message) {
 					statusBarMessage.setText(message);
 				}
 			};
-			// @todo do something better for the names
 			File indexLocation = getIndexDirectory();
-			String name = inputDir.getPath().substring(inputDir.getPath().lastIndexOf(File.separator) + 1);
-            this.indexes.add(Index.createIndex(name, indexLocation, inputDir, callbackRecipient));
+            this.indexes.add(Index.createIndex(indexName, indexLocation, inputDir, fileMappings, callbackRecipient));
         } catch (IOException e) {
 			ErrorDialog.showError(this, e, "There has been an error creating a new index");
         }
@@ -656,28 +706,7 @@ public class DoccoMainFrame extends JFrame {
 		createQueryEngine();
     }
 
-    private File getDirectoryToIndex() throws IOException {
-		JFileChooser fileDialog;
-		if(this.lastDirectoryIndexed == null) { 
-			fileDialog = new JFileChooser();
-		} else {
-			fileDialog = new JFileChooser(this.lastDirectoryIndexed);
-		}
-		fileDialog.setDialogTitle("Select directory to index");
-		fileDialog.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		fileDialog.setMultiSelectionEnabled(false);
-		int rv = fileDialog.showDialog(this, "Index");
-		if(rv != JFileChooser.APPROVE_OPTION) {
-			return null;
-		}
-		ConfigurationManager.storeString(CONFIGURATION_SECTION_NAME, CONFIGURATION_LAST_INDEX_DIR,
-									fileDialog.getSelectedFile().getPath());
-									
-		this.lastDirectoryIndexed = fileDialog.getSelectedFile();
-		return fileDialog.getSelectedFile().getCanonicalFile();
-    }
-    
-	private void editFileMappings(DocumentHandlerRegistry docHandlersRegistry) {
+    private void editFileMappings(DocumentHandlerRegistry docHandlersRegistry) {
         new FileMappingsEditingDialog(this, docHandlersRegistry);
 	}
 
@@ -943,6 +972,11 @@ public class DoccoMainFrame extends JFrame {
 		ConfigurationManager.storeInt(CONFIGURATION_SECTION_NAME, CONFIGURATION_INDEXING_PRIORITY_NAME,
 								this.indexingPriority);
 		
+		if(this.lastDirectoryIndexed != null) {
+			ConfigurationManager.storeString(CONFIGURATION_SECTION_NAME, CONFIGURATION_LAST_INDEX_DIR,
+											 this.lastDirectoryIndexed.getPath());
+		}
+
 		ConfigurationManager.saveConfiguration();
 		System.exit(0);
 	}

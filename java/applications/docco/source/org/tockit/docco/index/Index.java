@@ -34,7 +34,7 @@ public class Index {
 	private File baseDirectory;
 	private Indexer indexer;
 	private Thread indexThread;
-	private DocumentHandlerRegistry docHandlersRegistry;
+	private DocumentHandlerRegistry fileMappings;
 	private int indexingPriority = Thread.MIN_PRIORITY;
 	private CallbackRecipient callbackRecipient;
 	
@@ -42,7 +42,15 @@ public class Index {
 		String[] paths = getLinesOfFile(getContentsFile(new File(indexDirectory,name)));
 		try {
 			File baseDirectory = new File(paths[0]); 
-			Index retVal = new Index(name, indexDirectory, baseDirectory, callbackRecipient);
+			File mappingsFile = getMappingsFile(indexDirectory);
+			DocumentHandlerRegistry fileMappings;
+			if(mappingsFile.exists()) {
+				///@todo move the load/save code into the DocumentHandlerRegistry and give it the file instead
+				fileMappings = new DocumentHandlerRegistry(getLinesOfFile(mappingsFile));
+			} else {
+				fileMappings = new DocumentHandlerRegistry();
+			}
+			Index retVal = new Index(name, indexDirectory, baseDirectory, fileMappings, callbackRecipient);
 			retVal.callbackRecipient = callbackRecipient;
 			return retVal;
 		} catch (ArrayIndexOutOfBoundsException e) {
@@ -50,14 +58,14 @@ public class Index {
 		}
 	}
 	
-	public static Index createIndex(String name, File indexDirectory, File baseDirectory, 
+	public static Index createIndex(String name, File indexDirectory, File baseDirectory, DocumentHandlerRegistry fileMappings, 
 									Indexer.CallbackRecipient callbackRecipient) throws IOException {
 		createDirPath(indexDirectory);
 		IndexWriter writer = new IndexWriter(new File(indexDirectory, name),
 											 GlobalConstants.DEFAULT_ANALYZER,
 											 true);
 		writer.close();
-		Index retVal = new Index(name, indexDirectory, baseDirectory, callbackRecipient);
+		Index retVal = new Index(name, indexDirectory, baseDirectory, fileMappings, callbackRecipient);
 		retVal.callbackRecipient = callbackRecipient;
 		retVal.updateIndex();
 		return retVal;
@@ -84,20 +92,12 @@ public class Index {
     	this.indexThread.setPriority(priority);
     }
 
-    private Index(String name, File indexDirectory, File baseDirectory, Indexer.CallbackRecipient callbackRecipient) throws IOException {
+    private Index(String name, File indexDirectory, File baseDirectory, DocumentHandlerRegistry fileMappings, Indexer.CallbackRecipient callbackRecipient) throws IOException {
     	this.name = name;
 		this.indexLocation = new File(indexDirectory, name);
 		this.baseDirectory = baseDirectory;
-		
-		File mappingsFile = getMappingsFile(this.indexLocation);
-		if(mappingsFile.exists()) {
-			///@todo move the load/save code into the DocumentHandlerRegistry and give it the file instead
-			this.docHandlersRegistry = new DocumentHandlerRegistry(getLinesOfFile(mappingsFile));
-		} else {
-			this.docHandlersRegistry = new DocumentHandlerRegistry();
-		}
-		
-        this.indexer = new Indexer(this.indexLocation, baseDirectory, this.docHandlersRegistry, callbackRecipient);
+		this.fileMappings = fileMappings;
+        this.indexer = new Indexer(this.indexLocation, baseDirectory, this.fileMappings, callbackRecipient);
 	}
 
 	private static File getContentsFile(File indexLocation) {
@@ -146,7 +146,7 @@ public class Index {
 			out.println(this.baseDirectory.getPath());
 			out.close();
 			out = new PrintStream(new FileOutputStream(getMappingsFile(this.indexLocation)));
-			String[] mappings = this.docHandlersRegistry.getMappingStringsList();
+			String[] mappings = this.fileMappings.getMappingStringsList();
 			for (int i = 0; i < mappings.length; i++) {
 				out.println(mappings[i]);
 			}
@@ -157,7 +157,7 @@ public class Index {
 	}
 	
     public DocumentHandlerRegistry getDocHandlersRegistry() {
-        return docHandlersRegistry;
+        return fileMappings;
     }
 
 	private static void createDirPath(File file) {
