@@ -75,52 +75,52 @@ public class FileMappingsEditingDialog extends JDialog {
 	}
 	
 	private class DocHandlersRegisteryListModel extends AbstractListModel {
-		private DocumentHandlerRegistry copyRegistery;
+		private DocumentHandlerRegistry copyRegistry;
 		
 		public DocHandlersRegisteryListModel (DocumentHandlerRegistry registery) {
-			
-			copyRegistery = new DocumentHandlerRegistry();
+			/// @todo this should be done using a copy constructor
+			copyRegistry = new DocumentHandlerRegistry();
 
 			Iterator it = registery.getDocumentMappingList().iterator();
 			while (it.hasNext()) {
 				DocumentHandlerMapping cur = (DocumentHandlerMapping) it.next();
-				copyRegistery.register(cur.getFileFilter(), cur.getHandler());
+				copyRegistry.register(cur.getFileFilter(), cur.getHandler());
 			}
 		}
 
 		public int getSize() {
-			return copyRegistery.getDocumentMappingList().size();
+			return copyRegistry.getDocumentMappingList().size();
 		}
 
 		public Object getElementAt(int index) {
-			return copyRegistery.getMappingAt(index);
+			return copyRegistry.getMappingAt(index);
 		}
 		
 		public void moveMapping (int fromIndex, int toIndex) {
-			copyRegistery.moveMapping(fromIndex, toIndex);
+			copyRegistry.moveMapping(fromIndex, toIndex);
 			if (fromIndex < toIndex) {
-				fireContentsChanged(copyRegistery.getMappingAt(toIndex), fromIndex, toIndex);	
+				fireContentsChanged(copyRegistry.getMappingAt(toIndex), fromIndex, toIndex);	
 			}
 			else {
-				fireContentsChanged(copyRegistery.getMappingAt(toIndex), toIndex, fromIndex);	
+				fireContentsChanged(copyRegistry.getMappingAt(toIndex), toIndex, fromIndex);	
 			}
 		}
 		
 		public void removeMappingAt (int index) {
 			if (index < model.getSize()) {
 				DocumentHandlerMapping mapping = (DocumentHandlerMapping) model.getElementAt(jlist.getSelectedIndex());
-				copyRegistery.removeMapping(mapping);
+				copyRegistry.removeMapping(mapping);
 				fireIntervalRemoved(mapping, 0, getSize());
 			}			
 		}
 		
 		public void addMapping (DoccoFileFilter fileFilter, DocumentHandler docHandler) {
-			copyRegistery.register(fileFilter, docHandler);
-			fireIntervalAdded(copyRegistery.getMappingAt(getSize() - 1), 0, getSize());
+			copyRegistry.register(fileFilter, docHandler);
+			fireIntervalAdded(copyRegistry.getMappingAt(getSize() - 1), 0, getSize());
 		}
 		
 		public DocumentHandlerRegistry getRegistery () {
-			return copyRegistery;
+			return copyRegistry;
 		}
 	}
 
@@ -390,7 +390,7 @@ public class FileMappingsEditingDialog extends JDialog {
 	}
 	
 	private void createMapping() {
-		CreateNewFileMappingDialog dialog = new CreateNewFileMappingDialog(this, model.copyRegistery);
+		CreateNewFileMappingDialog dialog = new CreateNewFileMappingDialog(this, model.copyRegistry);
 		DocumentHandlerMapping mapping = dialog.getCreatedMapping();
 		if (mapping != null) {
 			model.addMapping(mapping.getFileFilter(), mapping.getHandler());
