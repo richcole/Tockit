@@ -23,7 +23,7 @@ public class Indexer extends Thread {
 		void showFeedbackMessage(String message);
 	}
 
-    private IndexWriter writer;
+    private IndexWriter writer = null;
 	private boolean stateChangeRequested = false;
 	private boolean running = true;
     private List fileQueue = new LinkedList();
@@ -54,10 +54,11 @@ public class Indexer extends Thread {
 		}
 		this.writer.close();
 		this.fileQueue.clear();
+		this.writer = null;
 	}
 
 	synchronized public boolean isIndexing() {
-		return this.writer != null;
+		return !this.fileQueue.isEmpty();
 	}
 
 	public void run() {
