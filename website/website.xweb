@@ -69,7 +69,7 @@
         </imageGroup>
         <!-- The basic buttons -->
         <imageStyle width="130" height="30" fileNamePattern="button_%n.png" type="button">
-            <svg xwebid="xweb">
+            <svg xwebid="xweb" style="text-rendering:geometricPrecision">
                 <filter id="Shadow" filterUnits="objectBoundingBox" x="-20" y="-20" width="200" height="200">
                     <feMorphology in="SourceAlpha" result="morphedAlpha" radius="1" operator="dilate"/>
                     <feGaussianBlur in="morphedAlpha" result="blurredAlpha" stdDeviation="1"/>
@@ -89,7 +89,7 @@
             </svg>
         </imageStyle>
         <imageStyle width="130" height="30" fileNamePattern="button_%n_act.png" type="activeButton">
-            <svg xwebid="xweb">
+            <svg xwebid="xweb" style="text-rendering:geometricPrecision">
                 <filter id="Shadow" filterUnits="objectBoundingBox" x="-20" y="-20" width="200" height="200">
                     <feMorphology in="SourceAlpha" result="morphedAlpha" radius="1" operator="dilate"/>
                     <feGaussianBlur in="morphedAlpha" result="blurredAlpha" stdDeviation="1"/>
@@ -109,7 +109,7 @@
             </svg>
         </imageStyle>
         <imageStyle width="70" height="84" fileNamePattern="section_%n.png" type="section">
-            <svg xwebid="xweb">
+            <svg xwebid="xweb" style="text-rendering:geometricPrecision">
                 <filter id="Shadow" filterUnits="objectBoundingBox" x="-20" y="-20" width="200" height="200">
                     <feMorphology in="SourceAlpha" result="morphedAlpha" radius="1" operator="dilate"/>
                     <feGaussianBlur in="morphedAlpha" result="blurredAlpha" stdDeviation="1"/>
@@ -133,7 +133,7 @@
             </svg>
         </imageStyle>
         <imageStyle width="70" height="84" fileNamePattern="section_%n_act.png" type="activeSection">
-            <svg xwebid="xweb">
+            <svg xwebid="xweb" style="text-rendering:geometricPrecision">
                 <filter id="Shadow" filterUnits="objectBoundingBox" x="-20" y="-20" width="200" height="200">
                     <feMorphology in="SourceAlpha" result="morphedAlpha" radius="1" operator="dilate"/>
                     <feGaussianBlur in="morphedAlpha" result="blurredAlpha" stdDeviation="1"/>
