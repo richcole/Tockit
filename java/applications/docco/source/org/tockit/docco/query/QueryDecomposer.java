@@ -10,6 +10,8 @@ package org.tockit.docco.query;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sourceforge.toscanaj.gui.dialog.ErrorDialog;
+
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.ParseException;
@@ -28,15 +30,20 @@ public class QueryDecomposer {
 	}
 
 	public List breakQueryIntoTerms (String queryString) throws ParseException {
-		Query query = QueryParser.parse(queryString, this.defaultQueryField, new StandardAnalyzer());
-        if (query instanceof BooleanQuery) {
-        	return processBooleanQuery((BooleanQuery) query);
-        }
-        else {
-        	ArrayList result = new ArrayList();
-        	result.add(query);
-            return result;
-        }
+		try {
+			Query query = QueryParser.parse(queryString, this.defaultQueryField, new StandardAnalyzer());
+			if (query instanceof BooleanQuery) {
+				return processBooleanQuery((BooleanQuery) query);
+			}
+			else {
+				ArrayList result = new ArrayList();
+				result.add(query);
+				return result;
+			}
+		} catch (ParseException pexc) {
+			ErrorDialog.showError(null, pexc, "Query could not be parsed");
+		}
+		return new ArrayList();
 	}	
 	
 	private List processBooleanQuery (BooleanQuery query) {
