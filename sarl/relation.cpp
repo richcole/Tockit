@@ -124,17 +124,23 @@ void sarl_relation_remove_pair(struct Sarl_Relation *r, Sarl_Pair pair)
 }
 
 bool 
-sarl_relation_iterator_is_member(
-  Sarl_RelationIterator *it, Sarl_Pair p
+sarl_relation_is_member(
+  Sarl_Relation *r, Sarl_Pair p
 )
 {
   bool result;
   Sarl_SetIterator* intent;
-
+  Sarl_RelationIterator *it;
+  
+  it = sarl_relation_iterator_create(r);
+  sarl_relation_iterator_release_ownership(it);
   intent  = sarl_relation_iterator_intent(it, p.dom);
   sarl_set_iterator_release_ownership(intent);
   result = sarl_set_iterator_is_member(intent, p.rng);
+
   sarl_set_iterator_decr_ref(intent);
+  sarl_relation_iterator_decr_ref(it);
+
   return result;
 };
 

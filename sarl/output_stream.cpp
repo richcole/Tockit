@@ -180,6 +180,10 @@ int sarl_output_stream_write_index(
   int result = SARL_OK;
 
   std::vector<char> v;
+
+  if ( index == 0 ) {
+    v.push_back('0');
+  };
   
   while ( index != 0 ) {
     v.push_back('0' + (index % 10));

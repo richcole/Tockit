@@ -408,6 +408,23 @@ struct Sarl_SetIterator *sarl_relation_intent_extent_set(
   return result;
 };
 
+bool 
+sarl_relation_iterator_is_member(
+  Sarl_RelationIterator *it, Sarl_Pair p
+)
+{
+  bool result;
+  Sarl_SetIterator* intent;
+  
+  intent  = sarl_relation_iterator_intent(it, p.dom);
+  sarl_set_iterator_release_ownership(intent);
+  result = sarl_set_iterator_is_member(intent, p.rng);
+
+  sarl_set_iterator_decr_ref(intent);
+
+  return result;
+};
+
 
 
 

@@ -35,7 +35,10 @@ OBJECTS = \
   input_stream \
   output_stream \
   read_cxt_context \
-  write_cxt_context
+  write_cxt_context \
+  map \
+  map_iterator
+
 
 TESTS = \
   test_set \

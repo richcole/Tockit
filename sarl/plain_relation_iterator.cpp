@@ -53,8 +53,12 @@ Sarl_Pair sarl_relation_iterator_plain_value(
 {
   Sarl_PlainRelationIterator *it = 
     static_cast<Sarl_PlainRelationIterator*>(a_it);
+
   if ( ! sarl_relation_iterator_at_end(it) ) {
     return *it->it;
+  }
+  else {
+    return sarl_pair(0,0);
   }
 }
 
