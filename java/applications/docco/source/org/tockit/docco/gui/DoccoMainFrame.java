@@ -180,7 +180,7 @@ public class DoccoMainFrame extends JFrame {
 			} else {
 				diagramView.setSelectedConcepts(null);
 				selectedConcept = null;
-				hitList.setModel(null);
+                fillTreeList();
 				return;
 			}
 			DiagramNode node = nodeView.getDiagramNode();
@@ -191,17 +191,23 @@ public class DoccoMainFrame extends JFrame {
 		}
 	}
 
-	private void fillTreeList() {
+    private void fillTreeList() {
+        boolean allShown = false;
 		if(this.selectedConcept == null) {
-			this.hitList.setModel(null);
-			return;
+            Diagram2D diagram = this.diagramView.getDiagram();
+            if(diagram == null) {
+                this.hitList.setModel(null);
+                return;
+            }
+            this.selectedConcept = diagram.getTopConcept();
+            allShown = true;
 		}
 		Map pathToNodeMap = new Hashtable();
 		DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("");
 		pathToNodeMap.put("",rootNode);
 		
 		Iterator iterator;
-		if(this.showContingentOnlyCheckBox.isSelected()) {
+		if(!allShown && this.showContingentOnlyCheckBox.isSelected()) {
 			iterator = this.selectedConcept.getObjectContingentIterator();
 		} else {
 			iterator = this.selectedConcept.getExtentIterator();
@@ -259,6 +265,10 @@ public class DoccoMainFrame extends JFrame {
 		DefaultTreeModel treeModel = new DefaultTreeModel(rootNode);
 		this.hitList.setModel(treeModel);
 		unfoldTree(treeModel);
+        
+        if(allShown) {
+            this.selectedConcept = null;
+        }
 	}
 
 	private void flattenResults(DefaultMutableTreeNode treeNode) {
@@ -358,7 +368,6 @@ public class DoccoMainFrame extends JFrame {
 		}
 		
         openIndexes(forceIndexAccess);
-        doQuery();
 
         this.setVisible(true);
         preferences.restoreWindowPlacement(this,
@@ -893,6 +902,7 @@ public class DoccoMainFrame extends JFrame {
         });
         
         this.queryField.setEditable(true);
+        this.queryField.setSelectedItem(null);
 
 		setSearchEnabledStatus();		
 
@@ -1093,7 +1103,8 @@ public class DoccoMainFrame extends JFrame {
 				ErrorDialog.showError(this, e, "Error querying");
 				this.diagramView.showDiagram(null);
             }
-			this.hitList.setModel(null);
+            this.selectedConcept = null;
+            fillTreeList();
 			this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             setMenuStates();
         }
