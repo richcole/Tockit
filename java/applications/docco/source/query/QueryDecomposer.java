@@ -62,6 +62,9 @@ public class QueryDecomposer {
 		return result;
 	}	
 	
+	/**
+	 * @todo should return Set to be consistent with buildQueryTermsCombinations method 
+	 */
 	public List breakQueryIntoTerms (String queryString) throws ParseException {
 		this.querySegments = new LinkedList();
 		Query query = QueryParser.parse(queryString, this.defaultQueryField, new StandardAnalyzer());

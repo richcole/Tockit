@@ -35,11 +35,12 @@ public class HitReference {
 			return false;
 		}
 		HitReference otherHR = (HitReference) other;
-		return this.getDocument().getField(DOC_PATH_FIELD).equals(otherHR.getDocument().getField(DOC_PATH_FIELD));
+		return this.getDocument().getField(DOC_PATH_FIELD).toString().equals(
+								otherHR.getDocument().getField(DOC_PATH_FIELD).toString());
 	}
 	
 	public int hashCode() {
-		return this.getDocument().getField(DOC_PATH_FIELD).hashCode();
+		return this.getDocument().getField(DOC_PATH_FIELD).toString().hashCode();
 	}
 
 }

@@ -10,7 +10,7 @@ package query;
 
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.Set;
+import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
@@ -45,11 +45,13 @@ public class QueryEngine {
 	
 	public QueryWithResultSet executeQueryUsingDecomposer (String queryString) throws ParseException, IOException {
 		QueryWithResultSet queryResult = new QueryWithResultSetImplementation();
-		Set queryTermsCombinations = this.queryDecomposer.buildQueryTermsCombinations(queryString);
+		//Set queryTermsCombinations = this.queryDecomposer.buildQueryTermsCombinations(queryString);
+		List queryTermsCombinations = this.queryDecomposer.breakQueryIntoTerms(queryString);
 		Iterator it = queryTermsCombinations.iterator();
 		while (it.hasNext()) {
-			String cur = (String) it.next();
-			QueryWithResult qwr = executeQuery(cur);
+			//String cur = (String) it.next();
+			SimpleQueryReference cur = (SimpleQueryReference) it.next();
+			QueryWithResult qwr = executeQuery(cur.getQuery().toString());
 			queryResult.add(qwr);
 		}
 		return queryResult;

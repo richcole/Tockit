@@ -18,6 +18,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.geom.Point2D;
+import java.util.HashSet;
 import java.util.Iterator;
 
 import javax.swing.BorderFactory;
@@ -34,11 +36,27 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListModel;
 
+import net.sourceforge.toscanaj.controller.fca.ConceptInterpretationContext;
+import net.sourceforge.toscanaj.controller.fca.DiagramHistory;
+import net.sourceforge.toscanaj.controller.fca.DirectConceptInterpreter;
+import net.sourceforge.toscanaj.model.context.Attribute;
+import net.sourceforge.toscanaj.model.database.AggregateQuery;
+import net.sourceforge.toscanaj.model.diagram.DiagramNode;
+import net.sourceforge.toscanaj.model.diagram.LabelInfo;
+import net.sourceforge.toscanaj.model.diagram.SimpleLineDiagram;
+import net.sourceforge.toscanaj.model.diagram.WriteableDiagram2D;
+import net.sourceforge.toscanaj.model.lattice.Concept;
+import net.sourceforge.toscanaj.model.lattice.ConceptImplementation;
+import net.sourceforge.toscanaj.view.diagram.DiagramView;
+
 import org.tockit.events.Event;
 import org.tockit.events.EventBroker;
 import org.tockit.events.EventBrokerListener;
 
+import query.HitReference;
 import query.QueryWithResult;
+import query.util.HitReferencesSet;
+import query.util.HitReferencesSetImplementation;
 import query.util.QueryWithResultSet;
 
 import events.QueryEvent;
@@ -51,6 +69,8 @@ public class DoccoMainFrame extends JFrame {
 	
 	private ListModel resListModel = new DefaultListModel();
 	
+	private DiagramView diagramView;
+	
 	private EventBroker eventBroker;
 	
 	int width = 900;
@@ -59,14 +79,105 @@ public class DoccoMainFrame extends JFrame {
 	private class QueryFinishedEventHandler implements EventBrokerListener {
 		public void processEvent(Event event) {
 			QueryWithResultSet queryResultSet = (QueryWithResultSet) event.getSubject();
-			StringBuffer str = new StringBuffer(1000000);
-			Iterator it = queryResultSet.iterator();
-			while (it.hasNext()) {
-				QueryWithResult cur = (QueryWithResult) it.next();
-				str.append("Query: " + cur.getQuery() + "\n");
-				str.append("\t" + cur.getResultSet());
+			
+			Concept[] concepts = createConcepts(queryResultSet);
+			Point2D[] baseVectors = createBase(queryResultSet);
+			
+			WriteableDiagram2D diagram = createDiagram(concepts, baseVectors);
+			
+			diagramView.showDiagram(diagram);
+		}
+
+		public Point2D[] createBase(QueryWithResultSet queryResultSet) {
+			final double scale = 140;
+			
+			int n = queryResultSet.size();
+			Point2D[] baseVectors = new Point2D[n];
+			for (int i = 0; i < baseVectors.length; i++) {
+				double x = -1 + 2 * i / (n-1.0); // ranges from -1 to 1
+				double y = (1 - Math.abs(x))*0.1 + 0.3;
+				baseVectors[i] = new Point2D.Double(scale * x, scale * y);
 			}
-			resultArea.setText(str.toString());
+			return baseVectors;
+		}
+
+		public WriteableDiagram2D createDiagram(
+			Concept[] concepts,
+			Point2D[] baseVectors) {
+			WriteableDiagram2D diagram = new SimpleLineDiagram();
+			DiagramNode[] nodes = new DiagramNode[concepts.length];
+			for (int i = 0; i < concepts.length; i++) {
+				double x = 0;
+				double y = 0;
+				for (int j = 0; j < baseVectors.length; j++) {
+					int currentBit = 1<<j;
+					if ((i & currentBit) == currentBit) {
+						x += baseVectors[j].getX();
+						y += baseVectors[j].getY();
+					}
+				}
+				Point2D pos = new Point2D.Double(x,y);
+				nodes[i] = new DiagramNode(diagram, String.valueOf(i), pos, concepts[i],
+													new LabelInfo(), new LabelInfo(), null);
+				diagram.addNode(nodes[i]);
+			}
+			
+			for (int i = 0; i < concepts.length - 1; i++) {
+				for (int j = 0; j < baseVectors.length; j++) {
+					int currentBit = 1<<j;
+					if( (i | currentBit ) != i ) {
+						diagram.addLine(nodes[i], nodes[i | currentBit]);
+					}
+				}
+			}
+			return diagram;
+		}
+		
+		public Concept[] createConcepts(QueryWithResultSet queryResultSet) {
+			HitReferencesSet allObjects = new HitReferencesSetImplementation();
+			for (Iterator iter = queryResultSet.iterator(); iter.hasNext();) {
+				QueryWithResult queryWithResult = (QueryWithResult) iter.next();
+				allObjects.addAll(queryWithResult.getResultSet());
+			}
+			
+			QueryWithResult[] queryResults = queryResultSet.toArray();
+			
+			int n = queryResultSet.size();
+			int numConcepts = 1<<n; // 2 to the power of n
+			
+			ConceptImplementation[] concepts = new ConceptImplementation[numConcepts];
+			for (int i = 0; i < concepts.length; i++) {
+				concepts[i] = new ConceptImplementation();
+			}
+			
+			for (int i = 0; i < concepts.length; i++) {
+				ConceptImplementation concept = concepts[i];
+				HitReferencesSet objectContingent = 
+							new HitReferencesSetImplementation(new HashSet(allObjects.toSet()));
+				for (int j = 0; j < n; j++) {
+					int currentBit = 1<<j;
+					if (i == currentBit) {
+						concept.addAttribute(new Attribute(queryResults[j].getQuery()));
+					}
+					HitReferencesSet currentHitReferences = queryResults[j].getResultSet();
+					if ((i & currentBit) == currentBit) {
+						objectContingent.retainAll(currentHitReferences);
+					} else {
+						objectContingent.removeAll(currentHitReferences);
+					}
+				}
+				for (Iterator iter = objectContingent.iterator(); iter.hasNext();) {
+					HitReference reference = (HitReference) iter.next();
+					concept.addObject(reference);
+				}
+				for( int j =0; j < numConcepts; j ++) {
+					if((i & j) == i) {
+						concepts[i].addSubConcept(concepts[j]);
+						concepts[j].addSuperConcept(concepts[i]);
+					}
+				}
+			}
+			return concepts;
 		}
 	}	
 	
@@ -135,15 +246,23 @@ public class DoccoMainFrame extends JFrame {
 	}
 	
 	private JComponent buildViewsComponent() {
-		JPanel diagramPanel = new JPanel();
+		this.diagramView = new DiagramView();
+		this.diagramView.setConceptInterpreter(new DirectConceptInterpreter());
+		ConceptInterpretationContext conceptInterpretationContext = 
+					new ConceptInterpretationContext(new DiagramHistory(),new EventBroker());
+		conceptInterpretationContext.setObjectDisplayMode(ConceptInterpretationContext.EXTENT);
+		this.diagramView.setConceptInterpretationContext(
+									conceptInterpretationContext);
+		this.diagramView.setQuery(AggregateQuery.COUNT_QUERY);
+		this.diagramView.setMinimumFontSize(12.0);
 
 		JList resList = new JList(this.resListModel);
 		JScrollPane scrollPane = new JScrollPane(resList);
 		
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-								   diagramPanel, scrollPane);
+								   diagramView, scrollPane);
 		splitPane.setOneTouchExpandable(true);
-		splitPane.setDividerLocation(0.7);
+		splitPane.setResizeWeight(0.9);
 
 		return splitPane;
 	}
