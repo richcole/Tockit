@@ -15,11 +15,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.Point2D;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -54,6 +56,8 @@ import net.sourceforge.toscanaj.controller.fca.DiagramHistory;
 import net.sourceforge.toscanaj.controller.fca.DirectConceptInterpreter;
 import net.sourceforge.toscanaj.controller.ndimlayout.DefaultDimensionStrategy;
 import net.sourceforge.toscanaj.controller.ndimlayout.NDimLayoutOperations;
+import net.sourceforge.toscanaj.dbviewer.BrowserLauncher;
+import net.sourceforge.toscanaj.gui.dialog.ErrorDialog;
 import net.sourceforge.toscanaj.model.context.Attribute;
 import net.sourceforge.toscanaj.model.database.AggregateQuery;
 import net.sourceforge.toscanaj.model.diagram.Diagram2D;
@@ -561,6 +565,26 @@ public class DoccoMainFrame extends JFrame {
 					documentDisplayPane.displayDocument(reference);
 				} else {
 					documentDisplayPane.clearDisplay();
+				}
+			}
+		});
+		final DoccoMainFrame finalThis = this; 
+		this.hitList.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				if(e.getClickCount() != 2) {
+					return;
+				}
+				if(e.getButton() != MouseEvent.BUTTON1) {
+					return;
+				}
+				DefaultMutableTreeNode node = (DefaultMutableTreeNode) hitList.getLastSelectedPathComponent();
+				if(node.getUserObject() instanceof HitReference) {
+					HitReference reference = (HitReference) node.getUserObject();
+					try {
+						BrowserLauncher.openURL(reference.getDocument().get(GlobalConstants.FIELD_DOC_PATH));
+					} catch (IOException ex) {
+						ErrorDialog.showError(finalThis,ex,"Could not open document");
+					}
 				}
 			}
 		});
