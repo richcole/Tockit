@@ -315,10 +315,8 @@ public class DoccoMainFrame extends JFrame {
 			return;
 		}
 		Map pathToNodeMap = new Hashtable();
-		DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("root");
+		DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("");
 		pathToNodeMap.put("",rootNode);
-		
-		String separator = File.separator;
 		
 		Iterator iterator;
 		if(this.showContingentOnlyCheckBox.isSelected()) {
@@ -330,23 +328,34 @@ public class DoccoMainFrame extends JFrame {
 		while (iterator.hasNext()) {
 			HitReference reference = (HitReference) iterator.next();
 			String path = reference.getDocument().get(GlobalConstants.FIELD_DOC_PATH);
-			StringTokenizer tokenizer = new StringTokenizer(path, separator);
+			StringTokenizer tokenizer = new StringTokenizer(path, File.separator);
 			StringBuffer curPath = new StringBuffer();
 			DefaultMutableTreeNode lastNode = rootNode;
 			while(tokenizer.hasMoreTokens()) {
 				String currentToken = tokenizer.nextToken();
 				curPath.append(currentToken);
 				if(tokenizer.hasMoreTokens()) {
-					curPath.append(separator);
+					curPath.append(File.separator);
 					DefaultMutableTreeNode curNode = (DefaultMutableTreeNode) pathToNodeMap.get(curPath.toString());
 					if(curNode == null) {
-						curNode = new DefaultMutableTreeNode(curPath.toString());
+						curNode = new DefaultMutableTreeNode(curPath.toString()){
+							public String toString() {
+								DefaultMutableTreeNode parent = (DefaultMutableTreeNode) getParent();
+								String userObjectString = getUserObject().toString();
+                                return userObjectString.substring(parent.getUserObject().toString().length(), userObjectString.length() - 1);
+                            }
+						};
 						lastNode.add(curNode);
 						pathToNodeMap.put(curPath.toString(), curNode);
 					}
 					lastNode = curNode;
 				} else {
-					DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(reference);
+					DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(reference){
+						public String toString() {
+							String path = super.toString();
+                            return path.substring(path.lastIndexOf(File.separator) + 1);
+                        }
+					};
 					lastNode.add(newNode);
 				}
 			}
