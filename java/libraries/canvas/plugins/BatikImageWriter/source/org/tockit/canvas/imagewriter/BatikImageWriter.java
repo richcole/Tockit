@@ -99,7 +99,11 @@ public class BatikImageWriter implements ImageWriter {
         svgGenerator.setSVGCanvasSize(new Dimension(settings.getImageWidth(), settings.getImageHeight()));
         Rectangle2D bounds = new Rectangle2D.Double(
                 0, 0, settings.getImageWidth(), settings.getImageHeight());
-
+        if(settings.forceColorIsSet()) {
+            svgGenerator.setPaint(settings.getBackgroundColor());
+            svgGenerator.fill(bounds);
+        }
+        
         AffineTransform transform = canvas.scaleToFit(svgGenerator, bounds);
         svgGenerator.transform(transform);
 

@@ -7,7 +7,6 @@
  */
 package org.tockit.canvas.imagewriter;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Paint;
 import java.awt.RenderingHints;
@@ -164,12 +163,16 @@ public class FreeHepImageWriter implements ImageWriter {
 			if(graphicFormat instanceof GraphicFormatPPM) {
 				Paint paint = canvas.getBackgroundItem().getPaint();
 				if(paint == null) {
-					paint = Color.WHITE;
+					paint = settings.getBackgroundColor();
 				}
 				graphics2D.setPaint(paint);
 				graphics2D.fill(bounds);
 			}
-
+            if(settings.forceColorIsSet()) {
+                graphics2D.setPaint(settings.getBackgroundColor());
+                graphics2D.fill(bounds);
+            }
+            
 			AffineTransform transform = canvas.scaleToFit(graphics2D, bounds);
 			graphics2D.transform(transform);
 			// paint all items on canvas

@@ -7,9 +7,11 @@
  */
 package org.tockit.canvas.imagewriter;
 
+import java.awt.Color;
 import java.io.File;
 import java.util.Iterator;
-import java.util.prefs.Preferences;
+
+import org.tockit.swing.preferences.ExtendedPreferences;
 
 
 /**
@@ -19,7 +21,9 @@ import java.util.prefs.Preferences;
  * export. The file name is not stored.
  */
 public class DiagramExportSettings {
-    private static final Preferences preferences = Preferences.userNodeForPackage(DiagramExportSettings.class);
+    private static final String CONFIGURATION_BACKGROUND_COLOR_ENTRY = "backgroundColor";
+    private static final String CONFIGURATION_FORCE_COLOR_ENTRY = "forceColorFlag";
+    private static final ExtendedPreferences preferences = ExtendedPreferences.userNodeForClass(DiagramExportSettings.class);
 
     private static final String CONFIGURATION_AUTO_MODE_ENTRY = "autoMode";
     private static final String CONFIGURATION_IMAGE_HEIGHT_ENTRY = "imageHeight";
@@ -63,6 +67,10 @@ public class DiagramExportSettings {
      */
     private File lastImageExportFile;
 
+    private boolean forceColor;
+    
+    private Color backgroundColor;
+
     /**
      * Initialisation constructor.
      *
@@ -87,21 +95,11 @@ public class DiagramExportSettings {
         this.width = preferences.getInt(CONFIGURATION_IMAGE_WIDTH_ENTRY, 500);
         
         this.height = preferences.getInt(CONFIGURATION_IMAGE_HEIGHT_ENTRY, 400);
-        int exportAutoMode = preferences.getInt(CONFIGURATION_AUTO_MODE_ENTRY, 1); 
-        this.autoMode = true;
-        if( exportAutoMode == 0 ) {
-            this.autoMode = false;
-        }   
-        int saveCommentsToFileTrue = preferences.getInt(CONFIGURATION_COMMENTS_TO_FILE_ENTRY, 0);
-        this.saveCommentsToFile = false;
-        if( saveCommentsToFileTrue == 1) {
-            this.saveCommentsToFile= true;   
-        }
-        int saveCommentsToClipboardTrue = preferences.getInt(CONFIGURATION_COMMENTS_TO_CLIPBOARD_ENTRY, 0);
-        this.saveCommentsToClipboard= false;
-        if( saveCommentsToClipboardTrue == 1 ){
-            this.saveCommentsToClipboard= true;
-        }
+        this.autoMode = preferences.getBoolean(CONFIGURATION_AUTO_MODE_ENTRY, true);
+        this.saveCommentsToFile = preferences.getBoolean(CONFIGURATION_COMMENTS_TO_FILE_ENTRY, false);
+        this.saveCommentsToClipboard = preferences.getBoolean(CONFIGURATION_COMMENTS_TO_CLIPBOARD_ENTRY, false);
+        this.forceColor = preferences.getBoolean(CONFIGURATION_FORCE_COLOR_ENTRY, false);
+        this.backgroundColor = preferences.getColor(CONFIGURATION_BACKGROUND_COLOR_ENTRY, Color.WHITE);
     }
 
         
@@ -118,6 +116,8 @@ public class DiagramExportSettings {
         this.autoMode = autoMode;
         this.saveCommentsToFile= false;
         this.saveCommentsToClipboard= false;
+        this.forceColor = false;
+        this.backgroundColor = Color.WHITE;
         String lastImage = preferences.get(CONFIGURATION_LAST_EXPORT_FILE_ENTRY, null);
         if(lastImage != null) {
             this.lastImageExportFile = new File(lastImage);
@@ -252,5 +252,39 @@ public class DiagramExportSettings {
     public void setLastImageExportFile(File lastImageExportFile) {
         this.lastImageExportFile = lastImageExportFile;
         preferences.put(CONFIGURATION_LAST_EXPORT_FILE_ENTRY, lastImageExportFile.getAbsolutePath());
+    }
+
+    /**
+     * If this flag is set, no transparent backgrounds should be used.
+     */
+    public void setForceColor(boolean forceColor) {
+        this.forceColor = forceColor;
+        preferences.putBoolean(CONFIGURATION_FORCE_COLOR_ENTRY, forceColor);
+    }
+    
+    /**
+     * If this flag is set, no transparent backgrounds should be used.
+     * 
+     * @return true iff the color set for the background should be used
+     */
+    public boolean forceColorIsSet() {
+        return this.forceColor;
+    }
+
+    /**
+     * @return Returns the background color used if forceColor is set
+     * @see forceColorIsSet()
+     */
+    public Color getBackgroundColor() {
+        return this.backgroundColor;
+    }
+    
+    /**
+     * @param backgroundColor The background color to use if forceColor is set
+     * @see setForceColor(boolean)
+     */
+    public void setBackgroundColor(Color backgroundColor) {
+        this.backgroundColor = backgroundColor;
+        preferences.putColor(CONFIGURATION_BACKGROUND_COLOR_ENTRY, backgroundColor);
     }
 }
