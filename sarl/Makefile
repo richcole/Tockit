@@ -27,7 +27,8 @@ OBJECTS = \
   string \
   transitive_relation \
   lattice \
-  cached_lattice_iterator
+  cached_lattice_iterator \
+  assert 
 
 TESTS = \
   test_set \
@@ -47,6 +48,10 @@ TESTS = \
 PUBLIC_HEADERS = \
   cpp/Set.h \
   cpp/SetIterator.h \
+  cpp/Relation.h \
+  cpp/RelationIterator.h \
+  cpp/Lattice.h \
+  cpp/LatticeIterator.h \
   index.h \
   pair.h \
   set.h \
@@ -104,7 +109,7 @@ lib_d/libsarl.so: $(OBJECTS:%=objs_d/%.o) lib_d
 lib/libsarl.so: $(OBJECTS:%=objs/%.o) lib
 	$(CC) $(OPTIM) -shared -o $@ $(OBJECTS:%=objs/%.o) -lstdc++
 
-lib/libsarl++.so: lib
+lib/libsarl++.so: lib 
 	$(MAKE) -C cpp ../$@
 
 lib_d/libsarl++.so: lib_d

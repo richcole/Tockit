@@ -20,7 +20,9 @@
   { \
     if ( (expr1) != (expr2) ) { \
       fprintf(stderr, "%s:%d: Assert eq failed, " \
-        #expr1 "=%d, " #expr2 "=%d", __FILE__, __LINE__, expr1, expr2); \
+        #expr1 "=%d, " #expr2 "=%d", __FILE__, __LINE__, \
+        (int)expr1, (int)expr2 \
+      ); \
       exit(-1); \
     }; \
   }; \

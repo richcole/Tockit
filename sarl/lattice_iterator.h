@@ -45,6 +45,11 @@ extern void
      struct Sarl_LatticeIterator *
   );
 
+extern Sarl_ConceptIterator*
+  sarl_lattice_iterator_value(
+     struct Sarl_LatticeIterator *
+  );
+
 extern void 
   sarl_lattice_iterator_next_gte(
     struct Sarl_LatticeIterator *K,

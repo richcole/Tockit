@@ -117,5 +117,8 @@ extern struct Sarl_SetIterator *
     Sarl_SetIterator *it
   );
 
+extern struct Sarl_SetIterator *
+  sarl_set_iterator_create_empty();
+
 
 #endif

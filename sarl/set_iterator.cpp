@@ -3,12 +3,45 @@ extern "C" {
 #include <sarl/set.h>
 #include <sarl/set_iterator.h>
 #include <sarl/ref_count.h>
-  
+
 }
 
 #include <sarl/set_impl.h>
 #include <sarl/set_iterator_impl.h>
 #include <sarl/test.h>
+
+class EmptySetManager 
+{
+public:
+  ~EmptySetManager()
+  {
+    if ( s_empty != 0 ) {
+      sarl_set_decr_ref(s_empty);
+    }
+    s_empty = 0;
+  };
+
+  static Sarl_Set* empty_set() 
+  {
+    if ( s_empty == 0 ) {
+      s_empty = sarl_set_create();
+    }
+    return s_empty;
+  }
+  
+
+  static Sarl_Set* s_empty;
+};
+
+Sarl_Set* EmptySetManager::s_empty;
+
+static EmptySetManager empty_set_manager;
+
+struct Sarl_SetIterator *
+sarl_set_iterator_create_empty()
+{
+  return sarl_set_iterator_create(EmptySetManager::empty_set());
+};
 
 int sarl_set_iterator_is_empty(
   struct Sarl_SetIterator *it
