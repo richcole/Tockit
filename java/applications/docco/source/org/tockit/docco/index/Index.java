@@ -21,9 +21,10 @@ import org.apache.lucene.index.IndexWriter;
 import org.tockit.docco.GlobalConstants;
 import org.tockit.docco.indexer.DocumentHandlerRegistry;
 import org.tockit.docco.indexer.Indexer;
+import org.tockit.docco.indexer.Indexer.CallbackRecipient;
 
 public class Index {
-	/**
+    /**
 	 * Indicates wether this index is used for querying at the moment.
 	 */
 	private boolean active = true;
@@ -34,12 +35,14 @@ public class Index {
 	private Thread indexThread;
 	private DocumentHandlerRegistry docHandlersRegistry;
 	public static int indexingPriority = Thread.MIN_PRIORITY;
+	private CallbackRecipient callbackRecipient;
 	
     public static Index openIndex(File indexLocation, Indexer.CallbackRecipient callbackRecipient) throws IOException {
 		String[] paths = getLinesOfFile(getContentsFile(indexLocation));
 		try {
 			File baseDirectory = new File(paths[0]); 
 			Index retVal = new Index(indexLocation, baseDirectory, callbackRecipient);
+			retVal.callbackRecipient = callbackRecipient;
 			return retVal;
 		} catch (ArrayIndexOutOfBoundsException e) {
 			throw new IOException("No base directory found in '" + getContentsFile(indexLocation).getPath() + "'");
@@ -55,6 +58,7 @@ public class Index {
 								true);
 		writer.close();
 		Index retVal = new Index(indexLocation, baseDirectory, callbackRecipient);
+		retVal.callbackRecipient = callbackRecipient;
 		retVal.updateIndex();
 		return retVal;
 	}
@@ -63,6 +67,7 @@ public class Index {
 		if(this.indexThread != null && this.indexThread.isAlive()) {
 			throw new IllegalStateException("Index is already been updated.");
 		}
+		this.callbackRecipient.showFeedbackMessage("Updating...");
 		this.indexThread = new Thread(this.indexer);
         this.indexThread.setPriority(indexingPriority);
 		this.indexThread.start();
@@ -112,6 +117,7 @@ public class Index {
 	}
 	
 	public void shutdown() {
+		this.callbackRecipient.showFeedbackMessage("Shutting down...");
 		if(this.indexThread != null) {
 			this.indexer.stopIndexing();
 			while(this.indexThread.isAlive()) {
