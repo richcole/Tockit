@@ -17,6 +17,8 @@ import java.awt.HeadlessException;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.lang.reflect.Constructor;
 import java.util.Iterator;
 
@@ -51,16 +53,15 @@ public class CreateNewFileMappingDialog extends JDialog {
 	private DefaultComboBoxModel fileFilterImplementationsModel;
 	private DefaultComboBoxModel docHandlerImplementationsModel;
 	
-	private DoccoFileFilter fileFilter;
-	private DocumentHandler docHandler;
-	private String fileFilterName;
-	private String fileFilterExtension;
-	
 	private DocumentHandlerMapping mapping;
 	
 	private JButton okButton;
-	
-	
+	private JComboBox fileFiltersChooser;
+	private JComboBox fileFilterImplementationsChooser;
+	private JTextField extensionField;
+	private JRadioButton useAvailableFileFilter;
+	private JRadioButton createNewFileFilter;
+
 	private class FileFilterComboBoxCellRenderer extends DefaultListCellRenderer {
 		public Component getListCellRendererComponent(JList list, Object value, 
 												int index, boolean isSelected, 
@@ -146,19 +147,14 @@ public class CreateNewFileMappingDialog extends JDialog {
 				DocumentHandler curInstance = (DocumentHandler) Class.forName(curString).newInstance();
 				this.docHandlerImplementationsModel.addElement(curInstance);
 			}
-			catch (ClassNotFoundException e) {
-				// @todo deal with exception
+			catch (Exception e) {
 				e.printStackTrace();
-			}
-			catch (IllegalAccessException e) {
-				// @todo deal with exception
-				e.printStackTrace();
-			}
-			catch (InstantiationException e) {
-				// @todo deal with exception
-				e.printStackTrace();
+				ErrorDialog.showError(this, e, 
+									"Error finding or instantiating Document Handler",
+									"Couldn't load Document Handler " + curString);
 			}
 		}
+		
 		
 		this.fileFilterImplementationsModel = new DefaultComboBoxModel();
 		this.fileFilterImplementationsModel.addElement("<Choose File Filter Implementation>");
@@ -172,8 +168,8 @@ public class CreateNewFileMappingDialog extends JDialog {
 	private JPanel createFileFilterPanel () {
 		JPanel fileFilterPanel = new JPanel(new GridBagLayout());
 		
-		final JRadioButton useAvailableFileFilter = new JRadioButton();
-		final JRadioButton createNewFileFilter = new JRadioButton();
+		useAvailableFileFilter = new JRadioButton();
+		createNewFileFilter = new JRadioButton();
 
 		ButtonGroup buttonGroup = new ButtonGroup();
 		buttonGroup.add(useAvailableFileFilter);
@@ -181,22 +177,23 @@ public class CreateNewFileMappingDialog extends JDialog {
 		useAvailableFileFilter.setSelected(true);
 
 		
-		final JComboBox fileFilterImplementationsChooser = new JComboBox(this.fileFilterImplementationsModel);
+		fileFilterImplementationsChooser = new JComboBox(this.fileFilterImplementationsModel);
 		
-		final JTextField extensionField = new JTextField(5);
+		extensionField = new JTextField(5);
 		extensionField.setEnabled(false);
 		
 		final JLabel extensionLabel = new JLabel("and extension: ");
 		extensionLabel.setEnabled(false);
 
 
-		final JComboBox fileFiltersChooser = new JComboBox(this.instantiatedFileFiltersModel);
+		fileFiltersChooser = new JComboBox(this.instantiatedFileFiltersModel);
 		fileFiltersChooser.setRenderer(new FileFilterComboBoxCellRenderer());
 
 		useAvailableFileFilter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				extensionField.setEnabled(false);
 				extensionLabel.setEnabled(false);
+				setOkButtonStatus();
 			}
 		});
 		
@@ -204,11 +201,9 @@ public class CreateNewFileMappingDialog extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				Object selectedItem = fileFiltersChooser.getSelectedItem();
 				if ((selectedItem instanceof String) && ((String) selectedItem).startsWith("<")) {
-					fileFilter = null;
 				}
 				else {
 					useAvailableFileFilter.setSelected(true);
-					fileFilter = (DoccoFileFilter) selectedItem;
 				}
 				extensionField.setEnabled(false);
 				extensionLabel.setEnabled(false);
@@ -231,14 +226,14 @@ public class CreateNewFileMappingDialog extends JDialog {
 				setOkButtonStatus();
 			}
 		});
-		
-		extensionField.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (extensionField.getText().length() > 0) {
-					fileFilterName = (String) fileFilterImplementationsChooser.getSelectedItem();
-					fileFilterExtension = (String) extensionField.getText();
-					setOkButtonStatus();
-				}
+			
+		extensionField.addKeyListener(new KeyListener() {
+			public void keyTyped(KeyEvent e) {
+			}
+			public void keyPressed(KeyEvent e) {
+			}
+			public void keyReleased(KeyEvent e) {
+				setOkButtonStatus();
 			}
 		});
 
@@ -333,12 +328,6 @@ public class CreateNewFileMappingDialog extends JDialog {
 		docHandlersChooser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Object selectedItem = docHandlersChooser.getSelectedItem();
-				if ((selectedItem instanceof String) && ((String) selectedItem).startsWith("<")) {
-					docHandler = null;
-				}
-				else {
-					docHandler = (DocumentHandler) docHandlersChooser.getSelectedItem();
-				}
 				setOkButtonStatus();
 			}
 		});
@@ -403,40 +392,61 @@ public class CreateNewFileMappingDialog extends JDialog {
 	}
 	
 	private void setOkButtonStatus () {
-		if (docHandler != null) {
-			if (fileFilter != null) {
-				okButton.setEnabled(true);
+
+		DocumentHandler docHandler = null;
+		Object selectedDocHandler = docHandlerImplementationsModel.getSelectedItem();
+		if (!((selectedDocHandler instanceof String) 
+								&& ( (String) selectedDocHandler).startsWith("<") )){
+			docHandler = (DocumentHandler) selectedDocHandler;
+		}
+
+		if (useAvailableFileFilter.isSelected()) {
+			Object selectedFileFilter = fileFiltersChooser.getSelectedItem();
+			if (!((selectedFileFilter instanceof String) && ((String) selectedFileFilter).startsWith("<"))) {
+				if (docHandler != null) {
+					okButton.setEnabled(true);
+					return;
+				}
 			}
-			else if ((fileFilterName != null) && (fileFilterExtension != null) ) {
-				okButton.setEnabled(true);
+		}
+		else {
+			Object selectedFileFilterImplementation = fileFilterImplementationsChooser.getSelectedItem();
+			if (! ( (selectedFileFilterImplementation instanceof String) 
+						&& (((String) selectedFileFilterImplementation).startsWith("<")) )) {
+				if (extensionField.getText().length() > 0) {
+					if (docHandler != null) {
+						okButton.setEnabled(true);
+						return;
+					}
+				}
 			}
-			return;
 		}
 		okButton.setEnabled(false);
 	}
 	
 	private boolean createMapping() {
-		if (docHandler != null) {
-			if (fileFilter != null) {
-				mapping = new DocumentHandlerMapping(fileFilter, docHandler);
+		DocumentHandler docHandler = (DocumentHandler) docHandlerImplementationsModel.getSelectedItem();
+		if (useAvailableFileFilter.isSelected()) {
+			DoccoFileFilter fileFilter = (DoccoFileFilter) fileFiltersChooser.getSelectedItem();
+			mapping = new DocumentHandlerMapping(fileFilter, docHandler);
+			return true;
+		}
+		else {
+			try {
+				String fileFilterName = (String) fileFilterImplementationsChooser.getSelectedItem();
+				Class fileFilterClass = Class.forName(fileFilterName);
+			
+				Class[] parameterTypes = { String.class };
+				Constructor constructor = fileFilterClass.getConstructor(parameterTypes);
+			
+				Object[] args = { extensionField.getText() };
+				DoccoFileFilter ff = (DoccoFileFilter) constructor.newInstance(args);
+				
+				mapping = new DocumentHandlerMapping(ff, docHandler);
 				return true;
 			}
-			else if ((fileFilterName != null) && (fileFilterExtension != null) ) {
-				try {
-					Class fileFilterClass = Class.forName(fileFilterName);
-				
-					Class[] parameterTypes = { String.class };
-					Constructor constructor = fileFilterClass.getConstructor(parameterTypes);
-				
-					Object[] args = { fileFilterExtension };
-					DoccoFileFilter ff = (DoccoFileFilter) constructor.newInstance(args);
-					
-					mapping = new DocumentHandlerMapping(ff, docHandler);
-					return true;
-				}
-				catch (Exception exception) {
-					ErrorDialog.showError(this, exception, "Error creating mapping");
-				}
+			catch (Exception exception) {
+				ErrorDialog.showError(this, exception, "Error creating mapping");
 			}
 		}
 		return false;

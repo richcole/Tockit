@@ -44,8 +44,8 @@ public class GlobalConstants {
 	 * dynamically somehow (check for implementators of DoccoFileFilter?).
 	 */
 	public static final String[] FILE_FILTER_IMPLEMENTAIONS = {
-										"org.tockit.docco.indexer.filefilter.FileExtensionFileFilter",
-										"org.tockit.docco.indexer.filefilter.RegularExpressionExtensionFileFilter"}; 
+										"org.tockit.docco.indexer.filefilter.ExtensionFileFilter",
+										"org.tockit.docco.indexer.filefilter.RegularExpresionExtensionFileFilter"}; 
 	/**
 	 * @todo see todo above, the same applies to document handler implementations
 	 */
