@@ -42,8 +42,12 @@ public:
   void next() 
   {
     ++count;
-    x = (count % 2 ? 1 : -1) * 50;
-    y = (((count - 1) / 2) + 1) * 50;
+    Index sign = ((count % 2)*2)-1;
+    Index a    = ((count - 1) / 2);
+
+    x = ((0x1 << a) + a) * 50 * sign; 
+    y = (0x1 << a) * 50;
+    std::cerr << "New vector: x=" << x << ", y=" << y << std::endl;
   };
 
   Index value_x() 
@@ -67,8 +71,6 @@ public:
 
     reset();
     SARL_FOR(M) {
-      std::cerr << "m=" << M.value() << ", x=" << value_x();
-      std::cerr << ", y=" << value_y() << std::endl;
       Mx.insert(M.value(), value_x());
       My.insert(M.value(), value_y());
       next();
@@ -81,16 +83,6 @@ public:
       Dx.insert(C.value(), Dx.image(C.value()) + Mx.image(C.value()));
       Dy.insert(C.value(), sum(intent, My));
       Dy.insert(C.value(), Dy.image(C.value()) + My.image(C.value()));
-      std::cerr << "c=" << C.value() << ", x=" << sum(intent, Mx);
-      std::cerr << ", y=" << sum(intent, My) << std::endl;
-      std::cerr << "c=" << C.value() << ", up_set=(";
-      for(intent.reset(); !intent.at_end(); ) {
-        std::cerr << intent.value();
-        if ( intent.next(), ! intent.at_end() ) {
-          std::cerr << ", ";
-        }
-      }
-      std::cerr << ")" << std::endl;
     }
 
     return SARL_OK;

@@ -112,8 +112,6 @@ void sarl_transitive_relation_insert(struct Sarl_TransitiveRelation *r,
   
   SARL_SET_ITERATOR_FOR(upper_ferrels) {
     if ( sarl_set_iterator_value(upper_ferrels) != b ) {
-      std::cerr << "Remove: " << a << " prev ";
-      std::cerr << sarl_set_iterator_value(upper_ferrels) << std::endl;
       sarl_relation_remove(
         r->covering, a, sarl_set_iterator_value(upper_ferrels)
       );
@@ -125,8 +123,6 @@ void sarl_transitive_relation_insert(struct Sarl_TransitiveRelation *r,
       sarl_relation_remove(
         r->covering, sarl_set_iterator_value(lower_ferrels), b
       );
-      std::cerr << "Remove: " << sarl_set_iterator_value(lower_ferrels);
-      std::cerr << " prev " << b << std::endl;
     }
   };
 

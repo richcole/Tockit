@@ -128,7 +128,6 @@ int sarl_read_cxt_context(
       if ( sarl_input_stream_read_line(input, buf) != SARL_ERROR ) {
 	G_map[i] = sarl_dictionary_get_index(G, buf);
 	sarl_context_insert_object(I, G_map[i]);
-        std::cerr << "object id=" << G_map[i] << ", text='" << sarl_string_get_chars(buf) << "'" << std::endl;
       }
       else {
 	report_error(errors, __unable_to_read_object);
@@ -146,7 +145,6 @@ int sarl_read_cxt_context(
       if ( sarl_input_stream_read_line(input, buf) != SARL_ERROR ) {
 	M_map[i] = sarl_dictionary_get_index(M, buf);
 	sarl_context_insert_attribute(I, M_map[i]);
-        std::cerr << "attribute id=" << M_map[i] << ", text='" << sarl_string_get_chars(buf) << "'" << std::endl;
       }
       else {
 	report_error(errors, __unable_to_read_attribute);

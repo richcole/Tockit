@@ -113,8 +113,6 @@ struct Sarl_Lattice* sarl_lattice_copy(
       sarl_transitive_relation_insert(
         lattice->order, sarl_set_iterator_value(down_set), concept
       );
-      std::cerr << "insert_ordering: " << sarl_set_iterator_value(down_set);
-      std::cerr << " < " << concept << std::endl;
     };
 
     sarl_set_iterator_decr_ref(intent);
@@ -151,10 +149,6 @@ struct Sarl_Lattice* sarl_lattice_copy(
     sarl_set_iterator_release_ownership(intent);
     contingent = sarl_set_iterator_minus(intent, upper_intents);
 
-    std::cerr << ", contingent=";
-    sarl_trace_set(contingent);
-    std::cerr << std::endl;
-
     SARL_SET_ITERATOR_FOR(contingent) {
       sarl_relation_insert(
         lattice->intent_contingent, 
@@ -185,15 +179,9 @@ struct Sarl_Lattice* sarl_lattice_copy(
     lower_covers = 
       sarl_transitive_relation_lower_covers(lattice->order, concept);
 
-    std::cerr << "concept=" << concept << ", lower_covers=";
-    sarl_trace_set(lower_covers);
-
     sarl_set_iterator_release_ownership(lower_covers);
     lower_extents = 
       sarl_relation_iterator_intent_union(extent_it, lower_covers);
-
-    std::cerr << ", lower_extents=";
-    sarl_trace_set(lower_extents);
 
     sarl_set_iterator_release_ownership(lower_extents);
     extent =
@@ -202,14 +190,8 @@ struct Sarl_Lattice* sarl_lattice_copy(
         sarl_set_iterator_value(c_it)
       );
     
-    std::cerr << ", extent=";
-    sarl_trace_set(extent);
-
     sarl_set_iterator_release_ownership(extent);
     contingent = sarl_set_iterator_minus(extent, lower_extents);
-
-    std::cerr << ", contingent=";
-    sarl_trace_set(contingent);
 
     SARL_SET_ITERATOR_FOR(contingent) {
       sarl_relation_insert(
@@ -218,8 +200,6 @@ struct Sarl_Lattice* sarl_lattice_copy(
         sarl_set_iterator_value(contingent)
       );
     };
-
-    std::cerr << endl;
 
     sarl_set_iterator_decr_ref(lower_covers);
     sarl_set_iterator_decr_ref(lower_extents);

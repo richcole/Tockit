@@ -111,8 +111,6 @@ public:
     Set              irr;
     
     SARL_FOR(C) {
-      std::cerr << "concept=" << C.value() << ", count=";
-      std::cerr << R_cover.intent(C.value()).count() << std::endl;
       if ( R_cover.intent(C.value()).count() == 1 ) {
         irr.insert(C.value());
       }
@@ -129,8 +127,6 @@ public:
     Set              irr;
     
     SARL_FOR(C) {
-      std::cerr << "concept=" << C.value() << ", count=";
-      std::cerr << R_cover.extent(C.value()).count() << std::endl;
       if ( R_cover.extent(C.value()).count() == 1 ) {
         irr.insert(C.value());
       }
