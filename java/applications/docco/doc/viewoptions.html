@@ -1,0 +1,40 @@
+<html>
+<head>
+<title>Docco Online Help -- View Options</title>
+</head>
+<body>
+<h1>View Options</h1>
+
+<p>This page described the options found in the View menu.</p>
+
+<h2>Phantom Nodes</h2>
+
+<p>
+Sometimes you will find that your data has implications of the form "every
+document containg the keywords A and B also contains C". For example in some
+document collection all documents containing "program" and "source" also contain
+"code". If you query for all three keywords, you will find that Docco displays
+the node showing the combination of "program" and "source" but nothing else as a 
+smaller node. This combination does not really exist and therefore the node is not
+needed structurally, it is just added as layout addition to make the diagram more
+structured. You can turn these nodes off, which gives smaller diagrams at the
+expense of less structure. This is usually helpful if your query returns many
+phantom nodes.
+</p>
+
+<h2>Showing Matches Only Once</h2>
+
+<p>
+Documents that match "a" and "b" also match just "a". Therefore they will appear
+at least at two nodes: the one for "a" and the one for ("a" and "b"). You can
+reduce the display by only showing the documents which match only the queries for
+a node but nothing else. In the example the documents matching "a" and "b" would
+not be shown at the "a" node, since this node would show only the documents matching
+"a" but nothing else. This option can be changed in the user interface and affects
+the diagram and the contents of the tree view.
+</p>
+
+<a href="index.html">Back to the main page</a>
+
+</body>
+</html>

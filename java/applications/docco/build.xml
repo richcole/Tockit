@@ -113,7 +113,7 @@
 		<fixcrlf srcDir="${dist.dir}/${dist.name}" eol="crlf" includes="*.txt, *.bat, docco.prop"/>
 		<fixcrlf srcDir="${dist.dir}/${dist.name}" eol="lf" includes="*.sh"/>
 		<copy todir="${dist.dir}/${dist.name}/doc" includeEmptyDirs="no">
-			<fileset dir="${src.dir}/doc">
+			<fileset dir="${basedir}/doc">
 		        <include name="**"/>
             </fileset>
 		</copy>
