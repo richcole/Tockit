@@ -18,8 +18,18 @@ package org.tockit.relations.model;
 public class Tuple {
 	private Object[] data;
 
+	/**
+	 * Constructs a new tuple with the data given.
+	 * 
+	 * The constructor makes defensive copy of the data given in the sense that a copy of the
+	 * array is used. Of course changes in the elements can't be avoided since we don't want to
+	 * enforce clonable objects. Data is still considered immutable. 
+	 */
 	public Tuple(Object[] data) {
-		this.data = data;    
+		this.data = new Object[data.length];
+		for (int i = 0; i < data.length; i++) {
+            this.data[i] = data[i];
+        }    
 	}
 	
 	public Object[] getData() {

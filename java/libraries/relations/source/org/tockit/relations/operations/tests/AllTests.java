@@ -21,6 +21,7 @@ public class AllTests extends TestCase {
 		suite.addTest(org.tockit.relations.operations.tests.IdentityOperationTest.suite());
 		suite.addTest(org.tockit.relations.operations.tests.PickColumnsOperationTest.suite());
 		suite.addTest(org.tockit.relations.operations.tests.DropColumnsOperationTest.suite());
+		suite.addTest(org.tockit.relations.operations.tests.NegationOperationTest.suite());
         return suite;
     }
 }

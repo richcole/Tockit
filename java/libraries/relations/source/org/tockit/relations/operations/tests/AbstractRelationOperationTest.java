@@ -7,8 +7,11 @@
  */
 package org.tockit.relations.operations.tests;
 
+import java.util.Iterator;
+
 import org.tockit.relations.model.Relation;
 import org.tockit.relations.model.RelationImplementation;
+import org.tockit.relations.model.Tuple;
 import org.tockit.relations.operations.RelationOperation;
 
 import junit.framework.TestCase;
@@ -61,6 +64,12 @@ public abstract class AbstractRelationOperationTest extends TestCase {
 		for (int i = 0; i < tests.length; i++) {
             RelationTestSetup test = tests[i];
 			Relation result = op.apply(test.input);
+			if(logResults()) {
+				for (Iterator iter = result.getTuples().iterator(); iter.hasNext();) {
+	                Tuple tuple = (Tuple) iter.next();
+	                System.out.println(tuple);
+	            }			
+			}
 			assertEquals("Result of operation has wrong arity", test.expectedOutputArity, result.getArity());            
 			assertEquals("Result of operation has wrong size", test.expectedOutputSize, result.getSize());
 			if(test.expectedTuples != null) {
@@ -76,6 +85,16 @@ public abstract class AbstractRelationOperationTest extends TestCase {
 				}          
 			}
         }
+	}
+	
+	/**
+	 * Override to return true if logging is needed.
+	 * 
+	 * Here is the copy and paste bit:
+	 *   protected boolean logResults() { return true; }
+	 */
+	protected boolean logResults() {
+		return false;
 	}
 	
 	protected abstract RelationOperation getOperation();
