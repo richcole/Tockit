@@ -5,7 +5,7 @@
  *
  * $Id$
  */
-package org.tockit.docco;
+package org.tockit.plugin;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -17,8 +17,6 @@ import java.util.logging.Logger;
 
 import net.sourceforge.toscanaj.gui.dialog.ErrorDialog;
 
-import org.tockit.plugin.Plugin;
-import org.tockit.plugin.PluginClassLoader;
 
 
 public class PluginLoader {
