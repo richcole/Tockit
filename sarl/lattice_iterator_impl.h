@@ -5,8 +5,7 @@
 
 struct Sarl_LatticeIterator : Sarl_Iterator {
   struct Sarl_ContextIterator*   context;
-  struct Sarl_SetIterator*       intent;
-  struct Sarl_SetIterator*       extent;
+  struct Sarl_ConceptIterator*   concept;
 };
 
 #endif

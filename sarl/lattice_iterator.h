@@ -5,10 +5,11 @@
 
 struct Sarl_ContextIterator;
 struct Sarl_LatticeIterator;
+struct Sarl_ConceptIterator;
 
 extern struct Sarl_LatticeIterator *
   sarl_lattice_iterator_create(
-    struct Sarl_ContextIterator*
+    struct Sarl_ContextIterator *
   );
 
 extern void 
@@ -24,6 +25,12 @@ extern int
 extern void 
   sarl_lattice_iterator_next(
      struct Sarl_LatticeIterator *
+  );
+
+extern void 
+  sarl_lattice_iterator_next_gte(
+     struct Sarl_LatticeIterator *K
+     struct Sarl_ConceptIterator *c
   );
 
 extern struct Sarl_LatticeIterator *
