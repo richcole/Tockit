@@ -343,6 +343,7 @@ public class DoccoMainFrame extends JFrame {
             }
 		}
 
+		this.setVisible(true);
 		ConfigurationManager.restorePlacement(
 					CONFIGURATION_SECTION_NAME,
 					this,
