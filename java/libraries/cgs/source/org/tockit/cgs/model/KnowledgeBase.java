@@ -1,10 +1,9 @@
 /*
- * Created by IntelliJ IDEA.
- * User: Administrator
- * Date: Aug 21, 2002
- * Time: 12:43:07 PM
- * To change template for new class use 
- * Code Style | Class Templates options (Tools | IDE Options).
+ * Copyright DSTC Pty.Ltd. (http://www.dstc.com), Technische Universitaet Darmstadt
+ * (http://www.tu-darmstadt.de) and the University of Queensland (http://www.uq.edu.au).
+ * Please read licence.txt in the toplevel source directory for licensing information.
+ *
+ * $Id$
  */
 package org.tockit.cgs.model;
 

@@ -1,10 +1,9 @@
 /*
- * Created by IntelliJ IDEA.
- * User: s3805812
- * Date: 18/09/2002
- * Time: 17:14:17
- * To change template for new class use
- * Code Style | Class Templates options (Tools | IDE Options).
+ * Copyright DSTC Pty.Ltd. (http://www.dstc.com), Technische Universitaet Darmstadt
+ * (http://www.tu-darmstadt.de) and the University of Queensland (http://www.uq.edu.au).
+ * Please read licence.txt in the toplevel source directory for licensing information.
+ *
+ * $Id$
  */
 package org.tockit.crepe.view.manipulators;
 
