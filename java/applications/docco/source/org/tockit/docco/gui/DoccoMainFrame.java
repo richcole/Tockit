@@ -30,13 +30,18 @@ import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.JTree;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.DefaultTreeSelectionModel;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
 
 import net.sourceforge.toscanaj.controller.fca.ConceptInterpretationContext;
 import net.sourceforge.toscanaj.controller.fca.ConceptInterpreter;
@@ -78,7 +83,7 @@ import org.tockit.docco.query.util.QueryWithResultSet;
 
 public class DoccoMainFrame extends JFrame {
 	private DocumentDisplayPane documentDisplayPane;
-    private JList hitList;
+    private JTree hitList;
     private JTextField queryField = new JTextField(20);
 	private JButton searchButton = new JButton("Submit");
 	private JCheckBox showPhantomNodesCheckBox = new JCheckBox("Show phantom nodes");
@@ -291,23 +296,22 @@ public class DoccoMainFrame extends JFrame {
 				nodeView = labelView.getNodeView();
 			} else {
 				diagramView.setSelectedConcepts(null);
-				hitList.setListData(new Object[0]);
+				hitList.setModel(null);
 				return;
 			}
 			DiagramNode node = nodeView.getDiagramNode();
 			Concept concept = node.getConcept();
 			diagramView.setSelectedConcepts(new Concept[]{concept});
-			HitReference[] newContent = new HitReference[concept.getExtentSize()];
+			
+			DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
 			Iterator extentIterator = concept.getExtentIterator();
 			int i = 0;
 			while (extentIterator.hasNext()) {
 				HitReference cur = (HitReference) extentIterator.next();
-				newContent[i++] = cur;
+				root.add(new DefaultMutableTreeNode(cur));
 			}
 			
-			hitList.setListData(newContent);
-						
-			/// @todo highlight object contingent
+			hitList.setModel(new DefaultTreeModel(root));
 		}
 	}
 
@@ -431,18 +435,35 @@ public class DoccoMainFrame extends JFrame {
 									CanvasItemSelectedEvent.class,
 									CanvasBackground.class);
 
-		this.hitList = new JList();
-		this.hitList.addListSelectionListener(new ListSelectionListener(){
-            public void valueChanged(ListSelectionEvent e) {
-            	HitReference reference = (HitReference) hitList.getSelectedValue();
-            	if(reference != null) {
+		// create a JTree with some model containing at least two elements. Otherwise the layout
+		// is broken. True even for the JTree(Object[]) constructor. And the default constructor
+		// is so not funny that it is funny again. Swing is always good for bad surprises.
+		
+		/// @todo we should use session management instead -- at the moment the width is still
+		/// too small
+		DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("root");
+		DefaultMutableTreeNode someChildNode = new DefaultMutableTreeNode("child");
+		rootNode.add(someChildNode);
+		this.hitList = new JTree(rootNode);
+		this.hitList.setModel(null);
+		DefaultTreeSelectionModel selectionModel = new DefaultTreeSelectionModel();
+		selectionModel.setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+		this.hitList.setSelectionModel(selectionModel);
+		this.hitList.setRootVisible(false);
+		this.hitList.addTreeSelectionListener(new TreeSelectionListener() {
+			public void valueChanged(TreeSelectionEvent e) {
+				TreePath path = hitList.getSelectionPath();
+				DefaultMutableTreeNode lastNode = (DefaultMutableTreeNode) path.getLastPathComponent();
+				Object lastObject = lastNode.getUserObject();
+				if(lastObject instanceof HitReference) {
+					HitReference reference = (HitReference) lastObject;
 					documentDisplayPane.displayDocument(reference);
-            	} else {
-            		documentDisplayPane.clearDisplay();
-            	}
-            }
+				} else {
+					documentDisplayPane.clearDisplay();
+				}
+			}
 		});
-		JScrollPane scrollPane = new JScrollPane(hitList);
+		JScrollPane scrollPane = new JScrollPane(this.hitList);
 		
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
 								   diagramView, scrollPane);
@@ -465,7 +486,7 @@ public class DoccoMainFrame extends JFrame {
 		if (this.searchButton.isEnabled()) {
 			this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 			this.eventBroker.processEvent(new QueryEvent(this.queryField.getText()));
-			this.hitList.setListData(new Object[0]);
+			this.hitList.setModel(null);
 			this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}
 	}
