@@ -30,7 +30,7 @@ sarlplusinclude_HEADERS = \
 	Relation.h \
 	RelationIterator.h \
 	Lattice.h \
-	LatticeIterator.h 
+	LatticeIterator.h \
 	AdditiveLayout.h \
 	ConceptIterator.h \
 	Config.h \

@@ -39,7 +39,7 @@ sarlinclude_HEADERS = \
 	set.h \
 	set_iterator.h \
 	relation.h \
-	relation_iterator.h
+	relation_iterator.h \
 	aggregate_set_iterator.h \
         assert.h \
         concept_iterator.h \
