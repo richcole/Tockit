@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="source"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="libs/jdom.jar"/>
+	<classpathentry kind="lib" path="libs/tockit-canvas.jar"/>
+	<classpathentry kind="lib" path="libs/tockit-events.jar"/>
+	<classpathentry kind="lib" path="libs/tockit-cgs.jar"/>
+	<classpathentry kind="lib" path="libs/tockit-utils.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
