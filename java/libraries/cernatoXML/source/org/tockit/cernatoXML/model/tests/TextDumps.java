@@ -61,7 +61,7 @@ public class TextDumps {
         }
         stream.println();
 
-        ViewContext context = new ViewContext(model, view);
+        ViewContext context = new ViewContext(model.getContext(), view);
         Collection objects = context.getObjects();
         Collection attributes = context.getAttributes();
         BinaryRelation relation = context.getRelation();

@@ -36,7 +36,7 @@ public class ViewContextTest extends TestCase {
     }
 
     private void checkView(View view) {
-        ViewContext scaledContext = new ViewContext(TestData.Model, view);
+        ViewContext scaledContext = new ViewContext(TestData.Model.getContext(), view);
         Collection objects = scaledContext.getObjects();
         Collection attributes = scaledContext.getAttributes();
         for (Iterator it1 = objects.iterator(); it1.hasNext();) {

@@ -15,7 +15,7 @@ import org.tockit.context.model.BinaryRelation;
 
 
 public class ViewContext {
-    private CernatoModel model;
+    private CernatoTable context;
     private ScalingRelation relation;
     private Collection attributes;
     private String name;
@@ -30,13 +30,13 @@ public class ViewContext {
                 return false;
             }
             Criterion criterion = (Criterion) rangeObject;
-            AttributeValue relationValue = model.getContext().getRelationship(fcaObject, criterion.getProperty());
+            AttributeValue relationValue = context.getRelationship(fcaObject, criterion.getProperty());
             return criterion.getValueGroup().containsValue(relationValue);
         }
     }
 
-    public ViewContext(CernatoModel model, View view) {
-        this.model = model;
+    public ViewContext(CernatoTable context, View view) {
+        this.context = context;
         this.relation = new ScalingRelation();
         attributes = new HashSet();
         for (Iterator iterator = view.getCriteria().iterator(); iterator.hasNext();) {
@@ -47,7 +47,7 @@ public class ViewContext {
     }
 
     public Collection getObjects() {
-        return model.getContext().getObjects();
+        return context.getObjects();
     }
 
     public Collection getAttributes() {
