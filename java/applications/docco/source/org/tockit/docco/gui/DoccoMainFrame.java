@@ -293,6 +293,7 @@ public class DoccoMainFrame extends JFrame {
 			}
 			DiagramNode node = nodeView.getDiagramNode();
 			Concept concept = node.getConcept();
+			diagramView.setSelectedConcepts(new Concept[]{concept});
 			HitReference[] newContent = new HitReference[concept.getExtentSize()];
 			Iterator extentIterator = concept.getExtentIterator();
 			int i = 0;
