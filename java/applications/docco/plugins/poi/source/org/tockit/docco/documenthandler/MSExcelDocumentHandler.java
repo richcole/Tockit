@@ -19,11 +19,10 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.tockit.docco.indexer.DocumentSummary;
-import org.tockit.docco.documenthandler.DocumentHandler;
-import org.tockit.docco.documenthandler.DocumentHandlerException;
+import org.tockit.plugin.Plugin;
 
 
-public class MSExcelDocumentHandler implements DocumentHandler {
+public class MSExcelDocumentHandler implements DocumentHandler, Plugin {
 
 	public DocumentSummary parseDocument(URL url) throws IOException, DocumentHandlerException {
 		try {
@@ -82,6 +81,10 @@ public class MSExcelDocumentHandler implements DocumentHandler {
 
 	public String getDisplayName() {
 		return "Microsoft Excel";
+	}
+
+	public void load() {
+		DocumentHandlerRegistry.registerDocumentHandler(this);
 	}
 
 }

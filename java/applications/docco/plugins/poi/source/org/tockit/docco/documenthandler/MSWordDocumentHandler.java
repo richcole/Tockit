@@ -24,10 +24,9 @@ import org.apache.poi.poifs.eventfilesystem.POIFSReader;
 import org.apache.poi.poifs.eventfilesystem.POIFSReaderEvent;
 import org.apache.poi.poifs.eventfilesystem.POIFSReaderListener;
 import org.tockit.docco.indexer.DocumentSummary;
-import org.tockit.docco.documenthandler.DocumentHandler;
-import org.tockit.docco.documenthandler.DocumentHandlerException;
+import org.tockit.plugin.Plugin;
 
-public class MSWordDocumentHandler implements DocumentHandler {
+public class MSWordDocumentHandler implements DocumentHandler, Plugin {
 	
 	private class DocSummaryPOIFSReaderListener implements POIFSReaderListener {
 		private SummaryInformation summary = null;
@@ -94,6 +93,10 @@ public class MSWordDocumentHandler implements DocumentHandler {
 
 	public String getDisplayName() {
 		return "Microsoft Word Document";
+	}
+
+	public void load() {
+		DocumentHandlerRegistry.registerDocumentHandler(this);
 	}
 
 }
