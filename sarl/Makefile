@@ -70,6 +70,10 @@ JAVA_SARL_LIB   =  java/libsarl_java.so
 
 export LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):$(SARL_ROOT)/lib_d
 
+test_base: libs $(TESTS:%=%.exe) 
+	LD_LIBRARY_PATH=`pwd`/lib_d:$$LD_LIBRARY_PATH; \
+	for x in $(TESTS:%=%.exe) ; do echo $$x:; ./$$x || exit -1 ; done
+
 # Main.
 
 main: $(PYTHON_SARL_LIB) $(JAVA_SARL_LIB)
@@ -150,6 +154,9 @@ python/sarl_wrap.o: python/sarl_wrap.c
 python/sarl_wrap.c: $(PUBLIC_HEADERS) sarl.input
 	cd python; $(SWIG) -I.. -o sarl_wrap.c -c++ -python sarl.input 
 
+test_python: libs java/TestSarl.class
+	LD_LIBRARY_PATH=`pwd`/lib_d:$$LD_LIBRARY_PATH; \
+
 python_test: $(PYTHON_SARL_LIB)
 	cd python; $(PYTHON) test_sarl.py
 
@@ -171,6 +178,14 @@ java_test: java/TestSarl.class $(JAVA_SARL_LIB)
 
 cpp_test: libs
 	$(MAKE) -C cpp test
+
+clean: java_clean python_clean cpp_clean lib_clean
+	rm -f *.o
+
+cpp_clean:
+	cd cpp; make clean
+
+python_clean:
 
 # Clean.
 
