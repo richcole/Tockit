@@ -45,21 +45,8 @@ public class StringFormat {
 	private VerticalAlign verticalAlign;
 	private Rectangle clipbox;	
 	
-	public StringFormat( String fontFamily, FontStyle fontStyle, String colorName,
-						  TypedSize fontSize,Point2D offset, 
-						  HorizontalAlign horizontalAlign,
-						  VerticalAlign verticalAlign, Rectangle clipbox ) {
-		this.fontFamily = fontFamily;
-		this.fontStyle = fontStyle;
-		this.colorName = colorName;
-		this.fontSize = fontSize;
-		this.offset = offset;
-		this.horizontalAlign = horizontalAlign;
-		this.verticalAlign = verticalAlign;
-		this.clipbox = clipbox;
-		
-	}
-	public StringFormat(){
+	public StringFormat(String formatCode){
+        // @todo add parse code here
 	}
 
 	public Rectangle getClipbox() {

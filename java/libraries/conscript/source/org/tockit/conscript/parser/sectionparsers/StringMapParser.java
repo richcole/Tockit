@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.util.logging.Level;
 
 import org.tockit.conscript.model.CSCFile;
+import org.tockit.conscript.model.FormattedString;
+import org.tockit.conscript.model.StringFormat;
 import org.tockit.conscript.model.StringMap;
 import org.tockit.conscript.parser.CSCParser;
 import org.tockit.conscript.parser.CSCTokenizer;
@@ -27,11 +29,15 @@ class StringMapParser extends CSCFileSectionParser {
         tokenizer.consumeToken("=");
         while(!tokenizer.getCurrentToken().equals(";")) {
             tokenizer.consumeToken("(");
-            String concreteObject = tokenizer.popCurrentToken();
+            String identifier = tokenizer.popCurrentToken();
             tokenizer.consumeToken(",");
-            String abstractObjectId = tokenizer.popCurrentToken();
+            String label = tokenizer.popCurrentToken();
+            StringFormat format = null;
+            if(!tokenizer.getCurrentToken().equals(")")) {
+                format = new StringFormat(tokenizer.popCurrentToken());
+            }
             tokenizer.consumeToken(")");
-            map.addEntry(concreteObject, abstractObjectId);
+            map.addEntry(identifier, new FormattedString(label, format));
         }
         tokenizer.consumeToken(";");
 

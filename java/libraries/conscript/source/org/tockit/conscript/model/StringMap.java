@@ -22,7 +22,7 @@ public class StringMap extends ConscriptStructure{
 		return Collections.unmodifiableMap(map);
 	}
     
-    public void addEntry(String attributeId, String label) {
+    public void addEntry(String attributeId, FormattedString label) {
         this.map.put(attributeId, label);
     }
 }
