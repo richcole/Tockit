@@ -31,7 +31,8 @@ TESTS = \
   test_relation_003 \
   test_relation_004 \
   test_set_iterator_interval_001 \
-  test_lectic_001
+  test_lectic_001 \
+  test_lectic_002
 
 PUBLIC_HEADERS = \
   cpp/Set.h \
@@ -54,21 +55,22 @@ JAVA_SARL_LIB   =  java/libsarl_java.so
 
 export LD_LIBRARY_PATH += $(SARL_ROOT)/lib_d
 
-base_test: libs $(TESTS:%=%.exe) 
-	LD_LIBRARY_PATH=`pwd`/lib_d:$$LD_LIBRARY_PATH; \
-	for x in $(TESTS:%=%.exe) ; do echo $$x:; ./$$x || exit -1 ; done
 # Main.
 
 main: $(PYTHON_SARL_LIB) $(JAVA_SARL_LIB)
 
 .PHONY: test base_test java_test cpp_test python_test
 .PHONY: clean base_clean python_clean java_clean cpp_clean 
-# Tests.
+.PHONY: $(TESTS)
+
+# Test.
 
 test: libs base_test python_test java_test cpp_test
 
+# Base.
+
 base_test: $(TESTS) 
-.PHONY: $(TESTS)
+
 $(TESTS) : $(TESTS:%=%.exe)
 	./$@.exe
 
@@ -98,6 +100,8 @@ lib/libsarl++.so: lib
 lib_d/libsarl++.so: lib_d
 	$(MAKE) -C cpp ../$@
 
+# Rules.
+
 %.o: %.cpp
 	$(CCC) $(DEBUG) -c -I../ -o $@ $< 
 
@@ -110,6 +114,8 @@ lib_d/libsarl++.so: lib_d
 java/%.class: java/%.java
 	cd java; $(JAVAC) ../$<
 
+# Python.
+
 python/sarl_wrap.o: python/sarl_wrap.c
 	$(CCC) -c -I../ -DSARL_NATIVE $(SWIG_INC:%=-I%) $(PYTHON_INC:%=-I%) \
           -o $@ $^
@@ -119,6 +125,8 @@ python/sarl_wrap.c: $(PUBLIC_HEADERS) sarl.input
 
 python_test: $(PYTHON_SARL_LIB)
 	cd python; $(PYTHON) test_sarl.py
+
+# Java.
 
 java/sarl_wrap.o: java/sarl_wrap.c
 	$(CCC) -c -I../ $(SWIG_INC:%=-I%) $(JAVA_INC:%=-I%) -o $@ $^
@@ -132,8 +140,12 @@ java/TestSarl.class: java/TestSarl.java $(JAVA_SARL_LIB) java/sarl_wrap.c
 java_test: java/TestSarl.class $(JAVA_SARL_LIB)
 	cd java; java -Djava.library.path=. TestSarl
 
+# C++.
+
 cpp_test: libs
 	$(MAKE) -C cpp test
+
+# Clean.
 
 clean: java_clean python_clean cpp_clean lib_clean
 	rm -f *.o
@@ -152,8 +164,12 @@ java_clean:
 lib_clean:
 	rm -f lib/*.so lib_d/*.so
 
+# Depend.
+
 depend:
 	makedepend -Y../ *.cpp -fdepend.mak 
+
+# Dirs.
 
 lib:
 	mkdir lib 

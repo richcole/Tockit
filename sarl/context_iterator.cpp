@@ -8,6 +8,7 @@ extern "C" {
 
 #include <sarl/relation.h>	
 #include <sarl/relation_iterator.h>	
+#include <sarl/lectic.h>
 
 }
 
@@ -29,6 +30,20 @@ struct Sarl_ContextIterator *
 	p_it->I = sarl_relation_iterator_create(a_context->I);
 
 	return p_it;
+}
+
+struct Sarl_ContextIterator *
+  sarl_context_iterator_create_from_relation(
+    struct Sarl_RelationIterator* r)
+{
+  Sarl_ContextIterator* p_it = new Sarl_ContextIterator();
+  sarl_context_iterator_init(p_it);
+  
+  p_it->G = sarl_relation_iterator_domain(r);
+  p_it->M = sarl_relation_iterator_range(r);
+  p_it->I = sarl_relation_iterator_obtain_ownership(r);
+
+  return p_it;
 }
 
 struct Sarl_ContextIterator *
@@ -63,29 +78,30 @@ struct Sarl_ContextIterator *
 
 void
   sarl_context_iterator_decr_ref(
-	  struct Sarl_ContextIterator *a_it)
+    struct Sarl_ContextIterator *a_it
+  )
 {
-	if ( sarl_ref_count_decr(&a_it->ref_count) ) {
-		sarl_set_iterator_decr_ref(a_it->G);
-		sarl_set_iterator_decr_ref(a_it->M);
-		sarl_relation_iterator_decr_ref(a_it->I);
-		delete a_it;
-	}
+  if ( sarl_ref_count_decr(&a_it->ref_count) ) {
+    sarl_set_iterator_decr_ref(a_it->G);
+    sarl_set_iterator_decr_ref(a_it->M);
+    sarl_relation_iterator_decr_ref(a_it->I);
+    delete a_it;
+  }
 };
 
 struct Sarl_SetIterator *
   sarl_context_iterator_objects(
-		struct Sarl_ContextIterator *context_it)
+    struct Sarl_ContextIterator *context_it)
 {
-	return sarl_set_iterator_copy(context_it->G);
+  return sarl_set_iterator_copy(context_it->G);
 };
 
 
 struct Sarl_SetIterator *
   sarl_context_iterator_attributes(
-		struct Sarl_ContextIterator *context_it)
+    struct Sarl_ContextIterator *context_it)
 {
-	return sarl_set_iterator_copy(context_it->M);
+  return sarl_set_iterator_copy(context_it->M);
 };
 
 
@@ -93,7 +109,7 @@ struct Sarl_RelationIterator *
   sarl_context_iterator_incidence(
     struct Sarl_ContextIterator *context_it)
 {
-	return sarl_relation_iterator_copy(context_it->I);
+  return sarl_relation_iterator_copy(context_it->I);
 };
  						     
 
@@ -101,36 +117,36 @@ struct Sarl_ContextIterator *
   sarl_context_iterator_inverse(
 		struct Sarl_ContextIterator *context_it)
 {
-	Sarl_ContextIterator* p_it = new Sarl_ContextIterator();
-	sarl_context_iterator_init(p_it);
+  Sarl_ContextIterator* p_it = new Sarl_ContextIterator();
+  sarl_context_iterator_init(p_it);
 
-	p_it->G = sarl_set_iterator_copy(context_it->M);
-	p_it->M = sarl_set_iterator_copy(context_it->G);
-	p_it->I = sarl_relation_iterator_inverse(context_it->I);
+  p_it->G = sarl_set_iterator_copy(context_it->M);
+  p_it->M = sarl_set_iterator_copy(context_it->G);
+  p_it->I = sarl_relation_iterator_inverse(context_it->I);
 
-	return p_it;
+  return p_it;
 };
 
 struct Sarl_ContextIterator *
   sarl_context_iterator_complement(
 		struct Sarl_ContextIterator *context_it)
 {
-	Sarl_ContextIterator* p_it = new Sarl_ContextIterator();
-	sarl_context_iterator_init(p_it);
+  Sarl_ContextIterator* p_it = new Sarl_ContextIterator();
+  sarl_context_iterator_init(p_it);
 
-	p_it->G = sarl_set_iterator_copy(context_it->M);
-	p_it->M = sarl_set_iterator_copy(context_it->G);
-	p_it->I = sarl_relation_iterator_context_complement(context_it);
+  p_it->G = sarl_set_iterator_copy(context_it->M);
+  p_it->M = sarl_set_iterator_copy(context_it->G);
+  p_it->I = sarl_relation_iterator_context_complement(context_it);
 
-	return p_it;
+  return p_it;
 };
 
 struct Sarl_RelationIterator*
   sarl_context_iterator_up_arrow(
 		struct SarlContextIterator *context_it)
 {
-	cerr << "sarl_context_iterator_up_arrow: Not implemented." << endl;
-	return 0;
+  cerr << "sarl_context_iterator_up_arrow: Not implemented." << endl;
+  return 0;
 };
 
 
@@ -138,8 +154,8 @@ struct Sarl_RelationIterator*
   sarl_context_iterator_down_arrow(
 		 struct SarlContextIterator *context_it)
 {
-	cerr << "sarl_context_iterator_down_arrow: Not implemented." << endl;
-	return 0;
+  cerr << "sarl_context_iterator_down_arrow: Not implemented." << endl;
+  return 0;
 };
  
 
@@ -147,8 +163,151 @@ struct Sarl_RelationIterator*
   sarl_context_iterator_updown_arrow(
 		struct SarlContextIterator *context_it)
 {
-	cerr << "sarl_context_iterator_down_arrow: Not implemented." << endl;
-	return 0;
+  cerr << "sarl_context_iterator_down_arrow: Not implemented." << endl;
+  return 0;
 }
 
+struct Sarl_SetIterator *
+  sarl_context_iterator_intent_set(
+    struct Sarl_ContextIterator *K, 
+    struct Sarl_SetIterator *A
+  )
+{
+  Sarl_SetIterator* result;
+  Sarl_RelationIterator* I;
+  
+  if ( sarl_set_iterator_is_empty(A) ) {
+    result = sarl_context_iterator_attributes(K);
+  }
+  else {
+    I = sarl_context_iterator_incidence(K);
+
+    sarl_relation_iterator_release_ownership(I);
+    result = sarl_relation_iterator_intent_set(I, A);
+    sarl_relation_iterator_decr_ref(I);
+  }
+  return result;
+};
+
+
+struct Sarl_SetIterator *
+  sarl_context_iterator_extent_set(
+    struct Sarl_ContextIterator *K, 
+    struct Sarl_SetIterator *B
+  )
+{
+  Sarl_SetIterator* result;
+  Sarl_RelationIterator* I;
+  
+  if ( sarl_set_iterator_is_empty(B) ) {
+    result = sarl_context_iterator_objects(K);
+  }
+  else {
+    I = sarl_context_iterator_incidence(K);
+
+    sarl_relation_iterator_release_ownership(I);
+    result = sarl_relation_iterator_extent_set(I, B);
+    sarl_relation_iterator_decr_ref(I);
+  }
+  return result;
+};
+
+
+struct Sarl_SetIterator *
+  sarl_context_iterator_intent_extent_set(
+    struct Sarl_ContextIterator *K, 
+    struct Sarl_SetIterator *A
+  )
+{
+  Sarl_SetIterator *intent;
+  Sarl_SetIterator *intent_extent;
+  
+  intent = sarl_context_iterator_intent_set(K, A);
+  sarl_set_iterator_release_ownership(intent);
+
+  intent_extent = sarl_context_iterator_extent_set(K, intent);
+  sarl_set_iterator_decr_ref(intent);
+
+  return intent_extent;
+};
+
+
+struct Sarl_SetIterator *
+  sarl_context_iterator_extent_intent_set(
+    struct Sarl_ContextIterator *K, 
+    struct Sarl_SetIterator *B
+  )
+{
+  Sarl_SetIterator *extent;
+  Sarl_SetIterator *extent_intent;
+
+  extent = sarl_context_iterator_extent_set(K, B);
+  sarl_set_iterator_release_ownership(extent);
+
+  extent_intent = sarl_context_iterator_intent_set(K, extent);
+  sarl_set_iterator_decr_ref(extent);
+
+  return extent_intent;
+};
+
+struct Sarl_SetIterator* 
+  sarl_context_iterator_next_extent(
+    Sarl_SetIterator     *A, 
+    Sarl_ContextIterator *K)
+{
+  struct Sarl_SetIterator *G;
+  struct Sarl_SetIterator *i;
+
+  struct Sarl_SetIterator *curr;
+  struct Sarl_SetIterator *next;
+  struct Sarl_SetIterator *m;
+
+  struct Sarl_SetIterator *next_ii;
+
+  bool   finished = false;
+
+  curr = sarl_set_iterator_obtain_ownership(A);
+
+  G = sarl_context_iterator_objects(K);
+  sarl_set_iterator_release_ownership(G);
+  i = sarl_set_iterator_minus(G, A);
+  
+  for(sarl_set_iterator_reset(i);
+      ! finished && ! sarl_set_iterator_at_end(i);
+      sarl_set_iterator_next(i)
+  ) 
+  {
+    // curr = curr (+) i
+    sarl_set_iterator_release_ownership(curr);
+    next = sarl_set_iterator_lectic_next_gte(
+      curr, 
+      sarl_set_iterator_value(i),
+      G);
+
+    // until last(curr'') == last(curr)
+    next_ii = sarl_context_iterator_intent_extent_set(K, next);
+    m = sarl_set_iterator_minus(next_ii, curr);
+    if ( sarl_set_iterator_last(m) == sarl_set_iterator_value(i) ) {
+      finished = true;
+    }
+    else {
+      sarl_set_iterator_decr_ref(next_ii);
+    }
+
+    sarl_set_iterator_decr_ref(m);
+    sarl_set_iterator_decr_ref(curr);
+    curr = next;
+  };
+
+  sarl_set_iterator_decr_ref(curr);
+  sarl_set_iterator_decr_ref(G);
+  sarl_set_iterator_decr_ref(i);
+  
+  return next_ii;
+};
+
+void sarl_context_iterator_incr_ref(struct Sarl_ContextIterator *it)
+{
+  sarl_ref_count_incr(&it->ref_count);
+};
 

@@ -104,4 +104,6 @@ extern Sarl_Index sarl_set_iterator_count_remaining(struct Sarl_SetIterator *);
 extern void sarl_set_iterator_decr_ref(struct Sarl_SetIterator *);
 extern void sarl_set_iterator_incr_ref(struct Sarl_SetIterator *);
 
+extern Sarl_Index sarl_set_iterator_last(struct Sarl_SetIterator *);
+
 #endif

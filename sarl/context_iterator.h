@@ -7,7 +7,13 @@
 extern struct Sarl_ContextIterator *
   sarl_context_iterator_create
 (
-  struct Context *
+  struct Sarl_Context*
+);
+
+extern struct Sarl_ContextIterator *
+  sarl_context_iterator_create_from_relation
+(
+  struct Sarl_RelationIterator*
 );
 
 extern struct Sarl_ContextIterator *
@@ -55,15 +61,55 @@ extern struct Sarl_RelationIterator*
 );
 
 extern struct Sarl_RelationIterator*
-   sarl_context_iterator_down_arrow
-(
-	struct SarlContextIterator *
-);
+  sarl_context_iterator_down_arrow(
+    struct SarlContextIterator *
+  );
 
 extern struct Sarl_RelationIterator*
-   sarl_context_iterator_updown_arrow
-(
-	struct SarlContextIterator *
-);
+  sarl_context_iterator_updown_arrow(
+    struct SarlContextIterator *
+  );
+
+extern struct Sarl_SetIterator *
+  sarl_context_iterator_intent_set(
+    struct Sarl_ContextIterator *K, 
+    struct Sarl_SetIterator *A
+  );
+
+extern struct Sarl_SetIterator *
+  sarl_context_iterator_extent_set(
+    struct Sarl_ContextIterator *K, 
+    struct Sarl_SetIterator *B
+  );
+
+extern struct Sarl_SetIterator *
+  sarl_context_iterator_intent_extent_set(
+    struct Sarl_ContextIterator *K, 
+    struct Sarl_SetIterator *A
+  );
+
+extern struct Sarl_SetIterator *
+  sarl_context_iterator_extent_intent_set(
+    struct Sarl_ContextIterator *K, 
+    struct Sarl_SetIterator *B
+  );
+
+extern struct Sarl_SetIterator* 
+  sarl_context_iterator_next_extent(
+    Sarl_SetIterator     *A, 
+    Sarl_ContextIterator *K
+  );
+
+/* reference counting interface */
+extern void 
+  sarl_context_iterator_decr_ref(
+    struct Sarl_ContextIterator *it
+  );
+
+extern void 
+  sarl_context_iterator_incr_ref(
+    struct Sarl_ContextIterator *it
+  );
+
 
 #endif

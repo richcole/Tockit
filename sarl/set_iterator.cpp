@@ -202,5 +202,12 @@ struct Sarl_SetIterator *
   return it;
 };
 
-
+Sarl_Index sarl_set_iterator_last(struct Sarl_SetIterator *A)
+{
+  Sarl_Index result = 0;
+  SARL_SET_ITERATOR_FOR(A) {
+    result = sarl_set_iterator_value(A);
+  }
+  return result;
+};
 
