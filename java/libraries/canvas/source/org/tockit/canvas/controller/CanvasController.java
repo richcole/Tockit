@@ -126,6 +126,14 @@ public class CanvasController implements MouseListener, MouseMotionListener {
     }
 
     protected void dragFinished(MouseEvent e) {
+        Point mousePos = e.getPoint();
+        Point2D mousePosTr = canvas.getCanvasCoordinates(mousePos);
+        Point2D lastMousePosTr = canvas.getCanvasCoordinates(lastMousePos);
+        this.eventBroker.processEvent(new CanvasItemDroppedEvent(
+                this.selectedCanvasItem,
+                e.getModifiers(),
+                lastMousePosTr, lastMousePos,
+                mousePosTr, mousePos));
     }
 
     public void mouseEntered(MouseEvent e) {
@@ -145,19 +153,29 @@ public class CanvasController implements MouseListener, MouseMotionListener {
         if (!canvas.contains(mousePos)) {
             return;
         }
+        boolean newDrag = false;
         if (!dragMode && (lastMousePos.distance(mousePos) >= dragMin)) {
             dragMode = true;
+            newDrag = true;
         }
         if (dragMode) {
             Point2D mousePosTr = null;
             Point2D lastMousePosTr = null;
             mousePosTr = canvas.getCanvasCoordinates(mousePos);
             lastMousePosTr = canvas.getCanvasCoordinates(lastMousePos);
-            this.eventBroker.processEvent(new CanvasItemDraggedEvent(
-                    this.selectedCanvasItem,
-                    e.getModifiers(),
-                    lastMousePosTr, lastMousePos,
-                    mousePosTr, mousePos));
+            if (newDrag) {
+                this.eventBroker.processEvent(new CanvasItemPickupEvent(
+                        this.selectedCanvasItem,
+                        e.getModifiers(),
+                        lastMousePosTr, lastMousePos,
+                        mousePosTr, mousePos));
+            } else {
+                this.eventBroker.processEvent(new CanvasItemDraggedEvent(
+                        this.selectedCanvasItem,
+                        e.getModifiers(),
+                        lastMousePosTr, lastMousePos,
+                        mousePosTr, mousePos));
+            }
             lastMousePos = mousePos;
         }
     }
@@ -190,6 +208,9 @@ public class CanvasController implements MouseListener, MouseMotionListener {
         Point screenPos = e.getPoint();
         Point2D canvasPos = canvas.getCanvasCoordinates(screenPos);
         this.selectedCanvasItem = canvas.getCanvasItemAt(canvasPos);
+        if (this.selectedCanvasItem.hasAutoRaise()) {
+            canvas.raiseItem(this.selectedCanvasItem);
+        }
         this.lastMousePos = screenPos;
         if (e.isPopupTrigger()) {
             handlePopupRequest(e.getModifiers(), canvasPos, screenPos);

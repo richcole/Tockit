@@ -17,10 +17,8 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
-import java.util.ListIterator;
 
 /**
  * A generic drawing canvas with z-order and controller structure.
@@ -234,16 +232,25 @@ public class Canvas extends JPanel implements Printable {
         while (it.hasPrevious()) {
             CanvasItem cur = (CanvasItem) it.previous();
             if (cur.containsPoint(point)) {
-                if (cur.hasAutoRaise()) {
-                    // raise and repaint the item
-                    it.remove();
-                    this.canvasItems.add(cur);
-                    repaint();
-                }
                 return cur;
             }
         }
         return background;
+    }
+
+    /**
+     * Returns all canvas items at the given point except the background.
+     */
+    public Collection getCanvasItemsAt(Point2D point) {
+        Collection retVal = new HashSet();
+        ListIterator it = this.canvasItems.listIterator(this.canvasItems.size());
+        while (it.hasPrevious()) {
+            CanvasItem cur = (CanvasItem) it.previous();
+            if (cur.containsPoint(point)) {
+                retVal.add(cur);
+            }
+        }
+        return retVal;
     }
 
     public void raiseItem(CanvasItem item) {
@@ -277,9 +284,25 @@ public class Canvas extends JPanel implements Printable {
     /**
      * Adds a canvas item to the canvasItem list.
      *
-     * It will appear on top of all other items.
+     * It will appear on top of all other items. If it is already on the canvas, it will be raised.
      */
     public void addCanvasItem(CanvasItem node) {
+        this.canvasItems.remove(node);
         this.canvasItems.add(node);
+    }
+
+    public void removeCanvasItem(CanvasItem item) {
+        this.canvasItems.remove(item);
+    }
+
+    public Collection getCanvasItemsByType(Class type) {
+        Set retVal = new HashSet();
+        for (Iterator iterator = canvasItems.iterator(); iterator.hasNext();) {
+            CanvasItem canvasItem = (CanvasItem) iterator.next();
+            if( EventBroker.extendsOrImplements(canvasItem.getClass(), type)) {
+                retVal.add(canvasItem);
+            }
+        }
+        return retVal;
     }
 }

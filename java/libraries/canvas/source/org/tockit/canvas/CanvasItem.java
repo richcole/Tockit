@@ -28,6 +28,8 @@ public abstract class CanvasItem {
      */
     public abstract boolean containsPoint(Point2D point);
 
+    public abstract Point2D getPosition();
+
     /**
      * Returns the rectangular bounds of the canvas item.
      */

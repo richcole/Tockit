@@ -79,4 +79,8 @@ public class CanvasBackground extends CanvasItem {
     public Paint getPaint() {
         return paint;
     }
+
+    public Point2D getPosition() {
+        return new Point2D.Double(0,0);
+    }
 }
