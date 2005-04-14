@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="/ToscanaJ"/>
 	<classpathentry kind="src" path="plugins/multivalent/source"/>
 	<classpathentry kind="src" path="plugins/pdfbox/source"/>
 	<classpathentry kind="src" path="plugins/poi/source"/>
@@ -22,5 +21,6 @@
 	<classpathentry kind="lib" path="plugins/poi/libs/jakarta-poi-scratchpad.jar"/>
 	<classpathentry kind="lib" path="plugins/poi/libs/tm-extractors.jar"/>
 	<classpathentry kind="lib" path="plugins/pdfbox/libs/PDFBox.jar"/>
+	<classpathentry kind="lib" path="libs/ToscanaJ.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
