@@ -14,14 +14,14 @@ import org.jdom.input.SAXBuilder;
 import org.tockit.cernatoXML.model.*;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
 public class CernatoXMLParser {
     public static CernatoModel importCernatoXMLFile(File cernatoXMLFile)
-            throws FileNotFoundException, DataFormatException, JDOMException {
+            throws IOException, DataFormatException, JDOMException {
         SAXBuilder parser = new SAXBuilder();
         Document document = parser.build(cernatoXMLFile);
 

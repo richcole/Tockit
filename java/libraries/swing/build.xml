@@ -1,6 +1,6 @@
 <project name="Tockit Swing Related Classes" default="jar" basedir=".">
     <property name="src.dir"   value="${basedir}/source"/>
-    <property name="libTesting.dir"   value="${basedir}/../../thirdParty/unitTesting"/>
+    <property name="libTesting.dir"   value="${basedir}/../thirdParty/unitTesting"/>
     <property name="build.dir"   value="${basedir}/build"/>
     <property name="jars.dir"   value="${basedir}/../jars"/>
 
@@ -29,7 +29,7 @@
     </target>
 
     <target name="compile" depends="clean,prepare">
-      <javac destdir="${build.dir}"  debug="on" optimize="off"	deprecation="on">
+      <javac destdir="${build.dir}"  debug="on" optimize="off"	deprecation="on" source="1.4" target="1.4">
           <src path="${src.dir}/org"/>
           <classpath refid="project.class.path"/>
       </javac>

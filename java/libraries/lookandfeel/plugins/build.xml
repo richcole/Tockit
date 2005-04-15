@@ -5,7 +5,7 @@
 	</description>
 
 	<!-- TODO have to change the way we get mainApp stuff -->
-	<property name="mainApp.libs.dir" value="../../../thirdParty"/>
+	<property name="mainApp.libs.dir" value="../../thirdParty"/>
 	<property name="tockit.jars.dir" value="../../jars"/>
 	<property name="mainApp.classes" value="../build/release"/>
 	

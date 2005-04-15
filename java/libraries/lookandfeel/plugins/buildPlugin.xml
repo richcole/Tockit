@@ -100,7 +100,8 @@
 		<javac srcdir="${plugin.src.dir}" 
 				destdir="${plugin.build.dir}" debug="on" 
 				optimize="off" deprecation="on"
-				source="1.4">
+				source="1.4"
+				target="1.4">
 			<classpath refid="plugin.class.path"/>
 		</javac>
 	</target>
