@@ -230,7 +230,7 @@ public class DoccoMainFrame extends JFrame {
 		
 		ConceptInterpretationContext context = createInterpretationContextForConcepts(concepts);
 		if(allShown) {
-		    context.setObjectDisplayMode(ConceptInterpretationContext.CONTINGENT);
+		    context.setObjectDisplayMode(ConceptInterpretationContext.EXTENT);
 		}
 		
 		ConceptInterpreter interpreter = new DirectConceptInterpreter();
