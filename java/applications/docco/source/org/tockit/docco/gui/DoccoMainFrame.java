@@ -88,10 +88,16 @@ import net.sourceforge.toscanaj.controller.diagram.NodeMovementEventListener;
 import net.sourceforge.toscanaj.controller.fca.ConceptInterpretationContext;
 import net.sourceforge.toscanaj.controller.fca.ConceptInterpreter;
 import net.sourceforge.toscanaj.controller.fca.DiagramHistory;
+import net.sourceforge.toscanaj.controller.fca.DiagramToContextConverter;
 import net.sourceforge.toscanaj.controller.fca.DirectConceptInterpreter;
+import net.sourceforge.toscanaj.controller.fca.GantersAlgorithm;
+import net.sourceforge.toscanaj.controller.fca.LatticeGenerator;
+import net.sourceforge.toscanaj.controller.ndimlayout.DefaultDimensionStrategy;
+import net.sourceforge.toscanaj.controller.ndimlayout.NDimLayoutOperations;
 import net.sourceforge.toscanaj.dbviewer.BrowserLauncher;
 import net.sourceforge.toscanaj.gui.action.ExportDiagramAction;
 import net.sourceforge.toscanaj.gui.dialog.ErrorDialog;
+import net.sourceforge.toscanaj.model.context.ContextImplementation;
 import net.sourceforge.toscanaj.model.context.FCAElement;
 import net.sourceforge.toscanaj.model.database.AggregateQuery;
 import net.sourceforge.toscanaj.model.diagram.Diagram2D;
@@ -1148,11 +1154,15 @@ public class DoccoMainFrame extends JFrame {
             try {
                 results = this.queryEngine.executeQueryUsingDecomposer(getQueryString());
 				Diagram2D diagram = DiagramGenerator.createDiagram(results, this.showPhantomNodesCheckBox.isSelected());
-				if(diagram instanceof WriteableDiagram2D) {
-					// attach event broker so we can use DiagramChangeEvents to update nested diagrams
-					((WriteableDiagram2D)diagram).setEventBroker(new EventBroker());
-				}
-				Diagram2D oldDiagram = this.diagramView.getDiagram();
+                DiagramHistory diagramHistory = new DiagramHistory();
+
+                if(diagram instanceof WriteableDiagram2D) {
+                    // attach event broker so we can use DiagramChangeEvents to update nested diagrams
+                    // this happens internally iff the event broker is set
+                    ((WriteableDiagram2D)diagram).setEventBroker(new EventBroker());
+                }
+                
+                Diagram2D oldDiagram = this.diagramView.getDiagram();
 				if(nestDiagram && oldDiagram != null) {
 					// before nesting make sure apposition is ok by synchronizing object sets to their join
 					Iterator oldObjectSetIterator = oldDiagram.getTopConcept().getExtentIterator();
@@ -1168,27 +1178,41 @@ public class DoccoMainFrame extends JFrame {
 							oldObjects.remove(object);
 						} else {
 							// add the ones that are only in new to the top node of the old diagram if its intent is empty
-							// if the intent is not empty, the object gets lost since it does not fit mandatory attributes
-							// of the other diagram
+							// if the intent is not empty, the diagram needs to be recreated to have a matching concept.
+						    // Since the new diagram will have a concept with empty intent, this should happen only once.
 							// note that if there is intent which would match, the object should be in both diagrams in the
 							// first place
 							if(oldDiagram.getTopConcept().getIntentSize() == 0) {
 								((ConceptImplementation)oldDiagram.getTopConcept()).addObject(object);
+							} else {
+							    oldDiagram = extendDiagram(oldDiagram, object);
 							}
 						}
 					}
 					// now add the ones that are in the old diagram but not found in the new one to
 					// the new top concept
-					// this is again only happening if there is no intent attached to the top node
-					if(diagram.getTopConcept().getIntentSize() == 0) {
-						for (Iterator iter = oldObjects.iterator(); iter.hasNext();) {
-							((ConceptImplementation)diagram.getTopConcept()).addObject(iter.next());
-						}
-					}
+					// this is again only happening if there is no intent attached to the top node, else
+					// we have to create a new diagram
+					for (Iterator iter = oldObjects.iterator(); iter.hasNext();) {
+                        if (diagram.getTopConcept().getIntentSize() == 0) {
+                            ((ConceptImplementation) diagram.getTopConcept()).addObject(iter.next());
+                        } else {
+                            diagram = extendDiagram(diagram, iter.next());
+                        }
+                    }
+                    assert oldDiagram.getTopConcept().getExtentSize() == diagram.getTopConcept().getExtentSize();
 					// nest the results
 					diagram = new NestedLineDiagram(oldDiagram, diagram);
-				}
+                    diagramHistory.addDiagram(oldDiagram);
+                    diagramHistory.addDiagram(diagram);
+                    diagramHistory.setNestingLevel(1);
+				} else {
+                    diagramHistory.addDiagram(diagram);
+                    diagramHistory.setNestingLevel(0);
+                }
 				this.diagramView.showDiagram(diagram);
+                ConceptInterpretationContext context = new ConceptInterpretationContext(diagramHistory, new EventBroker());
+                this.diagramView.setConceptInterpretationContext(context);
             } catch (ParseException e) {
             	ErrorDialog.showError(this, e, "Couldn't parse query");
             	this.diagramView.showDiagram(null);
@@ -1203,7 +1227,16 @@ public class DoccoMainFrame extends JFrame {
         }
 	}
 	
-	private void addEntryToQueryHistory() {
+	private Diagram2D extendDiagram(Diagram2D oldDiagram, Object newObject) {
+        ContextImplementation context = (ContextImplementation) DiagramToContextConverter.getContext(oldDiagram);
+        context.getObjects().add(newObject);
+        LatticeGenerator lgen = new GantersAlgorithm();
+        return NDimLayoutOperations.createDiagram(lgen.createLattice(context),
+                                                  "Query Results",
+                                                  new DefaultDimensionStrategy());
+    }
+
+    private void addEntryToQueryHistory() {
         Vector items = new Vector();
         String queryString = getQueryString();
         items.add(queryString);
