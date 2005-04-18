@@ -305,7 +305,7 @@ public class DoccoMainFrame extends JFrame {
 		    NestedLineDiagram nestedDiagram = (NestedLineDiagram) diagram;
 		    diagramHistory.addDiagram(nestedDiagram.getInnerDiagram());
 		    diagramHistory.addDiagram(nestedDiagram.getOuterDiagram());
-		    diagramHistory.setNestingLevel(2);
+		    diagramHistory.setNestingLevel(1);
 		    context = context.createNestedContext(concepts[1]);
 		} else {
 		    diagramHistory.addDiagram(diagram);
