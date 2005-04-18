@@ -76,6 +76,7 @@ public class DatabaseDriverLoader extends LoaderBase {
 	 * Instances of this class shouldn't be created - access it via static method loadPlugins.
 	 */
 	private DatabaseDriverLoader () {
+        // no instances
 	}
 		
 	public static DatabaseDriverLoader.Error[] loadDrivers (File driversDir) {

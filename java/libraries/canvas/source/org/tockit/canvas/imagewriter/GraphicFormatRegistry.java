@@ -39,6 +39,7 @@ public class GraphicFormatRegistry {
      * No instances.
      */
     private GraphicFormatRegistry() {
+        // no instances allowed
     }
 
     /**

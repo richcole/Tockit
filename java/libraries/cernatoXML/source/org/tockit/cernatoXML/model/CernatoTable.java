@@ -19,6 +19,7 @@ public class CernatoTable {
     private Hashtable relation = new Hashtable();
 
     public CernatoTable() {
+        // nothing to do
     }
 
     public void add(CernatoObject object) {

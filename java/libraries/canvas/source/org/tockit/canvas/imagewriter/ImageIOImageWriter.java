@@ -87,6 +87,7 @@ public class ImageIOImageWriter implements ImageWriter {
      * We use a singleton approach, no public constructor.
      */
     private ImageIOImageWriter() {
+        // no instances allowed
     }
 
     /**

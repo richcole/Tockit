@@ -12,6 +12,7 @@ import junit.framework.TestSuite;
 
 import org.tockit.relations.model.Relation;
 import org.tockit.relations.model.tests.RelationImplementationTest;
+import org.tockit.relations.model.tests.RelationTest;
 import org.tockit.relations.operations.RelationOperation;
 import org.tockit.relations.operations.SelectionOperation;
 
@@ -38,7 +39,7 @@ public class SelectionOperationColumnCompareTest extends AbstractRelationOperati
     	testCases.setUp();
     	
     	RelationTestSetup one = new RelationTestSetup();
-    	Relation testRelOne = RelationImplementationTest.stringRelation;
+    	Relation testRelOne = RelationTest.stringRelation;
     	testRelOne.addTuple(new String[]{"6","6","6"});
         one.input = new Relation[]{testRelOne};
     	one.expectedOutputArity = testRelOne.getArity();

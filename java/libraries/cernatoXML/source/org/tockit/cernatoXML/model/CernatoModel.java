@@ -18,6 +18,7 @@ public class CernatoModel {
     private Vector views = new Vector();
 
     public CernatoModel() {
+        // nothing to do
     }
 
     public CernatoTable getContext() {

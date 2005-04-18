@@ -58,14 +58,17 @@ public class PluginClassLoaderTest extends TestCase {
 	}
 
 	public void testFindClass() throws ClassNotFoundException {
-		assertNotNull("load class ", classLoader.loadClass("org.tockit.docco.documenthandler.MultivalentDocumentHandler.class"));
-		assertNotNull("load class from jar file", classLoader.loadClass("multivalent.Multivalent.class"));
+        // @todo find simpler test case using smaller JARs
+		assertNotNull("load class ", classLoader.loadClass("org.tockit.docco.documenthandler.MultivalentDocumentHandler"));
+		assertNotNull("load class from jar file", classLoader.loadClass("multivalent.Multivalent"));
 	}
 	
 	public void testFindClassException () {
 		try {
 			classLoader.loadClass("HelloWorld");
 			fail("Expected ClassNotFoundException");
-		} catch (ClassNotFoundException e) {}
+		} catch (ClassNotFoundException e) {
+            // this is the expected behaviour
+        }
 	}
 }

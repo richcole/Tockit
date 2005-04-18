@@ -64,6 +64,7 @@ public class ITextPDFImageWriter implements ImageWriter {
      * We use a singleton approach, no public constructor.
      */
     private ITextPDFImageWriter() {
+        // no instances allowed
     }
 
     /**

@@ -25,7 +25,7 @@ public class ConfigurationType {
     public final static ConfigurationType STRING = new ConfigurationType();
     public final static ConfigurationType COLOR = new ConfigurationType();
     public final static ConfigurationType FONT_FAMILY = new ConfigurationType();
-    private ConfigurationType() {};
+    private ConfigurationType() { /* no instances -- a bit like typesafe enum */ }
     public static ConfigurationType createEnumType(String[] values) {
         return new Enumeration(values);
     }

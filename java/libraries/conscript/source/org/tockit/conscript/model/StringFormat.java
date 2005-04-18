@@ -16,7 +16,7 @@ import org.tockit.conscript.parser.CSCParser;
 
 public class StringFormat {
 	public static final class HorizontalAlign {
-		protected HorizontalAlign() {}
+		protected HorizontalAlign() { /* typesafe enum */ }
         public static HorizontalAlign getAlign(char id) {
             switch(id) {
                 case 'l':
@@ -31,7 +31,7 @@ public class StringFormat {
         }
 	}
 	public static final class VerticalAlign {
-		protected VerticalAlign(){}
+		protected VerticalAlign(){ /* typesafe enum */ }
         public static VerticalAlign getAlign(char id) {
             switch(id) {
                 case 'b':
@@ -46,7 +46,7 @@ public class StringFormat {
         }
 	}
 	public static final class FontStyle{
-		protected FontStyle() {}
+		protected FontStyle() { /* typesafe enum */ }
         public static FontStyle getFontStyle(char id) {
             switch(id) {
                 case 'b':

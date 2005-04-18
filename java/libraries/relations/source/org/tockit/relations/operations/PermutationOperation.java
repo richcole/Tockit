@@ -77,14 +77,14 @@ public class PermutationOperation extends AbstractUnaryRelationOperation {
 	private String[] getDimensionNames(Relation input) {
 		String[] dimensionNames = new String[input.getArity()];
 		for (int i = 0; i < dimensionNames.length; i++) {
-			String name = input.getDimensionNames()[i];
+			String curDimName = input.getDimensionNames()[i];
 			for (int j = 0; j < this.columnsToPermute.length - 1; j++) {
 				if(i == this.columnsToPermute[j]) {
-					name = input.getDimensionNames()[this.columnsToPermute[j+1]];
+					curDimName = input.getDimensionNames()[this.columnsToPermute[j+1]];
 					break;
 				}
 			}            
-			dimensionNames[i] = name;
+			dimensionNames[i] = curDimName;
 		}
 		return dimensionNames;
 	}

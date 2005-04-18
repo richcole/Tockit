@@ -87,13 +87,13 @@ public class ConceptualGraph {
         List nodeChildren = this.element.getChildren("node");
         List toRemove = new ArrayList();
         for (Iterator iterator = nodeChildren.iterator(); iterator.hasNext();) {
-            Element element = (Element) iterator.next();
+            Element curElement = (Element) iterator.next();
             if(element.getAttributeValue("id").equals(node.getId())) {
                 toRemove.add(element);
             }
         }
         for (Iterator it = toRemove.iterator(); it.hasNext();) {
-            Element element = (Element) it.next();
+            Element curElement = (Element) it.next();
             element.detach();
         }
         ///@todo recurse into descriptors
@@ -103,13 +103,13 @@ public class ConceptualGraph {
         List linkChildren = this.element.getChildren("link");
         List toRemove = new ArrayList();
         for (Iterator iterator = linkChildren.iterator(); iterator.hasNext();) {
-            Element element = (Element) iterator.next();
+            Element curElement = (Element) iterator.next();
             if(element.getAttributeValue("id").equals(link.getId())) {
                 toRemove.add(element);
             }
         }
         for (Iterator it = toRemove.iterator(); it.hasNext();) {
-            Element element = (Element) it.next();
+            Element curElement = (Element) it.next();
             element.detach();
         }
         ///@todo recurse into descriptors

@@ -13,6 +13,7 @@ import junit.framework.TestSuite;
 import org.tockit.relations.model.Relation;
 import org.tockit.relations.model.Tuple;
 import org.tockit.relations.model.tests.RelationImplementationTest;
+import org.tockit.relations.model.tests.RelationTest;
 import org.tockit.relations.operations.DropColumnsOperation;
 import org.tockit.relations.operations.RelationOperation;
 
@@ -39,7 +40,7 @@ public class DropColumnsOperationTest extends AbstractRelationOperationTest {
     	testCases.setUp();
     	
     	RelationTestSetup one = new RelationTestSetup();
-    	Relation testRelOne = RelationImplementationTest.objectRelation;
+    	Relation testRelOne = RelationTest.objectRelation;
         one.input = new Relation[]{testRelOne};
     	one.expectedOutputArity = 3; // we dropped 2 out of 5
     	one.expectedOutputSize = 4; // 2 out of the 5 are the same after projection

@@ -24,6 +24,7 @@ public class ContextImplementation implements Context {
     private String name = null;
 
     public ContextImplementation() {
+        // nothing to do
     }
 
     public ContextImplementation(String name) {
@@ -56,39 +57,41 @@ public class ContextImplementation implements Context {
 	
 	public Context createSum(Context other, String title) {
 		ContextImplementation context = new ContextImplementation(title);
-		Set objects = context.getObjects();
-		Set attributes = context.getAttributes();
-		BinaryRelationImplementation relation = context.getRelationImplementation();
+		Set allObjects = context.getObjects();
+		Set allAttributes = context.getAttributes();
+        // @todo this is probably a bug: the relation gets changed and potentially there is overlap in
+        // the objects
+		BinaryRelationImplementation combinedRelation = context.getRelationImplementation();
 		
 		Iterator objIt = this.getObjects().iterator();
 		while (objIt.hasNext()) {
 			Object object = objIt.next();
-			objects.add(object);
+			allObjects.add(object);
 		}
 		objIt = other.getObjects().iterator();
 		while (objIt.hasNext()) {
 			Object object = objIt.next();
-			objects.add(object);
+			allObjects.add(object);
 		}
 		Iterator attrIt = this.getAttributes().iterator();
 		while (attrIt.hasNext()) {
 			Object attribute = attrIt.next();
-			attributes.add(attribute);
+			allAttributes.add(attribute);
 		}
 		attrIt = other.getAttributes().iterator();
 		while (attrIt.hasNext()) {
 			Object attribute = attrIt.next();
-			attributes.add(attribute);
+			allAttributes.add(attribute);
 		}
-		objIt = objects.iterator();
+		objIt = allObjects.iterator();
 		while (objIt.hasNext()) {
 			Object object = objIt.next();
-			attrIt = attributes.iterator();
+			attrIt = allAttributes.iterator();
 			while (attrIt.hasNext()) {
 				Object attribute = attrIt.next();
 				if(this.getRelation().contains(object,attribute) ||
 				   other.getRelation().contains(object,attribute)) {
-					relation.insert(object,attribute);
+					combinedRelation.insert(object,attribute);
 				}
 			}
 		}

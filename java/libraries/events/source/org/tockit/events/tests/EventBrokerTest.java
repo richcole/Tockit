@@ -30,6 +30,7 @@ public class EventBrokerTest extends TestCase {
         public ExpectationCounter eventCounter = new ExpectationCounter("processEvents()");
 
         public TestListener() {
+            // nothing to do
         }
 
         public void processEvent(Event e) {

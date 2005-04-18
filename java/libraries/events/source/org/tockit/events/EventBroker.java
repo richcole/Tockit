@@ -82,6 +82,7 @@ public class EventBroker implements EventBrokerListener {
      * Creates a new broker.
      */
     public EventBroker() {
+        // nothing to do
     }
 
     /**

@@ -119,8 +119,8 @@ public class PreferencePanel extends JTabbedPane {
             }
             button.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    Color color = prefs.getColor(entry.getKey(), null);
-                    Color newColor = JColorChooser.showDialog(parent, "Select new color", color);
+                    Color oldColor = prefs.getColor(entry.getKey(), null);
+                    Color newColor = JColorChooser.showDialog(parent, "Select new color", oldColor);
                     if(newColor != null) {
                         button.setBackground(newColor);
                         changes.put(entry, newColor);
@@ -130,7 +130,7 @@ public class PreferencePanel extends JTabbedPane {
             return button;
         } else if(entry.getType() == ConfigurationType.DOUBLE) {
             final JFormattedTextField field = new JFormattedTextField(NumberFormat.getNumberInstance());
-            field.setHorizontalAlignment(JTextField.RIGHT);
+            field.setHorizontalAlignment(SwingConstants.RIGHT);
             field.setText("" + prefs.getDouble(entry.getKey(), 0));
             field.setInputVerifier(new InputVerifier() {
                 public boolean verify(JComponent input) {
@@ -148,7 +148,7 @@ public class PreferencePanel extends JTabbedPane {
             return field;
         } else if(entry.getType() == ConfigurationType.INTEGER) {
             final JFormattedTextField field = new JFormattedTextField(NumberFormat.getIntegerInstance());
-            field.setHorizontalAlignment(JTextField.RIGHT);
+            field.setHorizontalAlignment(SwingConstants.RIGHT);
             field.setText("" + prefs.getInt(entry.getKey(), 0));
             field.setInputVerifier(new InputVerifier() {
                 public boolean verify(JComponent input) {
@@ -166,7 +166,7 @@ public class PreferencePanel extends JTabbedPane {
             return field;
         } else if(entry.getType() == ConfigurationType.STRING) {
             final JTextField field = new JTextField();
-            field.setHorizontalAlignment(JTextField.RIGHT);
+            field.setHorizontalAlignment(SwingConstants.RIGHT);
             field.setText(prefs.get(entry.getKey(), ""));
             field.setInputVerifier(new InputVerifier() {
                 public boolean verify(JComponent input) {

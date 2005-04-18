@@ -13,4 +13,5 @@ import org.tockit.events.Event;
  * Test for derived interfaces.
  */
 public interface TestEventInterface extends Event {
+    // no need to define anything for testing
 }

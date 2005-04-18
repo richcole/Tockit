@@ -15,6 +15,7 @@ import junit.framework.TestSuite;
 
 import org.tockit.relations.model.Relation;
 import org.tockit.relations.model.tests.RelationImplementationTest;
+import org.tockit.relations.model.tests.RelationTest;
 import org.tockit.relations.operations.NegationOperation;
 import org.tockit.relations.operations.RelationOperation;
 
@@ -49,7 +50,7 @@ public class NegationOperationTest extends AbstractRelationOperationTest {
     	testCases.setUp();
     	
     	RelationTestSetup one = new RelationTestSetup();
-    	Relation testRelOne = RelationImplementationTest.stringRelation;
+    	Relation testRelOne = RelationTest.stringRelation;
         one.input = new Relation[]{testRelOne};
     	one.expectedOutputArity = testRelOne.getArity();
     	one.expectedOutputSize = 7 * 7 * 7 - testRelOne.getSize();

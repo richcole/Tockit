@@ -94,6 +94,7 @@ public class BatikImageWriter implements ImageWriter {
      * We use a singleton approach, no public constructor.
      */
     private BatikImageWriter() {
+        // no instances allowed
     }
 
     /**

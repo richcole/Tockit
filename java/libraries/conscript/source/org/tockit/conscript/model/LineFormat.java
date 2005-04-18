@@ -9,7 +9,7 @@ package org.tockit.conscript.model;
 
 public class LineFormat {
 	public static final class LineStyle{
-		protected LineStyle() { }
+		protected LineStyle() { /* typesafe enum */ }
 	}
 	public static final LineStyle SOLID = new LineStyle();
 	public static final LineStyle DASHED = new LineStyle();

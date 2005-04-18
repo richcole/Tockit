@@ -1,5 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="src" path="canvas/plugins/BatikImageWriter/source"/>
+	<classpathentry kind="src" path="canvas/plugins/FreeHepImageWriter/source"/>
+	<classpathentry kind="src" path="canvas/plugins/ITextPDFImageWriter/source"/>
+	<classpathentry kind="src" path="canvas/source"/>
+	<classpathentry kind="src" path="cernatoXML/source"/>
+	<classpathentry kind="src" path="cgs/source"/>
+	<classpathentry kind="src" path="conscript/source"/>
+	<classpathentry kind="src" path="events/source"/>
+	<classpathentry kind="src" path="fca/source"/>
+	<classpathentry kind="src" path="lookandfeel/plugins/KunststoffLookAndFeel/source"/>
+	<classpathentry kind="src" path="lookandfeel/plugins/PlasticLookAndFeel/source"/>
+	<classpathentry kind="src" path="pluginmodel/source"/>
+	<classpathentry kind="src" path="relations/source"/>
+	<classpathentry kind="src" path="swing/source"/>
+	<classpathentry kind="src" path="utils/source"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="canvas/plugins/BatikImageWriter/libs/batik-awt-util.jar"/>
+	<classpathentry kind="lib" path="canvas/plugins/BatikImageWriter/libs/batik-dom.jar"/>
+	<classpathentry kind="lib" path="canvas/plugins/BatikImageWriter/libs/batik-svggen.jar"/>
+	<classpathentry kind="lib" path="canvas/plugins/BatikImageWriter/libs/batik-util.jar"/>
+	<classpathentry kind="lib" path="canvas/plugins/BatikImageWriter/libs/batik-xml.jar"/>
+	<classpathentry kind="lib" path="canvas/plugins/FreeHepImageWriter/libs/freehep-base.jar"/>
+	<classpathentry kind="lib" path="canvas/plugins/FreeHepImageWriter/libs/freehep-graphics2d.jar"/>
+	<classpathentry kind="lib" path="canvas/plugins/FreeHepImageWriter/libs/freehep-graphicsio.jar"/>
+	<classpathentry kind="lib" path="canvas/plugins/FreeHepImageWriter/libs/freehep-graphicsio-emf.jar"/>
+	<classpathentry kind="lib" path="canvas/plugins/FreeHepImageWriter/libs/freehep-graphicsio-pdf.jar"/>
+	<classpathentry kind="lib" path="canvas/plugins/FreeHepImageWriter/libs/freehep-graphicsio-ppm.jar"/>
+	<classpathentry kind="lib" path="canvas/plugins/FreeHepImageWriter/libs/freehep-graphicsio-ps.jar"/>
+	<classpathentry kind="lib" path="canvas/plugins/FreeHepImageWriter/libs/freehep-graphicsio-svg.jar"/>
+	<classpathentry kind="lib" path="canvas/plugins/FreeHepImageWriter/libs/freehep-graphicsio-swf.jar"/>
+	<classpathentry kind="lib" path="canvas/plugins/ITextPDFImageWriter/libs/itext.jar"/>
+	<classpathentry kind="lib" path="lookandfeel/plugins/KunststoffLookAndFeel/libs/kunststoff.jar"/>
+	<classpathentry kind="lib" path="lookandfeel/plugins/PlasticLookAndFeel/libs/plastic.jar"/>
+	<classpathentry kind="lib" path="thirdParty/unitTesting/junit.jar"/>
+	<classpathentry kind="lib" path="thirdParty/jdom.jar"/>
+	<classpathentry kind="lib" path="thirdParty/unitTesting/mockobjects.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

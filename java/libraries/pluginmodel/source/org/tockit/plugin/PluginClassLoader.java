@@ -344,9 +344,9 @@ public class PluginClassLoader extends ClassLoader {
 	 }
 
 	private Resource findResourceLocation (String name) {
-		List foundResources = findResourcesLocation(name);
-		if (foundResources.size() > 0) {
-			return (Resource) foundResources.get(0); 
+		List currentResources = findResourcesLocation(name);
+		if (currentResources.size() > 0) {
+			return (Resource) currentResources.get(0); 
 		}
 		return null;
 	}
@@ -432,8 +432,8 @@ public class PluginClassLoader extends ClassLoader {
 
 	protected Enumeration findResources(String name) throws IOException {
 		Vector resources = new Vector();
-		List foundResources = findResourcesLocation(name);
-		Iterator it = foundResources.iterator();
+		List currentResources = findResourcesLocation(name);
+		Iterator it = currentResources.iterator();
 		while (it.hasNext()) {
 			Resource curResource = (Resource) it.next();
 			resources.add(curResource.getURL());

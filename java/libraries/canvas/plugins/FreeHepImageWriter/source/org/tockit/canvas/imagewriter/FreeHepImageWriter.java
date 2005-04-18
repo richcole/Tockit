@@ -126,6 +126,7 @@ public class FreeHepImageWriter implements ImageWriter {
      * We use a singleton approach, no public constructor.
      */
     private FreeHepImageWriter() {
+        // no instances allowed
     }
 
     /**

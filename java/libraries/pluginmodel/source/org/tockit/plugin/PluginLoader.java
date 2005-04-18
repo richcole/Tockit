@@ -86,6 +86,7 @@ public class PluginLoader extends LoaderBase {
 	 * Instances of this class shouldn't be created - access it via static method loadPlugins.
 	 */
 	private PluginLoader () {
+        // no instances
 	}
 	
 	/**
