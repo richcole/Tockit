@@ -70,4 +70,19 @@ class EventSubscription {
     public int hashCode() {
     	return (int)(((long)listener.hashCode() + (long)eventFilters.hashCode()) % Integer.MAX_VALUE);
     }
+    
+    /**
+     * Returns a string with debugging information.
+     */
+    public String toString() {
+        StringBuffer retVal = new StringBuffer("Subscription for events: ");
+        for (int i = 0; i < this.eventFilters.length; i++) {
+            EventFilter filter = this.eventFilters[i];
+            retVal.append(filter.toString());
+            if (i < this.eventFilters.length) {
+                retVal.append("; ");
+            }
+        }
+        return retVal.toString();
+    }
 }

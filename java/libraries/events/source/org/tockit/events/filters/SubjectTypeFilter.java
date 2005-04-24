@@ -34,4 +34,8 @@ public class SubjectTypeFilter implements EventFilter {
 	public int hashCode() {
 		return subjectType.hashCode();
 	}
+    
+    public String toString() {
+        return "with subject instantiating " + this.subjectType.getName();
+    }
 }

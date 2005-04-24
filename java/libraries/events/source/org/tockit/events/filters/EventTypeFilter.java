@@ -3,7 +3,7 @@
  * (http://www.tu-darmstadt.de) and the University of Queensland (http://www.uq.edu.au).
  * Please read licence.txt in the toplevel source directory for licensing information.
  *
- * $id$
+ * $Id$
  */
 package org.tockit.events.filters;
 
@@ -34,4 +34,8 @@ public class EventTypeFilter implements EventFilter {
 	public int hashCode() {
 		return eventType.hashCode();
 	}
+    
+    public String toString() {
+        return "with event instantiating " + this.eventType.getName();
+    }
 }
