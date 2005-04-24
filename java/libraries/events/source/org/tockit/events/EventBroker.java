@@ -187,8 +187,9 @@ public class EventBroker implements EventBrokerListener {
                 this.subscriptions.add(event.getSubject());
             } else if (event instanceof SubscriptionRemovalEvent) {
                 this.subscriptions.remove(event.getSubject());
+            } else {
+                processExternalEvent(event);
             }
-            processExternalEvent(event);
         }
         processingEvents = false;
     }
