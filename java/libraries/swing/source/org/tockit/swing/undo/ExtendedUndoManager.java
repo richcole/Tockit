@@ -4,9 +4,11 @@
 package org.tockit.swing.undo;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.KeyStroke;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
@@ -20,12 +22,20 @@ import javax.swing.undo.UndoableEdit;
  */
 public class ExtendedUndoManager extends UndoManager {
 	class UndoAction extends AbstractAction {
+        public UndoAction() {
+            putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_Z ,ActionEvent.CTRL_MASK));
+        }
+        
 		public void actionPerformed(ActionEvent e) {
 			ExtendedUndoManager.this.undo();
 		}
 	}
 
 	class RedoAction extends AbstractAction {
+        public RedoAction() {
+            putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_Y ,ActionEvent.CTRL_MASK));
+        }
+        
 		public void actionPerformed(ActionEvent e) {
 			ExtendedUndoManager.this.redo();
 		}
