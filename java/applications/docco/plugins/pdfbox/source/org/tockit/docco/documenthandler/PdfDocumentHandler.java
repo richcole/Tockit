@@ -16,9 +16,6 @@ import java.net.URL;
 import java.util.Date;
 import java.util.ArrayList;
 
-import org.pdfbox.encryption.DecryptDocument;
-import org.pdfbox.exceptions.CryptographyException;
-import org.pdfbox.exceptions.InvalidPasswordException;
 import org.pdfbox.pdfparser.PDFParser;
 import org.pdfbox.pdmodel.PDDocument;
 import org.pdfbox.pdmodel.PDDocumentInformation;
@@ -44,14 +41,6 @@ public class PdfDocumentHandler implements DocumentHandler, Plugin {
 			parser.parse();
 
 			pdfDocument = parser.getPDDocument();
-
-
-			if( pdfDocument.isEncrypted() )
-			{
-				DecryptDocument decryptor = new DecryptDocument( pdfDocument );
-				//Just try using the default password and move on
-				decryptor.decryptDocument( "" );
-			}
 
 			//create a tmp output stream with the size of the content.
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -121,15 +110,6 @@ public class PdfDocumentHandler implements DocumentHandler, Plugin {
 //			// Add the summary as an UnIndexed field, so that it is stored and returned
 //			// with hit documents for display.
 //			docSummary.summary = new String( contents, 0, summarySize );
-		}
-		catch( CryptographyException e )
-		{
-			throw new IOException( "Error decrypting document(" + url + "): " + e );
-		}
-		catch( InvalidPasswordException e )
-		{
-			//they didn't suppply a password and the default of "" was wrong.
-			throw new IOException( "Error: The document(" + url + ") is encrypted and will not be indexed." );
 		}
 		finally
 		{

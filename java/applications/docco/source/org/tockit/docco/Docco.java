@@ -31,8 +31,6 @@ import com.jgoodies.plaf.plastic.theme.SkyBlue;
 public class Docco {
 	public static void main (String[] args) {
 		ToscanaJ.testJavaVersion();
-		boolean forceIndexAccess = false;
-		boolean usePlatformLF = false;
         Options options = new Options();
         options.addOption("forceIndexAccess", false, "Forces the index to be opened, even if locks are present");
         options.addOption("usePlatformLF", false, "Uses the platform specific look and feel instead of the default");
@@ -53,12 +51,8 @@ public class Docco {
             showUsage(options, System.out);
             System.exit(0);
         }
-        if(cl.hasOption("forceIndexAccess")) {
-            forceIndexAccess = true;
-        }
-        if(cl.hasOption("usePlatformLF")) {
-            usePlatformLF = true;
-        }
+        boolean forceIndexAccess = cl.hasOption("forceIndexAccess");
+        boolean usePlatformLF = cl.hasOption("usePlatformLF");
 
 		if(usePlatformLF) {
 			try {

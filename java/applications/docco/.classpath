@@ -20,8 +20,8 @@
 	<classpathentry kind="lib" path="plugins/poi/libs/jakarta-poi.jar"/>
 	<classpathentry kind="lib" path="plugins/poi/libs/jakarta-poi-scratchpad.jar"/>
 	<classpathentry kind="lib" path="plugins/poi/libs/tm-extractors.jar"/>
-	<classpathentry kind="lib" path="plugins/pdfbox/libs/PDFBox.jar"/>
 	<classpathentry kind="lib" path="libs/ToscanaJ.jar"/>
 	<classpathentry kind="lib" path="libs/tockit-fca.jar"/>
+	<classpathentry kind="lib" path="plugins/pdfbox/libs/PDFBox.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
