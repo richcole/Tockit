@@ -50,12 +50,12 @@
 		<ant antfile="build.xml" dir="plugins" target="clean"/>
 	</target>
 	<target name="compile" depends="_prepare">
-		<javac srcdir="${src.dir}" destdir="${build.dev.dir}" debug="on" optimize="off" deprecation="on">
+		<javac srcdir="${src.dir}" destdir="${build.dev.dir}" debug="on" optimize="off" deprecation="on" source="1.4" target="1.4">
 			<classpath refid="project.dev.class.path"/>
 		</javac>
 	</target>
 	<target name="_compileRelease" depends="_prepare">
-		<javac srcdir="${src.dir}" destdir="${build.release.dir}" debug="off" optimize="on" deprecation="off">
+		<javac srcdir="${src.dir}" destdir="${build.release.dir}" debug="off" optimize="on" deprecation="off" source="1.4" target="1.4">
 			<classpath refid="project.release.class.path"/>
 		</javac>
 	</target>
