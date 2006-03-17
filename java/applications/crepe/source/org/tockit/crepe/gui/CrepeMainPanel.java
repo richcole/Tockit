@@ -17,7 +17,6 @@ import java.awt.event.WindowEvent;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -53,8 +52,7 @@ import javax.swing.tree.DefaultTreeModel;
 
 import org.jdom.Document;
 import org.jdom.Element;
-import org.jdom.adapters.DOMAdapter;
-import org.jdom.input.DOMBuilder;
+import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
 import org.tockit.canvas.imagewriter.DiagramExportSettings;
 import org.tockit.canvas.imagewriter.GraphicFormat;
@@ -82,11 +80,9 @@ import org.tockit.util.IdPool;
 
 /**
  * Crepe extensions:
- * @todo allow dragging hierarchy elements into the view to create nodes and links
  * @todo allow dragging types into the instance view to create new instances
  * @todo add context menus to the hierarchies to add new types and relations
  * @todo allow creating infima by selecting two or more types and then calling an item from the context menu
- * @todo allow modifier keys to drag components by dragging nodes
  * @todo add undo history
  * @todo add CGIF export, extend query button to allow CGIF queries
  * @todo investigate how universal and absurd type shall be handled when exporting PIG/CGIF format
@@ -608,13 +604,22 @@ public class CrepeMainPanel extends JFrame {
         serializer.setIndent("  "); // use two space indent
         serializer.setNewlines(true);
 
+        FileOutputStream out = null;
         try {
-            FileOutputStream out = new FileOutputStream(this.currentFile);
+			out = new FileOutputStream(this.currentFile);
             serializer.output(doc, out);
-            out.flush();
-            out.close();
         } catch (IOException e) {
             System.err.println(e);
+        } finally {
+        	this.knowledgeBase.getXMLElement().detach();
+        	if(out != null) {
+	            try {
+					out.close();
+				} catch (IOException e) {
+					// nothing we can do here
+					e.printStackTrace();
+				}
+        	}
         }
     }
 
@@ -854,17 +859,8 @@ public class CrepeMainPanel extends JFrame {
         recreateMruMenu();
 
         try {
-            FileInputStream in;
-            in = new FileInputStream(this.currentFile);
-
-            // parse schema with Xerxes
-            DOMAdapter domAdapter = new org.jdom.adapters.XercesDOMAdapter();
-            org.w3c.dom.Document w3cdoc = domAdapter.getDocument(in, false);
-
-            // create JDOM document
-            DOMBuilder builder =
-                    new DOMBuilder("org.jdom.adapters.XercesDOMAdapter");
-            Document document = builder.build(w3cdoc);
+			SAXBuilder parser = new SAXBuilder();
+            Document document = parser.build(kbFile);
 
             Element rootElement = document.getRootElement();
             rootElement.detach();
