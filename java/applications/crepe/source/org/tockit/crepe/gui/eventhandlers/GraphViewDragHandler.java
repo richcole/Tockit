@@ -97,8 +97,10 @@ public class GraphViewDragHandler implements DropTargetListener {
                 for (int j = 0; j < relation.getArity(); j++) {
                     Node node = new Node(this.graph.getKnowledgeBase(), signature[j], null, null);
                     references[j] = node;
+                    this.graph.addNode(node);
                 }
                 Link link = new Link(this.graph.getKnowledgeBase(), relation, references);
+                this.graph.addLink(link);
                 LinkView linkView = new LinkView(link);
                 linkView.setPosition(new Point2D.Double(xPos, yPos));
                 for (int i = 0; i < references.length; i++) {
