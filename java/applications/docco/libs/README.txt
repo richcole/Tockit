@@ -7,11 +7,11 @@ tockit-*.jar:
 jdom.jar:
   JDOM, b10rc1 (http://www.jdom.org, license in LICENSE-jdom.txt)
 
-lucene.jar:
-  Lucence, 1.3final (http://jakarta.apache.org/lucene, license in LICENSE-apache.txt)
+lucene-core.jar:
+  Lucence, 1.9.1 (http://lucene.apache.org/, license in LICENSE-apache.txt)
   
 ant-contrib.jar
-  ant extras, 0.3 (http://sourceforge.net/projects/ant-contrib/, license in LICENSE-apache.txt)
+  ant extras, 0.3 (http://sourceforge.net/projects/ant-contrib/, license in LICENSE-ant-contrib.txt)
   
 ToscanaJ.jar
   ToscanaJ, 1.4.1 (http://toscanaj.sourceforge.net, license in LICENSE-ToscanaJ.txt).  

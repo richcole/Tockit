@@ -8,7 +8,6 @@
 	<classpathentry kind="lib" path="libs/ant-contrib.jar"/>
 	<classpathentry kind="lib" path="libs/commons-cli.jar"/>
 	<classpathentry kind="lib" path="libs/jdom.jar"/>
-	<classpathentry kind="lib" path="libs/lucene.jar"/>
 	<classpathentry kind="lib" path="libs/plastic.jar"/>
 	<classpathentry kind="lib" path="libs/tockit-canvas.jar"/>
 	<classpathentry kind="lib" path="libs/tockit-events.jar"/>
@@ -23,5 +22,6 @@
 	<classpathentry kind="lib" path="libs/ToscanaJ.jar"/>
 	<classpathentry kind="lib" path="libs/tockit-fca.jar"/>
 	<classpathentry kind="lib" path="plugins/pdfbox/libs/PDFBox.jar"/>
+	<classpathentry sourcepath="libs/src/lucene-core-src.zip" kind="lib" path="libs/lucene-core.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
