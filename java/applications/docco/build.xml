@@ -43,13 +43,13 @@
 		<mkdir dir="${build.dev.dir}"/>
 		<mkdir dir="${build.release.dir}"/>
 	</target>
-	<target name="clean">
+	<target name="clean" description="Removes all generated files">
 		<delete dir="${build.release.dir}"/>
 		<delete dir="${build.dev.dir}"/>
 		<delete dir="${dist.base.dir}"/>
 		<ant antfile="build.xml" dir="plugins" target="clean"/>
 	</target>
-	<target name="compile" depends="_prepare">
+	<target name="compile" depends="_prepare" description="Compiles the program">
 		<javac srcdir="${src.dir}" destdir="${build.dev.dir}" debug="on" optimize="off" deprecation="on" source="1.4" target="1.4">
 			<classpath refid="project.dev.class.path"/>
 		</javac>
@@ -59,7 +59,7 @@
 			<classpath refid="project.release.class.path"/>
 		</javac>
 	</target>
-    <target name="rebuild" depends="clean,compile"/>
+    <target name="rebuild" depends="clean,compile" description="Compiles a version from scratch, deleting all prior output first"/>
     <target name="_prepareDist">
 		<mkdir dir="${dist.dir}"/>
 		<mkdir dir="${dist.dir}/plugins"/>
@@ -92,9 +92,9 @@
             </fileset>
 		</copy>
     </target>
-	<target name="dist" depends="_makeReleaseJar,_copyFiles,_zipFile">
+	<target name="dist" depends="_makeReleaseJar,_copyFiles,_zipFile" description="Creates the Docco distribution without plugins">
 	</target>
-	<target name="fullDist" depends="_makeReleaseJar,_copyFiles,pluginsReleaseDist,_zipFile">
+	<target name="fullDist" depends="_makeReleaseJar,_copyFiles,pluginsReleaseDist,_zipFile" description="Creates the Docco distribution including the plugins">
 	</target>
 	<target name="_zipFile">
 		<zip destfile="${dist.dir}.zip">
@@ -109,7 +109,7 @@
 		</java>
 	</target>
 
-	<target name="pluginsReleaseDist" depends="_compileRelease">
+	<target name="pluginsReleaseDist" depends="_compileRelease" description="Creates distribution files for all plugins">
 		<ant antfile="build.xml" dir="plugins" target="dist">
 			<property name="mainApp.libs.dir" value="../${libs.dir}"/>
 			<property name="mainApp.classes" value="../${build.release.dir}"/>
@@ -117,7 +117,7 @@
 		</ant>
 	</target>
 
-	<target name="pluginsDebugDist" depends="compile">
+	<target name="pluginsDebugDist" depends="compile" description="Creates distribution files for all plugins, including debug information">
 		<ant antfile="build.xml" dir="plugins" target="dist">
 			<property name="mainApp.libs.dir" value="../${libs.dir}"/>
 			<property name="mainApp.classes" value="../${build.dev.dir}"/>
