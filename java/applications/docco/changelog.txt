@@ -8,6 +8,8 @@ Docco:
   even after an unclean exit (it will be locked, though)
 - support for the RTF format (some of it)
 - nested diagrams can be created using a new button
+- Lucene is updated to version 1.9.1, all code has been updated to not have
+  any deprecation warnings
 
 POI-Plugin:
 - support for PowerPoint files

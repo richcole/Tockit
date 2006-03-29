@@ -17,6 +17,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.Date;
 
 import javax.swing.JButton;
@@ -29,7 +30,7 @@ import javax.swing.JTextField;
 import net.sourceforge.toscanaj.dbviewer.BrowserLauncher;
 import net.sourceforge.toscanaj.gui.dialog.ErrorDialog;
 
-import org.apache.lucene.document.DateField;
+import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Field;
 import org.tockit.docco.GlobalConstants;
 import org.tockit.docco.query.HitReference;
@@ -180,7 +181,14 @@ public class DocumentDisplayPane extends JPanel {
         this.pathField.setText(currentDocument);
 		this.dateField.setText(reference.getDocument().get(GlobalConstants.FIELD_DOC_MODIFICATION_DATE));
 		Field date = reference.getDocument().getField(GlobalConstants.FIELD_DOC_MODIFICATION_DATE);
-		Date modDate = DateField.stringToDate(date.stringValue());
+		Date modDate;
+		try {
+			modDate = DateTools.stringToDate(date.stringValue());
+		} catch (ParseException e) {
+			// should not happen, we just log it and ignore it
+			e.printStackTrace();
+			modDate = null;
+		}
 		DateFormat format = DateFormat.getDateTimeInstance();
         this.dateField.setText(format.format(modDate));
 		long size = Long.parseLong(reference.getDocument().get(GlobalConstants.FIELD_DOC_SIZE));

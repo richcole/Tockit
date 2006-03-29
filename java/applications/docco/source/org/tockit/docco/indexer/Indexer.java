@@ -8,19 +8,19 @@
 
 package org.tockit.docco.indexer;
 
-import org.apache.lucene.document.DateField;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.IndexWriter;
-import org.tockit.docco.GlobalConstants;
-
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import org.apache.lucene.document.DateTools;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.DateTools.Resolution;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.IndexWriter;
+import org.tockit.docco.GlobalConstants;
 
 public class Indexer implements Runnable {
     public interface CallbackRecipient {
@@ -65,12 +65,12 @@ public class Indexer implements Runnable {
 					knownDocuments.add(path);
 					File file = new File(path);
 					if(!file.exists()) {
-						reader.delete(i);
+						reader.deleteDocument(i);
 					} else {
 						String dateIndex = doc.get(GlobalConstants.FIELD_DOC_MODIFICATION_DATE);
-						String dateFS = DateField.dateToString(new Date(file.lastModified()));
+						String dateFS = DateTools.timeToString(file.lastModified(), Resolution.SECOND);
 						if(!dateFS.equals(dateIndex)) {
-							reader.delete(i);
+							reader.deleteDocument(i);
 							documentsToUpdate.add(file);	
 						}
 					}

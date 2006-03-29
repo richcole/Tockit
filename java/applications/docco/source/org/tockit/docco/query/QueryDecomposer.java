@@ -36,15 +36,15 @@ public class QueryDecomposer {
 		}
 	}
 	
-	private String defaultQueryField;
+	private QueryParser parser;
 	
-	public QueryDecomposer (String defaultQueryField) {
-		this.defaultQueryField = defaultQueryField;
+	public QueryDecomposer(String defaultQueryField) {
+		this.parser = new QueryParser(defaultQueryField, new StandardAnalyzer());
 	}
 
 	public List breakQueryIntoTerms (String queryString) throws ParseException {
 		try {
-			Query query = QueryParser.parse(queryString, this.defaultQueryField, new StandardAnalyzer());
+			Query query = this.parser.parse(queryString);
 			if (query instanceof BooleanQuery) {
 				return processBooleanQuery((BooleanQuery) query);
 			}
@@ -66,14 +66,14 @@ public class QueryDecomposer {
 			BooleanClause curClause = clauses[i];
 			BooleanQuery newQuery = new BooleanQuery();
 			newQuery.add(curClause); 
-			if(curClause.prohibited) {
+			if(curClause.isProhibited()) {
 				boolean havePositive = false;
 				for (int j = 0; j < clauses.length; j++) {
 					BooleanClause clause = clauses[j];
-					if(!clause.prohibited) {
+					if(!clause.isProhibited()) {
 						// avoid getting required clauses into the negated ones -- otherwise we get
 						// new implications
-						BooleanClause newClause = new BooleanClause(clause.query, false, false);
+						BooleanClause newClause = new BooleanClause(clause.getQuery(), BooleanClause.Occur.SHOULD);
 						newQuery.add(newClause);
 						havePositive = true;					
 					}
@@ -82,13 +82,14 @@ public class QueryDecomposer {
 					throw new ParseException("Query does not contain positive clause.");
 				}
 			}
-			String label = curClause.query.toString();
+			// TODO this next bit handles only the first clause in a conjunction, we need something more complex here
+			String label = curClause.getQuery().toString();
 			if(label.startsWith(GlobalConstants.FIELD_QUERY_BODY + ":")) {
 				label = label.substring(GlobalConstants.FIELD_QUERY_BODY.length() + 1);				
 			}
 			// mark prohibited ones, we don't care about marking required ones since it
 			// doesn't make a difference for us 
-			if(curClause.prohibited) {
+			if(curClause.isProhibited()) {
 				label = "-" + label;
 			}
 			result.add(new LabeledQuery(label, newQuery));

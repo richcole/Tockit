@@ -9,14 +9,15 @@ package org.tockit.docco.indexer;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.DateTools.Resolution;
 import org.tockit.docco.GlobalConstants;
 
 public class DocumentProcessor {
@@ -68,27 +69,27 @@ public class DocumentProcessor {
 		/// worthwhile keeping
 		Document doc = new Document(); 
 		
-		doc.add(Field.Text(GlobalConstants.FIELD_QUERY_BODY, docSummary.contentReader));
+		doc.add(new Field(GlobalConstants.FIELD_QUERY_BODY, docSummary.contentReader));
 		
 		if (docSummary.authors != null) {
 			Iterator it = docSummary.authors.iterator();
 			while (it.hasNext()) {
 				String author = (String) it.next();
-				doc.add(Field.Text(GlobalConstants.FIELD_DOC_AUTHOR, author));
+				addTextField(doc, GlobalConstants.FIELD_DOC_AUTHOR, author);
 			}
 		}
 		
 		if (docSummary.title != null) {
-			doc.add(Field.Text(GlobalConstants.FIELD_DOC_TITLE, docSummary.title));					
+			addTextField(doc, GlobalConstants.FIELD_DOC_TITLE, docSummary.title);					
 		}
 		
 		if (docSummary.summary != null) {
-			doc.add(Field.Text(GlobalConstants.FIELD_DOC_SUMMARY, docSummary.summary));
+			addTextField(doc, GlobalConstants.FIELD_DOC_SUMMARY, docSummary.summary);
 		}
 		
 		if (docSummary.modificationDate != null) {
 			try {
-				doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_MODIFICATION_DATE, docSummary.modificationDate));
+				addKeyword(doc, GlobalConstants.FIELD_DOC_MODIFICATION_DATE, DateTools.dateToString(docSummary.modificationDate, Resolution.SECOND));
 			}
 			catch (RuntimeException e) {
 				/// @todo another nasty hack
@@ -106,30 +107,38 @@ public class DocumentProcessor {
 		if (docSummary.keywords != null) {
 			for (Iterator iter = docSummary.keywords.iterator(); iter.hasNext();) {
                 String keyword = (String) iter.next();
-                if (keyword != null) {
-					doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_KEYWORD, keyword));
+				if (keyword != null) {
+					addKeyword(doc, GlobalConstants.FIELD_DOC_KEYWORD, keyword);
                 }
             }
 		}
 		
 		// @todo use paths relative to the base directory of the index
-		doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_PATH, file.getPath()));
-		doc.add(Field.Text(GlobalConstants.FIELD_DOC_PATH_WORDS, file.getParent().replace(File.separatorChar, ' ')));
+		addKeyword(doc, GlobalConstants.FIELD_DOC_PATH, file.getPath());
+		addTextField(doc, GlobalConstants.FIELD_DOC_PATH_WORDS, file.getParent().replace(File.separatorChar, ' '));
 		String fileName = file.getName();
 		int index = fileName.lastIndexOf(".") + 1;
 		if (index > 0) {
 			String fileExtension = fileName.substring(index, fileName.length()).toLowerCase();
-			doc.add(Field.Text(GlobalConstants.FIELD_DOC_EXTENSION, fileExtension));
+			addTextField(doc, GlobalConstants.FIELD_DOC_EXTENSION, fileExtension);
 			String fileNameWithoutExtension = file.getName().substring(0,file.getName().length() - fileExtension.length() - 1);
-			doc.add(Field.Text(GlobalConstants.FIELD_DOC_NAME,fileNameWithoutExtension));
+			addTextField(doc, GlobalConstants.FIELD_DOC_NAME,fileNameWithoutExtension);
 		} else {
-			doc.add(Field.Text(GlobalConstants.FIELD_DOC_NAME,fileName));
+			addTextField(doc, GlobalConstants.FIELD_DOC_NAME,fileName);
 		}
 		if (doc.get(GlobalConstants.FIELD_DOC_MODIFICATION_DATE) == null) {
-			doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_MODIFICATION_DATE,new Date(file.lastModified())));
+			addKeyword(doc, GlobalConstants.FIELD_DOC_MODIFICATION_DATE,DateTools.timeToString(file.lastModified(), Resolution.SECOND));
 		}
-		doc.add(Field.Keyword(GlobalConstants.FIELD_DOC_SIZE, new Long(file.length()).toString()));
+		addKeyword(doc, GlobalConstants.FIELD_DOC_SIZE, new Long(file.length()).toString());
 		return doc;
+	}
+
+	private void addKeyword(Document doc, String fieldName, String content) {
+		doc.add(new Field(fieldName, content, Field.Store.YES, Field.Index.UN_TOKENIZED));
+	}
+
+	private void addTextField(Document doc, String fieldName, String content) {
+		doc.add(new Field(fieldName, content, Field.Store.YES, Field.Index.TOKENIZED));
 	}
 	
 	private void logDocument(Document doc) {
