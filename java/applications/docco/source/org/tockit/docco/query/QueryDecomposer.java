@@ -39,6 +39,7 @@ public class QueryDecomposer {
 	private QueryParser parser;
 	
 	public QueryDecomposer(String defaultQueryField) {
+        // TODO this has to be changed so the analyzer matching each index can be used
 		this.parser = new QueryParser(defaultQueryField, new StandardAnalyzer());
 	}
 

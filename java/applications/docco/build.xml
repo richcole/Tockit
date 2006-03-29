@@ -59,15 +59,29 @@
 			<classpath refid="project.release.class.path"/>
 		</javac>
 	</target>
+    <target name="_copyResources" depends="_prepare">
+		<copy todir="${build.dev.dir}" includeEmptyDirs="no">
+			<fileset dir="${basedir}/resources">
+		        <include name="**"/>
+            </fileset>
+		</copy>
+    </target>
+    <target name="_copyResourcesRelease" depends="_prepare">
+		<copy todir="${build.release.dir}" includeEmptyDirs="no">
+			<fileset dir="${basedir}/resources">
+		        <include name="**"/>
+            </fileset>
+		</copy>
+    </target>
     <target name="rebuild" depends="clean,compile" description="Compiles a version from scratch, deleting all prior output first"/>
     <target name="_prepareDist">
 		<mkdir dir="${dist.dir}"/>
 		<mkdir dir="${dist.dir}/plugins"/>
 	</target>
-	<target name="_makeDebugJar" depends="compile,_prepareDist">
+	<target name="_makeDebugJar" depends="compile,_copyResources,_prepareDist">
 		<jar jarfile="${dist.dir}/${app.name}.jar" basedir="${build.dev.dir}" manifest="manifest.mf"/>
 	</target>
-	<target name="_makeReleaseJar" depends="_compileRelease,_prepareDist">
+	<target name="_makeReleaseJar" depends="_compileRelease,_copyResourcesRelease,_prepareDist">
 		<jar jarfile="${dist.dir}/${app.name}.jar" basedir="${build.release.dir}" manifest="manifest.mf"/>
 	</target>
 	<target name="_copyFiles">

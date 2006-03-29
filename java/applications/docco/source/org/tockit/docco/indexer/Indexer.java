@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.DateTools.Resolution;
@@ -27,15 +28,17 @@ public class Indexer implements Runnable {
 		void showFeedbackMessage(String message);
 	}
 
-    private File baseDirectory;
     private File indexLocation;
+    private File baseDirectory;
+    private Analyzer analyzer;
 	private CallbackRecipient callbackRecipient;
     private DocumentProcessor docProcessingFactory;
     private boolean shuttingDown = false;
 	
-	public Indexer(File indexLocation, File baseDirectory, List documentMappings, CallbackRecipient output) {
+	public Indexer(File indexLocation, File baseDirectory, Analyzer analyzer, List documentMappings, CallbackRecipient output) {
 		this.indexLocation = indexLocation;
 		this.baseDirectory = baseDirectory;
+        this.analyzer = analyzer;
 		this.callbackRecipient = output;
 		try {
             this.docProcessingFactory = new DocumentProcessor(documentMappings);
@@ -88,8 +91,8 @@ public class Indexer implements Runnable {
 			findNewFiles(this.baseDirectory, knownDocuments);
 			
 			// and optimize in the end
-			IndexWriter writer = new IndexWriter(indexLocation,
-										  GlobalConstants.DEFAULT_ANALYZER,
+			IndexWriter writer = new IndexWriter(this.indexLocation,
+										  this.analyzer,
 										  false);
 			writer.optimize();
 			writer.close();
@@ -130,7 +133,7 @@ public class Indexer implements Runnable {
 	 */
 	private void indexFile(File file) throws IOException {
 		IndexWriter writer = new IndexWriter(indexLocation,
-									  GlobalConstants.DEFAULT_ANALYZER,
+		                              this.analyzer,
 									  false);
 		showProgress(writer.docCount(), file.getAbsolutePath());
 		try {
@@ -169,4 +172,8 @@ public class Indexer implements Runnable {
 	public void setDocumentMappings(List documentMappings) {
 		this.docProcessingFactory.setDocumentMappings(documentMappings);
 	}
+
+    public String getAnalyzerClassName() {
+        return this.analyzer.getClass().getName();
+    }
 }

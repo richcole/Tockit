@@ -23,5 +23,7 @@
 	<classpathentry kind="lib" path="plugins/pdfbox/libs/PDFBox.jar"/>
 	<classpathentry sourcepath="libs/src/lucene-core-src.zip" kind="lib" path="libs/lucene-core.jar"/>
 	<classpathentry kind="lib" path="libs/jdom.jar"/>
+	<classpathentry sourcepath="libs/src/lucene-analyzers-src.zip" kind="lib" path="libs/lucene-analyzers.jar"/>
+	<classpathentry kind="src" path="resources"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

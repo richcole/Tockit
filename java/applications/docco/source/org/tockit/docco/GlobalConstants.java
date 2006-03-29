@@ -7,6 +7,8 @@
  */
 package org.tockit.docco;
 
+import java.util.Properties;
+
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.tockit.docco.documenthandler.DocumentHandler;
@@ -17,8 +19,10 @@ import org.tockit.docco.documenthandler.RtfDocumentHandler;
 import org.tockit.docco.documenthandler.XmlDocumentHandler;
 
 public class GlobalConstants {
-    public static final Analyzer DEFAULT_ANALYZER = new StandardAnalyzer();
-	
+	public static final String ANALYZERS_PROPERTIES_FILE_NAME = "/analyzers.properties";
+	public static final String DEFAULT_ANALYZER_NAME;
+	public static final Analyzer DEFAULT_ANALYZR;
+
 	public static final String FIELD_QUERY_BODY = "body";
 	
 	public static final String FIELD_DOC_URL = "URL";
@@ -40,6 +44,7 @@ public class GlobalConstants {
 	 */
 	public static final String FIELD_DOC_PATH_WORDS = "path_words";
 	
+	// TODO load this from a ressource file, too
 	public static final DocumentHandler[] DEFAULT_DOC_HANDLER_IMPLEMENTATIONS = {
 										new HtmlDocumentHandler(),
 										new XmlDocumentHandler(),
@@ -47,4 +52,39 @@ public class GlobalConstants {
 										new PlainTextDocumentHandler(),
 										new RtfDocumentHandler()
 										};
+
+	public static final Properties ANALYZERS = new Properties();
+	
+	static {
+		String analyzerName = null;
+		String analyserClassName = null;
+		try {
+			ANALYZERS.load(GlobalConstants.class.getResourceAsStream(ANALYZERS_PROPERTIES_FILE_NAME));
+			analyserClassName = ANALYZERS.getProperty("default");
+			if(analyserClassName == null) {
+				System.err.println("Could not find default entry in analyzer file, default will be arbitrary");
+			} else {
+				analyzerName = ANALYZERS.getProperty(analyserClassName);
+				if(analyzerName == null) {
+					System.err.println("Could not find setup for default entry (" + analyserClassName +
+							") in analyzer file, default will be arbitrary");
+				}
+			}
+			ANALYZERS.remove("default");
+		} catch (Exception e) {
+			System.err.println("Could not load analyzer list ('" + ANALYZERS_PROPERTIES_FILE_NAME + "')");
+			e.printStackTrace();
+		}
+		DEFAULT_ANALYZER_NAME = analyzerName;
+		Analyzer analyzer;
+		try {
+			analyzer = (Analyzer) Class.forName(analyserClassName).newInstance();
+		} catch (Exception e) {
+			System.err.println("Could not initialize default analyzer class (" + DEFAULT_ANALYZER_NAME + "), " +
+					"falling back to StandardAnalyzer");
+			e.printStackTrace();
+			analyzer = new StandardAnalyzer();
+		}
+		DEFAULT_ANALYZR = analyzer;
+	}
 }

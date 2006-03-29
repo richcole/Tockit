@@ -9,6 +9,7 @@ package org.tockit.docco.index;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -17,11 +18,12 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.FSDirectory;
-import org.tockit.docco.GlobalConstants;
 import org.tockit.docco.documenthandler.DocumentHandlerRegistry;
 import org.tockit.docco.indexer.DocumentHandlerMapping;
 import org.tockit.docco.indexer.Indexer;
@@ -43,9 +45,18 @@ public class Index {
 	
     public static Index openIndex(String name, File indexDirectory, Indexer.CallbackRecipient callbackRecipient) 
     				throws FileNotFoundException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-		String[] paths = getLinesOfFile(getContentsFile(indexDirectory, name));
+        Properties settings = new Properties();
+        File settingsFile = getPropertiesFile(indexDirectory, name);
+        settings.load(new FileInputStream(settingsFile));
 		try {
-			File baseDirectory = new File(paths[0]); 
+			File baseDirectory = new File(settings.getProperty("baseDirectory")); 
+            String analyzerClassName = settings.getProperty("analyzer");
+            Analyzer analyzer;
+            try {
+                analyzer = (Analyzer) Class.forName(analyzerClassName).newInstance();
+            } catch (Exception e) {
+                throw new IOException("Could not instantiate '" + analyzerClassName + "', StandardAnalyzer will be used.");
+            }
 			File mappingsFile = getMappingsFile(indexDirectory, name);
 			Index retVal;
 			if(mappingsFile.exists()) {
@@ -54,26 +65,26 @@ public class Index {
 				for (int i = 0; i < mappings.length; i++) {
 					documentMappings.add(new DocumentHandlerMapping(mappings[i]));
 				}
-				retVal = new Index(name, indexDirectory, baseDirectory, documentMappings, callbackRecipient);
+				retVal = new Index(name, indexDirectory, baseDirectory, analyzer, documentMappings, callbackRecipient);
 			} else {
-				retVal = new Index(name, indexDirectory, baseDirectory, DocumentHandlerRegistry.getDefaultMappings(), 
+				retVal = new Index(name, indexDirectory, baseDirectory, analyzer, DocumentHandlerRegistry.getDefaultMappings(), 
 				    			   callbackRecipient);
 			}
 			retVal.callbackRecipient = callbackRecipient;
 			return retVal;
 		} catch (ArrayIndexOutOfBoundsException e) {
-			throw new IOException("No base directory found in '" + getContentsFile(indexDirectory,name).getPath() + "'");
+			throw new IOException("No base directory found in '" + settingsFile + "'");
 		}
 	}
 	
-    public static Index createIndex(String name, File indexDirectory, File baseDirectory, List documentMappings, 
+    public static Index createIndex(String name, File indexDirectory, File baseDirectory, 
+                                    Analyzer analyzer, List documentMappings, 
 									Indexer.CallbackRecipient callbackRecipient) throws IOException {
 		createDirPath(indexDirectory);
 		IndexWriter writer = new IndexWriter(new File(indexDirectory, name),
-											 GlobalConstants.DEFAULT_ANALYZER,
-											 true);
+                                             analyzer, true);
 		writer.close();
-		Index retVal = new Index(name, indexDirectory, baseDirectory, documentMappings, callbackRecipient);
+		Index retVal = new Index(name, indexDirectory, baseDirectory, analyzer, documentMappings, callbackRecipient);
 		retVal.callbackRecipient = callbackRecipient;
 		retVal.updateIndex();
 		return retVal;
@@ -106,21 +117,21 @@ public class Index {
     	}
     }
 
-    private Index(String name, File indexDirectory, File baseDirectory, List documentMappings,
-    			  Indexer.CallbackRecipient callbackRecipient) throws IOException {
+    private Index(String name, File indexDirectory, File baseDirectory, Analyzer analyzer, 
+                  List documentMappings, Indexer.CallbackRecipient callbackRecipient) throws IOException {
     	this.name = name;
 		this.indexLocation = new File(indexDirectory, name);
 		this.baseDirectory = baseDirectory;
-        this.indexer = new Indexer(this.indexLocation, baseDirectory, documentMappings, callbackRecipient);
+        this.indexer = new Indexer(this.indexLocation, baseDirectory, analyzer, documentMappings, callbackRecipient);
         saveContentsAndMappings();
 	}
 
-	private static File getContentsFile(File indexLocation, String indexName) {
-        return new File(cleanPath(new File(indexLocation, indexName).getPath()) + ".contents");
+	private static File getPropertiesFile(File indexLocation, String indexName) {
+        return new File(cleanPath(new File(indexLocation, indexName).getPath()) + ".properties");
 	}
 	
-	private File getContentsFile() {
-		return getContentsFile(this.indexLocation.getParentFile(), this.name);
+	private File getPropertiesFile() {
+		return getPropertiesFile(this.indexLocation.getParentFile(), this.name);
 	}
 
 	private static File getMappingsFile(File indexLocation, String indexName) {
@@ -169,8 +180,9 @@ public class Index {
 	
     private void saveContentsAndMappings() {
         try {
-			PrintStream out = new PrintStream(new FileOutputStream(getContentsFile()));
-			out.println(this.baseDirectory.getPath());
+			PrintStream out = new PrintStream(new FileOutputStream(getPropertiesFile()));
+            out.println("baseDirectory=" + this.baseDirectory.getPath());
+            out.println("analyzer=" + this.indexer.getAnalyzerClassName());
 			out.close();
 			out = new PrintStream(new FileOutputStream(getMappingsFile()));
 			
@@ -232,7 +244,7 @@ public class Index {
     public void delete() throws IOException {
     	shutdown();
 
-		getContentsFile().delete();
+        getPropertiesFile().delete();
 		getMappingsFile().delete();
 		File[] indexContents = this.indexLocation.listFiles();
 		for (int i = 0; i < indexContents.length; i++) {

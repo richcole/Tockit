@@ -111,6 +111,8 @@ import net.sourceforge.toscanaj.view.diagram.DiagramView;
 import net.sourceforge.toscanaj.view.diagram.LabelView;
 import net.sourceforge.toscanaj.view.diagram.NodeView;
 
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.ParseException;
 import org.tockit.canvas.CanvasBackground;
 import org.tockit.canvas.CanvasItem;
@@ -817,7 +819,13 @@ public class DoccoMainFrame extends JFrame {
 
             JPanel optionsPanel = new JPanel(new GridBagLayout());
             JTextField nameField = new JTextField("Index " + (this.indexes.size() + 1));
-            JButton mappingsButton = new JButton("Edit Mappings...");
+            
+            Collection analyzerNames = GlobalConstants.ANALYZERS.values();
+            // TODO sort list
+            JComboBox analyzerComboBox = new JComboBox(analyzerNames.toArray());
+            analyzerComboBox.setSelectedItem(GlobalConstants.DEFAULT_ANALYZER_NAME);
+            
+            JButton mappingsButton = new JButton("Edit File Mappings...");
             mappingsButton.addActionListener(new ActionListener(){
             	public void actionPerformed(ActionEvent e) {
                     List result = editDocumentMappings(documentMappings);
@@ -835,10 +843,14 @@ public class DoccoMainFrame extends JFrame {
             
             constraints.gridy = 0;
             optionsPanel.add(new JLabel("Index name:"), constraints);
-            
             constraints.gridy++;
             optionsPanel.add(nameField, constraints);
             
+            constraints.gridy++;
+            optionsPanel.add(new JLabel("Analyzer:"), constraints);
+            constraints.gridy++;
+            optionsPanel.add(analyzerComboBox, constraints);
+
             constraints.gridy++;
             constraints.anchor = GridBagConstraints.CENTER;
             constraints.fill = GridBagConstraints.NONE;
@@ -871,7 +883,24 @@ public class DoccoMainFrame extends JFrame {
 				}
 			};
 			File indexLocation = getIndexDirectory();
-            this.indexes.add(Index.createIndex(indexName, indexLocation, inputDir, documentMappings, callbackRecipient));
+            Analyzer analyzer = new StandardAnalyzer();
+            
+            Set analyzers = GlobalConstants.ANALYZERS.entrySet();
+            for (Iterator iter = analyzers.iterator(); iter.hasNext();) {
+                Map.Entry entry = (Map.Entry) iter.next();
+                if(entry.getValue().equals(analyzerComboBox.getSelectedItem())) {
+                    String analyzerClassName = "";
+                    try {
+                        analyzerClassName = (String) entry.getKey();
+                        analyzer = (Analyzer) Class.forName(analyzerClassName).newInstance();
+                    } catch (Exception e) {
+                        // TODO give feedback to the user
+                        System.err.println("Could not instantiate '" + analyzerClassName + "', StandardAnalyzer will be used.");
+                        e.printStackTrace();
+                    }
+                }
+            }
+            this.indexes.add(Index.createIndex(indexName, indexLocation, inputDir, analyzer, documentMappings, callbackRecipient));
         } catch (IOException e) {
 			ErrorDialog.showError(this, e, "There has been an error creating a new index");
         }
