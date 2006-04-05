@@ -20,7 +20,15 @@ be deactivated for a search.</p>
 
 <p>To create a new Index call Indexing->Index directory... from the menu bar.
 A dialog will be opened, asking you to chose a directory to index and a name
-for the Index to use within the program. You can also change the file mappings
+for the Index to use within the program. Below that you can chose how Docco
+should treat the words in documents by giving an analyzer for the documents.
+The role of the analyzer is to chose the stopwords (which words to ignore),
+to decide how to seperate words and to change words into simpler forms e.g.
+by ignoring capitalization or the endings of the words. This has to be done
+depending on the language of the documents, so you should try to pick the
+right analyzer for your collection.</p>
+
+<p>You can also change the file mappings
 using the button to the right, which is discussed on the 
 <a href="filemappings.html">File Mappings</a> page. In most situations the default
 settings for the mappings should be the most useful ones.</p>
