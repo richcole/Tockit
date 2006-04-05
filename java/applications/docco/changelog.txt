@@ -10,6 +10,10 @@ Docco:
 - nested diagrams can be created using a new button
 - Lucene is updated to version 1.9.1, all code has been updated to not have
   any deprecation warnings
+- analyzers are now supported, which most importantly means we support stop-
+  words and stemming for a number of languages, with the choice of analyzer
+  being attached to each index -- thus Docco can query different directories
+  with different language tools
 
 POI-Plugin:
 - support for PowerPoint files

@@ -39,7 +39,8 @@ public class QueryDecomposer {
 	private QueryParser parser;
 	
 	public QueryDecomposer(String defaultQueryField) {
-        // TODO this has to be changed so the analyzer matching each index can be used
+        // here we use the standard analyzer, since we just want to break the words apart --
+        // we don't want stemming or similar changes yet
 		this.parser = new QueryParser(defaultQueryField, new StandardAnalyzer());
 	}
 

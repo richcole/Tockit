@@ -42,6 +42,8 @@ public class Index {
 	private Thread indexThread;
 	private int indexingPriority = Thread.MIN_PRIORITY;
 	private CallbackRecipient callbackRecipient;
+
+    private Analyzer analyzer;
 	
     public static Index openIndex(String name, File indexDirectory, Indexer.CallbackRecipient callbackRecipient) 
     				throws FileNotFoundException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
@@ -80,7 +82,7 @@ public class Index {
     public static Index createIndex(String name, File indexDirectory, File baseDirectory, 
                                     Analyzer analyzer, List documentMappings, 
 									Indexer.CallbackRecipient callbackRecipient) throws IOException {
-		createDirPath(indexDirectory);
+        createDirPath(indexDirectory);
 		IndexWriter writer = new IndexWriter(new File(indexDirectory, name),
                                              analyzer, true);
 		writer.close();
@@ -122,6 +124,7 @@ public class Index {
     	this.name = name;
 		this.indexLocation = new File(indexDirectory, name);
 		this.baseDirectory = baseDirectory;
+        this.analyzer = analyzer;
         this.indexer = new Indexer(this.indexLocation, baseDirectory, analyzer, documentMappings, callbackRecipient);
         saveContentsAndMappings();
 	}
@@ -182,7 +185,7 @@ public class Index {
         try {
 			PrintStream out = new PrintStream(new FileOutputStream(getPropertiesFile()));
             out.println("baseDirectory=" + this.baseDirectory.getPath());
-            out.println("analyzer=" + this.indexer.getAnalyzerClassName());
+            out.println("analyzer=" + this.analyzer.getClass().getCanonicalName());
 			out.close();
 			out = new PrintStream(new FileOutputStream(getMappingsFile()));
 			
@@ -262,5 +265,9 @@ public class Index {
 
     public void removeLock() throws IOException {
         IndexReader.unlock(FSDirectory.getDirectory(getIndexLocation(), false));
+    }
+
+    public Analyzer getAnalyzer() {
+        return this.analyzer;
     }
 }

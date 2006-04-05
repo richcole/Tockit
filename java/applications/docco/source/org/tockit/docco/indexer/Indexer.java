@@ -172,8 +172,4 @@ public class Indexer implements Runnable {
 	public void setDocumentMappings(List documentMappings) {
 		this.docProcessingFactory.setDocumentMappings(documentMappings);
 	}
-
-    public String getAnalyzerClassName() {
-        return this.analyzer.getClass().getName();
-    }
 }

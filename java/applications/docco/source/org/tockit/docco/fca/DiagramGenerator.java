@@ -14,12 +14,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-import org.tockit.docco.query.HitReference;
-import org.tockit.docco.query.QueryWithResult;
-import org.tockit.docco.query.util.HitReferencesSet;
-import org.tockit.docco.query.util.HitReferencesSetImplementation;
-import org.tockit.docco.query.util.QueryWithResultSet;
-
 import net.sourceforge.toscanaj.controller.ndimlayout.DefaultDimensionStrategy;
 import net.sourceforge.toscanaj.controller.ndimlayout.NDimLayoutOperations;
 import net.sourceforge.toscanaj.model.context.FCAElement;
@@ -33,6 +27,11 @@ import net.sourceforge.toscanaj.model.lattice.Lattice;
 import net.sourceforge.toscanaj.model.ndimdiagram.NDimDiagram;
 import net.sourceforge.toscanaj.model.ndimdiagram.NDimDiagramNode;
 
+import org.tockit.docco.query.HitReference;
+import org.tockit.docco.query.QueryWithResult;
+import org.tockit.docco.query.util.HitReferencesSet;
+import org.tockit.docco.query.util.HitReferencesSetImplementation;
+
 public class DiagramGenerator {
 	/**
 	 * @todo the code in here implements a more general notion of creating a lattice
@@ -43,12 +42,12 @@ public class DiagramGenerator {
 	 *                                G = \bigcup_{m \in M} m'
 	 *                                I = { (g,m) | g \in m' }
 	 */	
-	public static Diagram2D createDiagram(QueryWithResultSet queryResultSet, boolean includePhantomNodes) {
-		Concept[] concepts = createConcepts(queryResultSet);
+	public static Diagram2D createDiagram(QueryWithResult[] results, boolean includePhantomNodes) {
+		Concept[] concepts = createConcepts(results);
         
 		Diagram2D diagram;
 		if(includePhantomNodes) {
-			Point2D[] baseVectors = createBase(queryResultSet);
+			Point2D[] baseVectors = createBase(results);
 			diagram = createDiagram(concepts, baseVectors);
 		} else {
 			final Concept[] finalConcepts = reduceConceptsToRealizedOnes(concepts);
@@ -114,11 +113,11 @@ public class DiagramGenerator {
 	 * Slight changes: we use the CS coordinate system (i.e. inverted Y) and
 	 * we scale things a bit.
 	 */
-	private static Point2D[] createBase(QueryWithResultSet queryResultSet) {
+	private static Point2D[] createBase(QueryWithResult[] results) {
 		final double scalex = 30;
 		final double scaley = 15;
 		
-		int n = queryResultSet.size();
+		int n = results.length;
 		Point2D[] baseVectors = new Point2D[n];
 		for (int i = 0; i < baseVectors.length; i++) {
 			double x = (1<<i) - (1<<(n-i-1));
@@ -160,16 +159,14 @@ public class DiagramGenerator {
 		return diagram;
 	}
 
-	private static Concept[] createConcepts(QueryWithResultSet queryResultSet) {
+	private static Concept[] createConcepts(QueryWithResult[] results) {
 		HitReferencesSet allObjects = new HitReferencesSetImplementation();
-		for (Iterator iter = queryResultSet.iterator(); iter.hasNext();) {
-			QueryWithResult queryWithResult = (QueryWithResult) iter.next();
-			allObjects.addAll(queryWithResult.getResultSet());
+        for (int i = 0; i < results.length; i++) {
+            QueryWithResult queryWithResult = results[i];
+            allObjects.addAll(queryWithResult.getResultSet());
 		}
 		
-		QueryWithResult[] queryResults = queryResultSet.toArray();
-		
-		int n = queryResultSet.size();
+		int n = results.length;
 		int numConcepts = 1<<n; // 2 to the power of n
 		
 		ConceptImplementation[] concepts = new ConceptImplementation[numConcepts];
@@ -184,9 +181,9 @@ public class DiagramGenerator {
 			for (int j = 0; j < n; j++) {
 				int currentBit = 1<<j;
 				if (i == currentBit) {
-					concept.addAttribute(new FCAElementImplementation(queryResults[j].getLabel()));
+					concept.addAttribute(new FCAElementImplementation(results[j].getLabel()));
 				}
-				HitReferencesSet currentHitReferences = queryResults[j].getResultSet();
+				HitReferencesSet currentHitReferences = results[j].getResultSet();
 				if ((i & currentBit) == currentBit) {
 					objectContingent.retainAll(currentHitReferences);
 				} else {

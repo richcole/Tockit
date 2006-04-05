@@ -126,9 +126,8 @@ import org.tockit.docco.fca.DiagramGenerator;
 import org.tockit.docco.index.Index;
 import org.tockit.docco.indexer.Indexer;
 import org.tockit.docco.query.HitReference;
-import org.tockit.docco.query.QueryDecomposer;
 import org.tockit.docco.query.QueryEngine;
-import org.tockit.docco.query.util.QueryWithResultSet;
+import org.tockit.docco.query.QueryWithResult;
 import org.tockit.events.Event;
 import org.tockit.events.EventBroker;
 import org.tockit.events.EventBrokerListener;
@@ -915,8 +914,6 @@ public class DoccoMainFrame extends JFrame {
 
     private void createQueryEngine() {
 		try {
-			QueryDecomposer queryDecomposer = new QueryDecomposer(
-													GlobalConstants.FIELD_QUERY_BODY);
 			List activeIndexesList = new ArrayList();
 			for (Iterator iter = this.indexes.iterator(); iter.hasNext();) {
                 Index currentIndex = (Index) iter.next();
@@ -925,7 +922,7 @@ public class DoccoMainFrame extends JFrame {
                 }
             }
             this.queryEngine =	new QueryEngine(((Index[]) activeIndexesList.toArray(new Index[activeIndexesList.size()])),
-												queryDecomposer);
+												GlobalConstants.FIELD_QUERY_BODY);
 			this.diagramView.showDiagram(null);
 			this.hitList.setModel(null);
             setMenuStates();
@@ -1181,7 +1178,7 @@ public class DoccoMainFrame extends JFrame {
         addEntryToQueryHistory();
 		if(getQueryString().length() != 0) {
 			this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-			QueryWithResultSet results;
+			QueryWithResult[] results;
             try {
                 results = this.queryEngine.executeQueryUsingDecomposer(getQueryString());
 				Diagram2D diagram = DiagramGenerator.createDiagram(results, this.showPhantomNodesCheckBox.isSelected());

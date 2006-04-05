@@ -14,44 +14,55 @@ import java.util.List;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.MultiSearcher;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.Searchable;
 import org.apache.lucene.search.Searcher;
 import org.tockit.docco.index.Index;
-import org.tockit.docco.query.util.*;
+import org.tockit.docco.query.util.HitReferencesSet;
+import org.tockit.docco.query.util.HitReferencesSetImplementation;
 
 
 public class QueryEngine {
-    private Index[] indexes;
-	private QueryDecomposer queryDecomposer;
+    private final Index[] indexes;
+	private final QueryDecomposer queryDecomposer;
+    private final String defaultQueryField;
 	
-	public QueryEngine (Index[] indexes, QueryDecomposer queryDecomposer) 
+	public QueryEngine (Index[] indexes, String defaultQueryField) 
 								throws IOException {
 		// we store only the locations, not the searcher since the searcher has to be
 		// recreated if the index is updated (which happens from the other thread)
 		this.indexes = indexes;
-		this.queryDecomposer = queryDecomposer;
+        this.defaultQueryField = defaultQueryField;
+		this.queryDecomposer = new QueryDecomposer(defaultQueryField);
 	}
 	
-	public QueryWithResultSet executeQueryUsingDecomposer (String queryString) throws ParseException, IOException {
-		QueryWithResultSet queryResult = new QueryWithResultSetImplementation();
+	public QueryWithResult[] executeQueryUsingDecomposer (String queryString) throws ParseException, IOException {
 		List queryTermsCombinations = this.queryDecomposer.breakQueryIntoTerms(queryString);
-		Searchable[] searchers = new Searchable[this.indexes.length];
+		QueryWithResult[] queryResults = new QueryWithResult[queryTermsCombinations.size()];
+        boolean firstRun = true;
 		for (int i = 0; i < this.indexes.length; i++) {
-            searchers[i] = new IndexSearcher(this.indexes[i].getIndexLocation().getPath());
+            Searcher searcher = new IndexSearcher(this.indexes[i].getIndexLocation().getPath());
+            Iterator it = queryTermsCombinations.iterator();
+            int pos = 0;
+            while (it.hasNext()) {
+                QueryDecomposer.LabeledQuery cur = (QueryDecomposer.LabeledQuery) it.next();
+                QueryParser parser = new QueryParser(this.defaultQueryField, this.indexes[i].getAnalyzer());
+                Query adjustedQuery = parser.parse(cur.getQuery().toString(this.defaultQueryField));
+                QueryWithResult qwr = executeQuery(searcher, adjustedQuery, cur.getLabel());
+                if(firstRun) {
+                    queryResults[pos] = qwr;
+                } else {
+                    QueryWithResult old = queryResults[pos];
+                    old.getResultSet().addAll(qwr.getResultSet());
+                }
+                pos++;
+            }
+            firstRun = false;
+            searcher.close();
         }
-		Searcher searcher = new MultiSearcher(searchers);
-		Iterator it = queryTermsCombinations.iterator();
-		while (it.hasNext()) {
-			QueryDecomposer.LabeledQuery cur = (QueryDecomposer.LabeledQuery) it.next();
-			QueryWithResult qwr = executeQuery(searcher, cur.getQuery(), cur.getLabel());
-			queryResult.add(qwr);
-		}
-		searcher.close();
-		return queryResult;
+		return queryResults;
 	}
 	
 	private QueryWithResult executeQuery (Searcher searcher, Query query, String label) throws IOException {
