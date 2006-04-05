@@ -185,7 +185,7 @@ public class Index {
         try {
 			PrintStream out = new PrintStream(new FileOutputStream(getPropertiesFile()));
             out.println("baseDirectory=" + this.baseDirectory.getPath());
-            out.println("analyzer=" + this.analyzer.getClass().getCanonicalName());
+            out.println("analyzer=" + this.analyzer.getClass().getName());
 			out.close();
 			out = new PrintStream(new FileOutputStream(getMappingsFile()));
 			
