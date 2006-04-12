@@ -1,4 +1,8 @@
-Changes since Docco 0.3:
+Changes since Docco 0.4:
+
+
+
+Changes from Docco 0.3 to 0.4:
 
 Docco:
 - symlinks are not followed anymore (Linux/UNIX)
