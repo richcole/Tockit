@@ -18,3 +18,8 @@ Docco:
 POI-Plugin:
 - support for PowerPoint files
 - fixed a bug leaking open input streams
+- updated to POI version 2.5.1final
+
+PDFbox-Plugin:
+- updated to PDFbox version 0.7.2
+
