@@ -1,5 +1,7 @@
 Changes since Docco 0.4:
 
+Docco:
+- Update to Lucene 2.0.0 (no code changes needed)
 
 
 Changes from Docco 0.3 to 0.4:

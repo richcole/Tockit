@@ -8,7 +8,7 @@ jdom.jar:
   JDOM, b10rc1 (http://www.jdom.org, license in LICENSE-jdom.txt)
 
 lucene-core.jar, lucene-analyzers.jar:
-  Lucence, 1.9.1 (http://lucene.apache.org/, license in LICENSE-apache.txt)
+  Lucence, 2.0.0 (http://lucene.apache.org/, license in LICENSE-apache.txt)
   
 ant-contrib.jar
   ant extras, 0.3 (http://sourceforge.net/projects/ant-contrib/, license in LICENSE-ant-contrib.txt)
