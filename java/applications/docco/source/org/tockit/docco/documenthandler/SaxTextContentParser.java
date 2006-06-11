@@ -47,7 +47,8 @@ class SaxTextContentParser extends DefaultHandler {
 	}
 
 	public void startElement(String uri, String localName, String qname, Attributes atts) throws SAXException {
-		elementBuffer.setLength(0);
+        // we need to flush here so we don't lose anything with mixed content
+        flushElementBufferIntoContent();
 	}
 
 	public void characters(char[] text, int start, int length) {
@@ -55,7 +56,13 @@ class SaxTextContentParser extends DefaultHandler {
 	}
 
 	public void endElement(String uri, String localName, String qname) throws SAXException	{
-		contentBuffer.append(elementBuffer);
-		contentBuffer.append(" ");
+        // we need to flush here so we get the last one
+		flushElementBufferIntoContent();
 	}
+
+    private void flushElementBufferIntoContent() {
+        contentBuffer.append(elementBuffer);
+		contentBuffer.append(" ");
+        elementBuffer.setLength(0);
+    }
 }

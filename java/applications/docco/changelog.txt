@@ -2,6 +2,8 @@ Changes since Docco 0.4:
 
 Docco:
 - Update to Lucene 2.0.0 (no code changes needed)
+- Bugfix: the OpenOffice handler could miss content before, which should be
+  fixed now
 
 
 Changes from Docco 0.3 to 0.4:
