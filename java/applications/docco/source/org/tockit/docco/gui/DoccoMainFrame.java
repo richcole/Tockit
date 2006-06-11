@@ -166,7 +166,10 @@ public class DoccoMainFrame extends JFrame {
 	private static final String CONFIGURATION_SHOW_CONTINGENT_ONLY_NAME = "showContingentOnly";
 	private static final String CONFIGURATION_INDEXING_PRIORITY_NAME = "indexingPriority";
     private static final String CONFIGURATION_QUERY_HISTORY = "queryHistory";
-	private static final String DEFAULT_INDEX_DIR = System.getProperty("user.dir") + 
+    // TODO this next one should be in the User Application Data Directory on Windows XP
+    // but we don't know how to get that in a portable way (could be on any drive and is
+    // internationalized).
+	private static final String DEFAULT_INDEX_DIR = System.getProperty("user.home") + 
 											System.getProperty("file.separator") + 
 											".doccoIndex";
 	

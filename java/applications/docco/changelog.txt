@@ -6,6 +6,9 @@ Docco:
   fixed now
 - Support for ODF (OpenDocumentFormat as used e.g. by OpenOffice 2.x) has
   been added
+- The default index directory is now in the user's home directory instead
+  of using the working directory
+  
   
 
 Changes from Docco 0.3 to 0.4:
