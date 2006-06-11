@@ -8,7 +8,8 @@ Docco:
   been added
 - The default index directory is now in the user's home directory instead
   of using the working directory
-  
+- A new command line option "indexDirectory" can be used to set a different
+  directory for the index (for this session)
   
 
 Changes from Docco 0.3 to 0.4:

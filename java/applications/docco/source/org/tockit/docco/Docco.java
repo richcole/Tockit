@@ -34,6 +34,7 @@ public class Docco {
         Options options = new Options();
         options.addOption("forceIndexAccess", false, "Forces the index to be opened, even if locks are present");
         options.addOption("usePlatformLF", false, "Uses the platform specific look and feel instead of the default");
+        options.addOption("indexDirectory", true, "Sets the directory to use for storing the index");
         options.addOption("help", false, "Show this command line summary and exit");
         CommandLineParser parser = new BasicParser();
         CommandLine cl = null;
@@ -53,6 +54,7 @@ public class Docco {
         }
         boolean forceIndexAccess = cl.hasOption("forceIndexAccess");
         boolean usePlatformLF = cl.hasOption("usePlatformLF");
+        String indexDirectory = cl.getOptionValue("indexDirectory");
 
 		if(usePlatformLF) {
 			try {
@@ -93,7 +95,7 @@ public class Docco {
 		}
 
 		try {
-			DoccoMainFrame mainFrame = new DoccoMainFrame(forceIndexAccess);
+			DoccoMainFrame mainFrame = new DoccoMainFrame(forceIndexAccess, indexDirectory);
 			mainFrame.setVisible(true);
 		}
 		catch (Exception e) {

@@ -192,6 +192,7 @@ public class DoccoMainFrame extends JFrame {
     private ExportDiagramAction exportDiagramAction;
     private JMenuItem printSetupMenuItem;
     private PageFormat pageFormat = new PageFormat();
+    private String indexDirectoryLocation = null;
     
 	private class SelectionEventHandler implements EventBrokerListener {
 		public void processEvent(Event event) {
@@ -376,9 +377,11 @@ public class DoccoMainFrame extends JFrame {
 		}
 	}
 	
-	public DoccoMainFrame(boolean forceIndexAccess) {
+	public DoccoMainFrame(boolean forceIndexAccess, String indexDirectory) {
 		super(WINDOW_TITLE);
-		
+
+        this.indexDirectoryLocation = indexDirectory;
+        
 		JComponent viewsComponent = buildViewsComponent();
 		this.documentDisplayPane = new DocumentDisplayPane();
 		
@@ -506,7 +509,10 @@ public class DoccoMainFrame extends JFrame {
     }
 
     private File getIndexDirectory() {
-        String indexDirectoryLocation = preferences.get(CONFIGURATION_INDEX_LOCATION, DEFAULT_INDEX_DIR);
+        if (this.indexDirectoryLocation == null) {
+            this.indexDirectoryLocation = preferences.get(
+                    CONFIGURATION_INDEX_LOCATION, DEFAULT_INDEX_DIR);
+        }
 		File indexDirectory = new File(indexDirectoryLocation);
 		if (!indexDirectory.exists()) {
 			indexDirectory.mkdir();
