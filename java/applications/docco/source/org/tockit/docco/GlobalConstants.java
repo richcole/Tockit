@@ -13,7 +13,8 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.tockit.docco.documenthandler.DocumentHandler;
 import org.tockit.docco.documenthandler.HtmlDocumentHandler;
-import org.tockit.docco.documenthandler.OpenOfficeDocumentHandler;
+import org.tockit.docco.documenthandler.OpenDocumentFormatDocumentHandler;
+import org.tockit.docco.documenthandler.OpenOffice1DocumentHandler;
 import org.tockit.docco.documenthandler.PlainTextDocumentHandler;
 import org.tockit.docco.documenthandler.RtfDocumentHandler;
 import org.tockit.docco.documenthandler.XmlDocumentHandler;
@@ -48,7 +49,8 @@ public class GlobalConstants {
 	public static final DocumentHandler[] DEFAULT_DOC_HANDLER_IMPLEMENTATIONS = {
 										new HtmlDocumentHandler(),
 										new XmlDocumentHandler(),
-										new OpenOfficeDocumentHandler(),
+                                        new OpenOffice1DocumentHandler(),
+                                        new OpenDocumentFormatDocumentHandler(),
 										new PlainTextDocumentHandler(),
 										new RtfDocumentHandler()
 										};

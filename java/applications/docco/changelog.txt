@@ -4,7 +4,9 @@ Docco:
 - Update to Lucene 2.0.0 (no code changes needed)
 - Bugfix: the OpenOffice handler could miss content before, which should be
   fixed now
-
+- Support for ODF (OpenDocumentFormat as used e.g. by OpenOffice 2.x) has
+  been added
+  
 
 Changes from Docco 0.3 to 0.4:
 

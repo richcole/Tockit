@@ -10,7 +10,6 @@ package org.tockit.docco.documenthandler;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.zip.ZipEntry;
@@ -20,8 +19,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.tockit.docco.filefilter.DoccoFileFilter;
-import org.tockit.docco.filefilter.ExtensionFileFilterFactory;
 import org.tockit.docco.indexer.DocumentSummary;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -31,13 +28,11 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-public class OpenOfficeDocumentHandler implements DocumentHandler {
+public abstract class OpenOfficeDocumentHandler implements DocumentHandler {
     private static final String META_FILE_NAME = "meta.xml";
 	private static final String CONTENT_FILE_NAME = "content.xml";
 
 	private static final String DC_NAMESPACE = "http://purl.org/dc/elements/1.1/";
-	private static final String OFFICE_NAMESPACE = "http://openoffice.org/2000/office";
-	private static final String META_NAMESPACE = "http://openoffice.org/2000/meta";
 
     public DocumentSummary parseDocument(URL url) throws IOException, DocumentHandlerException {
 		try {
@@ -96,7 +91,7 @@ public class OpenOfficeDocumentHandler implements DocumentHandler {
 	
         Document doc = docBuilder.parse(inputSource);
         Element root = doc.getDocumentElement();
-        Element metaElem = (Element) root.getElementsByTagNameNS(OFFICE_NAMESPACE, "meta").item(0);
+        Element metaElem = (Element) root.getElementsByTagNameNS(getOfficeNameSpace(), "meta").item(0);
         
 		NodeList nodes = metaElem.getElementsByTagNameNS(DC_NAMESPACE,"title");
 		for (int i=0; i<nodes.getLength(); i++) {
@@ -123,22 +118,21 @@ public class OpenOfficeDocumentHandler implements DocumentHandler {
 			docSummary.authors.add(n.getFirstChild().getNodeValue());
 		}
         
-		Element keywordsElem = (Element) metaElem.getElementsByTagNameNS(META_NAMESPACE,"keywords").item(0);
-		if(keywordsElem != null) {
-			nodes = keywordsElem.getElementsByTagNameNS(META_NAMESPACE,"keyword");
-			docSummary.keywords = new ArrayList();
-			for (int i=0; i<nodes.getLength(); i++) {
-				Node n = nodes.item(i);
-				docSummary.keywords.add(n.getFirstChild().getNodeValue());
-			}
-		}
+		extractKeywords(docSummary, metaElem);
+        
+        // @TODO add support for topic and comments
     }
 
-    public String getDisplayName() {
-		return "OpenOffice Documents";
-	}
+    /**
+     * Keywords are handled by the subclasses since they differ slightly.
+     * 
+     * OOo1 has the keywords grouped in an outer element, ODF doesn't. ODF also supports
+     * user-defined fields.
+     * 
+     * @param docSummary  The target structure for the information, must not be null. 
+     * @param metaElem    The meta element in the input DOM, must not be null.
+     */
+    protected abstract void extractKeywords(DocumentSummary docSummary, Element metaElem);
 
-    public DoccoFileFilter getDefaultFilter() {
-        return new ExtensionFileFilterFactory().createNewFilter("sxw;sxc;sxi;sxd");
-    }
+    public abstract String getOfficeNameSpace();
 }
