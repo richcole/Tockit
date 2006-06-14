@@ -126,7 +126,7 @@ public class Index {
 		this.baseDirectory = baseDirectory;
         this.analyzer = analyzer;
         this.indexer = new Indexer(this.indexLocation, baseDirectory, analyzer, documentMappings, callbackRecipient);
-        saveContentsAndMappings();
+        saveSettingsAndMappings();
 	}
 
 	private static File getPropertiesFile(File indexLocation, String indexName) {
@@ -178,10 +178,10 @@ public class Index {
                 }
 			}
 		}
-		saveContentsAndMappings();
+		saveSettingsAndMappings();
 	}
 	
-    private void saveContentsAndMappings() {
+    private void saveSettingsAndMappings() {
         try {
             Properties props = new Properties();
             props.setProperty("baseDirectory", this.baseDirectory.getPath());
