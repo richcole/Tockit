@@ -59,6 +59,7 @@ public class Index {
             } catch (Exception e) {
                 throw new IOException("Could not instantiate '" + analyzerClassName + "', StandardAnalyzer will be used.");
             }
+            boolean active = "true".equals(settings.getProperty("active"));
 			File mappingsFile = getMappingsFile(indexDirectory, name);
 			Index retVal;
 			if(mappingsFile.exists()) {
@@ -67,10 +68,10 @@ public class Index {
 				for (int i = 0; i < mappings.length; i++) {
 					documentMappings.add(new DocumentHandlerMapping(mappings[i]));
 				}
-				retVal = new Index(name, indexDirectory, baseDirectory, analyzer, documentMappings, callbackRecipient);
+				retVal = new Index(name, indexDirectory, baseDirectory, analyzer, documentMappings, callbackRecipient, active);
 			} else {
 				retVal = new Index(name, indexDirectory, baseDirectory, analyzer, DocumentHandlerRegistry.getDefaultMappings(), 
-				    			   callbackRecipient);
+				    			   callbackRecipient, active);
 			}
 			retVal.callbackRecipient = callbackRecipient;
 			return retVal;
@@ -86,7 +87,7 @@ public class Index {
 		IndexWriter writer = new IndexWriter(new File(indexDirectory, name),
                                              analyzer, true);
 		writer.close();
-		Index retVal = new Index(name, indexDirectory, baseDirectory, analyzer, documentMappings, callbackRecipient);
+		Index retVal = new Index(name, indexDirectory, baseDirectory, analyzer, documentMappings, callbackRecipient, true);
 		retVal.callbackRecipient = callbackRecipient;
 		retVal.updateIndex();
 		return retVal;
@@ -120,12 +121,14 @@ public class Index {
     }
 
     private Index(String name, File indexDirectory, File baseDirectory, Analyzer analyzer, 
-                  List documentMappings, Indexer.CallbackRecipient callbackRecipient) throws IOException {
+                  List documentMappings, Indexer.CallbackRecipient callbackRecipient,
+                  boolean active) throws IOException {
     	this.name = name;
 		this.indexLocation = new File(indexDirectory, name);
 		this.baseDirectory = baseDirectory;
         this.analyzer = analyzer;
         this.indexer = new Indexer(this.indexLocation, baseDirectory, analyzer, documentMappings, callbackRecipient);
+        this.active = active;
         saveSettingsAndMappings();
 	}
 
@@ -186,6 +189,7 @@ public class Index {
             Properties props = new Properties();
             props.setProperty("baseDirectory", this.baseDirectory.getPath());
             props.setProperty("analyzer", this.analyzer.getClass().getName());
+            props.setProperty("active", this.active?"true":"false");
             props.store(new FileOutputStream(getPropertiesFile()), "Configuration for a Docco index, do not edit");
             
 			PrintStream out = new PrintStream(new FileOutputStream(getMappingsFile()));

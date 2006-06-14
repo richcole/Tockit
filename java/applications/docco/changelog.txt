@@ -10,9 +10,10 @@ Docco:
   of using the working directory
 - A new command line option "indexDirectory" can be used to set a different
   directory for the index (for this session)
-- Bugifx: the path to an index is now stored properly in the index proper-
+- Bugfix: the path to an index is now stored properly in the index proper-
   ties file (needed for index updates)
-  
+- The information if an index is active for search or not is now kept bet-
+  ween program sessions
   
 
 Changes from Docco 0.3 to 0.4:
