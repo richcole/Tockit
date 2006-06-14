@@ -183,12 +183,12 @@ public class Index {
 	
     private void saveContentsAndMappings() {
         try {
-			PrintStream out = new PrintStream(new FileOutputStream(getPropertiesFile()));
-            out.println("baseDirectory=" + this.baseDirectory.getPath());
-            out.println("analyzer=" + this.analyzer.getClass().getName());
-			out.close();
-			out = new PrintStream(new FileOutputStream(getMappingsFile()));
-			
+            Properties props = new Properties();
+            props.setProperty("baseDirectory", this.baseDirectory.getPath());
+            props.setProperty("analyzer", this.analyzer.getClass().getName());
+            props.store(new FileOutputStream(getPropertiesFile()), "Configuration for a Docco index, do not edit");
+            
+			PrintStream out = new PrintStream(new FileOutputStream(getMappingsFile()));
             Iterator it = this.indexer.getDocumentMappings().iterator();
             while (it.hasNext()) {
             	DocumentHandlerMapping cur = (DocumentHandlerMapping) it.next();
