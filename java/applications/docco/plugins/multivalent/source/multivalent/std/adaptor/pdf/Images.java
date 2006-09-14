@@ -33,7 +33,7 @@ public class Images {
   static final boolean DEBUG = true && PDF.DEBUG;
 
 
-  private Images() {}
+  private Images() {/**/}
 
   /**
 	Constructs new BufferedImage from dictionary attributes and data in stream.
@@ -49,9 +49,9 @@ public class Images {
 	String filter = getFilter(imgdict, pdfr);
 //System.out.println(imgdict.get("Name")+", filter="+filter+" "+w+"x"+h);
 	if ("DCTDecode".equals(filter)) img = createJPEG(imgdict, in);
-	else if ("JPXDecode".equals(filter)) img = createJPEG2000(imgdict, in);
+	else if ("JPXDecode".equals(filter)) img = createJPEG2000(in);
 	else if ("CCITTFaxDecode".equals(filter)) img = createFAX(imgdict, in, fillcolor, pdfr);
-	else if ("JBIG2Decode".equals(filter) /*|| "no abbreviation".equals(filter)*/) img = createJBIG2(imgdict, in);
+	else if ("JBIG2Decode".equals(filter) /*|| "no abbreviation".equals(filter)*/) img = createJBIG2();
 	else { /*assert filter==null: filter;--still FlateDecode*/ img = createRaw(imgdict, w, h, in, fillcolor, pdfr); }  // raw samples, including most inline images
 //Object cs = pdfr.getObject(imgdict.get("ColorSpace"));
 //System.out.println(filter+","+imgdict.get("BitsPerComponent")+", "+(cs.getClass()==PDFReader.CLASS_ARRAY? " / "+((Object[])cs)[0]: cs));
@@ -260,7 +260,7 @@ System.out.println("trying JFIF");
 
 
   /** Hand off to ImageIO. */
-  static BufferedImage createJPEG2000(Map imgdict, InputStream in) throws IOException {
+  static BufferedImage createJPEG2000(InputStream in) throws IOException {
 	assert /*imgdict!=null &&*/ in!=null;
 
 	if (in.markSupported()) in.mark(1024);
@@ -329,7 +329,7 @@ System.out.println("trying JFIF");
 
 
   /** Not implemented. */
-  static BufferedImage createJBIG2(Map imgdict, InputStream in) throws IOException {
+  static BufferedImage createJBIG2() {
 	PDF.sampledata("JBIG2");
 	return null;
   }
@@ -448,7 +448,7 @@ try {
 		// Java's IndexColorModel requires base RGB space, but PredicateCalculus has ICCBased and woods.pdf has DeviceGray
 		// So compute colors based on current color space and vis-a-vis decode array.
 		Object base = pdfr.getObject(oa[1]);     // "array or name"
-		if (null==base || "DeviceRGB".equals(base) || "RGB".equals(base)) {}  // ok as is
+		if (null==base || "DeviceRGB".equals(base) || "RGB".equals(base)) {/**/}  // ok as is
 		else {  // "any device or CIE-based color space or (in PDF 1.3) a f or DeviceN space, but not a Pattern space or another Indexed space."
 			ColorSpace bcs = pdfr.getColorSpace(base, null, null);
 			int spd = bcs.getNumComponents(), sampcnt = samp.length / spd;

@@ -29,7 +29,7 @@ public class DocumentHandlerMapping {
 		this.docHandler = docHandler;
 	}
 	
-	public DocumentHandlerMapping(String serialForm) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+	public DocumentHandlerMapping(String serialForm) throws ClassNotFoundException {
 		int firstColonIndex = serialForm.indexOf(':');
 		int lastColonIndex = serialForm.lastIndexOf(':');
 		String fileFilterClassName = serialForm.substring(0,firstColonIndex);

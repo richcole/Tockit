@@ -151,12 +151,6 @@ public class Code_attribute extends Attribute_info {
   }
 
 
-  public void getBasicBlocks(Cp_info[] cp, ClassFile cf) {
-  }
-
-  public void getInstructions(Cp_info[] cp, ClassFile cf) {
-  }
-
   public void disasm(Cp_info[] cp, ClassFile cf) {
 	LocalVariableTable_attribute localtable = (LocalVariableTable_attribute)cf.getAttribute(attributes, "LocalVariableTable");
 	// could dump locals at top of code
@@ -177,14 +171,14 @@ public class Code_attribute extends Attribute_info {
 			try {
 				//System.out.print(" #"+opname.substring(inx+5)/*+", locals="+localtable*/);
 				System.out.print(" l/"+localtable.getLocal(Integer.parseInt(opname.substring(inx+5))));
-			} catch (NumberFormatException shouldnthappen) {}
+			} catch (NumberFormatException shouldnthappen) {/**/}
 			//System.out.print(" #"+opname.substring(inx+6));
 		} else if (op!=1 && ((inx=opname.indexOf("load_"))!=-1 || (inx=opname.indexOf("tore_"))!=-1)) {
 			try {
 				//System.out.print(" #"+opname.substring(inx+5)/*+", locals="+localtable*/);
 				if (localtable!=null) System.out.print(" l/"+localtable.getLocal(Integer.parseInt(opname.substring(inx+5))));
 				else System.out.print(" l/#"+opname.substring(inx+5));
-			} catch (NumberFormatException shouldnthappen) {}
+			} catch (NumberFormatException shouldnthappen) {/**/}
 		} else if (OPCODEARGS[op]!=null) {
 			for (int j=0,jmax=args.length(); j<jmax; j++) {
 				String val=""; String type=" ";

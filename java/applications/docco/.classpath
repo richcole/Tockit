@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="plugins/multivalent/source"/>
 	<classpathentry kind="src" path="plugins/pdfbox/source"/>
 	<classpathentry kind="src" path="plugins/poi/source"/>
 	<classpathentry kind="src" path="source"/>
@@ -25,5 +24,6 @@
 	<classpathentry kind="lib" path="libs/jdom.jar"/>
 	<classpathentry sourcepath="libs/src/lucene-analyzers-src.zip" kind="lib" path="libs/lucene-analyzers.jar"/>
 	<classpathentry kind="src" path="resources"/>
+	<classpathentry kind="src" path="plugins/multivalent/source"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

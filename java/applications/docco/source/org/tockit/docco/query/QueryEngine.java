@@ -29,8 +29,7 @@ public class QueryEngine {
 	private final QueryDecomposer queryDecomposer;
     private final String defaultQueryField;
 	
-	public QueryEngine (Index[] indexes, String defaultQueryField) 
-								throws IOException {
+	public QueryEngine (Index[] indexes, String defaultQueryField) {
 		// we store only the locations, not the searcher since the searcher has to be
 		// recreated if the index is updated (which happens from the other thread)
 		this.indexes = indexes;

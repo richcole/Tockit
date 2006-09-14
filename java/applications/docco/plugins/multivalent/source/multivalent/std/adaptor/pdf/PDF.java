@@ -1288,7 +1288,7 @@ public class PDF extends multivalent.std.adaptor.MediaAdaptorRandom {
 
 			case '%':   // %
 				// if want to save content of comment, have to disentangle c2c3
-				while ((c=in.read())!=-1 && c!='\r' && c!='\n') {};    // comment - ignore for now, LATER make comment node
+				while ((c=in.read())!=-1 && c!='\r' && c!='\n') {/**/}    // comment - ignore for now, LATER make comment node
 				//in.unread(c);
 				//if (c=='\r' && (c=in.read())!='\n') in.unread(c); -- zap all whitespace
 				PDFReader.eatSpace(in);
@@ -1873,7 +1873,7 @@ fail.printStackTrace(); System.out.println(fail);
 
 	else if (Document.MSG_CLOSE==msg && pdfr_!=null) {
 //System.out.println("close PDF / PDFReader");
-		try { pdfr_.close(); } catch (IOException ignore) {}
+		try { pdfr_.close(); } catch (IOException ignore) {/**/}
 		pdfr_ = null;
 	}
 
@@ -1882,7 +1882,7 @@ fail.printStackTrace(); System.out.println(fail);
 
 
   /** If document is encrypted with non-null password, throw up dialog requesting user to enter it. */
-  void requestPassword() {
+  void requestPassword() {/**/
   }
 
   static String lastmsg = null;

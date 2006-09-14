@@ -115,7 +115,7 @@ public abstract class ML extends MediaAdaptorReader {
 
 	String content = readStringInternal(ends, escchar);
 
-	try { ch=readChar(); if (ch!=close) ir_.unread(ch); } catch (IOException ioe) {}
+	try { ch=readChar(); if (ch!=close) ir_.unread(ch); } catch (IOException ioe) {/**/}
 	//validate(!match || (ch=readChar())==close, "missing closing character "+close+" after "+content+" (match="+match+" on "+open+")");
 
 	//System.out.println("readString => "+content);
@@ -179,7 +179,7 @@ public abstract class ML extends MediaAdaptorReader {
 	char ch;
 	ispace=false;
 	// need isSpace not isSpaceChar as isSpaceChar doesn't pick up ^J?
-	while (Character.isWhitespace(ch=readChar())) { ispace=true; /*if (ch=='\n') linenum++*/; }   // stupid MSIE doesn't classify C-m as whitespace
+	while (Character.isWhitespace(ch=readChar())) { ispace=true; /*if (ch=='\n') linenum++;*/ }   // stupid MSIE doesn't classify C-m as whitespace
 	ir_.unread(ch);
   }
 

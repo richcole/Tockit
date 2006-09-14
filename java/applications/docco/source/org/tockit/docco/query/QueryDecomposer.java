@@ -44,7 +44,7 @@ public class QueryDecomposer {
 		this.parser = new QueryParser(defaultQueryField, new StandardAnalyzer());
 	}
 
-	public List breakQueryIntoTerms (String queryString) throws ParseException {
+	public List breakQueryIntoTerms (String queryString) {
 		try {
 			Query query = this.parser.parse(queryString);
 			if (query instanceof BooleanQuery) {

@@ -142,7 +142,7 @@ public class HTML extends ML /*implements EventListener*/ {
   public static final String MSG_FORM_POPULATE = "populateForm";
 
 
-  static final CSSGeneral EMPTYGS = new CSSGeneral(CSS.PRIORITY_BLOCK+CSS.PRIORITY_CLASS/*.PRIORITY_ID/*PRIORITY_OBJECTREF*/);
+  static final CSSGeneral EMPTYGS = new CSSGeneral(StyleSheet.PRIORITY_BLOCK+StyleSheet.PRIORITY_CLASS/*.PRIORITY_ID/*PRIORITY_OBJECTREF*/);
 
   private static final Map entity2unicode_, unicode2entity_;
   static {  // could make Simple string and probably save some memory
@@ -436,9 +436,9 @@ IMG -- could be lots
 		innum = innum.trim();
 		if (innum.endsWith("%")) {
 			innum = innum.substring(0,innum.length()-1);
-			try { outnum=base*Integer.parseInt(innum)/100; } catch (NumberFormatException pctex) {}
+			try { outnum=base*Integer.parseInt(innum)/100; } catch (NumberFormatException pctex) {/**/}
 		} else {
-			try { outnum=Integer.parseInt(innum); } catch (NumberFormatException absex) {}
+			try { outnum=Integer.parseInt(innum); } catch (NumberFormatException absex) {/**/}
 		}
 	}
 	return outnum;
@@ -605,7 +605,7 @@ IMG -- could be lots
 	//int badconcatcnt=0;
 	//Map anchors = (Map)doc.getVar(Document.VAR_ANCHORS);	// everybody can have 'id' attr
 	// invariant: sgs always available; replace if used.  Should ask StyleSheet for instances.
-	CSSGeneral sgs = new CSSGeneral(CSS.PRIORITY_BLOCK+CSS.PRIORITY_CLASS/*PRIORITY_ID/*PRIORITY_OBJECTREF*/);	// generic spans/structure specific to node (style attribute or random other attributes)
+	CSSGeneral sgs = new CSSGeneral(StyleSheet.PRIORITY_BLOCK+StyleSheet.PRIORITY_CLASS/*PRIORITY_ID/*PRIORITY_OBJECTREF*/);	// generic spans/structure specific to node (style attribute or random other attributes)
 
 
 	//update screen after every so many tags, if at clean point
@@ -1038,7 +1038,7 @@ if (showtags) System.out.println("OPEN: "+name+": "+attrs);
 					pspan[pspani++]=ok;
 					if ((attr = ok.getAttr("style"))!=null) {
 //System.out.println(name+" => "+attr);
-						CSSGeneral gs = new CSSGeneral(CSS.PRIORITY_INLINE/*PRIORITY_STRUCT*/+CSS.PRIORITY_CLASS/*PRIORITY_ID/*PRIORITY_OBJECTREF+10*/);    // no chance already exists
+						CSSGeneral gs = new CSSGeneral(StyleSheet.PRIORITY_INLINE/*PRIORITY_STRUCT*/+StyleSheet.PRIORITY_CLASS/*PRIORITY_ID/*PRIORITY_OBJECTREF+10*/);    // no chance already exists
 						ss.setAttrs(gs, attr);
 						ss.put(ok, gs);
 					}
@@ -1398,7 +1398,7 @@ if (showtags) System.out.println("OPEN: "+name+": "+attrs);
 				} else if ("submit".equals(inputType) || "image".equals(inputType)) {
 					VButton submit = new VButton(name,attrs, p);
 					if ("image".equals(inputType) && (attr=getAttr("src"))!=null) { // HTML hack until defined button with content
-						try { new LeafImage(null,null, submit, baseURI_.resolve(attr)); } catch (IllegalArgumentException usetext) {}
+						try { new LeafImage(null,null, submit, baseURI_.resolve(attr)); } catch (IllegalArgumentException usetext) {/**/}
 					}
 					if (submit.size()==0) new LeafAscii((inputValue!=null? inputValue: "Submit"),null, submit);
 					// just send submitForm event, and catch
@@ -1568,7 +1568,7 @@ if (showtags) System.out.println("OPEN: "+name+": "+attrs);
 				if ((attrs!=null || TAG_TH==id)/*--TH w/o attrs sets align=CENTER; would kill attrs!=null but have to check performance*/ && !EMPTYGS.equals(sgs)) {
 					ss.put(newn, sgs);
 //System.out.println("new sgs @ "+newn.getName()+": "+attrs+" => "+sgs+", sgs.align="+sgs.getAlign());
-					sgs = new CSSGeneral(CSS.PRIORITY_BLOCK+CSS.PRIORITY_CLASS/*PRIORITY_ID/*PRIORITY_OBJECTREF*/);
+					sgs = new CSSGeneral(StyleSheet.PRIORITY_BLOCK+StyleSheet.PRIORITY_CLASS/*PRIORITY_ID/*PRIORITY_OBJECTREF*/);
 				}
 
 				//if ((attr=newn.getAttr("id"))!=null) anchors.put(attr, newn);
@@ -1756,7 +1756,7 @@ if (badtags.size()>0) System.out.println(badtag.size()+" non-HTML tags: "+badtag
 		String attr;
 		if ((attr=(String)attrs.get("href"))!=null) {
 			// protocols: ftp, http, mailto, gopher + about, manpage, ...
-			if (attr.startsWith("mailto") || attr.startsWith("javascript")) {}	// not implemented yet -- retain for now
+			if (attr.startsWith("mailto") || attr.startsWith("javascript")) {/**/}	// not implemented yet -- retain for now
 			else try {
 				URI href = baseURI.resolve(URIs.fixURI(attr));	// canonicalize for index to URIs seen
 //System.out.println(href);
@@ -1811,7 +1811,7 @@ if (badtags.size()>0) System.out.println(badtag.size()+" non-HTML tags: "+badtag
 
 	// 2. instantiate span
 	if (span==null) {
-		if (bename!=null) try { span = (Span)Behavior.getInstance(name, bename,attrs, scratchlayer_); } catch (Exception e) {}  // Behavior not a Span
+		if (bename!=null) try { span = (Span)Behavior.getInstance(name, bename,attrs, scratchlayer_); } catch (Exception e) {/**/}  // Behavior not a Span
 
 		// 'A' with name/id only or bad href, retain all protocols, a name w/o href
 		if (span==null) span = (Span)Behavior.getInstance(name, "multivalent.Span",attrs, scratchlayer_);
@@ -1902,8 +1902,8 @@ if (badtags.size()>0) System.out.println(badtag.size()+" non-HTML tags: "+badtag
 				};
 				getGlobal().getTimer().schedule(tt, refreshat);
 
-			} catch (NumberFormatException nfe) {
-			} catch (IllegalArgumentException male) {}
+			} catch (NumberFormatException nfe) {/**/
+			} catch (IllegalArgumentException male) {/**/}
 
 		} // else ... add to HTTP headers
 
@@ -1929,7 +1929,7 @@ if (badtags.size()>0) System.out.println(badtag.size()+" non-HTML tags: "+badtag
 			if ("link".equals(gi) && href!=null && (rel==null || !rel.equalsIgnoreCase("stylesheet"))) {
 				try {
 					createUI("button", title, "event "+Document.MSG_OPEN+" "+baseURI_.resolve(href), menu, cat, false);
-				} catch (IllegalArgumentException male) {
+				} catch (IllegalArgumentException male) {/**/
 				}
 			}
 		}
@@ -2132,7 +2132,7 @@ System.out.println("FORM method="+method+", action="+action+" => "+sb);
 				sb.insert(0, (action.indexOf('?')==-1? action: action.substring(0,action.indexOf('?'))));
 //System.out.println("FORM/get: baseURI = "+baseURI_+", sb="+sb); if (baseURI_!=null)
 				br.eventq(Document.MSG_OPEN, baseURI_.resolve(sb.toString()));
-			} catch (IllegalArgumentException badaction) {
+			} catch (IllegalArgumentException badaction) {/**/
 			}
 		} else if ("post"==method) {
 			if (action!=null) try {
@@ -2324,7 +2324,7 @@ class HTMLBODY extends IParaBox implements ImageObserver,ContextListener {
 
 	// all these deprecated in HTML 4.0, but will have to keep around indefinitely, alas
 	String attr; Color c; StyleSheet ss=getDocument().getStyleSheet();
-	CSSGeneral gs = new CSSGeneral(CSS.PRIORITY_BLOCK+CSS.PRIORITY_CLASS/*PRIORITY_ID/*LOT*/);
+	CSSGeneral gs = new CSSGeneral(StyleSheet.PRIORITY_BLOCK+StyleSheet.PRIORITY_CLASS/*PRIORITY_ID/*LOT*/);
 	//if (gs==null) { System.out.println("NO BODY"); System.exit(1); }
 	if ((attr=getAttr("text"))!=null && (c=Colors.getColor(attr))!=null) gs.setForeground(c);
 	if ((attr=getAttr("bgcolor"))!=null && (c=Colors.getColor(attr))!=null) gs.setBackground(c);
@@ -2332,9 +2332,9 @@ class HTMLBODY extends IParaBox implements ImageObserver,ContextListener {
 	if (!HTML.EMPTYGS.equals(gs)) ss.put("body", gs);
 
 	// => A:link, A:visited, A:active
-	if ((attr=getAttr("link"))!=null && (c=Colors.getColor(attr))!=null) { gs=new CSSGeneral(CSS.PRIORITY_INLINE+CSS.PRIORITY_CLASS/*PRIORITY_ID/*PRIORITY_OBJECTREF*/); gs.setForeground(c); gs.setUnderline(Context.COLOR_INHERIT); ss.put("a:link", gs); }
-	if ((attr=getAttr("vlink"))!=null && (c=Colors.getColor(attr))!=null) { gs=new CSSGeneral(CSS.PRIORITY_INLINE+CSS.PRIORITY_CLASS/*PRIORITY_ID/*PRIORITY_OBJECTREF*/); gs.setForeground(c); gs.setUnderline(Context.COLOR_INHERIT); ss.put("a:visited", gs); }
-	if ((attr=getAttr("alink"))!=null && (c=Colors.getColor(attr))!=null) { gs=new CSSGeneral(CSS.PRIORITY_INLINE+CSS.PRIORITY_CLASS/*PRIORITY_ID/*PRIORITY_OBJECTREF*/); gs.setForeground(c); gs.setUnderline(Context.COLOR_INHERIT); ss.put("a:active", gs); }
+	if ((attr=getAttr("link"))!=null && (c=Colors.getColor(attr))!=null) { gs=new CSSGeneral(StyleSheet.PRIORITY_INLINE+StyleSheet.PRIORITY_CLASS/*PRIORITY_ID/*PRIORITY_OBJECTREF*/); gs.setForeground(c); gs.setUnderline(Context.COLOR_INHERIT); ss.put("a:link", gs); }
+	if ((attr=getAttr("vlink"))!=null && (c=Colors.getColor(attr))!=null) { gs=new CSSGeneral(StyleSheet.PRIORITY_INLINE+StyleSheet.PRIORITY_CLASS/*PRIORITY_ID/*PRIORITY_OBJECTREF*/); gs.setForeground(c); gs.setUnderline(Context.COLOR_INHERIT); ss.put("a:visited", gs); }
+	if ((attr=getAttr("alink"))!=null && (c=Colors.getColor(attr))!=null) { gs=new CSSGeneral(StyleSheet.PRIORITY_INLINE+StyleSheet.PRIORITY_CLASS/*PRIORITY_ID/*PRIORITY_OBJECTREF*/); gs.setForeground(c); gs.setUnderline(Context.COLOR_INHERIT); ss.put("a:active", gs); }
 
 	if ((attr=getAttr("background"))!=null) {
 		try {
@@ -2342,8 +2342,8 @@ class HTMLBODY extends IParaBox implements ImageObserver,ContextListener {
 			//bgColor = null; => can't do this in a CSSGeneral since null==not valid, and don't do this now since the image may not load successfully
 			//if ((attr=getAttr("bgcolor"))!=null && (c=Colors.getColor(attr))!=null) ((CSSGeneral)ss.get("body")).setBackground(c);
 			/*if (background!=null)*/ ss.put(this, this);
-		} catch (IllegalArgumentException badbackuri) {
-		} catch (MalformedURLException badbackurl) {}
+		} catch (IllegalArgumentException badbackuri) {/**/
+		} catch (MalformedURLException badbackurl) {/**/}
 	}
 
 	//leftmargin, rightmargin, topmargin, bottommargin, marginwidth Microsoft specific?
@@ -2361,7 +2361,7 @@ class HTMLBODY extends IParaBox implements ImageObserver,ContextListener {
 	return false;
   }
 
-  public int getPriority() { return CSS.PRIORITY_BLOCK/*PRIORITY_OBJECTREF*/; }
+  public int getPriority() { return StyleSheet.PRIORITY_BLOCK/*PRIORITY_OBJECTREF*/; }
 
 
   // for background image
@@ -2422,7 +2422,7 @@ class HTMLBODY extends IParaBox implements ImageObserver,ContextListener {
 class HTMLBR extends Leaf {
   HTMLBR(String name, Map attr, INode parent) { super(name,attr,parent); }
 
-  public boolean formatNodeContent(Context cx, int start, int end) { valid_=true; return !valid_; }
+  public boolean formatNodeContent() { valid_=true; return !valid_; }
 
   public boolean breakBefore() { return false; }
   public boolean breakAfter() { return true; }	// BR of a line, the last element on line
@@ -2442,9 +2442,9 @@ class HTMLBR extends Leaf {
 
 	// flush floats?
 	String clear = getAttr("clear");	// none, left, right, all
-	byte align=Node.NONE; if ("left".equalsIgnoreCase(clear)) align=Node.LEFT; if ("right".equalsIgnoreCase(clear)) align=Node.RIGHT; else if ("all".equalsIgnoreCase(clear)) align=Node.BOTH;
+	byte alignLocal=Node.NONE; if ("left".equalsIgnoreCase(clear)) alignLocal=Node.LEFT; if ("right".equalsIgnoreCase(clear)) alignLocal=Node.RIGHT; else if ("all".equalsIgnoreCase(clear)) alignLocal=Node.BOTH;
 	// if flushing, set height to 0 so not taller than flushed floats(?)
-	if (align!=Node.NONE) { cx.flush=align; h=baseline=0; }
+	if (alignLocal!=Node.NONE) { cx.flush=alignLocal; h=baseline=0; }
 
 	bbox.setSize(0, h); // "<br> <br>..." eats up whitespace	-- was setSize(1,h) but some tables give no width for BR
 
@@ -2452,7 +2452,7 @@ class HTMLBR extends Leaf {
 	return shortcircuit;
   }
 
-  public boolean paintNodeContent(Context cx, int start, int end) { return false; }
+  public boolean paintNodeContent() { return false; }
 }
 
 
@@ -2488,7 +2488,7 @@ class HTMLHR extends Leaf {
   }
 
   /** HR has to handle own LEFT and RIGHT align, as IParaBox needs those set on it itself. */
-  public boolean paintNodeContent(Context cx, int start, int end) {
+  public boolean paintNodeContent(Context cx) {
 	int xoff=0;
 	if (/*cx.*/align==CENTER || /*cx.*/align==RIGHT) {
 		int hdiff=bbox.width-barwidth;
@@ -2612,7 +2612,7 @@ class HTMLTABLE extends INode {
 
   int cellspacing=1, cellpadding=0;
   Insets cellpadinsets=INSETS_ZERO;	// => CSS padding, somehow
-  int border=0; // width (in pixels) of the frame around a table -- non-standard: doesn't include caption
+  int borderLocal=0; // width (in pixels) of the frame around a table -- non-standard: doesn't include caption
   String frame, rules;
   Node caption=null, tfoot=null;
   int row1; // TBODY, past any CAPTION/THEAD/TFOOT
@@ -2630,12 +2630,12 @@ class HTMLTABLE extends INode {
 	if (cellpadding>0) cellpadinsets = (cellpadding<INSETS.length? INSETS[cellpadding]: new Insets(cellpadding,cellpadding,cellpadding,cellpadding));
 
 	String sborder=getAttr("border");
-	if (sborder==null) border=0;
-	else if (sborder.equals("border")/*sborder==HTML.DEFINED*/) border=1;
-	else try { border = Math.max(Integer.parseInt(sborder),0); } catch (NumberFormatException male) { border=2; }
+	if (sborder==null) borderLocal=0;
+	else if (sborder.equals("border")/*sborder==HTML.DEFINED*/) borderLocal=1;
+	else try { borderLocal = Math.max(Integer.parseInt(sborder),0); } catch (NumberFormatException male) { borderLocal=2; }
 
 	// "border" attribute implies frame and rules
-	if (border<=0) { frame="void"; rules="none"; }
+	if (borderLocal<=0) { frame="void"; rules="none"; }
 	else { frame=getAttr("frame", "border").intern(); rules="all"; }
 	rules = getAttr("rules", rules).intern();
 	putAttr("frame", frame); putAttr("rules", rules);	// put back fix-ups
@@ -2658,10 +2658,10 @@ class HTMLTABLE extends INode {
 	// find first THEAD, TFOOT, TBODY
 	// row1=...
 	// special treatment for TFOOT: rearrange or special case everywhere
-	int row1=0;
+	int row1local=0;
 	boolean fcaption=false;
-	for (int imax=size(); row1<imax; row1++) {
-		String gi = childAt(row1).getName();
+	for (int imax=size(); row1local<imax; row1local++) {
+		String gi = childAt(row1local).getName();
 		if (gi=="caption") {
 			//if (fcaption==true) ... // two captions => collapse into one
 			fcaption = true;
@@ -2672,14 +2672,14 @@ class HTMLTABLE extends INode {
 	// either that or leaf, since TD tucked in TR and TR in TBODY, cascading during close on the way up tree
 //System.out.println("rows="+size()+", row1="+row1); dump(); System.exit(0);
 	INode newtd = null;	 // consecutive leaf nodes collected in single TD
-	for (int i=row1,imax=size(); i<imax; i++) {
+	for (int i=row1local,imax=size(); i<imax; i++) {
 		Node tbody=childAt(i); String tbgi=tbody.getName();
 //System.out.println("immediately under table: "+tbgi);
 		if (tbody.isLeaf() || ("tbody"!=tbgi && "thead"!=tbgi && "tfoot"!=tbgi)) {
 			if (newtd==null) {
 				if (!fcaption) {	// special case: content => caption if not one already (doesn't help with Charlie Rose weekly show, though)
 					setChildAt(newtd = new HTMLTD("caption",null, null), i);	// HTMLTD so flush floats at end
-					fcaption=true; row1++;
+					fcaption=true; row1local++;
 				} else {
 					INode newp = new INode("tbody",null, null);
 					setChildAt(newp, i);
@@ -2703,7 +2703,7 @@ class HTMLTABLE extends INode {
 	// (1) if iterating rows bottom-up or columns right-to-left, we don't know both final (row,col) of the current cell, so insertion points may be off if it's subsequently adjusted due to ROWSPAN or COLSPAN further on, and
 	// (2) if iterating top-down or left-to-right, the cells further on don't have their final positions.
 	// So, we insert dummy cells as we go along, as we come to that cell position.
-	for (int imax=size()-1,i=imax; i>=row1; i--) {	// bottom to top -- shouldn't matter among TBODYs
+	for (int imax=size()-1,i=imax; i>=row1local; i--) {	// bottom to top -- shouldn't matter among TBODYs
 		INode tbody = (INode)childAt(i);
 		int bodysize = tbody.size();
 
@@ -2729,7 +2729,7 @@ class HTMLTABLE extends INode {
 			if (tr.size() > icell.length) { int[] newicell=new int[tr.size()]; System.arraycopy(icell,0, newicell,0, icell.length); icell=newicell; }
 			for (int k=0,kmax=tr.size(); k<kmax; k++) { // left-to-right over columns so index of cell right when filling in row
 				if (icell[k]>0) {
-					tr.insertChildAt(new HTMLTDSPAN(null), k);
+					tr.insertChildAt(new HTMLTDSPAN(), k);
 					icell[k]--;
 					kmax++;
 					continue;
@@ -2771,7 +2771,7 @@ if (DEBUG) System.out.println(" => "+rowspan);
 			// adjust icell on short rows
 			int spsize = tr.size();   // after spans
 			if (spsize>maxcol) maxcol=spsize;
-			else if (spsize<maxcol) for (int k=spsize; k<maxcol; k++) if (icell[k]>0) { tr.appendChild(new HTMLTDSPAN(null)); icell[k]--; }
+			else if (spsize<maxcol) for (int k=spsize; k<maxcol; k++) if (icell[k]>0) { tr.appendChild(new HTMLTDSPAN()); icell[k]--; }
 		}
 //dump();
 //System.exit(0);
@@ -2886,11 +2886,11 @@ else System.out.println("*** colcnt via colgroup/col = "+colcnt);
 
 	// border
 	int lb=0, rb=0, tb=0, bb=0; // "void"==frame
-	if ("box"==frame || "border"==frame) lb=rb=tb=bb=border;
-	else if ("vsides"==frame) lb=rb=border; else if ("hsides"==frame) tb=bb=border;
-	else if ("lhs"==frame) lb=border; else if ("rhs"==frame) rb=border;
-	else if ("above"==frame) tb=border; else if ("below"==frame) bb=border;
-	auxborder = (lb==rb && tb==bb && lb==tb && border<INSETS.length? INSETS[border]: new Insets(tb,lb,bb,rb));
+	if ("box"==frame || "border"==frame) lb=rb=tb=bb=borderLocal;
+	else if ("vsides"==frame) lb=rb=borderLocal; else if ("hsides"==frame) tb=bb=borderLocal;
+	else if ("lhs"==frame) lb=borderLocal; else if ("rhs"==frame) rb=borderLocal;
+	else if ("above"==frame) tb=borderLocal; else if ("below"==frame) bb=borderLocal;
+	auxborder = (lb==rb && tb==bb && lb==tb && borderLocal<INSETS.length? INSETS[borderLocal]: new Insets(tb,lb,bb,rb));
 
 	// rules
 	int colrulesep = ("all"==rules || "cols"==rules? 1: 0); // handle colgroups later
@@ -2935,7 +2935,7 @@ else System.out.println("*** colcnt via colgroup/col = "+colcnt);
 			for (int i=0,imax=scol.size(); i<imax; i++) {
 				String cswidth = (String)scol.get(i);	 // should never get null as everything defaulted
 				if (cswidth.endsWith("*")) {
-					try { colmaxw[i] = (mlw * Integer.parseInt(cswidth.substring(0,swidth.length()-1))) / mlsum; } catch (NumberFormatException nfe) {} // no exceptions in this pass
+					try { colmaxw[i] = (mlw * Integer.parseInt(cswidth.substring(0,swidth.length()-1))) / mlsum; } catch (NumberFormatException nfe) {/**/} // no exceptions in this pass
 				}
 			}
 		}
@@ -2972,7 +2972,7 @@ for (int i=0,imax=colmaxw.length; i<imax; i++) System.out.print("  "+colmaxw[i])
 				// and if %/abs is too narrow minwidth will bump it larger,
 				// but need actual min for scaling when have extra or more especially not enough space and need to scale or set to mins.
 				//bbox.width = maxwidth;	// set for nowrap: min=max -- no max may be absolute whereas contents are larger
-				int mnw = td.computeMin(height, cx);	 // don't have to cx.valid=false because (1) every cell gets formatted, so not skipping, and (2) cells indepdendent of one another anyhow
+				int mnw = td.computeMin(cx);	 // don't have to cx.valid=false because (1) every cell gets formatted, so not skipping, and (2) cells indepdendent of one another anyhow
 				//int mnw = td.bbox.width;
 				if (mnw>colminw[k]) colminw[k]=mnw;
 
@@ -3027,7 +3027,7 @@ for (int i=0,imax=colmaxw.length; i<imax; i++) System.out.print("  "+colmaxw[i])
 
 		if (!maxprobe) { // need on minprobe to ensure enough space when format with final width
 			int wmin=0; for (int k=j; k<cmax; k++) wmin+=colminw[k];	 // must achieve minimum so take from any type[]
-			int diff = td.computeMin(height, cx) - wmin - ws;
+			int diff = td.computeMin(cx) - wmin - ws;
 			if (diff > 0) {
 				int dleft=diff, plus=diff/cs;
 				for (int k=j; k<cmax; k++) {
@@ -3260,7 +3260,7 @@ if (dump) System.out.println("rest: space="+space+", sum="+sum);
 			int tdh = height;   // height in formatting cell.  defaults to unlimited
 			if (trpct==0) { // pass 1: collect height % for divving up extra
 				if ((pctattr=tr.getAttr("height"))!=null && pctattr.endsWith("%")) {    // my extension, needed for GUI layout, which doesn't have infinitely long scroll
-					try { rowhpct[j] = Math.max(Integer.parseInt(pctattr.substring(0,pctattr.length()-1)),0); rowhsum+=rowhpct[j]; continue; } catch (NumberFormatException nfe) {}
+					try { rowhpct[j] = Math.max(Integer.parseInt(pctattr.substring(0,pctattr.length()-1)),0); rowhsum+=rowhpct[j]; continue; } catch (NumberFormatException nfe) {/**/}
 
 				} // else fall-through to normal format
 
@@ -3297,7 +3297,7 @@ if (dump) System.out.println("rest: space="+space+", sum="+sum);
 				td.markDirtySubtreeDown(false); // false=>leaves still have valid formatting
 				td.formatBeforeAfter(tdw,tdh/*height*/, cx);	 // format with final width
 				td.padding = cellpadinsets; // bad: should set in style on entry to formatting cell, but not easy to pass in actives (can't inherit from TABLE or TR) -- make sure include in bbox
-				td.border = INSETS[border>=1 && td.getName()!=null && td.getFirstChild().getName()!=""? border: 0];  // bad; skip filler cells
+				td.border = INSETS[borderLocal>=1 && td.getName()!=null && td.getFirstChild().getName()!=""? borderLocal: 0];  // bad; skip filler cells
 				tdw += pad2 + cb2;
 
 				int h = td.bbox.height;
@@ -3305,7 +3305,7 @@ if (dump) System.out.println("rest: space="+space+", sum="+sum);
 				else {
 					maxrowh = Math.max(maxrowh, h);
 					String stdh = td.getAttr("height");     // HTML 4.01 has "height" on TD/TH only, not TABLE or TR
-					if (stdh!=null) try { maxrowh = Math.max(maxrowh, Integer.parseInt(stdh)); } catch (NumberFormatException nfe) {}
+					if (stdh!=null) try { maxrowh = Math.max(maxrowh, Integer.parseInt(stdh)); } catch (NumberFormatException nfe) {/**/}
 				}
 
 				// should probably skip HTMLTDSPAN
@@ -3358,11 +3358,11 @@ if (trpct==1) System.out.println("rowh["+j+"] = "+rowh[j]);
 
 				// VALIGN -- bbox is full cell, but move contents down (exclusive of padding here)
 //if (td.valign==NONE) System.out.println("td.valign => "+trvalign);
-				byte valign=td.valign; if (valign==NONE) valign=trvalign;   // inherited one level, sheesh
+				byte valignLocal=td.valign; if (valignLocal==NONE) valignLocal=trvalign;   // inherited one level, sheesh
 				int dy; // require some branch to set this
-				if (valign==NONE || valign==MIDDLE) dy=(effh-td.bbox.height)/2;
-				else if (valign==BOTTOM) dy = effh - td.bbox.height;
-				else if (valign==BASELINE) dy=0;   // not supported
+				if (valignLocal==NONE || valignLocal==MIDDLE) dy=(effh-td.bbox.height)/2;
+				else if (valignLocal==BOTTOM) dy = effh - td.bbox.height;
+				else if (valignLocal==BASELINE) dy=0;   // not supported
 				else /*if (valign==TOP or unknown)*/ dy=0;
 //if (valign!=NONE) System.out.println("valign = "+valign+" vs TOP=="+TOP);
 //if (valign==TOP) System.out.println(td.getFirstChild().getName());
@@ -3458,7 +3458,7 @@ if (trpct==1) System.out.println("rowh["+j+"] = "+rowh[j]);
 	Graphics2D g = cx.g;
 	g.setColor(Color.DARK_GRAY);
 
-	int formatw=bbox.width, t=(caption==null? 0: caption.bbox.y+caption.bbox.height + cellspacing);;
+	int formatw=bbox.width, t=(caption==null? 0: caption.bbox.y+caption.bbox.height + cellspacing);
 	//if (row1<size()) { Rectangle r=childAt(row1).bbox; formatw=r.width/*+auxborder.left+auxborder.right*/; /*t=r.y;*/ }
 	int l=0/*+xoff*/,r=l+formatw, b=bbox.height,
 		x,y,w,h;
@@ -3478,7 +3478,7 @@ if (trpct==1) System.out.println("rowh["+j+"] = "+rowh[j]);
 
 	// rules -- draw first so spanners erase bisections
 	Rectangle cbbox;
-	if ("none"==rules) {
+	if ("none"==rules) {/**/
 	} else if ("groups"==rules) {
 		// can do this now
 		// groups: Rules will appear between row groups (see THEAD, TFOOT, and TBODY) and column groups (see COLGROUP and COL) only.
@@ -3638,18 +3638,18 @@ class HTMLTD extends IParaBox {
 	super(name,attrs,parent);
 
 	String attr=getAttr("rowspan");
-	if (attr==null) rowspan=1; else try { rowspan=Integer.parseInt(attr); } catch (NumberFormatException nfe) {}
+	if (attr==null) rowspan=1; else try { rowspan=Integer.parseInt(attr); } catch (NumberFormatException nfe) {/**/}
 	if (rowspan==0) rowspan=Integer.MAX_VALUE; else if (rowspan<0) { rowspan=1; removeAttr("rowspan"); }	// can't parse or <=0
 
 	attr=getAttr("colspan");
-	if (attr==null) colspan=1; else try { colspan=Integer.parseInt(attr); } catch (NumberFormatException nfe) {}
+	if (attr==null) colspan=1; else try { colspan=Integer.parseInt(attr); } catch (NumberFormatException nfe) {/**/}
 	if (colspan==0) rowspan=Integer.MAX_VALUE; else if (colspan<0) { colspan=1; removeAttr("colspan"); }	// can't parse or <=0
   }
 
   public int getRowspan() { return rowspan; }
   public int getColspan() { return colspan; }
 
-  protected int computeMin(int height, Context cx) {
+  protected int computeMin(Context cx) {
 	//if (valid_) return minwidth; // ?
 
 	// supposed to be able to progressively render percentage specs,
@@ -3740,7 +3740,7 @@ class HTMLTDSPAN extends HTMLTD /*waste space on some fields by subclassing here
   //static LeafText dummyChild = new LeafText("BAH ",null,null);
   //HTMLTD real_;
 
-  HTMLTDSPAN(HTMLTD real) {
+  HTMLTDSPAN() {
 	super(null/*"FILLER"*/, null,null);
 	//real_=real;
 	//appendChild(dummyChild); // all internal nodes have to have at least one child
@@ -3767,7 +3767,7 @@ class HTMLTDSPAN extends HTMLTD /*waste space on some fields by subclassing here
   }
 
   /** Paints nothing: real cells overwrite. */
-  public void paintBeforeAfter(Rectangle docclip, Context cx) {}
+  public void paintBeforeAfter(Rectangle docclip, Context cx) {/**/}
 }
 
 
@@ -3889,13 +3889,13 @@ class HTMLFRAMESET extends INode {
 
 */
 class HTMLFRAME extends IVBox { // was extends Document
-  boolean border=true;
+  boolean borderLocal=true;
 
   HTMLFRAME(String name,Map attrs, INode parent, URI baseURI) {
 	super(name,attrs, parent);
 
 	String frameborder = getAttr("frameborder");
-	if ("0".equals(frameborder)) border=false;
+	if ("0".equals(frameborder)) borderLocal=false;
 
 	// should send event to load page rather than doing on instantiation
 	String src=getAttr("src");
@@ -3909,7 +3909,7 @@ class HTMLFRAME extends IVBox { // was extends Document
 		DocInfo di = new DocInfo(baseURI.resolve(src));
 		di.doc = newdoc;
 		br.eventq(Document.MSG_OPEN, di);
-	} catch (IllegalArgumentException leaveempty) {}
+	} catch (IllegalArgumentException leaveempty) {/**/}
   }
 
   public boolean formatNode(int width, int height, Context cx) {
@@ -3929,7 +3929,7 @@ class HTMLFRAME extends IVBox { // was extends Document
 	// need to handle margin
 //System.out.println("painting FRAME "+bbox); dump(2);
 	super.paintNode(docclip, cx);
-	if (border) {
+	if (borderLocal) {
 		Graphics2D g = cx.g;
 		g.setColor(cx.foreground); g.drawRect(0,0, bbox.width,bbox.height);
 	}
@@ -3982,7 +3982,7 @@ class HTMLFONT extends Span {
 			int num = Integer.parseInt(attr.startsWith("+")? attr.substring(1): attr);	// parseInt can't handle leading "+"
 			if (attr.startsWith("+") || attr.startsWith("-")) fontdelta=num;	// "+2" different than "2"
 			else fontsize = Math.min(7,Math.max(1,num));
-		} catch (NumberFormatException nfe2) {}
+		} catch (NumberFormatException nfe2) {/**/}
 	}
 
 	if ((attr = getAttr("face"))!=null) {
@@ -4142,7 +4142,7 @@ class HTMLIMG extends LeafImage implements EventListener {
 		//int w = Integers.parseInt(getAttr("width"), -1), h=Integers.parseInt(getAttr("height"), -1);
 		int wattr=Integers.parseInt(getAttr("width"), -1), hattr=Integers.parseInt(getAttr("height"), -1);
 
-		if (wattr==-1 && hattr==-1) {}  // usually not set
+		if (wattr==-1 && hattr==-1) {/**/}  // usually not set
 		else if (wattr!=-1 && hattr!=-1) setSize(wattr, hattr);
 		else {
 			Image img = getImage();
@@ -4239,7 +4239,7 @@ class HTMLIMG extends LeafImage implements EventListener {
 				Object o = n.next();
 				assert o instanceof Shape: o.getClass()+" in MAP doesn't implement Shape";
 				if (o instanceof Shape && ((Shape)o).contains(rel)) {
-					try { hit_=getDocument().getURI().resolve((String)map.get(o)); } catch (IllegalArgumentException badref) {}
+					try { hit_=getDocument().getURI().resolve((String)map.get(o)); } catch (IllegalArgumentException badref) {/**/}
 // to do: default area...
 					break;
 				}
@@ -4247,7 +4247,7 @@ class HTMLIMG extends LeafImage implements EventListener {
 		} else if (href_!=null) {
 			//br.eventq(Browser.MSG_STATUS, "go to "+href_);
 //System.out.println("cur URI = "+br.getCurDocument().getURI()+", href="+href_);
-			if (ismap_) try { hit_=getDocument().getURI().resolve(href_.toString()+"?"+rel.x+","+rel.y); } catch (IllegalArgumentException badpoint) {}
+			if (ismap_) try { hit_=getDocument().getURI().resolve(href_.toString()+"?"+rel.x+","+rel.y); } catch (IllegalArgumentException badpoint) {/**/}
 			else hit_=href_;
 		}
 

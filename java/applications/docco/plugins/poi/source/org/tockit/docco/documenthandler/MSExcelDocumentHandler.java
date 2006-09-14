@@ -47,7 +47,7 @@ public class MSExcelDocumentHandler implements DocumentHandler, Plugin {
         }
 	}
 
-	private Reader getDocumentContent(HSSFWorkbook workbook) throws IOException {
+	private Reader getDocumentContent(HSSFWorkbook workbook) {
 		StringBuffer content = new StringBuffer();
 		int numOfSheets = workbook.getNumberOfSheets();
 		for (int i = 0; i < numOfSheets; i++) {

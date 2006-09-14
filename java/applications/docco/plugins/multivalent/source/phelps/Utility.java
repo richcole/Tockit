@@ -14,7 +14,7 @@ package phelps;
 public class Utility {
   static final boolean DEBUG = !true;
 
-  private Utility() {}    // no instances, no subclasses
+  private Utility() {/**/}    // no instances, no subclasses
 
   //public static final Object DEFINED = new Object();	// universal non-null => Map.put(key, key)
 

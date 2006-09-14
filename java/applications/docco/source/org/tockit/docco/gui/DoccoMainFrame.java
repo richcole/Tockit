@@ -493,7 +493,8 @@ public class DoccoMainFrame extends JFrame {
         }
 		createQueryEngine();
 		//@todo add force access into Index class
-//        			if(!forceIndexAccess) {
+        if(!forceIndexAccess) {
+            System.err.println("WARNING: forcing index access is currently diabled");
 //        				JOptionPane.showMessageDialog(this, "The index is locked. You can run only one instance of Docco at one time.\n" +
 //        											  "If you want to override this error run Docco with the '-forceIndexAccess' option.",
 //        											  "Index locked", JOptionPane.ERROR_MESSAGE);
@@ -505,7 +506,7 @@ public class DoccoMainFrame extends JFrame {
 //        				// we just ignore that here -- Lucene throws exceptions about lock files that can't be deleted since
 //        				// they are not there
 //        			}
-//        		}
+        }   		
     }
 
     private File getIndexDirectory() {
@@ -922,30 +923,18 @@ public class DoccoMainFrame extends JFrame {
 	}
 
     private void createQueryEngine() {
-		try {
-			List activeIndexesList = new ArrayList();
-			for (Iterator iter = this.indexes.iterator(); iter.hasNext();) {
-                Index currentIndex = (Index) iter.next();
-                if(currentIndex.isActive()) {
-                	activeIndexesList.add(currentIndex);
-                }
+		List activeIndexesList = new ArrayList();
+		for (Iterator iter = this.indexes.iterator(); iter.hasNext();) {
+            Index currentIndex = (Index) iter.next();
+            if(currentIndex.isActive()) {
+            	activeIndexesList.add(currentIndex);
             }
-            this.queryEngine =	new QueryEngine(((Index[]) activeIndexesList.toArray(new Index[activeIndexesList.size()])),
-												GlobalConstants.FIELD_QUERY_BODY);
-			this.diagramView.showDiagram(null);
-			this.hitList.setModel(null);
-            setMenuStates();
-		} catch (IOException e1) {
-			ErrorDialog.showError(this, e1, "Index not found");
-			String[] options = new String[]{"Recreate Index", "Exit Program"};
-			Object result = JOptionPane.showInputDialog(this, "There seems to be some error with the existing index.\n" +
-										"It probably needs to be recreated.", "Index Problem",
-										JOptionPane.ERROR_MESSAGE, null, options, options[0]);
-			if(result != options[0]) {
-				System.exit(1);
-			}
-			createNewIndex();
-		}
+        }
+        this.queryEngine =	new QueryEngine(((Index[]) activeIndexesList.toArray(new Index[activeIndexesList.size()])),
+											GlobalConstants.FIELD_QUERY_BODY);
+		this.diagramView.showDiagram(null);
+		this.hitList.setModel(null);
+        setMenuStates();
 	}
 	
 	private JComponent buildQueryViewComponent() {

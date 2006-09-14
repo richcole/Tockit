@@ -46,7 +46,7 @@ public class Index {
     private Analyzer analyzer;
 	
     public static Index openIndex(String name, File indexDirectory, Indexer.CallbackRecipient callbackRecipient) 
-    				throws FileNotFoundException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    				throws FileNotFoundException, IOException, ClassNotFoundException {
         Properties settings = new Properties();
         File settingsFile = getPropertiesFile(indexDirectory, name);
         settings.load(new FileInputStream(settingsFile));
@@ -122,7 +122,7 @@ public class Index {
 
     private Index(String name, File indexDirectory, File baseDirectory, Analyzer analyzer, 
                   List documentMappings, Indexer.CallbackRecipient callbackRecipient,
-                  boolean active) throws IOException {
+                  boolean active) {
     	this.name = name;
 		this.indexLocation = new File(indexDirectory, name);
 		this.baseDirectory = baseDirectory;

@@ -176,7 +176,9 @@ public class Xdoc extends multivalent.std.adaptor.MediaAdaptorByte {
 			doc.putAttr(Document.ATTR_URI, suri); doc.uri=nuri;
 //System.out.println("normalized URL to "+suri);
 
-		} catch (NumberFormatException okIfNone) {}
+		} catch (NumberFormatException okIfNone) {
+		    // we hope that's ok
+        }
 		//} catch (MalformedURLException shouldntHappen) {}
 		//} catch (URISyntaxException shouldntHappen) {}
 //System.out.println("extracting Xdoc page #"+page);
@@ -241,7 +243,9 @@ public class Xdoc extends multivalent.std.adaptor.MediaAdaptorByte {
 
 	// 1. image, loaded first as that's what's usually visible
 	Browser br = getBrowser();
-	Image src = null; try { src = br.getToolkit().getImage(imageuri.toURL()); } catch (MalformedURLException male) {}
+	Image src = null; try { src = br.getToolkit().getImage(imageuri.toURL()); } catch (MalformedURLException male) {
+        // we hope that's ok
+    }
 //System.out.println("start TransparentFilter "+System.currentTimeMillis());
 	Image fullpage = br.createImage(new FilteredImageSource(src.getSource(), new TransparentFilter(Color.WHITE)));
 //System.out.println("done  TransparentFilter "+System.currentTimeMillis());
@@ -337,7 +341,7 @@ public class Xdoc extends multivalent.std.adaptor.MediaAdaptorByte {
 	int val=0, sign=1;
 
 	c=is_.read();
-	if (c=='-') sign=-1; else if (c=='+') {} else is_.unread((char)c);
+	if (c=='-') sign=-1; else if (c=='+') {/**/} else is_.unread((char)c);
 
 	for (c=is_.read(); c>='0' && c<='9'; c=is_.read()) val = val*10 + c-'0';
 	is_.unread(c);
@@ -667,7 +671,7 @@ if (!checkParm()) System.out.println("v12.0 without top,bottom in table");
 				break;
 
 			case 'M': // numeric word (new in 9.0) => redefined to start/stop headline (new in 12.0)
-				if (xdocvers>=12.0) {
+				if (xdocvers>=12.0) {/**/
 				} else if (xdocvers>=9.0) {
 					// same a usual word
 					while ((c=is_.read())!='[') sb.append((char)c);
@@ -1127,7 +1131,7 @@ for (int i=0; i<=regionmax; i++) System.out.print(" "+regiony[i].bbox.y); System
 	// command line arguments
 	for ( ; argi<argv.length && argv[argi].charAt(0)=='-'; argi++) {
 	  String arg = argv[argi].substring(1); // chop off '-'
-	  if (arg.equals("dump")) ;
+	  if (arg.equals("dump")) {/**/}
 	  else if (arg.equals("DEBUG")) debug=true;
 	  else if (arg.equals("bad")) {
 		percentbad = Double.valueOf(argv[++argi]).doubleValue();
@@ -1156,7 +1160,7 @@ for (int i=0; i<=regionmax; i++) System.out.print(" "+regiony[i].bbox.y); System
 	  // => call parseXdoc with URI constructed relative to /elib/data/disk
 	  try {
 		new URI("file:/elib/data/disk").resolve(filename);
-	  } catch (URISyntaxException e) {
+	  } catch (URISyntaxException e) {/**/
 	  } catch (IllegalArgumentException e) {
 		//error(""+e);
 	  }

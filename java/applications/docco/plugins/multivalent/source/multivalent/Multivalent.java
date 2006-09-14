@@ -86,7 +86,7 @@ public final class Multivalent {
 
 
 
-  private Multivalent() {}  // force singleton via getInstance()
+  private Multivalent() {/**/}  // force singleton via getInstance()
   /**
 	Returns singleton instance (use instead of a constructor), from which preferences and other state can be accessed.
 	<!-- Make all methods static? -->

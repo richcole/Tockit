@@ -50,7 +50,7 @@ public class Encrypt {
 	Constructs a new encryption object from parameters in an encryption dictionary.
 	The <var>trailer</var> is needed for <code>/ID</code>, which must exist.
   */
-  public Encrypt(Map edict, PDFReader pdfr) throws ParseException {
+  public Encrypt(Map edict, PDFReader pdfr) {
 	if (edict == null) {
 		// no encryption
 

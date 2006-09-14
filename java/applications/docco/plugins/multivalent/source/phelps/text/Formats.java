@@ -31,7 +31,7 @@ public class Formats {
   static DateFormat dateFormat = null;     // create on demand
   static Calendar cal_ = null;
 
-  private Formats() {}
+  private Formats() {/**/}
 
 
   /**
@@ -45,7 +45,7 @@ public class Formats {
 	try {
 		long idate = Long.parseLong(sdate);
 		return relativeDate(idate);
-	} catch (NumberFormatException nfe) {}
+	} catch (NumberFormatException nfe) {/**/}
 
 	if (dateFormat==null) dateFormat = DateFormat.getDateTimeInstance();   // should use static copy
 	dateFormat.setLenient(true);

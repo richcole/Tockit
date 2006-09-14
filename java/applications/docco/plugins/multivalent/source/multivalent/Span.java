@@ -176,7 +176,7 @@ public class Span extends Behavior implements ContextListener, EventListener {
 
 	boolean fsuccess = false;
 	if (s!=null && e!=null) {
-		Leaf el = el = e.getLastLeaf();
+		Leaf el = e.getLastLeaf();
 		int ei = (el!=null? el.size(): -1);
 
 		Leaf sl;
@@ -663,7 +663,7 @@ System.out.println("couldn't attach "+getClass().getName()+"\n\t"+pstart+"\n\t"+
   /** Morphing and deletion menu items in popup. */
   public boolean semanticEventBefore(SemanticEvent se, String msg) {
 	if (super.semanticEventBefore(se,msg)) return true;
-	else if (this!=se.getIn()) {}
+	else if (this!=se.getIn()) {/**/}
 //	if (id==EDITSPAN) { sel.move(this); remove(); }
 //System.out.println("in "+hashCode());
 	else if (DocumentPopup.MSG_CREATE_DOCPOPUP==msg && isEditable()) {// && this!=getBrowser().getSelectionSpan()) {	// don't offer to morph sel span to sel span
@@ -681,7 +681,7 @@ System.out.println("couldn't attach "+getClass().getName()+"\n\t"+pstart+"\n\t"+
 	Browser br = getBrowser();
 	Span sel = br.getSelectionSpan();
 
-	if (this!=se.getIn()) {}
+	if (this!=se.getIn()) {/**/}
 
 	else if (MSG_DELETE==msg) {
 		sel.moveq(this);		// in case want to create new span at same place
@@ -696,7 +696,7 @@ System.out.println("couldn't attach "+getClass().getName()+"\n\t"+pstart+"\n\t"+
 		URL url = getClass().getResource(cname+"-edit.html");
 		if (url!=null) {
 System.out.println("url = "+url+", proto="+url.getProtocol()+", host="+url.getHost()+", path="+url.getPath());
-			URI uri=null; try { uri = new URI(url.toString()); } catch (URISyntaxException canthappen) {} //-- "file:jar:" confuses URI, stupid spaces in path
+			URI uri=null; try { uri = new URI(url.toString()); } catch (URISyntaxException canthappen) {/**/} //-- "file:jar:" confuses URI, stupid spaces in path
 //URI(String scheme, String host, String path, String fragment)
 			//URI uri=null; try { uri = new URI(/*url.getProtocol()*/"systemresource", null, URIs.decode(url.getPath().substring("file:".length())), url.getRef()); } catch (URISyntaxException canthappen) { System.out.println(canthappen); }
 System.out.println("uri = "+uri);
@@ -718,7 +718,7 @@ System.out.println("uri = "+uri);
 	Receives synthesized {@link java.awt.event.MouseEvent#MOUSE_ENTERED}, {@link java.awt.event.MouseEvent#MOUSE_EXITED}, {@link java.awt.event.MouseEvent#MOUSE_PRESSED}, ....
 	For the purposes of event passing, functions more as tree node than behavior (with before/after).
   */
-  public void event(AWTEvent e) {}
+  public void event(AWTEvent e) {/**/}
 
 
 

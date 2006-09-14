@@ -284,7 +284,7 @@ public class RobustHyperlink /* not a Behavior--utility, like Location *//*imple
 
 		String line = r.readLine();
 		int vers = 0;
-		if (line.startsWith("v")) try { vers = Integer.parseInt(line.substring(1)); } catch (NumberFormatException nfe) {}
+		if (line.startsWith("v")) try { vers = Integer.parseInt(line.substring(1)); } catch (NumberFormatException nfe) {/**/}
 		if (vers!=DBVERS) {
 			r.close();
 			wordCache.delete();
@@ -321,7 +321,7 @@ public class RobustHyperlink /* not a Behavior--utility, like Location *//*imple
 					num *= LILROUND; // save space in file
 //System.out.println(""+num+", "+LILINTS.length+", "+MEDINTS.length);
 					if (num<MEDFREQ) cnto=LILINTS[num/LILROUND]; else cnto=MEDINTS[(num-MEDFREQ)/MEDROUND];
-				} catch (NumberFormatException nnfe) {}
+				} catch (NumberFormatException nnfe) {/**/}
 			}
 
 //System.out.println(word+"="+cnto);
@@ -509,7 +509,7 @@ public class RobustHyperlink /* not a Behavior--utility, like Location *//*imple
 			}
 
 			HTML html = new HTML();
-			try { html.docURI = new URI(url.toExternalForm()); } catch (URISyntaxException canthappen) {}
+			try { html.docURI = new URI(url.toExternalForm()); } catch (URISyntaxException canthappen) {/**/}
 			//Multivalent m = Multivalent.getInstance();
 			//Browser br = m.getBrowser("STARTUP");
 			//Root root = new Root(null, br);
@@ -851,7 +851,7 @@ public class RobustHyperlink /* not a Behavior--utility, like Location *//*imple
 
 			// tag-specific action
 			if (tag.equals("base")) {
-				try { base = new URL(base, attrval); } catch (MalformedURLException e) {}
+				try { base = new URL(base, attrval); } catch (MalformedURLException e) {/**/}
 //System.out.print(str.substring(lasti,iend+1));
 				if (Verbose) System.out.println("\tBASE tag => setting URL base to "+base);
 			} else if (attrval!=null && attrval.length()>0) {  // rewrite given attribute value
@@ -924,7 +924,7 @@ public class RobustHyperlink /* not a Behavior--utility, like Location *//*imple
 
 		if (lasti<str.length()) out.print(str.substring(lasti));
 
-	} catch (IOException ioe) {
+	} catch (IOException ioe) {/**/
 	}
   }
 
@@ -1019,7 +1019,7 @@ infoseek - <b><a href="/redirect
 				searchfor = filename;
 				inx=result.indexOf(searchfor);
 			}
-			if (inx==-1) { }
+			if (inx==-1) { /**/}
 //System.out.println("\tfound "+searchfor+" @ "+inx);
 
 			// rank
@@ -1039,7 +1039,7 @@ infoseek - <b><a href="/redirect
 							try {
 								rank = Integer.parseInt(result.substring(j+1, digend+1));
 //System.out.println("numbered: "+result.substring(j+1, endtag));
-							} catch (NumberFormatException nfe) {}
+							} catch (NumberFormatException nfe) {/**/}
 							break;
 						}
 					}
@@ -1072,7 +1072,7 @@ infoseek - <b><a href="/redirect
 			report += "\t"+hit;
 			System.out.println(report);
 
-		} catch (MalformedURLException male) {
+		} catch (MalformedURLException male) {/**/
 		} catch (IOException ioe) {
 			System.err.println(url.toString()+": "+ioe.toString());
 		}
@@ -1241,7 +1241,7 @@ infoseek - <b><a href="/redirect
 		argi++;
 	}
 
-	if (study) try { StudyOut=new PrintWriter(new FileWriter("studydata.txt", (SkipCnt>0 || SkipTo!=null))); } catch (IOException ignore) {}
+	if (study) try { StudyOut=new PrintWriter(new FileWriter("studydata.txt", (SkipCnt>0 || SkipTo!=null))); } catch (IOException ignore) {/**/}
 
 
 	URL url = null;
@@ -1256,7 +1256,7 @@ infoseek - <b><a href="/redirect
 				//File guessroot = new File(argv[argi]);
 				//String guessroot = new File(argv[argi]);
 				//try { url=new URL("file", "", guessroot.getCanonicalPath().replace('\\','/')); } catch (Exception shouldnthappen) {}
-				try { url=new URL("http", "unknownhost", "/"); } catch (MalformedURLException shouldnthappen) {}
+				try { url=new URL("http", "unknownhost", "/"); } catch (MalformedURLException shouldnthappen) {/**/}
 				System.out.println("WARNING: No corresponding URL given for file:  Site root-relative links, if any, resolved against "+argv[argi]);
 			} else { System.err.println(male); err=true; }
 		}
@@ -1291,7 +1291,7 @@ infoseek - <b><a href="/redirect
 			if (flastslash!=-1) sfile = sfile.substring(flastslash);
 //System.out.println("doti="+doti+", query="+basefile.indexOf('?')+", basefile="+basefile.substring(lastslashi)+", sfile="+sfile);
 			if (doti==-1 && basefile.indexOf('?')==-1 && !basefile.substring(lastslashi).equals(sfile)) {
-				try { url = new URL(url, url.getFile()+"/"); } catch (MalformedURLException canthappen) {}
+				try { url = new URL(url, url.getFile()+"/"); } catch (MalformedURLException canthappen) {/**/}
 			}
 		}
 //		System.out.println("basefile=|"+basefile+"|");

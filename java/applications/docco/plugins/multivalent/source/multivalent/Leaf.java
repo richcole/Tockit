@@ -107,7 +107,7 @@ import java.util.*;
 
 		// draw piece up to transition... (which may be empty, including common case of span starting at first character)
 		if (!cx.elide && start <= end) {
-			formatNodeContent(cx, start, end);	// inclusive of endpoints
+			formatNodeContent();	// inclusive of endpoints
 			bbox.height += cx.spaceabove + cx.spacebelow;
 			baseline += cx.spaceabove;
 			nW += bbox.width;
@@ -143,7 +143,7 @@ import java.util.*;
 	end = size();
 	if (!cx.elide/* && start < end*/) {	// "start<=end" so pick up span transitions after last character => no transitions here, just empty content fragment if start==end
 		if (start < end || end==0/*special case for LeafText=="" and we want to see cursor*/) {
-			formatNodeContent(cx, start, end);	// inclusive of endpoints
+			formatNodeContent();	// inclusive of endpoints
 	//		if (start==end) { bbox.height=nH; baseline=nB; }
 	//if (cx.spaceabove>0 || cx.spacebelow>0) System.out.println("at end of "+getName()+", height="+bbox.height+" vs "+nH+", above="+cx.spaceabove+", below="+cx.spacebelow);
 			bbox.height += cx.spaceabove + cx.spacebelow;
@@ -161,7 +161,7 @@ import java.util.*;
 	return false;
   }
 
-  public boolean formatNodeContent(Context cx, int start, int end) { bbox.setSize(0,0); return false; }
+  public boolean formatNodeContent() { bbox.setSize(0,0); return false; }
 
 
   // following three methods shouldn't be defined (force subclasses to) but Happlet...
@@ -223,7 +223,7 @@ import java.util.*;
 			//x0=cx.x;
 			cx.paintBefore(cx, this);
 //if (paintbeforecnt>0) System.out.print("content @ x="+cx.x);
-			completecontext = paintNodeContent(cx, start, end);	// inclusive of endpoints
+			completecontext = paintNodeContent();	// inclusive of endpoints
 //if (info) System.out.println("Jaramillo "+start+".."+end+", ss="+completecontext+", actives="+cx.vactive_);
 //if (paintbeforecnt>0) System.out.println(".."+cx.x);
 			// where to handle visibility?
@@ -248,7 +248,7 @@ import java.util.*;
 			xbefore = cx.x;	elidebefore = cx.elide;
 
 			owner = m.getOwner();
-			if (owner==null) {
+			if (owner==null) {/**/
 			} else if (owner instanceof Span) {
 				Span r = (Span)m.getOwner();
 				Mark open = r.getStart();
@@ -288,7 +288,7 @@ import java.util.*;
 		//x0=cx.x;
 		cx.paintBefore(cx, this);
 		cx.pagebackground = pbgin;
-		completecontext = paintNodeContent(cx, start, end);	// inclusive of endpoints
+		completecontext = paintNodeContent();	// inclusive of endpoints
 //if (info) System.out.println("Jaramillo "+start+".."+end+", ss="+completecontext+", actives="+cx.vactive_);
 		// where to handle visibility?
 		if (!completecontext) cx.paintAfter(cx, this);
@@ -306,7 +306,7 @@ import java.util.*;
   }
 
   // paintNodeContent returns boolean to indicate whether it handles ALL context
-  /*abstract*/ public boolean paintNodeContent(Context cx, int start, int end) { return false; }
+  /*abstract*/ public boolean paintNodeContent() { return false; }
   // ranges don't modify content--yet
 	// usually computed from painted representation, though overridden by low-resolution Xdoc
 
@@ -326,7 +326,7 @@ import java.util.*;
 if (cx==null /*&& valid_*/) dump();
 		//if (cx!=null) { // not painted yet
 			cx.reset(this,-1);
-			subelementCalc(cx);
+			subelementCalc();
 
 			bbox.setBounds(ox,oy, owidth,oheight); baseline=obaseline;
 			valid_=ovalid;
@@ -343,7 +343,7 @@ if (cx==null /*&& valid_*/) dump();
 	See offset2rel().
   */
   /* maybe default implementation for 0..1 elements like LeafImage, ... */
-  /*!!!abstract*/public int subelementHit(Point rel) {
+  /*!!!abstract*/public int subelementHit() {
 	subelement();
 	return 0;
   }
@@ -352,7 +352,7 @@ if (cx==null /*&& valid_*/) dump();
 	Given an offset into a Leaf, return corresponding subcomponent geometric point.
 	See offset2rel().
   */
-  public Point offset2rel(int offset) {
+  public Point offset2rel() {
 	subelement();
 	return new Point(0,0);
   }
@@ -363,12 +363,12 @@ if (cx==null /*&& valid_*/) dump();
 	location must be represented as an integer, an image could encode an internal
 	(x,y) position as (y*width)+x
   */
-  public void subelementCalc(Context cx) {}
+  public void subelementCalc() {/**/}
 
 
 
-  /*abstract*/ public void clipboardNode(StringBuffer sb) {}
-  /*abstract*/ public void clipboardBeforeAfter(StringBuffer txt, int start, int end) {}
+  /*abstract*/ public void clipboardNode(StringBuffer sb) {/**/}
+  /*abstract*/ public void clipboardBeforeAfter() {/**/}
 
 
 
@@ -393,7 +393,7 @@ if (cx==null /*&& valid_*/) dump();
 		Node curn = br.getCurNode();
 		if (curn==null || !curn.isLeaf()) {     // X don't override INode because be note or lens => lens or whatever that's "event opaque" short-circuits
 //if (curn!=null) System.out.println("overriding "+curn.getName()+"/"+curn.getClass().getName()+" "+curn.bbox);   // overlaps in PDF (clip) and HTML (table, as in CUSG)
-			br.setCurNode(this, subelementHit(rel));   // synthesizes MOUSE_ENTER and MOUSE_EXIT
+			br.setCurNode(this, subelementHit());   // synthesizes MOUSE_ENTER and MOUSE_EXIT
 //System.out.println(getName()+", offset="+offset+", rel=("+rel.x+","+rel.y+")");
 		}
 
@@ -522,7 +522,7 @@ if (cx==null /*&& valid_*/) dump();
 	// prepend text after insertion point and new text after last space to start of next leaf
 	Leaf lastn = getNextLeaf();
 	if (lastn!=null && lastspace+1 < ilen && (bounds==null || bounds.contains(lastn))) lastn.setValid(false);
-	else try { lastn = (Leaf)clone(); lastn.setName(""); } catch (CloneNotSupportedException bad1) {}
+	else try { lastn = (Leaf)clone(); lastn.setName(""); } catch (CloneNotSupportedException bad1) {/**/}
 	lastn.setName(txt.substring(lastspace+1) + name.substring(startoff) + lastn.getName());   // all parts can be empty
 	INode p = getParentNode();
 	int num = childNum();
@@ -549,7 +549,7 @@ if (cx==null /*&& valid_*/) dump();
 			Leaf l = (Leaf)clone();
 			l.setName(txt.substring(i, nexti));
 			p.insertChildAt(l, ins);
-		} catch (CloneNotSupportedException bad2) {}
+		} catch (CloneNotSupportedException bad2) {/**/}
 		i = nexti+1;
 	}
 

@@ -31,7 +31,7 @@ import phelps.text.Formats;
 	@version $Revision$ $Date$
 */
 public class RPM extends ArchiveMediaAdaptor {
-  static final boolean DEBUG = false;
+  static final boolean DEBUG_RPM = false;
 
   public static final int // tags
 	RPMTAG_NAME=1000, RPMTAG_VERSION=1001, RPMTAG_RELEASE=1002, RPMTAG_SERIAL=1003, RPMTAG_SUMMARY=1004, RPMTAG_DESCRIPTION=1005,
