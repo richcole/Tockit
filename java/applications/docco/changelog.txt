@@ -14,6 +14,7 @@ Docco:
   ties file (needed for index updates)
 - The information if an index is active for search or not is now kept bet-
   ween program sessions
+- Moving nodes in a diagram should be more natural now
   
 
 Changes from Docco 0.3 to 0.4:
