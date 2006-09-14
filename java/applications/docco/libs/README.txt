@@ -14,7 +14,7 @@ ant-contrib.jar
   ant extras, 0.3 (http://sourceforge.net/projects/ant-contrib/, license in LICENSE-ant-contrib.txt)
   
 ToscanaJ.jar
-  ToscanaJ, 1.4.1 (http://toscanaj.sourceforge.net, license in LICENSE-ToscanaJ.txt).  
+  ToscanaJ, SVN Snapshot from 2006.09.14 (http://toscanaj.sourceforge.net, license in LICENSE-ToscanaJ.txt).  
 
 plastic.jar
   Plastic look and feel from JGoodies, 1.2.1 (http://www.jgoodies.com, license in LICENSE-JGoodies.txt)
