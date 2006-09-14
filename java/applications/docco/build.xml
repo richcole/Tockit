@@ -5,7 +5,7 @@
     		<format property="timestamp" pattern="yyyyMMdd-HHmm"/>
 		</tstamp>
 		<!-- change this to a fixed value for releases -->
-		<property name="version.name" value="CVSbuild-${timestamp}"/>
+		<property name="version.name" value="snapshot-${timestamp}"/>
 		<property name="dist.name" value="Docco-${version.name}"/>
 		<property name="dist.dir" value="${dist.base.dir}/${dist.name}"/>
   	</target>
