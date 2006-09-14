@@ -493,7 +493,7 @@ public class DoccoMainFrame extends JFrame {
         }
 		createQueryEngine();
 		//@todo add force access into Index class
-        if(!forceIndexAccess) {
+        if(forceIndexAccess) {
             System.err.println("WARNING: forcing index access is currently diabled");
 //        				JOptionPane.showMessageDialog(this, "The index is locked. You can run only one instance of Docco at one time.\n" +
 //        											  "If you want to override this error run Docco with the '-forceIndexAccess' option.",
