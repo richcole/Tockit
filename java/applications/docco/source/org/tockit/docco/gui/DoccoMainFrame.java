@@ -1197,6 +1197,7 @@ public class DoccoMainFrame extends JFrame {
 	
 	private void insertDiagramIntoView(Diagram2D diagram, boolean nestDiagram) {
         Diagram2D oldDiagram = this.diagramView.getDiagram();
+        Diagram2D newDiagram = diagram;
         DiagramHistory diagramHistory = new DiagramHistory();
 
         if(nestDiagram && oldDiagram != null) {
@@ -1236,23 +1237,23 @@ public class DoccoMainFrame extends JFrame {
         	// this is again only happening if there is no intent attached to the top node, else
         	// we have to create a new diagram
         	for (Iterator iter = oldObjects.iterator(); iter.hasNext();) {
-                if (diagram.getTopConcept().getIntentSize() == 0) {
-                    ((ConceptImplementation) diagram.getTopConcept()).addObject(iter.next());
+                if (newDiagram.getTopConcept().getIntentSize() == 0) {
+                    ((ConceptImplementation) newDiagram.getTopConcept()).addObject(iter.next());
                 } else {
-                    diagram = extendDiagram(diagram, iter.next());
+                    newDiagram = extendDiagram(newDiagram, iter.next());
                 }
             }
-            assert oldDiagram.getTopConcept().getExtentSize() == diagram.getTopConcept().getExtentSize();
+            assert oldDiagram.getTopConcept().getExtentSize() == newDiagram.getTopConcept().getExtentSize();
         	// nest the results
-        	diagram = new NestedLineDiagram(oldDiagram, diagram);
+            newDiagram = new NestedLineDiagram(oldDiagram, newDiagram);
             diagramHistory.addDiagram(oldDiagram);
-            diagramHistory.addDiagram(diagram);
+            diagramHistory.addDiagram(newDiagram);
             diagramHistory.setNestingLevel(1);
         } else {
-            diagramHistory.addDiagram(diagram);
+            diagramHistory.addDiagram(newDiagram);
             diagramHistory.setNestingLevel(0);
         }
-        this.diagramView.showDiagram(diagram);
+        this.diagramView.showDiagram(newDiagram);
         ConceptInterpretationContext context = new ConceptInterpretationContext(diagramHistory, new EventBroker());
         this.diagramView.setConceptInterpretationContext(context);
     }

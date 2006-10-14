@@ -150,7 +150,7 @@ public class Index {
 
 	private static String cleanPath(String indexLocation) {
 		if(indexLocation.endsWith(File.separator)) {
-			indexLocation = indexLocation.substring(0, indexLocation.length() - File.separator.length());
+			return indexLocation.substring(0, indexLocation.length() - File.separator.length());
 		}
 		return indexLocation;
 	}

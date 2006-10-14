@@ -44,6 +44,8 @@ public class Docco {
             showUsage(options, System.err);
             System.exit(1);
         }
+        assert cl != null;
+        
         if(cl.getArgs().length > 0) {
             showUsage(options, System.err);
             System.exit(1);
