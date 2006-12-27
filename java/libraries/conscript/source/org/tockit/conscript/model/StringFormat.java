@@ -89,27 +89,28 @@ public class StringFormat {
 	private Rectangle2D clipbox;	
 	
 	public StringFormat(String formattingString){
-        String[] nextSplit = extractFormattingStringSegment(formattingString);
+		String remainder = formattingString;
+        String[] nextSplit = extractFormattingStringSegment(remainder);
         this.fontFamily = nextSplit[0];
-        formattingString = nextSplit[1];
+        remainder = nextSplit[1];
         
-        nextSplit = extractFormattingStringSegment(formattingString);
+        nextSplit = extractFormattingStringSegment(remainder);
         String fontStyleString = nextSplit[0];
-        formattingString = nextSplit[1];
+        remainder = nextSplit[1];
         this.fontStyle = getFontStyle(fontStyleString);
         
-        nextSplit = extractFormattingStringSegment(formattingString);
+        nextSplit = extractFormattingStringSegment(remainder);
         this.colorName = nextSplit[0];
-        formattingString = nextSplit[1];
+        remainder = nextSplit[1];
 
-        nextSplit = extractFormattingStringSegment(formattingString);
+        nextSplit = extractFormattingStringSegment(remainder);
         String fontSizeString = nextSplit[0];
         if(fontSizeString.length() != 0) {
             this.fontSize = new TypedSize(fontSizeString);
         }
-        formattingString = nextSplit[1];
+        remainder = nextSplit[1];
 
-        nextSplit = extractFormattingStringSegment(formattingString);
+        nextSplit = extractFormattingStringSegment(remainder);
         String offsetString = nextSplit[0];
         if (offsetString != null && offsetString.length() != 0) {
             int commaPos = offsetString.indexOf(',');
@@ -119,15 +120,15 @@ public class StringFormat {
             double y = Double.parseDouble(yPart);
             this.offset = new Point2D.Double(x,y);
         }
-        formattingString = nextSplit[1];
+        remainder = nextSplit[1];
 
-        nextSplit = extractFormattingStringSegment(formattingString);
+        nextSplit = extractFormattingStringSegment(remainder);
         String alignmentString = nextSplit[0];
         this.horizontalAlign = getHorizontalAlign(alignmentString);
         this.verticalAlign = getVerticalAlign(alignmentString);
-        formattingString = nextSplit[1];
+        remainder = nextSplit[1];
 
-        nextSplit = extractFormattingStringSegment(formattingString);
+        nextSplit = extractFormattingStringSegment(remainder);
         String clipBoxString = nextSplit[0];
         if (clipBoxString != null && clipBoxString.length() != 0) {
             int commaPos = clipBoxString.indexOf(',');

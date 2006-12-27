@@ -97,17 +97,18 @@ public class CSCTokenizer {
         if(character == ',' || character == ')') {
             this.currentToken += (char) character;
         } else {
-            while( character != -1 && !Character.isWhitespace((char)character) &&
-                    character != '\"') {
-                if(character == ',' || character == ')') {
-                    this.characterWaiting = character;
+        	int currentCharacter = character;
+            while( currentCharacter != -1 && !Character.isWhitespace((char)currentCharacter) &&
+            		currentCharacter != '\"') {
+                if(currentCharacter == ',' || currentCharacter == ')') {
+                    this.characterWaiting = currentCharacter;
                     break;
                 }
-                this.currentToken += (char) character;
-                if(character == '(') {
+                this.currentToken += (char) currentCharacter;
+                if(currentCharacter == '(') {
                     break;
                 }
-                character = this.inputReader.read();
+                currentCharacter = this.inputReader.read();
             }
         }
 		CSCParser.logger.log(Level.FINEST, "Tokenizer found token '" + this.currentToken + "'");

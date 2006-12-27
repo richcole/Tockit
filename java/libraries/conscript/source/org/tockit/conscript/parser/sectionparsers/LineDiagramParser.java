@@ -79,7 +79,7 @@ class LineDiagramParser extends CSCFileSectionParser {
                                               "' in file '" + file.getLocation() +"', line " + tokenizer.getCurrentLine());
             }
             Point toPoint = (Point)points.get(to);
-            if(fromPoint == null) {
+            if(toPoint == null) {
                 throw new DataFormatException("Can not resolve line end point " +
                                               to +" in LINE_DIAGRAM '" + diagram.getName() +
                                               "' in file '" + file.getLocation() +"', line " + tokenizer.getCurrentLine());
