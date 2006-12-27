@@ -174,7 +174,7 @@ public abstract class CSCFileSectionParser {
 
     protected ConceptualFile getConceptualFile(CSCFile file, String fileId) {
         ConceptualFile conceptualFile = file.findConceptualFile(fileId);
-        if(file == null) {
+        if(conceptualFile == null) {
             conceptualFile = new ConceptualFile(fileId);
             file.add(conceptualFile);
         }
