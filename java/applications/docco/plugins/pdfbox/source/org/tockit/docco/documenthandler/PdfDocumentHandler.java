@@ -113,7 +113,9 @@ public class PdfDocumentHandler implements DocumentHandler, Plugin {
 		}
 		finally
 		{
-			pdfDocument.close();
+			if (pdfDocument != null) {
+				pdfDocument.close();
+			}			
 		}
 		
 		return docSummary;

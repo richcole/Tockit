@@ -71,6 +71,7 @@ public class MSExcelDocumentHandler implements DocumentHandler, Plugin {
 							break;
 						case HSSFCell.CELL_TYPE_STRING :
 							cellStringValue = curCell.getStringCellValue();
+							break;
 						default :
 							break;
 					}
