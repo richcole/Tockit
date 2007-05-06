@@ -20,9 +20,10 @@
 	<classpathentry kind="lib" path="libs/ToscanaJ.jar"/>
 	<classpathentry kind="lib" path="libs/tockit-fca.jar"/>
 	<classpathentry kind="lib" path="plugins/pdfbox/libs/PDFBox.jar"/>
-	<classpathentry sourcepath="libs/src/lucene-core-src.zip" kind="lib" path="libs/lucene-core.jar"/>
+	<classpathentry kind="lib" path="libs/lucene-core.jar" sourcepath="libs/src/lucene-core-src.zip"/>
 	<classpathentry kind="lib" path="libs/jdom.jar"/>
-	<classpathentry sourcepath="libs/src/lucene-analyzers-src.zip" kind="lib" path="libs/lucene-analyzers.jar"/>
+	<classpathentry kind="lib" path="libs/lucene-analyzers.jar" sourcepath="libs/src/lucene-analyzers-src.zip"/>
+	<classpathentry kind="lib" path="libs/BrowserLauncher2.jar"/>
 	<classpathentry kind="src" path="resources"/>
 	<classpathentry kind="src" path="plugins/multivalent/source"/>
 	<classpathentry kind="output" path="bin"/>

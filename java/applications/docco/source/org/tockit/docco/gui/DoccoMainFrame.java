@@ -94,7 +94,6 @@ import net.sourceforge.toscanaj.controller.fca.GantersAlgorithm;
 import net.sourceforge.toscanaj.controller.fca.LatticeGenerator;
 import net.sourceforge.toscanaj.controller.ndimlayout.DefaultDimensionStrategy;
 import net.sourceforge.toscanaj.controller.ndimlayout.NDimLayoutOperations;
-import net.sourceforge.toscanaj.dbviewer.BrowserLauncher;
 import net.sourceforge.toscanaj.gui.action.ExportDiagramAction;
 import net.sourceforge.toscanaj.gui.dialog.ErrorDialog;
 import net.sourceforge.toscanaj.model.context.ContextImplementation;
@@ -136,6 +135,10 @@ import org.tockit.events.filters.EventTypeFilter;
 import org.tockit.events.filters.SubjectTypeFilter;
 import org.tockit.plugin.PluginLoader;
 import org.tockit.swing.preferences.ExtendedPreferences;
+
+import edu.stanford.ejalbert.BrowserLauncher;
+import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
+import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 
 /**
  * @TODO the results shown when selected nodes in nested diagrams are sometimes wrong (too many)
@@ -1130,9 +1133,12 @@ public class DoccoMainFrame extends JFrame {
 				if(node.getUserObject() instanceof HitReference) {
 					HitReference reference = (HitReference) node.getUserObject();
 					try {
-						BrowserLauncher.openURL(reference.getDocument().get(GlobalConstants.FIELD_DOC_PATH));
-					} catch (IOException ex) {
-						ErrorDialog.showError(finalThis,ex,"Could not open document");
+						BrowserLauncher launcher = new BrowserLauncher();
+						launcher.openURLinBrowser("file:///" + reference.getDocument().get(GlobalConstants.FIELD_DOC_PATH).replace('\\', '/'));
+					} catch (BrowserLaunchingInitializingException ex) {
+						ErrorDialog.showError(finalThis,ex,"Could not start browser to open document");
+					} catch (UnsupportedOperatingSystemException ex) {
+						ErrorDialog.showError(finalThis,ex,"Opening documents not supported on this system");
 					}
 				}
 			}

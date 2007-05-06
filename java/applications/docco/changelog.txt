@@ -15,6 +15,8 @@ Docco:
 - The information if an index is active for search or not is now kept bet-
   ween program sessions
 - Moving nodes in a diagram should be more natural now
+- The code to open a document has been updated to a new version, which
+  hopefully fixes issues on various platforms
   
 
 Changes from Docco 0.3 to 0.4:

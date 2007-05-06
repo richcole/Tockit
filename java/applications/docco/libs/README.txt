@@ -22,3 +22,7 @@ plastic.jar
 commons-cli.jar:
   Command line parser from the Jakarta Commons project, version 1.0 (http://jakarta.apache.org/commons/,
   license in LICENSE.apache.txt)
+
+BrowserLauncher2.jar:
+  Tool to start a browser on various platforms, version 1.0 (http://browserlaunch2.sourceforge.net/,
+  licence is LGPL).
