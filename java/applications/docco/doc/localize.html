@@ -1,0 +1,75 @@
+<html>
+
+<head>
+<title>Localizing Docco</title>
+</head>
+
+<body>
+
+<h1>
+<font color="#000080">
+Localizing Docco
+</font>
+</h1>
+
+<p>
+Docco can be localized to match the expectations of users of a particular background. Some part
+of that is done automatically such as adjusting the format for dates and time. Which localization
+is used is determined through the Java configuration, which in turn uses the setting of the
+underlying operating system. The locale is determined by (a) the 2-letter language code as
+defined by <a href="http://www.loc.gov/standards/iso639-2/php/code_list.php">ISO 639-1</a> and
+(b) the two-letter country code as defined in <a href="http://www.iso.org/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1.html">ISO 3166</a>.
+</p>
+
+<p>
+Translation into the local language is done through so-called ressource bundles: text files 
+containing pairs of keys used by the program to identify the text and the translation to be used
+when running. These translation files can be found in the "resources" folder and have the
+name pattern:
+</p>
+<pre>
+  [programPart]Messages(_[language code](_[country code])).properties
+</pre>
+<p>
+In this pattern <code>[programPart]</code> refers to the part of the program being translated,
+most important is the "gui" part. The language and country code parts are optional, the program
+will automatically pick the most specific translation available. If no translation for a particular
+country is available the generic language one is chosen (e.g. "_fr" for generic French if the
+locale is Canadian French but no "_fr_CA" is available). If no translation for a particular
+language is available, the default translation (no language, no country code) is chosen, which
+should be US English.
+</p>
+
+<p>
+To translate Docco into a new language, pick the default resource bundle for the part you want
+to translate (usually <code>guiMessages.properties</code>), and copy the file so that the file
+name matches the locale you target. If you translate for a particular country use both language
+and country code, if you translate into a generic language just use the language code. As a rule
+of thumb you might want to translate into a generic language file if there is no such file yet;
+e.g. if you want to do Canadian French, but there is no French translation at all, call your file
+<code>guiMessages_fr.properties</code>; if there is a French translation already, call it
+<code>guiMessages_fr_CA.properties</code>.
+</p>
+
+<p>
+Assuming you are running with your target locale set, the new file will be picked up automatically
+on each start. Just change the existing translations one by one and restart the application to see
+the result.
+</p>
+
+<p>
+If the localization used by Docco is not the one wanted, a different one can be used by setting
+a Java property in the command line call for Docco. This is documented in the JVM description,
+e.g. enforcing US English localization could look like this:
+</p>
+<pre>
+  java -Duser.language=en -Duser.country=US -jar Docco.jar
+</pre>
+
+<p>
+See e.g. <a href="http://java.sun.com/developer/technicalArticles/J2SE/locale/">this technical
+article</a> for more information.
+</p>
+</body>
+
+</html>
