@@ -48,23 +48,23 @@ public class DocumentDisplayPane extends JPanel {
 
     public DocumentDisplayPane() {
 		super(new BorderLayout());
-		JLabel titleLabel = new JLabel("Title:");
+		JLabel titleLabel = new JLabel(GuiMessages.getString("DocumentDisplayPane.titleField.label")); //$NON-NLS-1$
 		this.titleField = new JTextField();
 		this.titleField.setEditable(false);
 
-		JLabel authorLabel = new JLabel("Author:");
+		JLabel authorLabel = new JLabel(GuiMessages.getString("DocumentDisplayPane.authorField.label")); //$NON-NLS-1$
 		this.authorField = new JTextField();
 		this.authorField.setEditable(false);
 
-		JLabel pathLabel = new JLabel("File:");
+		JLabel pathLabel = new JLabel(GuiMessages.getString("DocumentDisplayPane.fileNameField.label")); //$NON-NLS-1$
 		this.pathField = new JTextField();
 		this.pathField.setEditable(false);
 
-		JLabel dateLabel = new JLabel("Last Change:");
+		JLabel dateLabel = new JLabel(GuiMessages.getString("DocumentDisplayPane.lastChangeField.label")); //$NON-NLS-1$
 		this.dateField = new JTextField();
 		this.dateField.setEditable(false);
 		
-		JLabel sizeLabel = new JLabel("Size:");
+		JLabel sizeLabel = new JLabel(GuiMessages.getString("DocumentDisplayPane.sizeField.label")); //$NON-NLS-1$
 		this.sizeField = new JTextField();
 		this.sizeField.setEditable(false);
 		
@@ -74,13 +74,13 @@ public class DocumentDisplayPane extends JPanel {
 		summaryPane.setPreferredSize(new Dimension(10,100));
 		
 		final JPanel panel = this;
-		this.shellExecuteButton = new JButton("Open with default application...");
+		this.shellExecuteButton = new JButton(GuiMessages.getString("DocumentDisplayPane.openDocumentButton.label")); //$NON-NLS-1$
 		this.shellExecuteButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				try {
                     BrowserLauncher.openURL(currentDocument);
                 } catch (IOException ex) {
-                	ErrorDialog.showError(panel,ex,"Unable to open file");
+                	ErrorDialog.showError(panel,ex,GuiMessages.getString("DocumentDisplayPane.unableToOpenDialog.title")); //$NON-NLS-1$
                 }
 	        }
 		});
@@ -198,12 +198,12 @@ public class DocumentDisplayPane extends JPanel {
 	}
 	
 	public void clearDisplay() {
-		this.titleField.setText("");
-		this.authorField.setText("");
-		this.pathField.setText("");
-		this.dateField.setText("");
-		this.sizeField.setText("");
-		this.summaryArea.setText("");
+		this.titleField.setText(""); //$NON-NLS-1$
+		this.authorField.setText(""); //$NON-NLS-1$
+		this.pathField.setText(""); //$NON-NLS-1$
+		this.dateField.setText(""); //$NON-NLS-1$
+		this.sizeField.setText(""); //$NON-NLS-1$
+		this.summaryArea.setText(""); //$NON-NLS-1$
 		this.shellExecuteButton.setEnabled(false);
 	}
 }
