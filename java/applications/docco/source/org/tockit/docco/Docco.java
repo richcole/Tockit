@@ -8,6 +8,7 @@
 package org.tockit.docco;
 
 import java.io.PrintStream;
+import java.text.MessageFormat;
 import java.util.Iterator;
 
 import javax.swing.UIManager;
@@ -29,13 +30,18 @@ import com.jgoodies.plaf.plastic.PlasticLookAndFeel;
 import com.jgoodies.plaf.plastic.theme.SkyBlue;
 
 public class Docco {
+	private static final String HELP_COMMAND_LINE_OPTION = CliMessages.getString("DoccoCommandLine.helpOption.name"); //$NON-NLS-1$
+	private static final String INDEX_DIRECTORY_COMMAND_LINE_OPTION = CliMessages.getString("DoccoCommandLine.indexDirectoryOption.name"); //$NON-NLS-1$
+	private static final String USE_PLATFORM_LF_COMMAND_LINE_OPTION = CliMessages.getString("DoccoCommandLine.usePlatformLnfOption.name"); //$NON-NLS-1$
+	private static final String FORCE_INDEX_ACCESS_COMMAND_LINE_OPTION = CliMessages.getString("DoccoCommandLine.forceIndexAccessOption.name"); //$NON-NLS-1$
+
 	public static void main (String[] args) {
 		ToscanaJ.testJavaVersion();
         Options options = new Options();
-        options.addOption("forceIndexAccess", false, "Forces the index to be opened, even if locks are present");
-        options.addOption("usePlatformLF", false, "Uses the platform specific look and feel instead of the default");
-        options.addOption("indexDirectory", true, "Sets the directory to use for storing the index");
-        options.addOption("help", false, "Show this command line summary and exit");
+        options.addOption(FORCE_INDEX_ACCESS_COMMAND_LINE_OPTION, false, CliMessages.getString("DoccoCommandLine.forceIndexAccessOption.description")); //$NON-NLS-1$
+        options.addOption(USE_PLATFORM_LF_COMMAND_LINE_OPTION, false, CliMessages.getString("DoccoCommandLine.usePlatformLnfOption.description")); //$NON-NLS-1$
+        options.addOption(INDEX_DIRECTORY_COMMAND_LINE_OPTION, true, CliMessages.getString("DoccoCommandLine.indexDirectoryOption.description")); //$NON-NLS-1$
+        options.addOption(HELP_COMMAND_LINE_OPTION, false, CliMessages.getString("DoccoCommandLine.helpOption.description")); //$NON-NLS-1$
         CommandLineParser parser = new BasicParser();
         CommandLine cl = null;
         try {
@@ -50,19 +56,19 @@ public class Docco {
             showUsage(options, System.err);
             System.exit(1);
         }
-        if(cl.hasOption("help")) {
+        if(cl.hasOption(HELP_COMMAND_LINE_OPTION)) {
             showUsage(options, System.out);
             System.exit(0);
         }
-        boolean forceIndexAccess = cl.hasOption("forceIndexAccess");
-        boolean usePlatformLF = cl.hasOption("usePlatformLF");
-        String indexDirectory = cl.getOptionValue("indexDirectory");
+        boolean forceIndexAccess = cl.hasOption(FORCE_INDEX_ACCESS_COMMAND_LINE_OPTION);
+        boolean usePlatformLF = cl.hasOption(USE_PLATFORM_LF_COMMAND_LINE_OPTION);
+        String indexDirectory = cl.getOptionValue(INDEX_DIRECTORY_COMMAND_LINE_OPTION);
 
 		if(usePlatformLF) {
 			try {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             } catch (Exception e1) {
-            	System.err.println("Couldn't set platform look and feel");
+            	System.err.println(CliMessages.getString("DoccoCommandLine.failedToSetPlatformLnfMessage.text")); //$NON-NLS-1$
             }
 		} else {
 			try {
@@ -92,7 +98,7 @@ public class Docco {
 				PlasticLookAndFeel.setMyCurrentTheme(theme);
 				UIManager.setLookAndFeel(new PlasticLookAndFeel());
 			} catch (UnsupportedLookAndFeelException e1) {
-				System.err.println("Couldn't set Plastic look and feel");
+				System.err.println(CliMessages.getString("DoccoCommandLine.failedToSetPlasticLnfMessage.text")); //$NON-NLS-1$
 			}
 		}
 
@@ -101,18 +107,18 @@ public class Docco {
 			mainFrame.setVisible(true);
 		}
 		catch (Exception e) {
-			ErrorDialog.showError(null, e, "Error");
+			ErrorDialog.showError(null, e, CliMessages.getString("DoccoCommandLine.errorDialog.title")); //$NON-NLS-1$
 		}
 	}
 
     private static void showUsage(Options options, PrintStream stream) {
-        stream.println("Usage:");
-        stream.println("  Docco [Options]");
+        stream.println(CliMessages.getString("DoccoCommandLine.helpText.line1")); //$NON-NLS-1$
+        stream.println(CliMessages.getString("DoccoCommandLine.helpText.line2")); //$NON-NLS-1$
         stream.println();
-        stream.println("where [Options] can be:");
+        stream.println(CliMessages.getString("DoccoCommandLine.helpText.line3")); //$NON-NLS-1$
         for (Iterator iter = options.getOptions().iterator(); iter.hasNext(); ) {
             Option option = (Option) iter.next();
-            stream.println("  " + option.getOpt() + ": " + option.getDescription());
+            stream.println(MessageFormat.format(CliMessages.getString("DoccoCommandLine.helpText.optionFormat"), new Object[]{option.getOpt(),option.getDescription()})); //$NON-NLS-1$
         }
     }
 }
