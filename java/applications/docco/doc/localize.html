@@ -52,6 +52,14 @@ e.g. if you want to do Canadian French, but there is no French translation at al
 </p>
 
 <p>
+The translation file for the GUI messages also contains the references used to enter the help.
+The online help consists of HTML pages stored in a language-specific subfolder of the resources
+folder, e.g. <code>resources/help/en</code> for the US-English help. To translate the help system
+adjust the translation for the location of the starting files (<code>index.html</code> 
+and <code>about.html</code>) to point to your translated versions.
+</p>
+
+<p>
 Assuming you are running with your target locale set, the new file will be picked up automatically
 on each start. Just change the existing translations one by one and restart the application to see
 the result.
