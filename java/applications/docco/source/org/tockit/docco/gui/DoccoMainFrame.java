@@ -158,23 +158,23 @@ public class DoccoMainFrame extends JFrame {
     private static final int DEFAULT_FRAME_WIDTH = 900;
     private static final int DEFAULT_FRAME_HEIGHT = 700;
 
-	private static final String WINDOW_TITLE = "Docco";
+	private static final String WINDOW_TITLE = GuiMessages.getString("DoccoMainFrame.window.title"); //$NON-NLS-1$
     
     private static final ExtendedPreferences preferences = 
                             ExtendedPreferences.userNodeForClass(DoccoMainFrame.class);
-	private static final String CONFIGURATION_VERTICAL_DIVIDER_LOCATION = "verticalDivider";
-	private static final String CONFIGURATION_INDEX_LOCATION = "indexLocation";
-	private static final String CONFIGURATION_LAST_INDEX_DIR = "lastIndexDir";
-	private static final String CONFIGURATION_SHOW_PHANTOM_NODES_NAME = "showPhantomNodes";
-	private static final String CONFIGURATION_SHOW_CONTINGENT_ONLY_NAME = "showContingentOnly";
-	private static final String CONFIGURATION_INDEXING_PRIORITY_NAME = "indexingPriority";
-    private static final String CONFIGURATION_QUERY_HISTORY = "queryHistory";
+	private static final String CONFIGURATION_VERTICAL_DIVIDER_LOCATION = "verticalDivider"; //$NON-NLS-1$
+	private static final String CONFIGURATION_INDEX_LOCATION = "indexLocation"; //$NON-NLS-1$
+	private static final String CONFIGURATION_LAST_INDEX_DIR = "lastIndexDir"; //$NON-NLS-1$
+	private static final String CONFIGURATION_SHOW_PHANTOM_NODES_NAME = "showPhantomNodes"; //$NON-NLS-1$
+	private static final String CONFIGURATION_SHOW_CONTINGENT_ONLY_NAME = "showContingentOnly"; //$NON-NLS-1$
+	private static final String CONFIGURATION_INDEXING_PRIORITY_NAME = "indexingPriority"; //$NON-NLS-1$
+    private static final String CONFIGURATION_QUERY_HISTORY = "queryHistory"; //$NON-NLS-1$
     // TODO this next one should be in the User Application Data Directory on Windows XP
     // but we don't know how to get that in a portable way (could be on any drive and is
     // internationalized).
-	private static final String DEFAULT_INDEX_DIR = System.getProperty("user.home") + 
-											System.getProperty("file.separator") + 
-											".doccoIndex";
+	private static final String DEFAULT_INDEX_DIR = System.getProperty("user.home") +  //$NON-NLS-1$
+											System.getProperty("file.separator") +  //$NON-NLS-1$
+											".doccoIndex"; //$NON-NLS-1$
 	
 	private QueryEngine queryEngine;
 	private List indexes = new ArrayList();
@@ -182,8 +182,8 @@ public class DoccoMainFrame extends JFrame {
     private DocumentDisplayPane documentDisplayPane;
     private JTree hitList;
     private JComboBox queryField = new JComboBox();
-	private JButton searchButton = new JButton("Submit");
-	private JButton nestedSearchButton = new JButton("Nest");
+	private JButton searchButton = new JButton(GuiMessages.getString("DoccoMainFrame.submitButton.label")); //$NON-NLS-1$
+	private JButton nestedSearchButton = new JButton(GuiMessages.getString("DoccoMainFrame.nestButton.label")); //$NON-NLS-1$
 	private JCheckBoxMenuItem showPhantomNodesCheckBox;
 	private JCheckBoxMenuItem showContingentOnlyCheckBox;
 	private JLabel statusBarMessage;
@@ -231,8 +231,8 @@ public class DoccoMainFrame extends JFrame {
             allShown = true;
 		}
 		Map pathToNodeMap = new Hashtable();
-		DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("");
-		pathToNodeMap.put("",rootNode);
+		DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(""); //$NON-NLS-1$
+		pathToNodeMap.put("",rootNode); //$NON-NLS-1$
 
 		Concept[] concepts = this.selectedConcepts;
 		
@@ -401,7 +401,7 @@ public class DoccoMainFrame extends JFrame {
 		menuBar.add(createHelpMenu());
 		this.setJMenuBar(menuBar);
 		
-		this.statusBarMessage = new JLabel("Ready!");
+		this.statusBarMessage = new JLabel(GuiMessages.getString("DoccoMainFrame.statusBar.readyMessage")); //$NON-NLS-1$
 
 		JPanel contentPane = new JPanel(new BorderLayout());
 		contentPane.add(mainPane, BorderLayout.CENTER);
@@ -438,15 +438,15 @@ public class DoccoMainFrame extends JFrame {
 
 	private void loadPlugins() {
 		/// @todo this should be read from config manager?...
-		String pluginsDirName = "plugins";
+		String pluginsDirName = "plugins"; //$NON-NLS-1$
 
-		String pluginsBaseDir = System.getProperty("user.dir") + File.separator;
+		String pluginsBaseDir = System.getProperty("user.dir") + File.separator; //$NON-NLS-1$
 		
 		
 		try {
 			PluginLoader.Error[] errors = PluginLoader.loadPlugins(new File(pluginsBaseDir + pluginsDirName));
 			if (errors.length > 0) {
-				String errorMsg = "";
+				String errorMsg = ""; //$NON-NLS-1$
 				for (int i = 0; i < errors.length; i++) {
 					PluginLoader.Error error = errors[i];
 					errorMsg += "Plugin location:\n\t" + error.getPluginLocation().getAbsolutePath();
@@ -469,7 +469,7 @@ public class DoccoMainFrame extends JFrame {
 		try {
 			DocumentHandlerRegistry.registerDefaults();
 		} catch (Exception e) {
-			ErrorDialog.showError(this, e, "Error loading default Document Handlers");
+			ErrorDialog.showError(this, e, GuiMessages.getString("DoccoMainFrame.documentHandlerLoadingFailedDialog.title")); //$NON-NLS-1$
 		}
 	}
 
@@ -491,7 +491,7 @@ public class DoccoMainFrame extends JFrame {
                 Index index = Index.openIndex(file.getName(), indexDirectory, callbackRecipient);
                 this.indexes.add(index);
             } catch (Exception e) {
-            	ErrorDialog.showError(this, e, "Error opening index");
+            	ErrorDialog.showError(this, e, GuiMessages.getString("DoccoMainFrame.openingIndexFailedDialog.title")); //$NON-NLS-1$
             }
         }
 		createQueryEngine();
@@ -525,26 +525,26 @@ public class DoccoMainFrame extends JFrame {
     }
 
     private JMenu createHelpMenu() {
-		JMenu helpMenu = new JMenu("Help");
+		JMenu helpMenu = new JMenu(GuiMessages.getString("DoccoMainFrame.helpMenu.label")); //$NON-NLS-1$
 		
 		final DoccoMainFrame outerThis = this;
         
-		JMenuItem howtoItem = new JMenuItem("How to use Docco...");
+		JMenuItem howtoItem = new JMenuItem(GuiMessages.getString("DoccoMainFrame.helpMenu.helpDialog.label")); //$NON-NLS-1$
 		howtoItem.setMnemonic('h');
 		howtoItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				URL fileUrl = this.getClass().getClassLoader().getResource("doc/index.html");
-				HtmlDisplayDialog.show(outerThis, "Docco Online Help", fileUrl, new Dimension(500, 700));
+				URL fileUrl = this.getClass().getClassLoader().getResource(GuiMessages.getString("DoccoMainFrame.helpDialog.targetFile")); //$NON-NLS-1$
+				HtmlDisplayDialog.show(outerThis, GuiMessages.getString("DoccoMainFrame.helpDialog.title"), fileUrl, new Dimension(500, 700)); //$NON-NLS-1$
 			}
 		});
 		helpMenu.add(howtoItem);
 
-		JMenuItem aboutItem = new JMenuItem("About Docco...");
+		JMenuItem aboutItem = new JMenuItem(GuiMessages.getString("DoccoMainFrame.helpMenu.aboutDialog.label")); //$NON-NLS-1$
 		aboutItem.setMnemonic('a');
 		aboutItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				URL fileUrl = this.getClass().getClassLoader().getResource("doc/about.html");
-				HtmlDisplayDialog.show(outerThis, "About Docco", fileUrl, new Dimension(600, 400));
+				URL fileUrl = this.getClass().getClassLoader().getResource(GuiMessages.getString("DoccoMainFrame.aboutDialog.targetFile")); //$NON-NLS-1$
+				HtmlDisplayDialog.show(outerThis, GuiMessages.getString("DoccoMainFrame.aboutDialog.title"), fileUrl, new Dimension(600, 400)); //$NON-NLS-1$
 			}
 		});
 		helpMenu.add(aboutItem);
@@ -553,10 +553,10 @@ public class DoccoMainFrame extends JFrame {
     }
 
     private JMenu createViewMenu() {
-        JMenu diagramMenu = new JMenu("Diagram");
+        JMenu diagramMenu = new JMenu(GuiMessages.getString("DoccoMainFrame.diagramMenu.label")); //$NON-NLS-1$
         diagramMenu.setMnemonic('d');
         
-        this.showPhantomNodesCheckBox = new JCheckBoxMenuItem("Show all possible combinations");
+        this.showPhantomNodesCheckBox = new JCheckBoxMenuItem(GuiMessages.getString("DoccoMainFrame.diagramMenu.showAllPossibleCombinationsItem.label")); //$NON-NLS-1$
         this.showPhantomNodesCheckBox.setMnemonic('p');
         this.showPhantomNodesCheckBox.setSelected(preferences.getBoolean(CONFIGURATION_SHOW_PHANTOM_NODES_NAME, true));
         this.showPhantomNodesCheckBox.addActionListener(new ActionListener(){
@@ -568,7 +568,7 @@ public class DoccoMainFrame extends JFrame {
         });
         diagramMenu.add(this.showPhantomNodesCheckBox);
         
-        this.showContingentOnlyCheckBox = new JCheckBoxMenuItem("Show matches only once");
+        this.showContingentOnlyCheckBox = new JCheckBoxMenuItem(GuiMessages.getString("DoccoMainFrame.diagramMenu.showMatchesOnlyOnceItem.label")); //$NON-NLS-1$
         this.showContingentOnlyCheckBox.setMnemonic('o');
 		this.showContingentOnlyCheckBox.setSelected(preferences.getBoolean(CONFIGURATION_SHOW_CONTINGENT_ONLY_NAME, true));
         this.showContingentOnlyCheckBox.addActionListener(new ActionListener(){
@@ -604,7 +604,7 @@ public class DoccoMainFrame extends JFrame {
         }
 
         // menu item PRINT
-        this.printMenuItem = new JMenuItem("Print...");
+        this.printMenuItem = new JMenuItem(GuiMessages.getString("DoccoMainFrame.diagramMenu.printItem.label")); //$NON-NLS-1$
         this.printMenuItem.setMnemonic(KeyEvent.VK_P);
         this.printMenuItem.setAccelerator(KeyStroke.getKeyStroke(
                 KeyEvent.VK_P, ActionEvent.CTRL_MASK));
@@ -617,7 +617,7 @@ public class DoccoMainFrame extends JFrame {
         diagramMenu.add(this.printMenuItem);
 
         // menu item PRINT SETUP
-        this.printSetupMenuItem = new JMenuItem("Print Setup...");
+        this.printSetupMenuItem = new JMenuItem(GuiMessages.getString("DoccoMainFrame.diagramMenu.printSetupItem.label")); //$NON-NLS-1$
         this.printSetupMenuItem.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e) {
                 pageFormat = PrinterJob.getPrinterJob().pageDialog(pageFormat);
@@ -631,7 +631,7 @@ public class DoccoMainFrame extends JFrame {
     }
 
     private JMenu createFileMenu() {
-        final JMenu fileMenu = new JMenu("Indexing");
+        final JMenu fileMenu = new JMenu(GuiMessages.getString("DoccoMainFrame.indexingMenu.label")); //$NON-NLS-1$
         fileMenu.setMnemonic('i');
 		fileMenu.addMenuListener(new MenuListener(){
             public void menuSelected(MenuEvent e) {
@@ -650,7 +650,7 @@ public class DoccoMainFrame extends JFrame {
     }
     
 	private void fillFileMenu(final JMenu fileMenu) {
-		final JMenuItem newIndexItem = new JMenuItem("Index Directory...");
+		final JMenuItem newIndexItem = new JMenuItem(GuiMessages.getString("DoccoMainFrame.indexingMenu.indexDirectoryItem.label")); //$NON-NLS-1$
 		newIndexItem.setMnemonic('i');
 		newIndexItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -670,7 +670,7 @@ public class DoccoMainFrame extends JFrame {
 
 		fileMenu.addSeparator();
 		
-		final JMenuItem updateAllItem = new JMenuItem("Update All");
+		final JMenuItem updateAllItem = new JMenuItem(GuiMessages.getString("DoccoMainFrame.indexingMenu.updateAllItem.label")); //$NON-NLS-1$
 		updateAllItem.setMnemonic('u');
 		updateAllItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -682,10 +682,10 @@ public class DoccoMainFrame extends JFrame {
 		});
 		fileMenu.add(updateAllItem);
                 
-		final JMenu indexingPriorityMenu = new JMenu("Indexing Priority");
+		final JMenu indexingPriorityMenu = new JMenu(GuiMessages.getString("DoccoMainFrame.indexingMenu.indexingPriorityMenu.label")); //$NON-NLS-1$
 		indexingPriorityMenu.setMnemonic('p');
 		final JRadioButtonMenuItem highestPriorityMenuItem = 
-					new JRadioButtonMenuItem("Highest (fast indexing, computer might get less responsive)");
+					new JRadioButtonMenuItem(GuiMessages.getString("DoccoMainFrame.indexingMenu.indexingPriorityMenu.highestItem.label")); //$NON-NLS-1$
 		highestPriorityMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				indexingPriority = HIGHEST_PRIORITY;
@@ -695,7 +695,7 @@ public class DoccoMainFrame extends JFrame {
 		highestPriorityMenuItem.setSelected(indexingPriority == HIGHEST_PRIORITY);
 		indexingPriorityMenu.add(highestPriorityMenuItem);
 		final JRadioButtonMenuItem highPriorityMenuItem = 
-					new JRadioButtonMenuItem("High");
+					new JRadioButtonMenuItem(GuiMessages.getString("DoccoMainFrame.indexingMenu.indexingPriorityMenu.highItem.label")); //$NON-NLS-1$
 		highPriorityMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				indexingPriority = HIGH_PRIORITY;
@@ -705,7 +705,7 @@ public class DoccoMainFrame extends JFrame {
 		highPriorityMenuItem.setSelected(indexingPriority == HIGH_PRIORITY);
 		indexingPriorityMenu.add(highPriorityMenuItem);
 		final JRadioButtonMenuItem mediumPriorityMenuItem = 
-					new JRadioButtonMenuItem("Medium");
+					new JRadioButtonMenuItem(GuiMessages.getString("DoccoMainFrame.indexingMenu.indexingPriorityMenu.mediumItem.label")); //$NON-NLS-1$
 		mediumPriorityMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				indexingPriority = MEDIUM_PRIORITY;
@@ -715,7 +715,7 @@ public class DoccoMainFrame extends JFrame {
 		mediumPriorityMenuItem.setSelected(indexingPriority == MEDIUM_PRIORITY);
 		indexingPriorityMenu.add(mediumPriorityMenuItem);
 		final JRadioButtonMenuItem lowPriorityMenuItem = 
-					new JRadioButtonMenuItem("Low");
+					new JRadioButtonMenuItem(GuiMessages.getString("DoccoMainFrame.indexingMenu.indexingPriorityMenu.lowItem.label")); //$NON-NLS-1$
 		lowPriorityMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				indexingPriority = LOW_PRIORITY;
@@ -725,7 +725,7 @@ public class DoccoMainFrame extends JFrame {
 		lowPriorityMenuItem.setSelected(indexingPriority == LOW_PRIORITY);
 		indexingPriorityMenu.add(lowPriorityMenuItem);
 		final JRadioButtonMenuItem lowestPriorityMenuItem = 
-					new JRadioButtonMenuItem("Lowest (slow indexing, but computer stays responsive)");
+					new JRadioButtonMenuItem(GuiMessages.getString("DoccoMainFrame.indexingMenu.indexingPriorityMenu.lowestItem.label")); //$NON-NLS-1$
 		lowestPriorityMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				indexingPriority = LOWEST_PRIORITY;
@@ -737,7 +737,7 @@ public class DoccoMainFrame extends JFrame {
 		fileMenu.add(indexingPriorityMenu);
                 
 		fileMenu.addSeparator();
-		final JMenuItem exitItem = new JMenuItem("Exit");
+		final JMenuItem exitItem = new JMenuItem(GuiMessages.getString("DoccoMainFrame.indexingMenu.exitItem.label")); //$NON-NLS-1$
 		exitItem.setMnemonic('x');
 		exitItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -756,7 +756,7 @@ public class DoccoMainFrame extends JFrame {
 
     private void addIndexMenu(final JMenu fileMenu, final Index currentIndex) {
     	final JMenu currentIndexMenu = new JMenu(currentIndex.getName());
-		final JCheckBoxMenuItem indexActiveItem = new JCheckBoxMenuItem("Active");
+		final JCheckBoxMenuItem indexActiveItem = new JCheckBoxMenuItem(GuiMessages.getString("DoccoMainFrame.indexMenu.activeItem.label")); //$NON-NLS-1$
 		indexActiveItem.setMnemonic('a');
 		indexActiveItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -767,7 +767,7 @@ public class DoccoMainFrame extends JFrame {
 		indexActiveItem.setSelected(currentIndex.isActive());
 		currentIndexMenu.add(indexActiveItem);
 		
-		final JMenuItem updateIndexItem = new JMenuItem("Update Index");
+		final JMenuItem updateIndexItem = new JMenuItem(GuiMessages.getString("DoccoMainFrame.indexMenu.updateItem.label")); //$NON-NLS-1$
 		updateIndexItem.setMnemonic('u');
 		updateIndexItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -777,7 +777,7 @@ public class DoccoMainFrame extends JFrame {
 		updateIndexItem.setEnabled(!currentIndex.isWorking());
 		currentIndexMenu.add(updateIndexItem);
 		
-		final JMenuItem editFileMappingsItem = new JMenuItem("Edit File Mappings ...");
+		final JMenuItem editFileMappingsItem = new JMenuItem(GuiMessages.getString("DoccoMainFrame.indexMenu.editFileMappingsItem.label")); //$NON-NLS-1$
 		editFileMappingsItem.setMnemonic('f');
 		editFileMappingsItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -789,7 +789,7 @@ public class DoccoMainFrame extends JFrame {
 		});
 		currentIndexMenu.add(editFileMappingsItem);
 		
-		final JMenuItem deleteIndexItem = new JMenuItem("Delete Index");
+		final JMenuItem deleteIndexItem = new JMenuItem(GuiMessages.getString("DoccoMainFrame.indexMenu.deleteItem.label")); //$NON-NLS-1$
 		deleteIndexItem.setMnemonic('d');
 		deleteIndexItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -803,10 +803,10 @@ public class DoccoMainFrame extends JFrame {
     protected void deleteIndex(Index currentIndex) {
     	// TODO this next dialog will have yes/no buttons, which are (a) not clear, and (b) will be internationalized
     	// we should use "Delete" and "Abort" instead
-    	int rv = JOptionPane.showConfirmDialog(this, "A deleted index can be restored only by re-running\n" +
-    		                                         "the whole indexing process. Are you sure you want to\n" +
-    		                                         "delete the index '" + currentIndex.getName() + "'?", 
-    		                                   "Delete Index?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+    	int rv = JOptionPane.showConfirmDialog(this, "A deleted index can be restored only by re-running\n" + //$NON-NLS-1$
+    		                                         "the whole indexing process. Are you sure you want to\n" + //$NON-NLS-1$
+    		                                         "delete the index '" + currentIndex.getName() + "'?",  //$NON-NLS-1$ //$NON-NLS-2$
+    		                                   GuiMessages.getString("DoccoMainFrame.deleteIndexConfirmationDialog.title"), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE); //$NON-NLS-1$
     	if(rv != JOptionPane.YES_OPTION) {
     		return;
     	}
@@ -815,7 +815,7 @@ public class DoccoMainFrame extends JFrame {
     	try {
             currentIndex.delete();
         } catch (IOException e) {
-        	ErrorDialog.showError(this, e, "Index not fully deleted");
+        	ErrorDialog.showError(this, e, GuiMessages.getString("DoccoMainFrame.deleteIndexFailedDialog.title")); //$NON-NLS-1$
         }
 		createQueryEngine();
     }
@@ -823,7 +823,7 @@ public class DoccoMainFrame extends JFrame {
     private void createNewIndex(){
 		try {
             JFileChooser fileDialog = new JFileChooser(this.lastDirectoryIndexed);
-            fileDialog.setDialogTitle("Select directory to index");
+            fileDialog.setDialogTitle(GuiMessages.getString("DoccoMainFrame.indexDirectoryDialog.title")); //$NON-NLS-1$
             fileDialog.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             fileDialog.setMultiSelectionEnabled(false);
             
@@ -837,7 +837,7 @@ public class DoccoMainFrame extends JFrame {
             JComboBox analyzerComboBox = new JComboBox(analyzerNames.toArray());
             analyzerComboBox.setSelectedItem(GlobalConstants.DEFAULT_ANALYZER_NAME);
             
-            JButton mappingsButton = new JButton("Edit File Mappings...");
+            JButton mappingsButton = new JButton(GuiMessages.getString("DoccoMainFrame.indexDirectoryDialog.editFileMappingsButton.label")); //$NON-NLS-1$
             mappingsButton.addActionListener(new ActionListener(){
             	public void actionPerformed(ActionEvent e) {
                     List result = editDocumentMappings(documentMappings);
@@ -854,12 +854,12 @@ public class DoccoMainFrame extends JFrame {
             constraints.insets = new Insets(0,6,0,0);
             
             constraints.gridy = 0;
-            optionsPanel.add(new JLabel("Index name:"), constraints);
+            optionsPanel.add(new JLabel(GuiMessages.getString("DoccoMainFrame.indexDirectoryDialog.indexNameField.label")), constraints); //$NON-NLS-1$
             constraints.gridy++;
             optionsPanel.add(nameField, constraints);
             
             constraints.gridy++;
-            optionsPanel.add(new JLabel("Analyzer:"), constraints);
+            optionsPanel.add(new JLabel(GuiMessages.getString("DoccoMainFrame.indexDirectoryDialog.analyserSelector.label")), constraints); //$NON-NLS-1$
             constraints.gridy++;
             optionsPanel.add(analyzerComboBox, constraints);
 
@@ -870,7 +870,7 @@ public class DoccoMainFrame extends JFrame {
             optionsPanel.add(mappingsButton, constraints);
             
             fileDialog.setAccessory(optionsPanel);
-            int rv = fileDialog.showDialog(this, "Index");
+            int rv = fileDialog.showDialog(this, GuiMessages.getString("DoccoMainFrame.indexDirectoryDialog.indexButton.label")); //$NON-NLS-1$
             if(rv != JFileChooser.APPROVE_OPTION) {
             	return;
             }
@@ -881,8 +881,8 @@ public class DoccoMainFrame extends JFrame {
 			for (Iterator iter = this.indexes.iterator(); iter.hasNext();) {
                 Index index = (Index) iter.next();
                 if(index.getName().equals(indexName)) {
-                	JOptionPane.showMessageDialog(this, "Index name already in use, please choose another name.",
-                	                              "Duplicate Name", JOptionPane.ERROR_MESSAGE);
+                	JOptionPane.showMessageDialog(this, GuiMessages.getString("DoccoMainFrame.indexDirectoryDialog.indexExistsDialog.message"), //$NON-NLS-1$
+                	                              GuiMessages.getString("DoccoMainFrame.indexDirectoryDialog.indexExistsDialog.title"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
                 	createNewIndex();
                 	return;
                 }
@@ -901,7 +901,7 @@ public class DoccoMainFrame extends JFrame {
             for (Iterator iter = analyzers.iterator(); iter.hasNext();) {
                 Map.Entry entry = (Map.Entry) iter.next();
                 if(entry.getValue().equals(analyzerComboBox.getSelectedItem())) {
-                    String analyzerClassName = "";
+                    String analyzerClassName = ""; //$NON-NLS-1$
                     try {
                         analyzerClassName = (String) entry.getKey();
                         analyzer = (Analyzer) Class.forName(analyzerClassName).newInstance();
@@ -914,7 +914,7 @@ public class DoccoMainFrame extends JFrame {
             }
             this.indexes.add(Index.createIndex(indexName, indexLocation, inputDir, analyzer, documentMappings, callbackRecipient));
         } catch (IOException e) {
-			ErrorDialog.showError(this, e, "There has been an error creating a new index");
+			ErrorDialog.showError(this, e, GuiMessages.getString("DoccoMainFrame.indexCreationErrorDialog.title")); //$NON-NLS-1$
         }
 
 		createQueryEngine();
@@ -983,7 +983,7 @@ public class DoccoMainFrame extends JFrame {
 			}
 		});
 		
-		queryPanel.add(new JLabel("Search:"), 
+		queryPanel.add(new JLabel(GuiMessages.getString("DoccoMainFrame.searchField.label")),  //$NON-NLS-1$
 							new GridBagConstraints( 0, 0, 1, 1, 0, 0,
 													GridBagConstraints.WEST, GridBagConstraints.NONE,
 													new Insets(5,5,5,5), 0, 0));
@@ -1039,13 +1039,13 @@ public class DoccoMainFrame extends JFrame {
 				while(it.hasNext()) {
 					tooltip.append(it.next().toString());
 					if(it.hasNext()) {
-						tooltip.append("; ");
+						tooltip.append(GuiMessages.getString("DoccoMainFrame.diagramTooltip.seperator")); //$NON-NLS-1$
 					}
 				}
 				return tooltip.toString();
 			}
 		};
-		this.diagramView.setToolTipText("dummy to enable tooltips");
+		this.diagramView.setToolTipText("dummy to enable tooltips"); //$NON-NLS-1$
 		this.diagramView.setConceptInterpreter(new DirectConceptInterpreter());
 		ConceptInterpretationContext conceptInterpretationContext = new ConceptInterpretationContext(new DiagramHistory(),new EventBroker());
 		boolean showContingentsOnly = preferences.getBoolean(CONFIGURATION_SHOW_CONTINGENT_ONLY_NAME, true);
@@ -1094,8 +1094,8 @@ public class DoccoMainFrame extends JFrame {
 		
 		/// @todo we should use session management instead -- at the moment the width is still
 		/// too small
-		DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("root");
-		DefaultMutableTreeNode someChildNode = new DefaultMutableTreeNode("child");
+		DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("root"); //$NON-NLS-1$
+		DefaultMutableTreeNode someChildNode = new DefaultMutableTreeNode("child"); //$NON-NLS-1$
 		rootNode.add(someChildNode);
 		this.hitList = new JTree(rootNode);
 		this.hitList.setModel(null);
@@ -1134,11 +1134,11 @@ public class DoccoMainFrame extends JFrame {
 					HitReference reference = (HitReference) node.getUserObject();
 					try {
 						BrowserLauncher launcher = new BrowserLauncher();
-						launcher.openURLinBrowser("file:///" + reference.getDocument().get(GlobalConstants.FIELD_DOC_PATH).replace('\\', '/'));
+						launcher.openURLinBrowser("file:///" + reference.getDocument().get(GlobalConstants.FIELD_DOC_PATH).replace('\\', '/')); //$NON-NLS-1$
 					} catch (BrowserLaunchingInitializingException ex) {
-						ErrorDialog.showError(finalThis,ex,"Could not start browser to open document");
+						ErrorDialog.showError(finalThis,ex,GuiMessages.getString("DoccoMainFrame.documentOpenFailedDialog.title")); //$NON-NLS-1$
 					} catch (UnsupportedOperatingSystemException ex) {
-						ErrorDialog.showError(finalThis,ex,"Opening documents not supported on this system");
+						ErrorDialog.showError(finalThis,ex,GuiMessages.getString("DoccoMainFrame.documentCanNotBeOpenedAtAllDialog.title")); //$NON-NLS-1$
 					}
 				}
 			}
@@ -1173,7 +1173,7 @@ public class DoccoMainFrame extends JFrame {
 	private String getQueryString() {
         String queryString = this.queryField.getEditor().getItem().toString();
         if(queryString == null) {
-            queryString = "";
+            queryString = ""; //$NON-NLS-1$
         }
         return queryString;
     }
@@ -1188,10 +1188,10 @@ public class DoccoMainFrame extends JFrame {
 				Diagram2D diagram = DiagramGenerator.createDiagram(results, this.showPhantomNodesCheckBox.isSelected());
                 insertDiagramIntoView(diagram, nestDiagram);
             } catch (ParseException e) {
-            	ErrorDialog.showError(this, e, "Couldn't parse query");
+            	ErrorDialog.showError(this, e, GuiMessages.getString("DoccoMainFrame.queryNotUnderstoodDialog.title")); //$NON-NLS-1$
             	this.diagramView.showDiagram(null);
             } catch (IOException e) {
-				ErrorDialog.showError(this, e, "Error querying");
+				ErrorDialog.showError(this, e, GuiMessages.getString("DoccoMainFrame.queryFailedForUnspecifiedReasonDialog.title")); //$NON-NLS-1$
 				this.diagramView.showDiagram(null);
             }
             this.selectedConcepts = null;
@@ -1306,13 +1306,13 @@ public class DoccoMainFrame extends JFrame {
 				currentIndex.shutdown();
             }
         } catch (Exception e) {
-        	ErrorDialog.showError(this, e, "Could not shut down indexer");
+        	ErrorDialog.showError(this, e, GuiMessages.getString("DoccoMainFrame.indexerShutdownFailedDialog.title")); //$NON-NLS-1$
         }
 		
 		// store current position
 		preferences.storeWindowPlacement(this);
 		
-		preferences.putDouble("minLabelFontSize", this.diagramView.getMinimumFontSize());
+		preferences.putDouble("minLabelFontSize", this.diagramView.getMinimumFontSize()); //$NON-NLS-1$
 		preferences.putInt(CONFIGURATION_VERTICAL_DIVIDER_LOCATION,
 								this.viewsSplitPane.getDividerLocation());
 								
@@ -1352,7 +1352,7 @@ public class DoccoMainFrame extends JFrame {
                     printJob.setPrintable(this.diagramView, pageFormat);
                     printJob.print();
                 } catch (Exception e) {
-                    ErrorDialog.showError(this, e, "Printing failed");
+                    ErrorDialog.showError(this, e, GuiMessages.getString("DoccoMainFrame.printingFailedDialog.title")); //$NON-NLS-1$
                 }
             }
         }
@@ -1362,12 +1362,12 @@ public class DoccoMainFrame extends JFrame {
         try {
             if(index.isLocked()) {
                 int result = JOptionPane.showOptionDialog(this, 
-                        "The index is locked. This can occur if Docco was not closed properly,\n" +
-                		"or if some other program accesses the index. You can remove the lock,\n" +
-                		"but that might affect other programs you run on the same index.", 
-                		"Index '" + index.getName() + "' locked",
+                        "The index is locked. This can occur if Docco was not closed properly,\n" + //$NON-NLS-1$
+                		"or if some other program accesses the index. You can remove the lock,\n" + //$NON-NLS-1$
+                		"but that might affect other programs you run on the same index.",  //$NON-NLS-1$
+                		"Index '" + index.getName() + "' locked", //$NON-NLS-1$ //$NON-NLS-2$
                 		JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null, 
-                		new String[]{"Remove lock", "Do not index"}, "Do not index");
+                		new String[]{GuiMessages.getString("DoccoMainFrame.indexLockedDialog.removeLockOption.label"), GuiMessages.getString("DoccoMainFrame.indexLockedDialog.doNotIndexOption.label")}, GuiMessages.getString("DoccoMainFrame.indexLockedDialog.doNotIndexOption.label")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 if(result != 0) {
                     return;
                 }
@@ -1375,7 +1375,7 @@ public class DoccoMainFrame extends JFrame {
             }
         	index.updateIndex();
         } catch (Exception ex) {
-        	ErrorDialog.showError(this, ex, "Error updating the index");
+        	ErrorDialog.showError(this, ex, GuiMessages.getString("DoccoMainFrame.errorUpdatingIndexDialog.title")); //$NON-NLS-1$
         }
     }
 }
