@@ -9,6 +9,7 @@ package org.tockit.docco.indexer;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -19,6 +20,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.DateTools.Resolution;
 import org.tockit.docco.GlobalConstants;
+import org.tockit.docco.gui.GuiMessages;
 
 public class DocumentProcessor {
     private static Logger logger = Logger.getLogger(DocumentProcessor.class.getName());
@@ -38,7 +40,7 @@ public class DocumentProcessor {
 			DocumentHandlerMapping cur = (DocumentHandlerMapping) it.next();
 			if (cur.getFileFilter().accept(file)) {
 				try {
-					docSummary = cur.getHandler().parseDocument(file.toURL());
+					docSummary = cur.getHandler().parseDocument(file.toURI().toURL());
 					break;
 				}
 				catch (DocumentProcessingException e) {
@@ -58,8 +60,8 @@ public class DocumentProcessor {
 				throw caughtException;
 			}
 			else {
-				throw new UnknownFileTypeException("Don't know how to process this type of document " 
-										+ file.getPath());
+				throw new UnknownFileTypeException(MessageFormat.format(GuiMessages.getString("DocumentProcessor.unknownDocumentTypeError.text"),  //$NON-NLS-1$
+						new Object[]{file.getPath()}));
 			}
 		}
 	}
@@ -93,10 +95,9 @@ public class DocumentProcessor {
 			}
 			catch (RuntimeException e) {
 				/// @todo another nasty hack
-				if (e.getMessage().startsWith("time too early")) {
-					System.err.println("Caught exception \"time too early\" for time " + 
-											docSummary.modificationDate.toString() + 
-											", in document " + file.getAbsolutePath());
+				if (e.getMessage().startsWith("time too early")) { //$NON-NLS-1$
+					System.err.println(MessageFormat.format("Caught exception \"time too early\" for time {0}, in document {1}",  //$NON-NLS-1$
+											new Object[]{docSummary.modificationDate.toString(), file.getAbsolutePath()}));
 				}
 				else {
 					throw e;
@@ -117,7 +118,7 @@ public class DocumentProcessor {
 		addKeyword(doc, GlobalConstants.FIELD_DOC_PATH, file.getPath());
 		addTextField(doc, GlobalConstants.FIELD_DOC_PATH_WORDS, file.getParent().replace(File.separatorChar, ' '));
 		String fileName = file.getName();
-		int index = fileName.lastIndexOf(".") + 1;
+		int index = fileName.lastIndexOf(".") + 1; //$NON-NLS-1$
 		if (index > 0) {
 			String fileExtension = fileName.substring(index, fileName.length()).toLowerCase();
 			addTextField(doc, GlobalConstants.FIELD_DOC_EXTENSION, fileExtension);
@@ -142,12 +143,12 @@ public class DocumentProcessor {
 	}
 	
 	private void logDocument(Document doc) {
-		logger.log(Level.FINE, "DOCUMENT:: path = " + doc.get(GlobalConstants.FIELD_DOC_PATH) +
-						"\n\t date = " +  doc.get(GlobalConstants.FIELD_DOC_MODIFICATION_DATE) + 
-						"\n\t size = " +  doc.get(GlobalConstants.FIELD_DOC_SIZE) + 
-						"\n\t author = " + doc.get(GlobalConstants.FIELD_DOC_AUTHOR) + 
-						"\n\t summary = " + doc.get(GlobalConstants.FIELD_DOC_SUMMARY)+ 
-						"\n\t keywords = " + doc.get(GlobalConstants.FIELD_DOC_KEYWORD));
+		logger.log(Level.FINE, "DOCUMENT:: path = " + doc.get(GlobalConstants.FIELD_DOC_PATH) + //$NON-NLS-1$
+						"\n\t date = " +  doc.get(GlobalConstants.FIELD_DOC_MODIFICATION_DATE) +  //$NON-NLS-1$
+						"\n\t size = " +  doc.get(GlobalConstants.FIELD_DOC_SIZE) +  //$NON-NLS-1$
+						"\n\t author = " + doc.get(GlobalConstants.FIELD_DOC_AUTHOR) +  //$NON-NLS-1$
+						"\n\t summary = " + doc.get(GlobalConstants.FIELD_DOC_SUMMARY)+  //$NON-NLS-1$
+						"\n\t keywords = " + doc.get(GlobalConstants.FIELD_DOC_KEYWORD)); //$NON-NLS-1$
 		
 	}
 

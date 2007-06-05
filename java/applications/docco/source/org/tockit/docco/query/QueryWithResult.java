@@ -36,7 +36,7 @@ public class QueryWithResult {
 	}
 
 	public String toString() {
-		String str = "QueryWithResult [query:" + query + ", result: " + resultSet + " ]";
+		String str = "QueryWithResult [query:" + query + ", result: " + resultSet + " ]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		return str;
 	}
 

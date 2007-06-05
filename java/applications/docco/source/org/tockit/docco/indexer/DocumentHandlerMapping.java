@@ -7,11 +7,14 @@
  */
 package org.tockit.docco.indexer;
 
+import java.text.MessageFormat;
+
 import org.tockit.docco.documenthandler.DocumentHandler;
 import org.tockit.docco.documenthandler.DocumentHandlerRegistry;
 import org.tockit.docco.filefilter.DoccoFileFilter;
 import org.tockit.docco.filefilter.FileFilterFactory;
 import org.tockit.docco.filefilter.FileFilterFactoryRegistry;
+import org.tockit.docco.gui.GuiMessages;
 
 public class DocumentHandlerMapping {
 	private DoccoFileFilter fileFilter;
@@ -19,10 +22,10 @@ public class DocumentHandlerMapping {
 	
 	public DocumentHandlerMapping(DoccoFileFilter fileFilter, DocumentHandler docHandler) {
 		if(fileFilter == null) {
-			throw new IllegalArgumentException("File filter must not be null");
+			throw new IllegalArgumentException(GuiMessages.getString("DocumentHandlerMapping.illegalArgumentMessageFilterMustNotBeNull.text")); //$NON-NLS-1$
 		}
 		if(docHandler == null) {
-			throw new IllegalArgumentException("Document handler must not be null");
+			throw new IllegalArgumentException(GuiMessages.getString("DocumentHandlerMapping.illegalArgumentMessageDocumentHandlerMustNotBeNull.text")); //$NON-NLS-1$
 		}
 
 		this.fileFilter = fileFilter;
@@ -37,17 +40,17 @@ public class DocumentHandlerMapping {
 		String docHandlerClassName = serialForm.substring(lastColonIndex + 1);
 		FileFilterFactory fileFilterFactory = FileFilterFactoryRegistry.getFileFilterFactoryByName(fileFilterClassName);
 		if(fileFilterFactory == null) {
-			throw new ClassNotFoundException("File filter type not available in this installation (plugin missing?): " + fileFilterClassName);
+			throw new ClassNotFoundException(MessageFormat.format(GuiMessages.getString("DocumentHandlerMapping.fileFilterTypeNotFoundError.text"), new Object[]{fileFilterClassName})); //$NON-NLS-1$
 		}
 		this.docHandler = DocumentHandlerRegistry.getDocumentHandlerByName(docHandlerClassName);
 		if(docHandler == null) {
-			throw new ClassNotFoundException("Document handler not available in this installation (plugin missing?) " + docHandlerClassName);
+			throw new ClassNotFoundException(MessageFormat.format(GuiMessages.getString("DocumentHandlerMapping.documentHandlerNotFoundError.text"), new Object[]{docHandlerClassName})); //$NON-NLS-1$
 		}
 		this.fileFilter = fileFilterFactory.createNewFilter(filterExpression);
 	}
 	
 	public String getSerialization() {
-		return this.fileFilter.toSerializationString() + ":" + this.docHandler.getClass().getName();
+		return this.fileFilter.toSerializationString() + ":" + this.docHandler.getClass().getName(); //$NON-NLS-1$
 	}
 	
 	public DocumentHandler getHandler() {
@@ -59,8 +62,8 @@ public class DocumentHandlerMapping {
 	}
 	
 	public String toString() {
-		String str = "DocumentHandlerMapping: from " + this.fileFilter.toString() + 
-						" to " + this.docHandler.getDisplayName();
+		String str = "DocumentHandlerMapping: from " + this.fileFilter.toString() +  //$NON-NLS-1$
+						" to " + this.docHandler.getDisplayName(); //$NON-NLS-1$
 		return str;
 	}
 }

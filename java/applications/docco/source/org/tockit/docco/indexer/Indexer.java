@@ -10,6 +10,7 @@ package org.tockit.docco.indexer;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -22,6 +23,7 @@ import org.apache.lucene.document.DateTools.Resolution;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.tockit.docco.GlobalConstants;
+import org.tockit.docco.gui.GuiMessages;
 
 public class Indexer implements Runnable {
     public interface CallbackRecipient {
@@ -97,7 +99,7 @@ public class Indexer implements Runnable {
 			writer.optimize();
 			writer.close();
 			
-			showFeedbackMessage("Ready!");
+			showFeedbackMessage(GuiMessages.getString("Indexer.feedbackMessageReady.text")); //$NON-NLS-1$
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -145,9 +147,8 @@ public class Indexer implements Runnable {
 			// might be broken. We don't want to stop indexing whenever one document fails to be
 			// read properly, so we just ignore it for now. Of course we should consider
 			// @todo some error handling/reporting
-			System.err.println("Error processing document " + file.getAbsolutePath() 
-										+ ": " + e.getMessage() 
-										+ " (Cause: " + e.getCause() + ")");
+			System.err.println(MessageFormat.format(GuiMessages.getString("Indexer.documentProcessingErrorMessage.text"), //$NON-NLS-1$
+					new Object[]{file.getAbsolutePath(),e.getMessage(),e.getCause()}));
 			//e.printStackTrace();
 		} finally {
 			writer.close();
@@ -156,7 +157,8 @@ public class Indexer implements Runnable {
 
 
 	private void showProgress(int indexed, String dir) {
-		showFeedbackMessage("Indexing: " + indexed + " entries in index" + " (" + dir + ")");
+		showFeedbackMessage(MessageFormat.format(GuiMessages.getString("Indexer.feedbackMessageProgressCount.text"),  //$NON-NLS-1$
+				new Object[]{String.valueOf(indexed), dir}));
 	}
 
 	private void showFeedbackMessage(String string) {
