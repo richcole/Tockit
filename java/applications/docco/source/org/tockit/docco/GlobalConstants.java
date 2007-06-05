@@ -65,16 +65,16 @@ public class GlobalConstants {
 			ANALYZERS.load(GlobalConstants.class.getResourceAsStream(ANALYZERS_PROPERTIES_FILE_NAME));
 			analyserClassName = ANALYZERS.getProperty("default"); //$NON-NLS-1$
 			if(analyserClassName == null) {
-				System.err.println(CliMessages.getString("GlobalConstants.AnalyserListHasNoDefaultWarning.text")); //$NON-NLS-1$
+				System.err.println(CliMessages.getString("GlobalConstants.analyserListHasNoDefaultWarning.text")); //$NON-NLS-1$
 			} else {
 				analyzerName = ANALYZERS.getProperty(analyserClassName);
 				if(analyzerName == null) {
-					System.err.println(MessageFormat.format(CliMessages.getString("GlobalConstants.AnalyserListHasUnknownDefaultWarning.text"), new Object[]{analyserClassName})); //$NON-NLS-1$
+					System.err.println(MessageFormat.format(CliMessages.getString("GlobalConstants.analyserListHasUnknownDefaultWarning.text"), new Object[]{analyserClassName})); //$NON-NLS-1$
 				}
 			}
 			ANALYZERS.remove("default"); //$NON-NLS-1$
 		} catch (Exception e) {
-			System.err.println(MessageFormat.format(CliMessages.getString("GlobalConstants.FailedToLoadAnalyserListWarning.text"), new Object[]{ANALYZERS_PROPERTIES_FILE_NAME})); //$NON-NLS-1$
+			System.err.println(MessageFormat.format(CliMessages.getString("GlobalConstants.failedToLoadAnalyserListWarning.text"), new Object[]{ANALYZERS_PROPERTIES_FILE_NAME})); //$NON-NLS-1$
 			e.printStackTrace();
 		}
 		DEFAULT_ANALYZER_NAME = analyzerName;
@@ -82,7 +82,7 @@ public class GlobalConstants {
 		try {
 			analyzer = (Analyzer) Class.forName(analyserClassName).newInstance();
 		} catch (Exception e) {
-			System.err.println(MessageFormat.format(CliMessages.getString("GlobalConstants.FailedToInitializeDefaultAnalyserWarning.text"), new Object[]{DEFAULT_ANALYZER_NAME})); //$NON-NLS-1$
+			System.err.println(MessageFormat.format(CliMessages.getString("GlobalConstants.failedToInitializeDefaultAnalyserWarning.text"), new Object[]{DEFAULT_ANALYZER_NAME})); //$NON-NLS-1$
 			e.printStackTrace();
 			analyzer = new StandardAnalyzer();
 		}
