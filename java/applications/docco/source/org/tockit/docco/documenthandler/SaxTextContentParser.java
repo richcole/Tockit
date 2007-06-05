@@ -31,7 +31,7 @@ class SaxTextContentParser extends DefaultHandler {
 		this.elementBuffer = new StringBuffer();
 		this.contentBuffer = new StringBuffer();
 
-		inputSource.setSystemId("just getting SAX parser to try to resolve");
+		inputSource.setSystemId("just getting SAX parser to try to resolve"); //$NON-NLS-1$
 
 		SAXParserFactory parserFactory = SAXParserFactory.newInstance();
 		parserFactory.setValidating(false);
@@ -42,7 +42,7 @@ class SaxTextContentParser extends DefaultHandler {
 	}
 	
 	public InputSource resolveEntity (String publicId, String systemId) throws SAXException {
-		InputSource mockSource = new InputSource(new StringReader(""));
+		InputSource mockSource = new InputSource(new StringReader("")); //$NON-NLS-1$
 		return mockSource;
 	}
 
@@ -62,7 +62,7 @@ class SaxTextContentParser extends DefaultHandler {
 
     private void flushElementBufferIntoContent() {
         contentBuffer.append(elementBuffer);
-		contentBuffer.append(" ");
+		contentBuffer.append(" "); //$NON-NLS-1$
         elementBuffer.setLength(0);
     }
 }

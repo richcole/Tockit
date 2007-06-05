@@ -36,6 +36,7 @@ import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -119,6 +120,7 @@ import org.tockit.canvas.events.CanvasItemDraggedEvent;
 import org.tockit.canvas.events.CanvasItemEventFilter;
 import org.tockit.canvas.events.CanvasItemSelectedEvent;
 import org.tockit.canvas.imagewriter.DiagramExportSettings;
+import org.tockit.docco.CliMessages;
 import org.tockit.docco.GlobalConstants;
 import org.tockit.docco.documenthandler.DocumentHandlerRegistry;
 import org.tockit.docco.fca.DiagramGenerator;
@@ -449,14 +451,12 @@ public class DoccoMainFrame extends JFrame {
 				String errorMsg = ""; //$NON-NLS-1$
 				for (int i = 0; i < errors.length; i++) {
 					PluginLoader.Error error = errors[i];
-					errorMsg += "Plugin location:\n\t" + error.getPluginLocation().getAbsolutePath();
-					errorMsg += "\n";
-					errorMsg += "Error:\n\t" + error.getException().getMessage();
-					errorMsg += "\n\n";
+					errorMsg = MessageFormat.format(GuiMessages.getString("DoccoMainFrame.errorPluginLoadingDialog.entryText"),  //$NON-NLS-1$
+							new Object[]{error.getPluginLocation().getAbsolutePath(),error.getException().getMessage()});
 					error.getException().printStackTrace();
 				}
-				JOptionPane.showMessageDialog(this, "There were errors loading plugins: \n" + errorMsg,
-											"Error loading plugins", 
+				JOptionPane.showMessageDialog(this, GuiMessages.getString("DoccoMainFrame.errorPluginLoadingDialog.header") + "\n" + errorMsg, //$NON-NLS-1$ //$NON-NLS-2$
+											GuiMessages.getString("DoccoMainFrame.errorPluginLoadingDialog.title"),  //$NON-NLS-1$
 											JOptionPane.WARNING_MESSAGE);
 			}
 		}
@@ -497,7 +497,7 @@ public class DoccoMainFrame extends JFrame {
 		createQueryEngine();
 		//@todo add force access into Index class
         if(forceIndexAccess) {
-            System.err.println("WARNING: forcing index access is currently diabled");
+            System.err.println(CliMessages.getString("DoccoMainFrame.forcingIndexAccessDisabledWarning.text"));
 //        				JOptionPane.showMessageDialog(this, "The index is locked. You can run only one instance of Docco at one time.\n" +
 //        											  "If you want to override this error run Docco with the '-forceIndexAccess' option.",
 //        											  "Index locked", JOptionPane.ERROR_MESSAGE);
@@ -803,9 +803,9 @@ public class DoccoMainFrame extends JFrame {
     protected void deleteIndex(Index currentIndex) {
     	// TODO this next dialog will have yes/no buttons, which are (a) not clear, and (b) will be internationalized
     	// we should use "Delete" and "Abort" instead
-    	int rv = JOptionPane.showConfirmDialog(this, "A deleted index can be restored only by re-running\n" + //$NON-NLS-1$
+    	int rv = JOptionPane.showConfirmDialog(this, MessageFormat.format("A deleted index can be restored only by re-running\n" + //$NON-NLS-1$
     		                                         "the whole indexing process. Are you sure you want to\n" + //$NON-NLS-1$
-    		                                         "delete the index '" + currentIndex.getName() + "'?",  //$NON-NLS-1$ //$NON-NLS-2$
+    		                                         "delete the index '{0}'?", new Object[]{currentIndex.getName()}),  //$NON-NLS-1$ //$NON-NLS-2$
     		                                   GuiMessages.getString("DoccoMainFrame.deleteIndexConfirmationDialog.title"), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE); //$NON-NLS-1$
     	if(rv != JOptionPane.YES_OPTION) {
     		return;
@@ -830,7 +830,7 @@ public class DoccoMainFrame extends JFrame {
 			final List documentMappings = new ArrayList(DocumentHandlerRegistry.getDefaultMappings());
 
             JPanel optionsPanel = new JPanel(new GridBagLayout());
-            JTextField nameField = new JTextField("Index " + (this.indexes.size() + 1));
+            JTextField nameField = new JTextField(GuiMessages.getString("DoccoMainFrame.defaultIndexName") + (this.indexes.size() + 1)); //$NON-NLS-1$
             
             Collection analyzerNames = GlobalConstants.ANALYZERS.values();
             // TODO sort list
@@ -907,7 +907,7 @@ public class DoccoMainFrame extends JFrame {
                         analyzer = (Analyzer) Class.forName(analyzerClassName).newInstance();
                     } catch (Exception e) {
                         // TODO give feedback to the user
-                        System.err.println("Could not instantiate '" + analyzerClassName + "', StandardAnalyzer will be used.");
+                        System.err.println(MessageFormat.format(CliMessages.getString("DoccoMainFrame.selectedAnalyserNotAvailableWarning.text"), new Object[]{analyzerClassName}));
                         e.printStackTrace();
                     }
                 }
@@ -1362,10 +1362,8 @@ public class DoccoMainFrame extends JFrame {
         try {
             if(index.isLocked()) {
                 int result = JOptionPane.showOptionDialog(this, 
-                        "The index is locked. This can occur if Docco was not closed properly,\n" + //$NON-NLS-1$
-                		"or if some other program accesses the index. You can remove the lock,\n" + //$NON-NLS-1$
-                		"but that might affect other programs you run on the same index.",  //$NON-NLS-1$
-                		"Index '" + index.getName() + "' locked", //$NON-NLS-1$ //$NON-NLS-2$
+                        GuiMessages.getString("DoccoMainFrame.indexLockedDialog.text"), //$NON-NLS-1$
+                		MessageFormat.format(GuiMessages.getString("DoccoMainFrame.indexLockedDialog.title"), new Object[]{index.getName()}), //$NON-NLS-1$
                 		JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null, 
                 		new String[]{GuiMessages.getString("DoccoMainFrame.indexLockedDialog.removeLockOption.label"), GuiMessages.getString("DoccoMainFrame.indexLockedDialog.doNotIndexOption.label")}, GuiMessages.getString("DoccoMainFrame.indexLockedDialog.doNotIndexOption.label")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 if(result != 0) {

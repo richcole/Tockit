@@ -18,6 +18,7 @@ import org.xml.sax.SAXException;
 
 import org.tockit.docco.filefilter.DoccoFileFilter;
 import org.tockit.docco.filefilter.ExtensionFileFilterFactory;
+import org.tockit.docco.gui.GuiMessages;
 import org.tockit.docco.indexer.DocumentSummary;
 
 
@@ -31,17 +32,17 @@ public class XmlDocumentHandler implements DocumentHandler  {
 			documentSummary.contentReader = new StringReader(saxParser.parse(inputSource));
 			return documentSummary;
 		} catch (SAXException e) {
-			throw new DocumentHandlerException("Couldn't parse XML: " + e.getMessage(), e);
+			throw new DocumentHandlerException(GuiMessages.getString("XmlDocumentHandler.xmlParsingErrorHeader.text") + e.getMessage(), e); //$NON-NLS-1$
 		} catch (ParserConfigurationException e) {
-			throw new DocumentHandlerException("Couldn't parse XML: " + e.getMessage(), e);
+			throw new DocumentHandlerException(GuiMessages.getString("XmlDocumentHandler.xmlParsingErrorHeader.text") + e.getMessage(), e); //$NON-NLS-1$
 		}
 	}
 
 	public String getDisplayName() {
-		return "XML document handler";
+		return GuiMessages.getString("XmlDocumentHandler.name"); //$NON-NLS-1$
 	}
 
 	public DoccoFileFilter getDefaultFilter() {
-		return new ExtensionFileFilterFactory().createNewFilter("xml;svg");
+		return new ExtensionFileFilterFactory().createNewFilter("xml;svg"); //$NON-NLS-1$
 	}
 }

@@ -19,6 +19,7 @@ import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.tockit.docco.GlobalConstants;
+import org.tockit.docco.gui.GuiMessages;
 
 public class QueryDecomposer {
 	public class LabeledQuery {
@@ -56,7 +57,7 @@ public class QueryDecomposer {
 				return result;
 			}
 		} catch (ParseException pexc) {
-			ErrorDialog.showError(null, pexc, "Query could not be parsed");
+			ErrorDialog.showError(null, pexc, GuiMessages.getString("QueryDecomposer.queryParsingFailedErrorDialog.title")); //$NON-NLS-1$
 		}
 		return new ArrayList();
 	}	
@@ -81,18 +82,18 @@ public class QueryDecomposer {
 					}
 				}
 				if(!havePositive) {
-					throw new ParseException("Query does not contain positive clause.");
+					throw new ParseException(GuiMessages.getString("QueryDecomposer.queryLacksPositiveClauseError.text")); //$NON-NLS-1$
 				}
 			}
 			// TODO this next bit handles only the first clause in a conjunction, we need something more complex here
 			String label = curClause.getQuery().toString();
-			if(label.startsWith(GlobalConstants.FIELD_QUERY_BODY + ":")) {
+			if(label.startsWith(GlobalConstants.FIELD_QUERY_BODY + ":")) { //$NON-NLS-1$
 				label = label.substring(GlobalConstants.FIELD_QUERY_BODY.length() + 1);				
 			}
 			// mark prohibited ones, we don't care about marking required ones since it
 			// doesn't make a difference for us 
 			if(curClause.isProhibited()) {
-				label = "-" + label;
+				label = "-" + label; //$NON-NLS-1$
 			}
 			result.add(new LabeledQuery(label, newQuery));
 		}

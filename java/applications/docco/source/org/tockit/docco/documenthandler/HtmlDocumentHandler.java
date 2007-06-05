@@ -25,6 +25,7 @@ import javax.swing.text.html.parser.ParserDelegator;
 
 import org.tockit.docco.filefilter.DoccoFileFilter;
 import org.tockit.docco.filefilter.ExtensionFileFilterFactory;
+import org.tockit.docco.gui.GuiMessages;
 import org.tockit.docco.indexer.DocumentSummary;
 
 public class HtmlDocumentHandler implements DocumentHandler {
@@ -37,12 +38,12 @@ public class HtmlDocumentHandler implements DocumentHandler {
 		private boolean tagIsTitle = false;
 			
 		StringBuffer docTextContent = new StringBuffer();
-		String metaDescription = "";
-		String metaSummary = "";
+		String metaDescription = ""; //$NON-NLS-1$
+		String metaSummary = ""; //$NON-NLS-1$
 		List metaAuthors = new LinkedList();
 		List metaKeywords = new LinkedList();
 		Date metaDate;
-		String title = "";
+		String title = ""; //$NON-NLS-1$
 
 		public void handleText(char[] data, int pos) {
 			String text = new String(data);
@@ -70,23 +71,23 @@ public class HtmlDocumentHandler implements DocumentHandler {
 					// case of <meta content="text/html; charset=ISO-8859-1"/>
 					return;
 				}
-				if (name.equalsIgnoreCase("description")) {
+				if (name.equalsIgnoreCase("description")) { //$NON-NLS-1$
 					metaDescription += content;
 					return;
 				}
-				if (name.equalsIgnoreCase("summary")) {
+				if (name.equalsIgnoreCase("summary")) { //$NON-NLS-1$
 					metaSummary += content;
 					return;
 				}
-				if (name.equalsIgnoreCase("author")) {
+				if (name.equalsIgnoreCase("author")) { //$NON-NLS-1$
 					metaAuthors.add(content);
 					return;
 				}
-				if (name.equalsIgnoreCase("keywords")) {
+				if (name.equalsIgnoreCase("keywords")) { //$NON-NLS-1$
 					metaKeywords.add(content);
 					return;
 				}
-				if (name.equalsIgnoreCase("date")) {
+				if (name.equalsIgnoreCase("date")) { //$NON-NLS-1$
 					try {
 						metaDate = DateFormat.getDateInstance().parse(content);
 					} catch (ParseException e) {
@@ -119,21 +120,21 @@ public class HtmlDocumentHandler implements DocumentHandler {
 	}
 
 	private String getSummary(CallbackHandler handler) {
-		String summary = "";
+		String summary = ""; //$NON-NLS-1$
 		if (handler.metaDescription.length() > 0 ) {
 			summary = handler.metaDescription;
 		}
 		if (handler.metaSummary.length() > 0) {
-			summary += "\n" + handler.metaSummary;
+			summary += "\n" + handler.metaSummary; //$NON-NLS-1$
 		}
 		return summary;
 	}
 
 	public String getDisplayName() {
-		return "HTML";
+		return GuiMessages.getString("HtmlDocumentHandler.name"); //$NON-NLS-1$
 	}
 
     public DoccoFileFilter getDefaultFilter() {
-        return new ExtensionFileFilterFactory().createNewFilter("htm;html;xhtml");
+        return new ExtensionFileFilterFactory().createNewFilter("htm;html;xhtml"); //$NON-NLS-1$
     }
 }

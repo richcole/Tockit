@@ -19,6 +19,7 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.MessageFormat;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -50,7 +51,7 @@ public class HtmlDisplayDialog {
 							doc.processHTMLFrameHyperlinkEvent(evt);
 						} else {
 							try {
-								if (e.getURL().getProtocol().startsWith("http")) {
+								if (e.getURL().getProtocol().startsWith("http")) { //$NON-NLS-1$
 									BrowserLauncher.openURL(e.getURL().toString());
 								} else {
 									pane.setPage(e.getURL());									
@@ -68,7 +69,7 @@ public class HtmlDisplayDialog {
 			public ViewerDialog(Frame frame, String title) {
 				super(frame, title, true);
 
-				final JButton closeButton = new JButton("Close");
+				final JButton closeButton = new JButton(GuiMessages.getString("HtmlDisplayDialog.closeButton.label")); //$NON-NLS-1$
 				closeButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						closeDialog();
@@ -84,7 +85,7 @@ public class HtmlDisplayDialog {
 				buttonPane.add(closeButton);
 
 				this.textArea = new JEditorPane();
-				this.textArea.setContentType("text/html");
+				this.textArea.setContentType("text/html"); //$NON-NLS-1$
 				this.textArea.setEditable(false);
 				this.textArea.addHyperlinkListener(new Hyperactive());
 
@@ -112,7 +113,7 @@ public class HtmlDisplayDialog {
 				if (fileURL != null) {
 					HTMLDocument doc = (HTMLDocument) this.textArea.getDocument();
 					String fileUrlString = fileURL.toString();
-					int lastSlashUndex = fileUrlString.lastIndexOf("/");
+					int lastSlashUndex = fileUrlString.lastIndexOf("/"); //$NON-NLS-1$
 					String baseUrlString = fileUrlString.substring(0, lastSlashUndex);
 					try {
 						URL baseURL = new URL(baseUrlString);
@@ -120,13 +121,13 @@ public class HtmlDisplayDialog {
 						this.textArea.setPage(fileURL);
 					}
 					catch (MalformedURLException e) {
-						this.textArea.setText("Could not find base URL for '" + fileURL + "':" + e.getMessage());
+						this.textArea.setText(MessageFormat.format(GuiMessages.getString("HtmlDisplayDialog.baseUrlNotFoundError.text"), new Object[]{fileURL, e.getMessage()})); //$NON-NLS-1$
 					} catch (IOException e) {
-						this.textArea.setText("Could not open url '" + fileURL + "':" + e.getMessage());
+						this.textArea.setText(MessageFormat.format(GuiMessages.getString("HtmlDisplayDialog.openUrlFailedError.text"), new Object[]{fileURL, e.getMessage()})); //$NON-NLS-1$
 					}
 					return;
 				}
-				this.textArea.setText("Could not find \"url\" attribute on &lt;externalHTML&gt;");
+				this.textArea.setText(GuiMessages.getString("HtmlDisplayDialog.urlAttributeNotFoundError.text")); //$NON-NLS-1$
 			}
 		}
 

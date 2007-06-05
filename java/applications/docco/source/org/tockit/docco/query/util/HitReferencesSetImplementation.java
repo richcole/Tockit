@@ -79,11 +79,11 @@ public class HitReferencesSetImplementation implements HitReferencesSet {
 	}
 	
 	public String toString() {
-		String str = "HitReferenceSet: size = " + this.references.size() + "\n";
+		String str = "HitReferenceSet: size = " + this.references.size() + "\n"; //$NON-NLS-1$ //$NON-NLS-2$
 		Iterator it = this.references.iterator();
 		while (it.hasNext()) {
 			HitReference cur = (HitReference) it.next();
-			str = str + "\t" + cur.getDocument().getField("path") + " (score: " + cur.getScore() + ")\n";
+			str = str + "\t" + cur.getDocument().getField("path") + " (score: " + cur.getScore() + ")\n"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		}
 		return str;
 	}
