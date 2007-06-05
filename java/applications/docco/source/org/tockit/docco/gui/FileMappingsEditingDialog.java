@@ -43,10 +43,10 @@ public class FileMappingsEditingDialog extends JDialog {
 	
 	private List documentMappings;
 	
-	private JButton upButton = new JButton("Move Up");
-	private JButton downButton = new JButton("Move Down");
-	private JButton addButton = new JButton("Add");
-	private JButton removeButton = new JButton("Remove");
+	private JButton upButton = new JButton(GuiMessages.getString("FileMappingsEditingDialog.upButton.label")); //$NON-NLS-1$
+	private JButton downButton = new JButton(GuiMessages.getString("FileMappingsEditingDialog.downButton.label")); //$NON-NLS-1$
+	private JButton addButton = new JButton(GuiMessages.getString("FileMappingsEditingDialog.addButton.label")); //$NON-NLS-1$
+	private JButton removeButton = new JButton(GuiMessages.getString("FileMappingsEditingDialog.removeButton.label")); //$NON-NLS-1$
 
 	private JList mappingListView;
 	
@@ -75,7 +75,7 @@ public class FileMappingsEditingDialog extends JDialog {
 	
 	public FileMappingsEditingDialog(Frame parent, List documentMappings) 
 													throws HeadlessException {
-		super(parent, "Edit File Mappings Configuration", true);
+		super(parent, GuiMessages.getString("FileMappingsEditingDialog.dialog.title"), true); //$NON-NLS-1$
 		this.documentMappings = documentMappings;
 
 		this.model = new DefaultListModel();
@@ -128,8 +128,8 @@ public class FileMappingsEditingDialog extends JDialog {
 		int row;
 		JPanel displayDetailsPanel = new JPanel (new GridBagLayout());
 		
-		JLabel fileFilterLabel = new JLabel("File Filter:");
-		JLabel docHandlerLabel = new JLabel("Document Handler:");
+		JLabel fileFilterLabel = new JLabel(GuiMessages.getString("FileMappingsEditingDialog.fileFilterSelector.label")); //$NON-NLS-1$
+		JLabel docHandlerLabel = new JLabel(GuiMessages.getString("FileMappingsEditingDialog.documentHandlerSelector.label")); //$NON-NLS-1$
 		
 		row = 0;
 		displayDetailsPanel.add(fileFilterLabel,new GridBagConstraints(0, row, 
@@ -169,16 +169,16 @@ public class FileMappingsEditingDialog extends JDialog {
 		
 		displayDetailsPanel.setBorder(BorderFactory.createTitledBorder(
 								BorderFactory.createEtchedBorder(),
-								" File Type Details: "));
+								GuiMessages.getString("FileMappingsEditingDialog.detailsSection.label"))); //$NON-NLS-1$
 								
 		return displayDetailsPanel;
 	}
 
 	private JPanel createMappingEditingPanel() {
-		upButton.setToolTipText("Move selected mapping up in the list");
-		downButton.setToolTipText("Move selected mapping down in the list");
-		addButton.setToolTipText("Add new mapping");
-		removeButton.setToolTipText("Remove selected mapping");
+		upButton.setToolTipText(GuiMessages.getString("FileMappingsEditingDialog.upButton.tooltip")); //$NON-NLS-1$
+		downButton.setToolTipText(GuiMessages.getString("FileMappingsEditingDialog.downButton.tooltip")); //$NON-NLS-1$
+		addButton.setToolTipText(GuiMessages.getString("FileMappingsEditingDialog.addButton.tooltip")); //$NON-NLS-1$
+		removeButton.setToolTipText(GuiMessages.getString("FileMappingsEditingDialog.removeButton.tooltip")); //$NON-NLS-1$
 		
 		upButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -241,7 +241,7 @@ public class FileMappingsEditingDialog extends JDialog {
 		JPanel editingPanel = new JPanel(new GridBagLayout());
 		
 		int row = 0;
-		JLabel headingLabel = new JLabel( "Specify document handlers for different file types ");
+		JLabel headingLabel = new JLabel( GuiMessages.getString("FileMappingsEditingDialog.editSectionHint.text")); //$NON-NLS-1$
 		
 		editingPanel.add(headingLabel ,new GridBagConstraints(0, row, 	// gridx, gridy
 								2, 1, 							// gridwidth, gridheight
@@ -300,7 +300,7 @@ public class FileMappingsEditingDialog extends JDialog {
 		
 		editingPanel.setBorder(BorderFactory.createTitledBorder(
 								BorderFactory.createEtchedBorder(),
-								"Edit File Filter Settings"));
+								GuiMessages.getString("FileMappingsEditingDialog.editSection.label"))); //$NON-NLS-1$
 		return editingPanel;
 	}
 	
@@ -308,8 +308,8 @@ public class FileMappingsEditingDialog extends JDialog {
 	private JPanel createButtonsPanel () {
 		JPanel panel = new JPanel();
 
-		okButton = new JButton("OK");
-		okButton.setToolTipText("Save changes and exit this dialog");
+		okButton = new JButton(GuiMessages.getString("FileMappingsEditingDialog.okButton.label")); //$NON-NLS-1$
+		okButton.setToolTipText(GuiMessages.getString("FileMappingsEditingDialog.okButton.tooltip")); //$NON-NLS-1$
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Object[] mappingArray = model.toArray();
@@ -318,8 +318,8 @@ public class FileMappingsEditingDialog extends JDialog {
 			}
 		});
 		
-		JButton cancelButton = new JButton("Cancel");
-		cancelButton.setToolTipText("Close dialog without saving any changes that may have been made");
+		JButton cancelButton = new JButton(GuiMessages.getString("FileMappingsEditingDialog.cancelButton.label")); //$NON-NLS-1$
+		cancelButton.setToolTipText(GuiMessages.getString("FileMappingsEditingDialog.cancelButton.tooltip")); //$NON-NLS-1$
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				documentMappings = null;

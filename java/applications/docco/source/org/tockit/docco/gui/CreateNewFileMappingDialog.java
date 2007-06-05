@@ -61,7 +61,7 @@ public class CreateNewFileMappingDialog extends JDialog {
 												boolean cellHasFocus) {
 			
 			super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-			if ( (value instanceof String) && ( ((String) value).startsWith("<")) ) {
+			if ( (value instanceof String) && ( ((String) value).startsWith("<")) ) { //$NON-NLS-1$
 				setText((String) value);
 			}
 			else {
@@ -81,7 +81,7 @@ public class CreateNewFileMappingDialog extends JDialog {
 			
 			super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
-			if ( (value instanceof String) && ( ((String) value).startsWith("<")) ) {
+			if ( (value instanceof String) && ( ((String) value).startsWith("<")) ) { //$NON-NLS-1$
 				setText((String) value);
 				return this;
 			}
@@ -97,7 +97,7 @@ public class CreateNewFileMappingDialog extends JDialog {
 
 	public CreateNewFileMappingDialog(Dialog owner) 
 										throws HeadlessException {
-		super(owner, "Create new mapping", true);
+		super(owner, GuiMessages.getString("CreateNewFileMappingDialog.dialog.title"), true); //$NON-NLS-1$
 		
 		initAllComboBoxModels();
 		
@@ -171,11 +171,11 @@ public class CreateNewFileMappingDialog extends JDialog {
 		dataEntryConstraint.weightx = 1;
 		labelConstraint.gridy = GridBagConstraints.RELATIVE;
 		
-        fileFilterPanel.add(new JLabel("Filter Type:"),	labelConstraint);
+        fileFilterPanel.add(new JLabel(GuiMessages.getString("CreateNewFileMappingDialog.filterTypeChooser.label")),	labelConstraint); //$NON-NLS-1$
 		fileFilterPanel.add(fileFilterFactoryChooser, dataEntryConstraint);
-		fileFilterPanel.add(new JLabel("Filter Expression:"), labelConstraint);
+		fileFilterPanel.add(new JLabel(GuiMessages.getString("CreateNewFileMappingDialog.filterExpressionField.label")), labelConstraint); //$NON-NLS-1$
 		fileFilterPanel.add(extensionField, dataEntryConstraint);
-		fileFilterPanel.add(new JLabel("Document Handler:"), labelConstraint);
+		fileFilterPanel.add(new JLabel(GuiMessages.getString("CreateNewFileMappingDialog.documentHandlerChooser.label")), labelConstraint); //$NON-NLS-1$
 		fileFilterPanel.add(docHandlersChooser, dataEntryConstraint);
 		
 		dataEntryConstraint.weighty = 1;
@@ -188,7 +188,7 @@ public class CreateNewFileMappingDialog extends JDialog {
 	private JPanel createButtonsPanel () {
 		JPanel panel = new JPanel();
 
-		okButton = new JButton("Create mapping");
+		okButton = new JButton(GuiMessages.getString("CreateNewFileMappingDialog.createMappingButton.label")); //$NON-NLS-1$
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (createMapping()) { 
@@ -198,7 +198,7 @@ public class CreateNewFileMappingDialog extends JDialog {
 		});
 		setOkButtonStatus();
 			
-		JButton cancelButton = new JButton("Cancel");
+		JButton cancelButton = new JButton(GuiMessages.getString("CreateNewFileMappingDialog.cancelButton.Label")); //$NON-NLS-1$
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				setVisible(false);
@@ -221,7 +221,7 @@ public class CreateNewFileMappingDialog extends JDialog {
 		DocumentHandler docHandler = null;
 		Object selectedDocHandler = docHandlerImplementationsModel.getSelectedItem();
 		if (!((selectedDocHandler instanceof String) 
-								&& ( (String) selectedDocHandler).startsWith("<") )){
+								&& ( (String) selectedDocHandler).startsWith("<") )){ //$NON-NLS-1$
 			docHandler = (DocumentHandler) selectedDocHandler;
 		}
 
@@ -243,7 +243,7 @@ public class CreateNewFileMappingDialog extends JDialog {
 			return true;
 		}
 		catch (Exception exception) {
-			ErrorDialog.showError(this, exception, "Error creating mapping");
+			ErrorDialog.showError(this, exception, GuiMessages.getString("CreateNewFileMappingDialog.mappingCreationErrorDialog.title")); //$NON-NLS-1$
 			return false;
 		}
 	}
