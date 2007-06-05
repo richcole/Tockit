@@ -7,6 +7,7 @@
  */
 package org.tockit.docco;
 
+import java.text.MessageFormat;
 import java.util.Properties;
 
 import org.apache.lucene.analysis.Analyzer;
@@ -20,30 +21,30 @@ import org.tockit.docco.documenthandler.RtfDocumentHandler;
 import org.tockit.docco.documenthandler.XmlDocumentHandler;
 
 public class GlobalConstants {
-	public static final String ANALYZERS_PROPERTIES_FILE_NAME = "/analyzers.properties";
+	public static final String ANALYZERS_PROPERTIES_FILE_NAME = "/analyzers.properties"; //$NON-NLS-1$
 	public static final String DEFAULT_ANALYZER_NAME;
 	public static final Analyzer DEFAULT_ANALYZR;
 
-	public static final String FIELD_QUERY_BODY = "body";
+	public static final String FIELD_QUERY_BODY = "body"; //$NON-NLS-1$
 	
-	public static final String FIELD_DOC_URL = "URL";
-	public static final String FIELD_DOC_SUMMARY = "summary";
-	public static final String FIELD_DOC_TITLE = "title";
-	public static final String FIELD_DOC_KEYWORD = "keyword";
-	public static final String FIELD_DOC_MODIFICATION_DATE = "mod_date";
-	public static final String FIELD_DOC_CREATION_DATE = "creation_date";
-	public static final String FIELD_DOC_AUTHOR = "author";
-	public static final String FIELD_DOC_TYPE = "type";
-	public static final String FIELD_DOC_SIZE = "size";
-	public static final String FIELD_DOC_PATH = "path";
-	public static final String FIELD_DOC_EXTENSION = "ext";
-	public static final String FIELD_DOC_NAME = "name";
+	public static final String FIELD_DOC_URL = "URL"; //$NON-NLS-1$
+	public static final String FIELD_DOC_SUMMARY = "summary"; //$NON-NLS-1$
+	public static final String FIELD_DOC_TITLE = "title"; //$NON-NLS-1$
+	public static final String FIELD_DOC_KEYWORD = "keyword"; //$NON-NLS-1$
+	public static final String FIELD_DOC_MODIFICATION_DATE = "mod_date"; //$NON-NLS-1$
+	public static final String FIELD_DOC_CREATION_DATE = "creation_date"; //$NON-NLS-1$
+	public static final String FIELD_DOC_AUTHOR = "author"; //$NON-NLS-1$
+	public static final String FIELD_DOC_TYPE = "type"; //$NON-NLS-1$
+	public static final String FIELD_DOC_SIZE = "size"; //$NON-NLS-1$
+	public static final String FIELD_DOC_PATH = "path"; //$NON-NLS-1$
+	public static final String FIELD_DOC_EXTENSION = "ext"; //$NON-NLS-1$
+	public static final String FIELD_DOC_NAME = "name"; //$NON-NLS-1$
 	/**
 	 * As opposed to the constant above, this one is used to store the path as separte words for indexing.
 	 * This is to experiment with looking at occurrances of words in different paths. The wildcards won't
 	 * help too much since they are not allowed at the beginning.
 	 */
-	public static final String FIELD_DOC_PATH_WORDS = "path_words";
+	public static final String FIELD_DOC_PATH_WORDS = "path_words"; //$NON-NLS-1$
 	
 	// TODO load this from a ressource file, too
 	public static final DocumentHandler[] DEFAULT_DOC_HANDLER_IMPLEMENTATIONS = {
@@ -62,19 +63,18 @@ public class GlobalConstants {
 		String analyserClassName = null;
 		try {
 			ANALYZERS.load(GlobalConstants.class.getResourceAsStream(ANALYZERS_PROPERTIES_FILE_NAME));
-			analyserClassName = ANALYZERS.getProperty("default");
+			analyserClassName = ANALYZERS.getProperty("default"); //$NON-NLS-1$
 			if(analyserClassName == null) {
-				System.err.println("Could not find default entry in analyzer file, default will be arbitrary");
+				System.err.println(CliMessages.getString("GlobalConstants.AnalyserListHasNoDefaultWarning.text")); //$NON-NLS-1$
 			} else {
 				analyzerName = ANALYZERS.getProperty(analyserClassName);
 				if(analyzerName == null) {
-					System.err.println("Could not find setup for default entry (" + analyserClassName +
-							") in analyzer file, default will be arbitrary");
+					System.err.println(MessageFormat.format(CliMessages.getString("GlobalConstants.AnalyserListHasUnknownDefaultWarning.text"), new Object[]{analyserClassName})); //$NON-NLS-1$
 				}
 			}
-			ANALYZERS.remove("default");
+			ANALYZERS.remove("default"); //$NON-NLS-1$
 		} catch (Exception e) {
-			System.err.println("Could not load analyzer list ('" + ANALYZERS_PROPERTIES_FILE_NAME + "')");
+			System.err.println(MessageFormat.format(CliMessages.getString("GlobalConstants.FailedToLoadAnalyserListWarning.text"), new Object[]{ANALYZERS_PROPERTIES_FILE_NAME})); //$NON-NLS-1$
 			e.printStackTrace();
 		}
 		DEFAULT_ANALYZER_NAME = analyzerName;
@@ -82,8 +82,7 @@ public class GlobalConstants {
 		try {
 			analyzer = (Analyzer) Class.forName(analyserClassName).newInstance();
 		} catch (Exception e) {
-			System.err.println("Could not initialize default analyzer class (" + DEFAULT_ANALYZER_NAME + "), " +
-					"falling back to StandardAnalyzer");
+			System.err.println(MessageFormat.format(CliMessages.getString("GlobalConstants.FailedToInitializeDefaultAnalyserWarning.text"), new Object[]{DEFAULT_ANALYZER_NAME})); //$NON-NLS-1$
 			e.printStackTrace();
 			analyzer = new StandardAnalyzer();
 		}
