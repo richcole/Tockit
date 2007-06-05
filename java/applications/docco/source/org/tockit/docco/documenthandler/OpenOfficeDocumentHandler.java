@@ -19,6 +19,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.tockit.docco.gui.GuiMessages;
 import org.tockit.docco.indexer.DocumentSummary;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -29,10 +30,10 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 public abstract class OpenOfficeDocumentHandler implements DocumentHandler {
-    private static final String META_FILE_NAME = "meta.xml";
-	private static final String CONTENT_FILE_NAME = "content.xml";
+    private static final String META_FILE_NAME = "meta.xml"; //$NON-NLS-1$
+	private static final String CONTENT_FILE_NAME = "content.xml"; //$NON-NLS-1$
 
-	private static final String DC_NAMESPACE = "http://purl.org/dc/elements/1.1/";
+	private static final String DC_NAMESPACE = "http://purl.org/dc/elements/1.1/"; //$NON-NLS-1$
 
     public DocumentSummary parseDocument(URL url) throws IOException, DocumentHandlerException {
 		try {
@@ -70,9 +71,9 @@ public abstract class OpenOfficeDocumentHandler implements DocumentHandler {
 			docSummary.contentReader = new StringReader(contentBuffer.toString());
 			return docSummary;
 		} catch (SAXException e) {
-			throw new DocumentHandlerException("Couldn't parse XML: " + e.getMessage(), e);
+			throw new DocumentHandlerException(GuiMessages.getString("OpenOfficeDocumentHandler.xmlParsingErrorMessage.header") + e.getMessage(), e); //$NON-NLS-1$
 		} catch (ParserConfigurationException e) {
-			throw new DocumentHandlerException("Couldn't parse XML: " + e.getMessage(), e);
+			throw new DocumentHandlerException(GuiMessages.getString("OpenOfficeDocumentHandler.xmlParsingErrorMessage.header") + e.getMessage(), e); //$NON-NLS-1$
 		}
 	}
 
@@ -84,22 +85,22 @@ public abstract class OpenOfficeDocumentHandler implements DocumentHandler {
         DocumentBuilder docBuilder = docBuildFac.newDocumentBuilder();
         docBuilder.setEntityResolver(new EntityResolver(){
             public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
-                return new InputSource(new StringReader(""));
+                return new InputSource(new StringReader("")); //$NON-NLS-1$
             }
         });
-		inputSource.setSystemId("fake to get null resolving instead of exceptions");
+		inputSource.setSystemId("fake to get null resolving instead of exceptions"); //$NON-NLS-1$
 	
         Document doc = docBuilder.parse(inputSource);
         Element root = doc.getDocumentElement();
-        Element metaElem = (Element) root.getElementsByTagNameNS(getOfficeNameSpace(), "meta").item(0);
+        Element metaElem = (Element) root.getElementsByTagNameNS(getOfficeNameSpace(), "meta").item(0); //$NON-NLS-1$
         
-		NodeList nodes = metaElem.getElementsByTagNameNS(DC_NAMESPACE,"title");
+		NodeList nodes = metaElem.getElementsByTagNameNS(DC_NAMESPACE,"title"); //$NON-NLS-1$
 		for (int i=0; i<nodes.getLength(); i++) {
 			Node n = nodes.item(i);
 			docSummary.title = n.getFirstChild().getNodeValue();
 		}
         
-		nodes = metaElem.getElementsByTagNameNS(DC_NAMESPACE,"subject");
+		nodes = metaElem.getElementsByTagNameNS(DC_NAMESPACE,"subject"); //$NON-NLS-1$
 		for (int i=0; i<nodes.getLength(); i++) {
 			Node n = nodes.item(i);
 			docSummary.summary = n.getFirstChild().getNodeValue();
@@ -111,7 +112,7 @@ public abstract class OpenOfficeDocumentHandler implements DocumentHandler {
 //			// @todo parse creation date
 //		}
         
-		nodes = metaElem.getElementsByTagNameNS(DC_NAMESPACE,"creator");
+		nodes = metaElem.getElementsByTagNameNS(DC_NAMESPACE,"creator"); //$NON-NLS-1$
 		docSummary.authors = new ArrayList();
 		for (int i=0; i<nodes.getLength(); i++) {
 			Node n = nodes.item(i);

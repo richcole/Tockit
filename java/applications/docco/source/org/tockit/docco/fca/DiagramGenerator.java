@@ -27,6 +27,7 @@ import net.sourceforge.toscanaj.model.lattice.Lattice;
 import net.sourceforge.toscanaj.model.ndimdiagram.NDimDiagram;
 import net.sourceforge.toscanaj.model.ndimdiagram.NDimDiagramNode;
 
+import org.tockit.docco.gui.GuiMessages;
 import org.tockit.docco.query.HitReference;
 import org.tockit.docco.query.QueryWithResult;
 import org.tockit.docco.query.util.HitReferencesSet;
@@ -62,7 +63,7 @@ public class DiagramGenerator {
 					return finalConcepts[0];
 				}
 			};
-			diagram = NDimLayoutOperations.createDiagram(lattice,"Query results",new DefaultDimensionStrategy());
+			diagram = NDimLayoutOperations.createDiagram(lattice,GuiMessages.getString("DiagramGenerator.diagram.title"),new DefaultDimensionStrategy()); //$NON-NLS-1$
 		}
 		return diagram;
 	}

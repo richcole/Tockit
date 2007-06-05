@@ -32,9 +32,9 @@ public class XmlDocumentHandler implements DocumentHandler  {
 			documentSummary.contentReader = new StringReader(saxParser.parse(inputSource));
 			return documentSummary;
 		} catch (SAXException e) {
-			throw new DocumentHandlerException(GuiMessages.getString("XmlDocumentHandler.xmlParsingErrorHeader.text") + e.getMessage(), e); //$NON-NLS-1$
+			throw new DocumentHandlerException(GuiMessages.getString("XmlDocumentHandler.xmlParsingErrorMessage.header") + e.getMessage(), e); //$NON-NLS-1$
 		} catch (ParserConfigurationException e) {
-			throw new DocumentHandlerException(GuiMessages.getString("XmlDocumentHandler.xmlParsingErrorHeader.text") + e.getMessage(), e); //$NON-NLS-1$
+			throw new DocumentHandlerException(GuiMessages.getString("XmlDocumentHandler.xmlParsingErrorMessage.header") + e.getMessage(), e); //$NON-NLS-1$
 		}
 	}
 

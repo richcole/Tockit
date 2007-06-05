@@ -14,6 +14,7 @@ import java.net.URL;
 
 import org.tockit.docco.filefilter.DoccoFileFilter;
 import org.tockit.docco.filefilter.ExtensionFileFilterFactory;
+import org.tockit.docco.gui.GuiMessages;
 import org.tockit.docco.indexer.DocumentSummary;
 
 public class PlainTextDocumentHandler implements DocumentHandler {
@@ -26,10 +27,10 @@ public class PlainTextDocumentHandler implements DocumentHandler {
 	}
 
 	public String getDisplayName() {
-		return "Plain Text";
+		return GuiMessages.getString("PlainTextDocumentHandler.name"); //$NON-NLS-1$
 	}
 
 	public DoccoFileFilter getDefaultFilter() {
-		return new ExtensionFileFilterFactory().createNewFilter("txt;log");
+		return new ExtensionFileFilterFactory().createNewFilter("txt;log"); //$NON-NLS-1$
 	}
 }

@@ -17,6 +17,7 @@ import javax.swing.text.rtf.RTFEditorKit;
 
 import org.tockit.docco.filefilter.DoccoFileFilter;
 import org.tockit.docco.filefilter.ExtensionFileFilterFactory;
+import org.tockit.docco.gui.GuiMessages;
 import org.tockit.docco.indexer.DocumentSummary;
 
 public class RtfDocumentHandler implements DocumentHandler {
@@ -35,17 +36,17 @@ public class RtfDocumentHandler implements DocumentHandler {
 			
 			return docSummary;
 		} catch (IOException e) {
-			throw new DocumentHandlerException("Error reading RTF file", e);
+			throw new DocumentHandlerException("Error reading RTF file", e); //$NON-NLS-1$
 		} catch (BadLocationException e) {
-			throw new DocumentHandlerException("Internal error reading RTF file", e);
+			throw new DocumentHandlerException("Internal error reading RTF file", e); //$NON-NLS-1$
 		}
 	}
 
 	public String getDisplayName() {
-		return "RTF (basic)";
+		return GuiMessages.getString("RtfDocumentHandler.name"); //$NON-NLS-1$
 	}
 
     public DoccoFileFilter getDefaultFilter() {
-        return new ExtensionFileFilterFactory().createNewFilter("rtf");
+        return new ExtensionFileFilterFactory().createNewFilter("rtf"); //$NON-NLS-1$
     }
 }
