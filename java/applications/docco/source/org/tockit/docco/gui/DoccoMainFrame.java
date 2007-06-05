@@ -497,7 +497,7 @@ public class DoccoMainFrame extends JFrame {
 		createQueryEngine();
 		//@todo add force access into Index class
         if(forceIndexAccess) {
-            System.err.println(CliMessages.getString("DoccoMainFrame.forcingIndexAccessDisabledWarning.text"));
+            System.err.println(CliMessages.getString("DoccoMainFrame.forcingIndexAccessDisabledWarning.text")); //$NON-NLS-1$
 //        				JOptionPane.showMessageDialog(this, "The index is locked. You can run only one instance of Docco at one time.\n" +
 //        											  "If you want to override this error run Docco with the '-forceIndexAccess' option.",
 //        											  "Index locked", JOptionPane.ERROR_MESSAGE);
@@ -907,7 +907,7 @@ public class DoccoMainFrame extends JFrame {
                         analyzer = (Analyzer) Class.forName(analyzerClassName).newInstance();
                     } catch (Exception e) {
                         // TODO give feedback to the user
-                        System.err.println(MessageFormat.format(CliMessages.getString("DoccoMainFrame.selectedAnalyserNotAvailableWarning.text"), new Object[]{analyzerClassName}));
+                        System.err.println(MessageFormat.format(CliMessages.getString("DoccoMainFrame.selectedAnalyserNotAvailableWarning.text"), new Object[]{analyzerClassName})); //$NON-NLS-1$ 
                         e.printStackTrace();
                     }
                 }

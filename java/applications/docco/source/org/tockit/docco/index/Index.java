@@ -15,6 +15,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -25,6 +26,7 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.FSDirectory;
 import org.tockit.docco.documenthandler.DocumentHandlerRegistry;
+import org.tockit.docco.gui.GuiMessages;
 import org.tockit.docco.indexer.DocumentHandlerMapping;
 import org.tockit.docco.indexer.Indexer;
 import org.tockit.docco.indexer.Indexer.CallbackRecipient;
@@ -51,15 +53,16 @@ public class Index {
         File settingsFile = getPropertiesFile(indexDirectory, name);
         settings.load(new FileInputStream(settingsFile));
 		try {
-			File baseDirectory = new File(settings.getProperty("baseDirectory")); 
-            String analyzerClassName = settings.getProperty("analyzer");
+			File baseDirectory = new File(settings.getProperty("baseDirectory")); //$NON-NLS-1$
+            String analyzerClassName = settings.getProperty("analyzer"); //$NON-NLS-1$
             Analyzer analyzer;
             try {
                 analyzer = (Analyzer) Class.forName(analyzerClassName).newInstance();
             } catch (Exception e) {
-                throw new IOException("Could not instantiate '" + analyzerClassName + "', StandardAnalyzer will be used.");
+                throw new IOException(MessageFormat.format(GuiMessages.getString("Index.failedToInstantiateAnalyserError.text"),  //$NON-NLS-1$
+                		new Object[]{analyzerClassName}));
             }
-            boolean active = "true".equals(settings.getProperty("active"));
+            boolean active = "true".equals(settings.getProperty("active")); //$NON-NLS-1$ //$NON-NLS-2$
 			File mappingsFile = getMappingsFile(indexDirectory, name);
 			Index retVal;
 			if(mappingsFile.exists()) {
@@ -76,7 +79,7 @@ public class Index {
 			retVal.callbackRecipient = callbackRecipient;
 			return retVal;
 		} catch (ArrayIndexOutOfBoundsException e) {
-			throw new IOException("No base directory found in '" + settingsFile + "'");
+			throw new IOException(MessageFormat.format(GuiMessages.getString("Index.noBaseDirectoryFoundError.text"), new Object[]{settingsFile})); //$NON-NLS-1$
 		}
 	}
 	
@@ -99,9 +102,9 @@ public class Index {
 	
 	public void updateIndex() {
 		if(this.indexThread != null && this.indexThread.isAlive()) {
-			throw new IllegalStateException("Index is already being updated.");
+			throw new IllegalStateException(GuiMessages.getString("Index.indexAlreadyBeingUpdatedError.text")); //$NON-NLS-1$
 		}
-		this.callbackRecipient.showFeedbackMessage("Updating...");
+		this.callbackRecipient.showFeedbackMessage(GuiMessages.getString("Index.feedbackMessageUpdating.text")); //$NON-NLS-1$
         this.indexThread = new Thread(this.indexer);
         this.indexThread.setPriority(indexingPriority);
 		this.indexThread.start();
@@ -109,10 +112,10 @@ public class Index {
     
     public void setPriority(int priority) {
 		if(priority < Thread.MIN_PRIORITY) {
-			throw new IllegalArgumentException("Priority argument too low");
+			throw new IllegalArgumentException(GuiMessages.getString("Index.priorityTooLowError.text")); //$NON-NLS-1$
 		}
 		if(priority > Thread.MAX_PRIORITY) {
-			throw new IllegalArgumentException("Priority argument too high");
+			throw new IllegalArgumentException(GuiMessages.getString("Index.priorityTooHighError.text")); //$NON-NLS-1$
 		}
     	this.indexingPriority = priority;
     	if(this.indexThread != null) {
@@ -133,7 +136,7 @@ public class Index {
 	}
 
 	private static File getPropertiesFile(File indexLocation, String indexName) {
-        return new File(cleanPath(new File(indexLocation, indexName).getPath()) + ".properties");
+        return new File(cleanPath(new File(indexLocation, indexName).getPath()) + ".properties"); //$NON-NLS-1$
 	}
 	
 	private File getPropertiesFile() {
@@ -141,7 +144,7 @@ public class Index {
 	}
 
 	private static File getMappingsFile(File indexLocation, String indexName) {
-		return new File(cleanPath(new File(indexLocation, indexName).getPath()) + ".mappings");
+		return new File(cleanPath(new File(indexLocation, indexName).getPath()) + ".mappings"); //$NON-NLS-1$
 	}
 
 	private File getMappingsFile() {
@@ -170,7 +173,7 @@ public class Index {
 	}
 	
 	public void shutdown() {
-		this.callbackRecipient.showFeedbackMessage("Shutting down...");
+		this.callbackRecipient.showFeedbackMessage(GuiMessages.getString("Index.feedbackMessageShuttingDown.text")); //$NON-NLS-1$
 		if(this.indexThread != null) {
 			this.indexer.stopIndexing();
 			while(this.indexThread.isAlive()) {
@@ -187,10 +190,10 @@ public class Index {
     private void saveSettingsAndMappings() {
         try {
             Properties props = new Properties();
-            props.setProperty("baseDirectory", this.baseDirectory.getPath());
-            props.setProperty("analyzer", this.analyzer.getClass().getName());
-            props.setProperty("active", this.active?"true":"false");
-            props.store(new FileOutputStream(getPropertiesFile()), "Configuration for a Docco index, do not edit");
+            props.setProperty("baseDirectory", this.baseDirectory.getPath()); //$NON-NLS-1$
+            props.setProperty("analyzer", this.analyzer.getClass().getName()); //$NON-NLS-1$
+            props.setProperty("active", this.active?"true":"false"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            props.store(new FileOutputStream(getPropertiesFile()), "Configuration for a Docco index, do not edit"); //$NON-NLS-1$
             
 			PrintStream out = new PrintStream(new FileOutputStream(getMappingsFile()));
             Iterator it = this.indexer.getDocumentMappings().iterator();
@@ -261,10 +264,10 @@ public class Index {
         boolean deleted = this.indexLocation.delete();
 
         if(!deleted) {
-        	throw new IOException("Couldn't delete index at position '" + this.indexLocation + "'");
+        	throw new IOException(MessageFormat.format(GuiMessages.getString("Index.deletingIndexFailedError.text"), new Object[]{this.indexLocation})); //$NON-NLS-1$
         }
 
-		this.callbackRecipient.showFeedbackMessage("Index '" + getName() + "' deleted");
+		this.callbackRecipient.showFeedbackMessage(MessageFormat.format(GuiMessages.getString("Index.feedbackMessageIndexDeleted.text"), new Object[]{getName()})); //$NON-NLS-1$
     }
 
     public void removeLock() throws IOException {

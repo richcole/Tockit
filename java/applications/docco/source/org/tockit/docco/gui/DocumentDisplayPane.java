@@ -193,7 +193,7 @@ public class DocumentDisplayPane extends JPanel {
 		DateFormat format = DateFormat.getDateTimeInstance();
         this.dateField.setText(format.format(modDate));
 		long size = Long.parseLong(reference.getDocument().get(GlobalConstants.FIELD_DOC_SIZE));
-        this.sizeField.setText(MessageFormat.format(GuiMessages.getString("DocumentDisplayPane.sizeField.textformat"), // $NON-NLS-1$ 
+        this.sizeField.setText(MessageFormat.format(GuiMessages.getString("DocumentDisplayPane.sizeField.textformat"), //$NON-NLS-1$
         		new Object[]{NumberFormat.getIntegerInstance().format(size)}));
 		this.summaryArea.setText(reference.getDocument().get(GlobalConstants.FIELD_DOC_SUMMARY));
 		this.shellExecuteButton.setEnabled(true);

@@ -65,7 +65,7 @@ public class FileMappingsEditingDialog extends JDialog {
 			
 			DocumentHandlerMapping mapping = (DocumentHandlerMapping) value;
 			String text = mapping.getFileFilter().getDescription() + 
-								" -- " + mapping.getHandler().getDisplayName();
+								" -- " + mapping.getHandler().getDisplayName(); //$NON-NLS-1$
 			
 			setText(text);
 
