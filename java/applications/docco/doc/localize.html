@@ -59,6 +59,28 @@ a translation to a newer version of the program.
 </p>
 
 <p>
+Some of the translated strings will contain numbers in curly braces which indicate that the
+program will fill in further information in this position. For example a string in the English
+translation could look like this:
+<pre>
+  {0} out of {1} files processed.
+</pre>
+In such a case every translation has to contain the same references, although the order can
+change, e.g. a different translation into English could look like this:
+<pre>
+  {1} files, {0} processed.
+</pre>
+As long as the same information is conveyed any translation is valid.
+</p>
+
+<p>
+The references can be to numbers but they can also be to file names, dates and other bits
+of information. Changing the actual value references is not possible within the translation
+process but requires a program change. If that should be required for some reason a change
+request should be filed with the developers.
+</p>
+
+<p>
 The translation file for the GUI messages also contains the references used to enter the help.
 The online help consists of HTML pages stored in a language-specific subfolder of the resources
 folder, e.g. <code>resources/help/en</code> for the US-English help. To translate the help system
