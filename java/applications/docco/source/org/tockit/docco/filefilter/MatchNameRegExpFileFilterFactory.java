@@ -8,7 +8,10 @@
 package org.tockit.docco.filefilter;
 
 import java.io.File;
+import java.text.MessageFormat;
 import java.util.regex.Pattern;
+
+import org.tockit.docco.gui.GuiMessages;
 
 
 public class MatchNameRegExpFileFilterFactory implements FileFilterFactory {
@@ -24,16 +27,16 @@ public class MatchNameRegExpFileFilterFactory implements FileFilterFactory {
 		}
 
         public String toSerializationString() {
-            return MatchNameRegExpFileFilterFactory.class.getName() + ":" + regexString;
+            return MatchNameRegExpFileFilterFactory.class.getName() + ":" + regexString; //$NON-NLS-1$
         }
 
         public String getDescription() {
-            return "Name matches regular expression '" + this.regexString + "'";
+        	return MessageFormat.format(GuiMessages.getString("MatchNameRegExpFileFilterFactory.description"), new Object[]{this.regexString}); //$NON-NLS-1$
         }
 	}
 
 	public String getDisplayName() {
-		return "Match name with regular expression";
+		return GuiMessages.getString("MatchNameRegExpFileFilterFactory.name"); //$NON-NLS-1$
 	}
 
     public DoccoFileFilter createNewFilter(String filterExpression) {

@@ -8,7 +8,10 @@
 package org.tockit.docco.filefilter;
 
 import java.io.File;
+import java.text.MessageFormat;
 import java.util.StringTokenizer;
+
+import org.tockit.docco.gui.GuiMessages;
 
 
 public class ExtensionFileFilterFactory implements FileFilterFactory {
@@ -16,7 +19,7 @@ public class ExtensionFileFilterFactory implements FileFilterFactory {
 		String[] extensions;
 
 		public ExtensionFileFilter(String extensionString) {
-			StringTokenizer tokenizer = new StringTokenizer(extensionString, " ,;");
+			StringTokenizer tokenizer = new StringTokenizer(extensionString, " ,;"); //$NON-NLS-1$
 			this.extensions = new String[tokenizer.countTokens()];
 			int count = 0;
 			while(tokenizer.hasMoreTokens()) {
@@ -29,7 +32,7 @@ public class ExtensionFileFilterFactory implements FileFilterFactory {
 			String name = file.getName().toLowerCase();
 			for (int i = 0; i < this.extensions.length; i++) {
 				String extension = this.extensions[i];
-				if(name.endsWith("." + extension)) {
+				if(name.endsWith("." + extension)) { //$NON-NLS-1$
 					return true;
 				}
 			}
@@ -37,14 +40,14 @@ public class ExtensionFileFilterFactory implements FileFilterFactory {
 		}
 
         public String toSerializationString() {
-			return ExtensionFileFilterFactory.class.getName() + ":" + getExtensionsString();
+			return ExtensionFileFilterFactory.class.getName() + ":" + getExtensionsString(); //$NON-NLS-1$
         }
 
         public String getDescription() {
         	if(this.extensions.length == 1) {
-				return "Files having extension: " + this.extensions[0];
+				return MessageFormat.format(GuiMessages.getString("ExtensionFileFilterFactory.filterDescriptionOneExtension.text"), new Object[]{this.extensions[0]}); //$NON-NLS-1$
         	} else {
-				return "Files having extensions: " + getExtensionsString();
+				return MessageFormat.format(GuiMessages.getString("ExtensionFileFilterFactory.filterDescriptionMultipleExtensions.text"), new Object[]{getExtensionsString()}); //$NON-NLS-1$
         	}
         }
         
@@ -52,7 +55,7 @@ public class ExtensionFileFilterFactory implements FileFilterFactory {
         	StringBuffer retVal = new StringBuffer();
         	for (int i = 0; i < this.extensions.length; i++) {
                 if(i != 0) {
-                	retVal.append(";");
+                	retVal.append(";"); //$NON-NLS-1$
                 }
 				retVal.append(this.extensions[i]);
             }
@@ -65,6 +68,6 @@ public class ExtensionFileFilterFactory implements FileFilterFactory {
 	}
 
 	public String getDisplayName() {
-		return "Match file extension";
+		return GuiMessages.getString("ExtensionFileFilterFactory.name"); //$NON-NLS-1$
 	}
 }
