@@ -1,6 +1,9 @@
 Changes since Docco 0.4:
 
 Docco:
+- Docco is not internationalized, i.e. it can be easily adjusted to local
+  languages and customs. A translation into German is part of the 
+  distribution.
 - Update to Lucene 2.0.0 (no code changes needed)
 - Bugfix: the OpenOffice handler could miss content before, which should be
   fixed now
