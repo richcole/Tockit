@@ -526,11 +526,12 @@ public class DoccoMainFrame extends JFrame {
 
     private JMenu createHelpMenu() {
 		JMenu helpMenu = new JMenu(GuiMessages.getString("DoccoMainFrame.helpMenu.label")); //$NON-NLS-1$
+		helpMenu.setMnemonic(GuiMessages.getString("DoccoMainFrame.helpMenu.mnemonic").charAt(0)); //$NON-NLS-1$
 		
 		final DoccoMainFrame outerThis = this;
         
 		JMenuItem howtoItem = new JMenuItem(GuiMessages.getString("DoccoMainFrame.helpMenu.helpDialog.label")); //$NON-NLS-1$
-		howtoItem.setMnemonic('h');
+		howtoItem.setMnemonic(GuiMessages.getString("DoccoMainFrame.helpMenu.helpDialog.mnemonic").charAt(0)); //$NON-NLS-1$
 		howtoItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				URL fileUrl = this.getClass().getClassLoader().getResource(GuiMessages.getString("DoccoMainFrame.helpDialog.targetFile")); //$NON-NLS-1$
@@ -540,7 +541,7 @@ public class DoccoMainFrame extends JFrame {
 		helpMenu.add(howtoItem);
 
 		JMenuItem aboutItem = new JMenuItem(GuiMessages.getString("DoccoMainFrame.helpMenu.aboutDialog.label")); //$NON-NLS-1$
-		aboutItem.setMnemonic('a');
+		aboutItem.setMnemonic(GuiMessages.getString("DoccoMainFrame.helpMenu.aboutDialog.mnemonic").charAt(0)); //$NON-NLS-1$
 		aboutItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				URL fileUrl = this.getClass().getClassLoader().getResource(GuiMessages.getString("DoccoMainFrame.aboutDialog.targetFile")); //$NON-NLS-1$
@@ -554,10 +555,10 @@ public class DoccoMainFrame extends JFrame {
 
     private JMenu createViewMenu() {
         JMenu diagramMenu = new JMenu(GuiMessages.getString("DoccoMainFrame.diagramMenu.label")); //$NON-NLS-1$
-        diagramMenu.setMnemonic('d');
+        diagramMenu.setMnemonic(GuiMessages.getString("DoccoMainFrame.diagramMenu.mnemonic").charAt(0)); //$NON-NLS-1$
         
         this.showPhantomNodesCheckBox = new JCheckBoxMenuItem(GuiMessages.getString("DoccoMainFrame.diagramMenu.showAllPossibleCombinationsItem.label")); //$NON-NLS-1$
-        this.showPhantomNodesCheckBox.setMnemonic('p');
+        this.showPhantomNodesCheckBox.setMnemonic(GuiMessages.getString("DoccoMainFrame.diagramMenu.showAllPossibleCombinationsItem.mnemonic").charAt(0)); //$NON-NLS-1$
         this.showPhantomNodesCheckBox.setSelected(preferences.getBoolean(CONFIGURATION_SHOW_PHANTOM_NODES_NAME, true));
         this.showPhantomNodesCheckBox.addActionListener(new ActionListener(){
         	public void actionPerformed(ActionEvent e) {
@@ -569,7 +570,7 @@ public class DoccoMainFrame extends JFrame {
         diagramMenu.add(this.showPhantomNodesCheckBox);
         
         this.showContingentOnlyCheckBox = new JCheckBoxMenuItem(GuiMessages.getString("DoccoMainFrame.diagramMenu.showMatchesOnlyOnceItem.label")); //$NON-NLS-1$
-        this.showContingentOnlyCheckBox.setMnemonic('o');
+        this.showContingentOnlyCheckBox.setMnemonic(GuiMessages.getString("DoccoMainFrame.diagramMenu.showMatchesOnlyOnceItem.mnemonic").charAt(0)); //$NON-NLS-1$
 		this.showContingentOnlyCheckBox.setSelected(preferences.getBoolean(CONFIGURATION_SHOW_CONTINGENT_ONLY_NAME, true));
         this.showContingentOnlyCheckBox.addActionListener(new ActionListener(){
         	public void actionPerformed(ActionEvent e) {
@@ -594,10 +595,8 @@ public class DoccoMainFrame extends JFrame {
                     frame,
                     this.diagramExportSettings,
                     this.diagramView,
-                    KeyEvent.VK_E,
-                    KeyStroke.getKeyStroke(
-                        KeyEvent.VK_E,
-                        ActionEvent.CTRL_MASK));
+                    GuiMessages.getString("DoccoMainFrame.diagramMenu.exportDiagramItem.mnemonic").charAt(0), //$NON-NLS-1$
+                    KeyStroke.getKeyStroke(GuiMessages.getString("DoccoMainFrame.diagramMenu.exportDiagramItem.accelerator"))); //$NON-NLS-1$
             diagramMenu.add(this.exportDiagramAction);
             this.exportDiagramAction.setEnabled(false);
             diagramMenu.addSeparator();
@@ -605,9 +604,8 @@ public class DoccoMainFrame extends JFrame {
 
         // menu item PRINT
         this.printMenuItem = new JMenuItem(GuiMessages.getString("DoccoMainFrame.diagramMenu.printItem.label")); //$NON-NLS-1$
-        this.printMenuItem.setMnemonic(KeyEvent.VK_P);
-        this.printMenuItem.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_P, ActionEvent.CTRL_MASK));
+        this.printMenuItem.setMnemonic(GuiMessages.getString("DoccoMainFrame.diagramMenu.printItem.mnemonic").charAt(0)); //$NON-NLS-1$
+        this.printMenuItem.setAccelerator(KeyStroke.getKeyStroke(GuiMessages.getString("DoccoMainFrame.diagramMenu.printItem.accelerator"))); //$NON-NLS-1$
         this.printMenuItem.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e) {
                 printDiagram();
@@ -632,7 +630,7 @@ public class DoccoMainFrame extends JFrame {
 
     private JMenu createFileMenu() {
         final JMenu fileMenu = new JMenu(GuiMessages.getString("DoccoMainFrame.indexingMenu.label")); //$NON-NLS-1$
-        fileMenu.setMnemonic('i');
+        fileMenu.setMnemonic(GuiMessages.getString("DoccoMainFrame.indexingMenu.mnemonic").charAt(0)); //$NON-NLS-1$
 		fileMenu.addMenuListener(new MenuListener(){
             public void menuSelected(MenuEvent e) {
             	fileMenu.removeAll();
@@ -651,7 +649,7 @@ public class DoccoMainFrame extends JFrame {
     
 	private void fillFileMenu(final JMenu fileMenu) {
 		final JMenuItem newIndexItem = new JMenuItem(GuiMessages.getString("DoccoMainFrame.indexingMenu.indexDirectoryItem.label")); //$NON-NLS-1$
-		newIndexItem.setMnemonic('i');
+		newIndexItem.setMnemonic(GuiMessages.getString("DoccoMainFrame.indexingMenu.indexDirectoryItem.mnemonic").charAt(0)); //$NON-NLS-1$
 		newIndexItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				createNewIndex();
@@ -671,7 +669,7 @@ public class DoccoMainFrame extends JFrame {
 		fileMenu.addSeparator();
 		
 		final JMenuItem updateAllItem = new JMenuItem(GuiMessages.getString("DoccoMainFrame.indexingMenu.updateAllItem.label")); //$NON-NLS-1$
-		updateAllItem.setMnemonic('u');
+		updateAllItem.setMnemonic(GuiMessages.getString("DoccoMainFrame.indexingMenu.updateAllItem.mnemonic").charAt(0)); //$NON-NLS-1$
 		updateAllItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				for (Iterator iter = indexes.iterator(); iter.hasNext();) {
@@ -683,7 +681,7 @@ public class DoccoMainFrame extends JFrame {
 		fileMenu.add(updateAllItem);
                 
 		final JMenu indexingPriorityMenu = new JMenu(GuiMessages.getString("DoccoMainFrame.indexingMenu.indexingPriorityMenu.label")); //$NON-NLS-1$
-		indexingPriorityMenu.setMnemonic('p');
+		indexingPriorityMenu.setMnemonic(GuiMessages.getString("DoccoMainFrame.indexingMenu.indexingPriorityMenu.mnemonic").charAt(0)); //$NON-NLS-1$
 		final JRadioButtonMenuItem highestPriorityMenuItem = 
 					new JRadioButtonMenuItem(GuiMessages.getString("DoccoMainFrame.indexingMenu.indexingPriorityMenu.highestItem.label")); //$NON-NLS-1$
 		highestPriorityMenuItem.addActionListener(new ActionListener() {
@@ -738,7 +736,7 @@ public class DoccoMainFrame extends JFrame {
                 
 		fileMenu.addSeparator();
 		final JMenuItem exitItem = new JMenuItem(GuiMessages.getString("DoccoMainFrame.indexingMenu.exitItem.label")); //$NON-NLS-1$
-		exitItem.setMnemonic('x');
+		exitItem.setMnemonic(GuiMessages.getString("DoccoMainFrame.indexingMenu.exitItem.mnemonic").charAt(0)); //$NON-NLS-1$
 		exitItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
                 closeMainPanel();
@@ -757,7 +755,7 @@ public class DoccoMainFrame extends JFrame {
     private void addIndexMenu(final JMenu fileMenu, final Index currentIndex) {
     	final JMenu currentIndexMenu = new JMenu(currentIndex.getName());
 		final JCheckBoxMenuItem indexActiveItem = new JCheckBoxMenuItem(GuiMessages.getString("DoccoMainFrame.indexMenu.activeItem.label")); //$NON-NLS-1$
-		indexActiveItem.setMnemonic('a');
+		indexActiveItem.setMnemonic(GuiMessages.getString("DoccoMainFrame.indexMenu.activeItem.mnemonic").charAt(0)); //$NON-NLS-1$
 		indexActiveItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				currentIndex.setActive(!currentIndex.isActive());
@@ -768,7 +766,7 @@ public class DoccoMainFrame extends JFrame {
 		currentIndexMenu.add(indexActiveItem);
 		
 		final JMenuItem updateIndexItem = new JMenuItem(GuiMessages.getString("DoccoMainFrame.indexMenu.updateItem.label")); //$NON-NLS-1$
-		updateIndexItem.setMnemonic('u');
+		updateIndexItem.setMnemonic(GuiMessages.getString("DoccoMainFrame.indexMenu.updateItem.mnemonic").charAt(0)); //$NON-NLS-1$
 		updateIndexItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				updateIndex(currentIndex);
@@ -778,7 +776,7 @@ public class DoccoMainFrame extends JFrame {
 		currentIndexMenu.add(updateIndexItem);
 		
 		final JMenuItem editFileMappingsItem = new JMenuItem(GuiMessages.getString("DoccoMainFrame.indexMenu.editFileMappingsItem.label")); //$NON-NLS-1$
-		editFileMappingsItem.setMnemonic('f');
+		editFileMappingsItem.setMnemonic(GuiMessages.getString("DoccoMainFrame.indexMenu.editFileMappingsItem.mnemonic").charAt(0)); //$NON-NLS-1$
 		editFileMappingsItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				List result = editDocumentMappings(currentIndex.getDocumentMappings());
@@ -790,7 +788,7 @@ public class DoccoMainFrame extends JFrame {
 		currentIndexMenu.add(editFileMappingsItem);
 		
 		final JMenuItem deleteIndexItem = new JMenuItem(GuiMessages.getString("DoccoMainFrame.indexMenu.deleteItem.label")); //$NON-NLS-1$
-		deleteIndexItem.setMnemonic('d');
+		deleteIndexItem.setMnemonic(GuiMessages.getString("DoccoMainFrame.indexMenu.deleteItem.mnemonic").charAt(0)); //$NON-NLS-1$
 		deleteIndexItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				deleteIndex(currentIndex);
@@ -830,7 +828,8 @@ public class DoccoMainFrame extends JFrame {
 			final List documentMappings = new ArrayList(DocumentHandlerRegistry.getDefaultMappings());
 
             JPanel optionsPanel = new JPanel(new GridBagLayout());
-            JTextField nameField = new JTextField(GuiMessages.getString("DoccoMainFrame.defaultIndexName") + (this.indexes.size() + 1)); //$NON-NLS-1$
+            JTextField nameField = new JTextField(MessageFormat.format(GuiMessages.getString("DoccoMainFrame.defaultIndexName"), //$NON-NLS-1$
+            		new Object[]{String.valueOf(this.indexes.size() + 1)}));
             
             Collection analyzerNames = GlobalConstants.ANALYZERS.values();
             // TODO sort list
