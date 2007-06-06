@@ -155,7 +155,7 @@ public final class Multivalent {
 	try {
 		File[] f = new File(top).listFiles(filter);
 		for (int i=0,imax=f.length; i<imax; i++) {
-			urls.add(f[i].toURL());
+			urls.add(f[i].toURI().toURL());
 			if (standalone_) System.out.println("\t"+f[i]);
 		}
 	} catch (MalformedURLException canthappen) { System.err.println(canthappen/*f[i]*/); System.err.println("Move to different directory"); }
