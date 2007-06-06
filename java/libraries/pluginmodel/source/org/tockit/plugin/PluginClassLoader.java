@@ -111,7 +111,7 @@ public class PluginClassLoader extends ClassLoader {
 		}
 		
 		public URL getURL () throws MalformedURLException {
-			return this.file.toURL();
+			return this.file.toURI().toURL();
 		}
 
 		public String toString () {

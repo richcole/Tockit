@@ -66,7 +66,7 @@ public class CSCParser {
     public static void main(String[] args) throws FileNotFoundException, MalformedURLException, DataFormatException {
 		//logger.setLevel(java.util.logging.Level.FINER);
 		File inputFile = new File(args[0]);
-		CSCFile result = importCSCFile(inputFile.toURL(), null);
+		CSCFile result = importCSCFile(inputFile.toURI().toURL(), null);
         result.printCSC(System.out);
     }
 }
