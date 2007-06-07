@@ -35,6 +35,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -1131,14 +1132,7 @@ public class DoccoMainFrame extends JFrame {
 				DefaultMutableTreeNode node = (DefaultMutableTreeNode) hitList.getLastSelectedPathComponent();
 				if(node.getUserObject() instanceof HitReference) {
 					HitReference reference = (HitReference) node.getUserObject();
-					try {
-						BrowserLauncher launcher = new BrowserLauncher();
-						launcher.openURLinBrowser("file:///" + reference.getDocument().get(GlobalConstants.FIELD_DOC_PATH).replace('\\', '/')); //$NON-NLS-1$
-					} catch (BrowserLaunchingInitializingException ex) {
-						ErrorDialog.showError(finalThis,ex,GuiMessages.getString("DoccoMainFrame.documentOpenFailedDialog.title")); //$NON-NLS-1$
-					} catch (UnsupportedOperatingSystemException ex) {
-						ErrorDialog.showError(finalThis,ex,GuiMessages.getString("DoccoMainFrame.documentCanNotBeOpenedAtAllDialog.title")); //$NON-NLS-1$
-					}
+					openDocument(reference.getDocument().get(GlobalConstants.FIELD_DOC_PATH), finalThis);
 				}
 			}
 		});
@@ -1375,4 +1369,17 @@ public class DoccoMainFrame extends JFrame {
         	ErrorDialog.showError(this, ex, GuiMessages.getString("DoccoMainFrame.errorUpdatingIndexDialog.title")); //$NON-NLS-1$
         }
     }
+
+	public static void openDocument(String location, Component parentForErrorDialog) {
+		try {
+			BrowserLauncher launcher = new BrowserLauncher();
+			launcher.openURLinBrowser(new File(location).toURI().toURL().toExternalForm()); //$NON-NLS-1$
+		} catch (BrowserLaunchingInitializingException ex) {
+			ErrorDialog.showError(parentForErrorDialog,ex,GuiMessages.getString("DoccoMainFrame.documentOpenFailedDialog.title")); //$NON-NLS-1$
+		} catch (UnsupportedOperatingSystemException ex) {
+			ErrorDialog.showError(parentForErrorDialog,ex,GuiMessages.getString("DoccoMainFrame.documentCanNotBeOpenedAtAllDialog.title")); //$NON-NLS-1$
+		} catch (MalformedURLException ex) {
+			ErrorDialog.showError(parentForErrorDialog,ex,GuiMessages.getString("DoccoMainFrame.documentCanNotBeOpenedDueToBrokenUrlDialog.title")); //$NON-NLS-1$
+		}
+	}
 }

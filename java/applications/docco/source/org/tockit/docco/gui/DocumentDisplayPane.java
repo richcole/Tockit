@@ -14,7 +14,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
@@ -27,9 +26,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-
-import net.sourceforge.toscanaj.dbviewer.BrowserLauncher;
-import net.sourceforge.toscanaj.gui.dialog.ErrorDialog;
 
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Field;
@@ -78,11 +74,7 @@ public class DocumentDisplayPane extends JPanel {
 		this.shellExecuteButton = new JButton(GuiMessages.getString("DocumentDisplayPane.openDocumentButton.label")); //$NON-NLS-1$
 		this.shellExecuteButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				try {
-                    BrowserLauncher.openURL(currentDocument);
-                } catch (IOException ex) {
-                	ErrorDialog.showError(panel,ex,GuiMessages.getString("DocumentDisplayPane.unableToOpenDialog.title")); //$NON-NLS-1$
-                }
+				DoccoMainFrame.openDocument(currentDocument, panel);
 	        }
 		});
 		this.shellExecuteButton.setEnabled(false);
