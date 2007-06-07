@@ -800,11 +800,10 @@ public class DoccoMainFrame extends JFrame {
     }
 
     protected void deleteIndex(Index currentIndex) {
-    	// TODO this next dialog will have yes/no buttons, which are (a) not clear, and (b) will be internationalized
+    	// TODO this next dialog will have yes/no buttons, which are (a) not clear, and (b) will be internationalized differently
     	// we should use "Delete" and "Abort" instead
-    	int rv = JOptionPane.showConfirmDialog(this, MessageFormat.format("A deleted index can be restored only by re-running\n" + //$NON-NLS-1$
-    		                                         "the whole indexing process. Are you sure you want to\n" + //$NON-NLS-1$
-    		                                         "delete the index '{0}'?", new Object[]{currentIndex.getName()}),  //$NON-NLS-1$ //$NON-NLS-2$
+    	int rv = JOptionPane.showConfirmDialog(this, MessageFormat.format(GuiMessages.getString("DoccoMainFrame.deleteIndexConfirmationDialog.text"), 
+    			                               new Object[]{currentIndex.getName()}),  //$NON-NLS-1$ //$NON-NLS-2$
     		                                   GuiMessages.getString("DoccoMainFrame.deleteIndexConfirmationDialog.title"), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE); //$NON-NLS-1$
     	if(rv != JOptionPane.YES_OPTION) {
     		return;
