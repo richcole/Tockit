@@ -489,28 +489,13 @@ public class DoccoMainFrame extends JFrame {
         for (int i = 0; i < indexLocations.length; i++) {
             File file = indexLocations[i];
 			try {
-                Index index = Index.openIndex(file.getName(), indexDirectory, callbackRecipient);
+                Index index = Index.openIndex(file.getName(), indexDirectory, callbackRecipient, forceIndexAccess);
                 this.indexes.add(index);
             } catch (Exception e) {
             	ErrorDialog.showError(this, e, GuiMessages.getString("DoccoMainFrame.openingIndexFailedDialog.title")); //$NON-NLS-1$
             }
         }
 		createQueryEngine();
-		//@todo add force access into Index class
-        if(forceIndexAccess) {
-            System.err.println(CliMessages.getString("DoccoMainFrame.forcingIndexAccessDisabledWarning.text")); //$NON-NLS-1$
-//        				JOptionPane.showMessageDialog(this, "The index is locked. You can run only one instance of Docco at one time.\n" +
-//        											  "If you want to override this error run Docco with the '-forceIndexAccess' option.",
-//        											  "Index locked", JOptionPane.ERROR_MESSAGE);
-//        				System.exit(1);
-//        			}
-//        			try {
-//        				IndexReader.unlock(FSDirectory.getDirectory(indexLocation, false));
-//        			} catch (IOException e) {
-//        				// we just ignore that here -- Lucene throws exceptions about lock files that can't be deleted since
-//        				// they are not there
-//        			}
-        }   		
     }
 
     private File getIndexDirectory() {

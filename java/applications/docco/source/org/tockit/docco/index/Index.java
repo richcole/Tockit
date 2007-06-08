@@ -47,7 +47,21 @@ public class Index {
 
     private Analyzer analyzer;
 	
-    public static Index openIndex(String name, File indexDirectory, Indexer.CallbackRecipient callbackRecipient) 
+    /**
+     * Opens an existing index.
+     * 
+     * @param name The name of the index. Not null.
+     * @param indexDirectory The directory in which the index resides. Not null.
+     * @param callbackRecipient An object that gets the callbacks for changes from the index. Can be null.
+     * @param forceAccess Iff true, a locked index will be silently unlocked.
+     * 
+     * @return A representation of the opened index.
+     * 
+     * @throws FileNotFoundException Iff the index can not be found (name or directory don't match).
+     * @throws IOException Iff any error happens while opening the index.
+     * @throws ClassNotFoundException Iff a required document handler can not be instantiated.
+     */
+    public static Index openIndex(String name, File indexDirectory, Indexer.CallbackRecipient callbackRecipient, boolean forceAccess) 
     				throws FileNotFoundException, IOException, ClassNotFoundException {
         Properties settings = new Properties();
         File settingsFile = getPropertiesFile(indexDirectory, name);
@@ -76,7 +90,9 @@ public class Index {
 				retVal = new Index(name, indexDirectory, baseDirectory, analyzer, DocumentHandlerRegistry.getDefaultMappings(), 
 				    			   callbackRecipient, active);
 			}
-			retVal.callbackRecipient = callbackRecipient;
+			if(retVal.isLocked() && forceAccess) {
+				retVal.removeLock();
+			}
 			return retVal;
 		} catch (ArrayIndexOutOfBoundsException e) {
 			throw new IOException(MessageFormat.format(GuiMessages.getString("Index.noBaseDirectoryFoundError.text"), new Object[]{settingsFile})); //$NON-NLS-1$
@@ -91,7 +107,6 @@ public class Index {
                                              analyzer, true);
 		writer.close();
 		Index retVal = new Index(name, indexDirectory, baseDirectory, analyzer, documentMappings, callbackRecipient, true);
-		retVal.callbackRecipient = callbackRecipient;
 		retVal.updateIndex();
 		return retVal;
 	}
@@ -131,6 +146,7 @@ public class Index {
 		this.baseDirectory = baseDirectory;
         this.analyzer = analyzer;
         this.indexer = new Indexer(this.indexLocation, baseDirectory, analyzer, documentMappings, callbackRecipient);
+        this.callbackRecipient = callbackRecipient;
         this.active = active;
         saveSettingsAndMappings();
 	}
