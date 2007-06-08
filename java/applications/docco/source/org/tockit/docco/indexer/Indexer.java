@@ -29,6 +29,12 @@ public class Indexer implements Runnable {
     public interface CallbackRecipient {
 		void showFeedbackMessage(String message);
 	}
+    
+    public static final CallbackRecipient NullRecipient = new CallbackRecipient(){
+		public void showFeedbackMessage(String message) {
+			// do nothing
+		}
+    };
 
     private File indexLocation;
     private File baseDirectory;

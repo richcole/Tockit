@@ -20,6 +20,8 @@ Docco:
 - Moving nodes in a diagram should be more natural now
 - The code to open a document has been updated to a new version, which
   fixes issues on various platforms
+- a new command line option "updateIndexes" can be used to let Docco update
+  all indexes without running the GUI
   
 
 Changes from Docco 0.3 to 0.4:

@@ -175,7 +175,7 @@ public class DoccoMainFrame extends JFrame {
     // TODO this next one should be in the User Application Data Directory on Windows XP
     // but we don't know how to get that in a portable way (could be on any drive and is
     // internationalized).
-	private static final String DEFAULT_INDEX_DIR = System.getProperty("user.home") +  //$NON-NLS-1$
+	public static final String DEFAULT_INDEX_DIR = System.getProperty("user.home") +  //$NON-NLS-1$
 											System.getProperty("file.separator") +  //$NON-NLS-1$
 											".doccoIndex"; //$NON-NLS-1$
 	
@@ -385,8 +385,12 @@ public class DoccoMainFrame extends JFrame {
 	
 	public DoccoMainFrame(boolean forceIndexAccess, String indexDirectory) {
 		super(WINDOW_TITLE);
-
-        this.indexDirectoryLocation = indexDirectory;
+		if(indexDirectory != null) {
+			this.indexDirectoryLocation = indexDirectory;
+		} else {
+            this.indexDirectoryLocation = preferences.get(
+                    CONFIGURATION_INDEX_LOCATION, DEFAULT_INDEX_DIR);
+        }
         
 		JComponent viewsComponent = buildViewsComponent();
 		this.documentDisplayPane = new DocumentDisplayPane();
@@ -413,7 +417,6 @@ public class DoccoMainFrame extends JFrame {
 		setContentPane(contentPane);
 
 		loadDefaultSettings();
-		/// @todo where should we call PluginLoader from?
 		loadPlugins();
 		
 		this.indexingPriority = preferences.getInt(CONFIGURATION_INDEXING_PRIORITY_NAME, MEDIUM_PRIORITY);	
@@ -440,12 +443,9 @@ public class DoccoMainFrame extends JFrame {
 	}
 
 	private void loadPlugins() {
-		/// @todo this should be read from config manager?...
+		// TODO this should be read from properties?...
 		String pluginsDirName = "plugins"; //$NON-NLS-1$
-
 		String pluginsBaseDir = System.getProperty("user.dir") + File.separator; //$NON-NLS-1$
-		
-		
 		try {
 			PluginLoader.Error[] errors = PluginLoader.loadPlugins(new File(pluginsBaseDir + pluginsDirName));
 			if (errors.length > 0) {
@@ -499,10 +499,6 @@ public class DoccoMainFrame extends JFrame {
     }
 
     private File getIndexDirectory() {
-        if (this.indexDirectoryLocation == null) {
-            this.indexDirectoryLocation = preferences.get(
-                    CONFIGURATION_INDEX_LOCATION, DEFAULT_INDEX_DIR);
-        }
 		File indexDirectory = new File(indexDirectoryLocation);
 		if (!indexDirectory.exists()) {
 			indexDirectory.mkdir();

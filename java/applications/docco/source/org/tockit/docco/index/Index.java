@@ -52,7 +52,7 @@ public class Index {
      * 
      * @param name The name of the index. Not null.
      * @param indexDirectory The directory in which the index resides. Not null.
-     * @param callbackRecipient An object that gets the callbacks for changes from the index. Can be null.
+     * @param callbackRecipient An object that gets the callbacks for changes from the index. Not null.
      * @param forceAccess Iff true, a locked index will be silently unlocked.
      * 
      * @return A representation of the opened index.

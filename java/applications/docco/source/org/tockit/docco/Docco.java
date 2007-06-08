@@ -7,9 +7,14 @@
  */
 package org.tockit.docco;
 
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -24,23 +29,54 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.tockit.docco.documenthandler.DocumentHandlerRegistry;
 import org.tockit.docco.gui.DoccoMainFrame;
+import org.tockit.docco.index.Index;
+import org.tockit.docco.indexer.Indexer;
+import org.tockit.plugin.PluginLoader;
 
 import com.jgoodies.plaf.plastic.PlasticLookAndFeel;
 import com.jgoodies.plaf.plastic.theme.SkyBlue;
 
+/**
+ * Main class to start Docco.
+ */
 public class Docco {
-	private static final String HELP_COMMAND_LINE_OPTION = CliMessages.getString("DoccoCommandLine.helpOption.name"); //$NON-NLS-1$
-	private static final String INDEX_DIRECTORY_COMMAND_LINE_OPTION = CliMessages.getString("DoccoCommandLine.indexDirectoryOption.name"); //$NON-NLS-1$
+	// CLI exit codes
+	/**
+	 * Signals normal program execution.
+	 */
+	private static final int EXIT_CODE_OK = 0;
+    /**
+     * Signals an error in the command line options given by the user.
+     */
+	private static final int EXIT_CODE_CLI_OPTIONS_WRONG = 1;
+	/**
+	 * Signals an error loading the document handlers in non-GUI mode.
+	 */
+	private static final int EXIT_CODE_ERROR_LOADING_DOCUMENT_HANDLERS = 2;
+	/**
+	 * Signals an error loading the plugins in non-GUI mode.
+	 */
+	private static final int EXIT_CODE_ERROR_LOADING_PLUGINS = 3;
+	/**
+	 * Signals an error opening an index in non-GUI mode.
+	 */
+	private static final int EXIT_CODE_ERROR_OPENING_INDEX = 4;
+	
 	private static final String USE_PLATFORM_LF_COMMAND_LINE_OPTION = CliMessages.getString("DoccoCommandLine.usePlatformLnfOption.name"); //$NON-NLS-1$
+	private static final String INDEX_DIRECTORY_COMMAND_LINE_OPTION = CliMessages.getString("DoccoCommandLine.indexDirectoryOption.name"); //$NON-NLS-1$
 	private static final String FORCE_INDEX_ACCESS_COMMAND_LINE_OPTION = CliMessages.getString("DoccoCommandLine.forceIndexAccessOption.name"); //$NON-NLS-1$
+	private static final String UPDATE_INDEXES_COMMAND_LINE_OPTION = CliMessages.getString("DoccoCommandLine.updateIndexesOption.name"); //$NON-NLS-1$
+	private static final String HELP_COMMAND_LINE_OPTION = CliMessages.getString("DoccoCommandLine.helpOption.name"); //$NON-NLS-1$
 
 	public static void main (String[] args) {
 		ToscanaJ.testJavaVersion();
         Options options = new Options();
-        options.addOption(FORCE_INDEX_ACCESS_COMMAND_LINE_OPTION, false, CliMessages.getString("DoccoCommandLine.forceIndexAccessOption.description")); //$NON-NLS-1$
         options.addOption(USE_PLATFORM_LF_COMMAND_LINE_OPTION, false, CliMessages.getString("DoccoCommandLine.usePlatformLnfOption.description")); //$NON-NLS-1$
         options.addOption(INDEX_DIRECTORY_COMMAND_LINE_OPTION, true, CliMessages.getString("DoccoCommandLine.indexDirectoryOption.description")); //$NON-NLS-1$
+        options.addOption(FORCE_INDEX_ACCESS_COMMAND_LINE_OPTION, false, CliMessages.getString("DoccoCommandLine.forceIndexAccessOption.description")); //$NON-NLS-1$
+        options.addOption(UPDATE_INDEXES_COMMAND_LINE_OPTION, false, CliMessages.getString("DoccoCommandLine.updateIndexesOption.description")); //$NON-NLS-1$
         options.addOption(HELP_COMMAND_LINE_OPTION, false, CliMessages.getString("DoccoCommandLine.helpOption.description")); //$NON-NLS-1$
         CommandLineParser parser = new BasicParser();
         CommandLine cl = null;
@@ -48,21 +84,28 @@ public class Docco {
             cl = parser.parse(options,args);
         } catch (ParseException e) {
             showUsage(options, System.err);
-            System.exit(1);
+            System.exit(EXIT_CODE_CLI_OPTIONS_WRONG);
         }
         assert cl != null;
         
         if(cl.getArgs().length > 0) {
             showUsage(options, System.err);
-            System.exit(1);
+            System.exit(EXIT_CODE_CLI_OPTIONS_WRONG);
         }
         if(cl.hasOption(HELP_COMMAND_LINE_OPTION)) {
             showUsage(options, System.out);
-            System.exit(0);
+            System.exit(EXIT_CODE_OK);
         }
-        boolean forceIndexAccess = cl.hasOption(FORCE_INDEX_ACCESS_COMMAND_LINE_OPTION);
         boolean usePlatformLF = cl.hasOption(USE_PLATFORM_LF_COMMAND_LINE_OPTION);
         String indexDirectory = cl.getOptionValue(INDEX_DIRECTORY_COMMAND_LINE_OPTION);
+        boolean forceIndexAccess = cl.hasOption(FORCE_INDEX_ACCESS_COMMAND_LINE_OPTION);
+        boolean updateIndexesOnly = cl.hasOption(UPDATE_INDEXES_COMMAND_LINE_OPTION);
+        
+        if(updateIndexesOnly) {
+        	// we just update the indexes and don't start the GUI
+        	updateIndexes(indexDirectory, forceIndexAccess, false);
+        	System.exit(EXIT_CODE_OK);
+        }
 
 		if(usePlatformLF) {
 			try {
@@ -110,6 +153,89 @@ public class Docco {
 			ErrorDialog.showError(null, e, CliMessages.getString("DoccoCommandLine.errorDialog.title")); //$NON-NLS-1$
 		}
 	}
+
+	private static void updateIndexes(String indexDirectory, boolean forceIndexAccess, boolean useCallback) {
+		loadPlugins();
+		try {
+			DocumentHandlerRegistry.registerDefaults();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(EXIT_CODE_ERROR_LOADING_DOCUMENT_HANDLERS);
+		}
+		if(indexDirectory == null) {
+			indexDirectory = DoccoMainFrame.DEFAULT_INDEX_DIR;
+		}
+		List indexes = openIndexes(new File(indexDirectory), forceIndexAccess, useCallback);
+		for (Iterator iter = indexes.iterator(); iter.hasNext();) {
+		    Index index = (Index) iter.next();
+            System.out.println(MessageFormat.format(CliMessages.getString("DoccoCommandLine.currentIndexMessage.text"), new Object[]{index.getName()}));
+		    index.updateIndex(); 
+		    while(index.isWorking()) { // do all indexes sequentially
+		    	try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+		    }
+		}
+		System.out.println(CliMessages.getString("DoccoCommandLine.updatesFinishedMessage.text")); //$NON-NLS-1$
+	}
+
+	private static void loadPlugins() {
+		// TODO this is copy and paste from the DoccoMainFrame class -- somehow the error handling of
+		// the plugin loader is not very nice for reuse, a callback mechanism would be better.
+		String pluginsDirName = "plugins"; //$NON-NLS-1$
+		String pluginsBaseDir = System.getProperty("user.dir") + File.separator; //$NON-NLS-1$
+		try {
+			PluginLoader.Error[] errors = PluginLoader.loadPlugins(new File(pluginsBaseDir + pluginsDirName));
+			if (errors.length > 0) {
+				String errorMsg = ""; //$NON-NLS-1$
+				for (int i = 0; i < errors.length; i++) {
+					PluginLoader.Error error = errors[i];
+					errorMsg = MessageFormat.format(CliMessages.getString("DoccoCommandLine.pluginLoadingError.entryText"),  //$NON-NLS-1$
+							new Object[]{error.getPluginLocation().getAbsolutePath(),error.getException().getMessage()});
+					error.getException().printStackTrace();
+				}
+				System.err.println(CliMessages.getString("DoccoCommandLine.pluginLoadingError.header") + "\n" + errorMsg); //$NON-NLS-1$ //$NON-NLS-2$
+				System.exit(EXIT_CODE_ERROR_LOADING_PLUGINS);
+			}
+		}
+		catch (FileNotFoundException e) {
+			System.err.println(CliMessages.getString("DoccoCommandLine.pluginDirectoryNotFoundError.text")); //$NON-NLS-1$
+			System.exit(EXIT_CODE_ERROR_LOADING_PLUGINS);
+		}
+	}
+
+    private static List openIndexes(File indexDirectory, boolean forceIndexAccess, boolean useCallback) {
+    	// TODO copy and paste from DoccoMainFrame class
+    	List retVal = new ArrayList();
+        File[] indexLocations = indexDirectory.listFiles(new FileFilter(){
+            public boolean accept(File pathname) {
+                return pathname.isDirectory();
+            }
+        });
+		Indexer.CallbackRecipient callbackRecipient;
+		if(useCallback) {
+			callbackRecipient = new Indexer.CallbackRecipient(){
+				public void showFeedbackMessage(String message) {
+					System.out.println("  " + message); //$NON-NLS-1$
+				}
+			};
+		} else {
+			callbackRecipient = Indexer.NullRecipient;
+		}
+        for (int i = 0; i < indexLocations.length; i++) {
+            File file = indexLocations[i];
+			try {
+                Index index = Index.openIndex(file.getName(), indexDirectory, callbackRecipient, forceIndexAccess);
+                retVal.add(index);
+            } catch (Exception e) {
+            	e.printStackTrace();
+            	System.exit(EXIT_CODE_ERROR_OPENING_INDEX);
+            }
+        }
+        return retVal;
+    }
 
     private static void showUsage(Options options, PrintStream stream) {
         stream.println(CliMessages.getString("DoccoCommandLine.helpText.line1")); //$NON-NLS-1$
