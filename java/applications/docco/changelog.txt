@@ -22,6 +22,9 @@ Docco:
   fixes issues on various platforms
 - a new command line option "updateIndexes" can be used to let Docco update
   all indexes without running the GUI
+
+PDFbox-Plugin:
+- updated to PDFbox version 0.7.3
   
 
 Changes from Docco 0.3 to 0.4:
