@@ -1,4 +1,6 @@
+==============================
 Changes since Docco 0.4:
+==============================
 
 Docco:
 - Docco is now internationalized, i.e. it can be easily adjusted to local
@@ -27,7 +29,9 @@ PDFbox-Plugin:
 - updated to PDFbox version 0.7.3
   
 
+==============================
 Changes from Docco 0.3 to 0.4:
+==============================
 
 Docco:
 - symlinks are not followed anymore (Linux/UNIX)
