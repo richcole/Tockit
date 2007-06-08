@@ -249,7 +249,7 @@ public class DoccoMainFrame extends JFrame {
 
 		while (iterator.hasNext()) {
 			FCAElement object = (FCAElement) iterator.next();
-            HitReference reference = (HitReference) (object).getData();
+            HitReference reference = (HitReference) object.getData();
 			String path = reference.getDocument().get(GlobalConstants.FIELD_DOC_PATH);
 			StringTokenizer tokenizer = new StringTokenizer(path, File.separator);
 			StringBuffer curPath = new StringBuffer();
