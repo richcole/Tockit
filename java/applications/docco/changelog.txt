@@ -1,5 +1,5 @@
 ==============================
-Changes since Docco 0.4:
+Changes from Docco 0.4 to 0.5:
 ==============================
 
 Docco:
