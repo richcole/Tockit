@@ -1,2 +1,0 @@
-Main-Class: org/tockit/docco/Docco
-Class-Path: . libs/lucene-core.jar libs/tockit-canvas.jar libs/tockit-events.jar libs/jdom.jar libs/ToscanaJ.jar libs/tockit-pluginArchitecture.jar libs/plastic.jar libs/tockit-swing.jar libs/tockit-utils.jar libs/tockit-fca.jar libs/commons-cli.jar libs/BrowserLauncher2.jar
