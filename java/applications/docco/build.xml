@@ -133,6 +133,17 @@
 	<target name="dist" depends="_makeReleaseJar,_copyFiles,_zipFile" description="Creates the Docco distribution without plugins">
 	</target>
 	<target name="fullDist" depends="_makeReleaseJar,_copyFiles,pluginsReleaseDist,_zipFile" description="Creates the Docco distribution including the plugins">
+		<ant antfile="build.xml" dir="plugins" target="copy">
+			<property name="mainApp.libs.dir" value="../${libs.dir}"/>
+			<property name="mainApp.classes" value="../${build.release.dir}"/>
+			<property name="mainApp.dist.dir" value="../${dist.base.dir}"/>
+			<property name="plugins.target.dir" value="../${dist.dir}/plugins"/>
+		</ant>		
+		<zip destfile="${dist.dir}full.zip">
+			<fileset dir="${dist.base.dir}">
+				<include name="${dist.name}/**"/>
+			</fileset>
+		</zip>
 	</target>
 	<target name="_zipFile">
 		<zip destfile="${dist.dir}.zip">

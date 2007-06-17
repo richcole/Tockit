@@ -39,6 +39,12 @@
 	    </foreach>
 	</target>
 	
+	<target name="copy">
+	    <foreach target="_pluginCopy" param="plugin.dir">
+	    	<path refid="${plugins.paths}"/>
+	    </foreach>
+	</target>
+	
 	<target name="_pluginDist">
 		<basename property="plugin.dir.name" file="${plugin.dir}"/>
 		<ant antfile="${basedir}/buildPlugin.xml" dir="${plugin.dir}" target="dist" inheritall="false">
@@ -52,6 +58,17 @@
 				<include name="*.zip"/>
 			</fileset>
 		</copy>
+	</target>
+	
+	<target name="_pluginCopy">
+		<basename property="plugin.dir.name" file="${plugin.dir}"/>
+		<ant antfile="${basedir}/buildPlugin.xml" dir="${plugin.dir}" target="copy" inheritall="false">
+			<property name="plugin.name" value="${plugin.dir.name}Plugin"/>
+			<property name="plugin.dist.dir.name" value="${plugin.dir.name}"/>
+			<property name="mainApp.classes" value="../${mainApp.classes}"/>
+			<property name="mainApp.libs.dir" value="../${mainApp.libs.dir}"/>
+			<property name="plugin.target.dir" value="../${plugins.target.dir}"/>
+		</ant>
 	</target>
 	
 	<target name="_cleanPlugin">

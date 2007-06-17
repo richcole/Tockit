@@ -68,14 +68,13 @@
     
 	<target name="_tryReadingVersionNumber">
 		<property file="${basedir}/version"/>
-		<antcall target="_ensureVersionAvailable" inheritAll="true"/>
 	</target>
 
 	<target name="_prepare" depends="_setProperties">
 		<mkdir dir="${plugin.build.dir}"/>
 	</target>
 
-	<target name="_setProperties" depends="_tryReadingVersionNumber, _ensureVersionAvailable">
+	<target name="_setProperties" depends="_tryReadingVersionNumber,_ensureVersionAvailable">
 		<property name="plugin.versioned.name" value="${plugin.name}-${plugin.version.name}"/>
 	</target>
 
@@ -122,4 +121,16 @@
 		</zip>		
 	</target>
 
+	<target name="copy" depends="_setProperties"
+		description="Copies an already build plugin into the location determined by the 'plugin.target.dir' property">
+		<property name="plugin.versioned.dist.dir.name" value="${plugin.dist.dir.name}-${plugin.version.name}"/>
+		<property name="plugin.full.target.dir" value="${plugin.target.dir}/${plugin.versioned.dist.dir.name}"/>
+		<copy todir="${plugin.full.target.dir}" includeEmptyDirs="no">
+			<fileset dir="${basedir}">
+		        <include name="libs/**"/>
+		        <include name="${plugin.jar.name}"/>
+	        	<include name="${plugin.description.file}"/>
+            </fileset>
+		</copy>
+	</target>
 </project>
