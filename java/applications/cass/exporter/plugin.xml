@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.jdt.core.IJavaProject"
+            id="CASS_Java_Source_Exporter.contribution1">
+         <menu
+               label="CASS"
+               path="additions"
+               id="CASS_Java_Source_Exporter.menu1">
+            <separator
+                  name="group1">
+            </separator>
+         </menu>
+         <action
+               label="Export Java Source..."
+               class="org.tockit.cass.javaexport.popup.actions.ExportSourceAction"
+               menubarPath="CASS_Java_Source_Exporter.menu1/group1"
+               enablesFor="1"
+               id="CASS_Java_Source_Exporter.newAction">
+         </action>
+      </objectContribution>
+   </extension>
+
+</plugin>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="source"/>
+	<classpathentry exported="true" kind="lib" path="libs/antlr-2.7.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/arq.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/arq-extra.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/concurrent.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/icu4j_3_4.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/iri.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/jenatest.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/json.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/junit.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/log4j-1.2.12.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lucene-core-2.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/stax-api-1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/wstx-asl-3.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/xercesImpl.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/xml-apis.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/commons-logging-1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/hsqldb.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="lib" path="libs/jena.jar" sourcepath="libs/source/jena-src.zip"/>
+	<classpathentry kind="output" path="build/eclipse"/>
+</classpath>
