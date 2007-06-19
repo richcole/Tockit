@@ -36,12 +36,15 @@ public class ExportSourceAction implements IObjectActionDelegate {
 	 */
 	public void run(IAction action) {
         Shell shell = new Shell();
-		DirectoryDialog dd = new DirectoryDialog(shell);
-        dd.setText("Choose directory to export Java source graph into");
-        String selected = dd.open();
-        if (selected != null) {
+        String exportLocation = System.getProperty("org.tockit.cass.javaexport.ExportLocation");
+		if (exportLocation == null) {
+			DirectoryDialog dd = new DirectoryDialog(shell);
+			dd.setText("Choose directory to export Java source graph into");
+			exportLocation = dd.open();
+		}		
+		if (exportLocation != null) {
 			try {
-				SourceExport.exportSource(theProject, selected);
+				SourceExport.exportSource(theProject, exportLocation);
 			} catch (SQLException e) {
 				MessageDialog.openError(shell, "Error exporting Java source", e.getLocalizedMessage());
 				e.printStackTrace();
