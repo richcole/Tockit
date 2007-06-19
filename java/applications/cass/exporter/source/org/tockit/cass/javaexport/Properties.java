@@ -54,5 +54,5 @@ public class Properties {
 	 * the transitive closure of #CALLS one has to restrict the domain and range to methods via the
 	 * #TYPE property.
 	 */
-	public static final Property CALLS_TRANSITIVELY = model.createProperty("http://tockit.org/cass#calls_t");
+	public static final Property CALLS_TRANSITIVELY = model.createProperty("http://tockit.org/cass#calls_ext_t");
 }

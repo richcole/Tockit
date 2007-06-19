@@ -7,10 +7,24 @@
 
 @prefix cass: <http://tockit.org/cass#>
 
-# transitive closure of the callgraph
-(?a cass:calls ?b) -> (?a cass:calls_t ?b).
-(?a cass:calls_t ?b), (?b cass:calls_t ?c) -> (?a cass:calls_t ?c).
+################ RULES ##################
 
-# transitive closure of containment
+### transitive closure of containment ###
 
-# generic notion of dependency
+(?a cass:contains ?b) -> (?a cass:contains_t ?b).
+(?a cass:contains_t ?b), (?b cass:contains_t ?c) -> (?a cass:contains_t ?c).
+
+### extended callgraph ###
+
+(?a cass:calls ?b) -> (?a cass:calls_ext ?b).
+(?a cass:calls_ext ?b), (?c cass:contains_t ?a) -> (?c cass:calls_ext ?b).
+(?a cass:calls_ext ?b), (?c cass:contains_t ?b) -> (?a cass:calls_ext ?c).
+
+### transitive closure of the extended callgraph ###
+
+(?a cass:calls_ext ?b) -> (?a cass:calls_ext_t ?b).
+(?a cass:calls_ext_t ?b), (?b cass:calls_ext_t ?c) -> (?a cass:calls_ext_t ?c).
+
+### generic notion of dependency (incomplete) ###
+
+(?a cass:calls_ext_t ?b) -> (?a cass:dep ?b).
