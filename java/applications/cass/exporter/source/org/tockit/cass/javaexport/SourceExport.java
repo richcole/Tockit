@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -29,7 +28,6 @@ import com.hp.hpl.jena.rdf.model.InfModel;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.ModelMaker;
-import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.reasoner.Reasoner;
 import com.hp.hpl.jena.reasoner.rulesys.GenericRuleReasoner;
@@ -68,14 +66,7 @@ public class SourceExport {
 		// create inferred model
 		Reasoner reasoner = new GenericRuleReasoner(rules);
 		InfModel infModel = ModelFactory.createInfModel(reasoner, model);
-		Iterator it = infModel.listStatements(model.createResource("test.testing.Test.main(..)"), null, (RDFNode)null);
-		while (it.hasNext()) {
-			System.out.println(it.next());
-		}
-		it = infModel.listStatements(model.createResource("test.testing.Test.printHelloWorld(..)"), null, (RDFNode)null);
-		while (it.hasNext()) {
-			System.out.println(it.next());
-		}
+
 		// join the inferred data into the persisted model (it seems Jena can't persist inferred statements
 		// directly)
 		model.add(infModel);
