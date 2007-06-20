@@ -35,24 +35,30 @@ public class Properties {
 	 * This is the transitive closure of the #CONTAINS property.
 	 */
 	public static final Property CONTAINS_TRANSITIVELY = model.createProperty("http://tockit.org/cass#contains_t");
+		
+	/**
+	 * Some entity calls another directly or indirectly.
+	 * 
+	 * This is the transitive closure of #CALLS.
+	 */
+	public static final Property CALLS_TRANSITIVELY = model.createProperty("http://tockit.org/cass#calls_t");
 	
 	/**
 	 * Some entity calls another directly.
 	 * 
-	 * This is the #CALLS property extended along the #CONTAINS_TRANSITIVELY property by the
-	 * following rule: if method A calls method B, then anything that contains A calls anything
-	 * that contains B.  
+	 * This is the #CALLS_TRANSITIVELY property extended along the #CONTAINS_TRANSITIVELY 
+	 * property by the following rule: if method A calls method B, then anything that contains 
+	 * A calls anything that contains B.  
 	 * 
 	 * Domain and range is methods and anything that can contain a method.
 	 */
 	public static final Property CALLS_EXTENDED = model.createProperty("http://tockit.org/cass#calls_ext");
-	
+
 	/**
-	 * Some entity calls another directly or indirectly.
+	 * Some entity depends on another.
 	 * 
-	 * Note that this is actually the transitive closure of #CALLS_EXTENDED, not #CALLS. To retrieve
-	 * the transitive closure of #CALLS one has to restrict the domain and range to methods via the
-	 * #TYPE property.
+	 * This is a transitive closure of the union of some other relations, such as the callgraph and type
+	 * usage. TODO: define properly.
 	 */
-	public static final Property CALLS_TRANSITIVELY = model.createProperty("http://tockit.org/cass#calls_ext_t");
+	public static final Property DEPENDS_TRANSITIVELY = model.createProperty("http://tockit.org/cass#depends_t");
 }

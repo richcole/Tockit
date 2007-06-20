@@ -1,9 +1,8 @@
 package org.tockit.cass.javaexport;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -24,53 +23,41 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import com.hp.hpl.jena.db.DBConnection;
 import com.hp.hpl.jena.db.IDBConnection;
-import com.hp.hpl.jena.rdf.model.InfModel;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.ModelMaker;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.reasoner.Reasoner;
-import com.hp.hpl.jena.reasoner.rulesys.GenericRuleReasoner;
-import com.hp.hpl.jena.reasoner.rulesys.Rule;
+import com.hp.hpl.jena.rdf.model.Statement;
 
 public class SourceExport {
 	public static void exportSource(IJavaProject javaProject,
 			String targetLocation) throws JavaModelException,
 			ClassNotFoundException, SQLException {
-		String className = "org.hsqldb.jdbcDriver"; // path of driver class
-		Class.forName(className); // Load the Driver
-		String DB_URL = "jdbc:hsqldb:file:" + targetLocation + "/jenaDB"; // URL
-																			// of
-																			// database
-		String DB_USER = "sa"; // database user id
-		String DB_PASSWD = ""; // database password
-		String DB = "HSQL"; // database type
+		// set up DB connection
+		String className = "org.hsqldb.jdbcDriver";
+		Class.forName(className);
+		String DB_URL = "jdbc:hsqldb:file:" + targetLocation + "/jenaDB";
+		String DB_USER = "sa";
+		String DB_PASSWD = "";
+		String DB = "HSQL";
 
 		// Create database connection
 		IDBConnection conn = new DBConnection(DB_URL, DB_USER, DB_PASSWD, DB);
 		conn.cleanDB(); // it doesn't seem to work without this -- TODO: figure
-						// out why
+		// out why
 		ModelMaker maker = ModelFactory.createModelRDBMaker(conn);
 
 		// create or open the default model
 		Model model = maker.createDefaultModel();
-		extractBaseAssertions(javaProject, model);
 
-		// load rules
-		BufferedReader reader = new BufferedReader(
-				new InputStreamReader(
-						SourceExport.class
-								.getResourceAsStream("InferenceRules")));
-		List rules = Rule.parseRules(Rule.rulesParserFromReader(reader));
+		// extract assertions into model
+		extractAssertions(javaProject, model);
 		
-		// create inferred model
-		Reasoner reasoner = new GenericRuleReasoner(rules);
-		InfModel infModel = ModelFactory.createInfModel(reasoner, model);
-
-		// join the inferred data into the persisted model (it seems Jena can't persist inferred statements
-		// directly)
-		model.add(infModel);
-		
+		// do some extra inferences beyond the ones done while adding
+        addExtraAssertions(model);
+        
 		// shutdown hsqldb
 		conn.getConnection().createStatement().execute("SHUTDOWN;");
 
@@ -78,7 +65,15 @@ public class SourceExport {
 		conn.close();
 	}
 
-	private static void extractBaseAssertions(IParent parent, final Model model)
+	private static void addExtraAssertions(Model model) {
+		Iterator it = model.listStatements(null, Properties.CALLS_EXTENDED, (RDFNode) null);
+		while (it.hasNext()) {
+			Statement stmt = (Statement) it.next();
+			stmt.getSubject().addProperty(Properties.DEPENDS_TRANSITIVELY, stmt.getObject());
+		}
+	}
+
+	private static void extractAssertions(IParent parent, final Model model)
 			throws JavaModelException {
 		if (parent instanceof IPackageFragment) {
 			IPackageFragment packageFragment = (IPackageFragment) parent;
@@ -86,12 +81,16 @@ public class SourceExport {
 					Properties.TYPE, Types.PACKAGE);
 		}
 		for (int i = 0; i < parent.getChildren().length; i++) {
-			final IJavaElement element = parent.getChildren()[i];
+			IJavaElement element = parent.getChildren()[i];
+			final Resource elementResource = model.createResource(element
+					.getElementName());
 			if (parent instanceof IPackageFragment) {
 				IPackageFragment packageFragment = (IPackageFragment) parent;
-				model.createResource(packageFragment.getElementName())
-						.addProperty(Properties.CONTAINS,
-								element.getElementName());
+				Resource packageResource = model.createResource(packageFragment
+						.getElementName());
+				addPropertyWithTransitiveClosure(model, packageResource,
+						elementResource, Properties.CONTAINS,
+						Properties.CONTAINS_TRANSITIVELY);
 			}
 			if (element instanceof ICompilationUnit) {
 				ICompilationUnit compilationUnit = (ICompilationUnit) element;
@@ -115,7 +114,9 @@ public class SourceExport {
 					}
 
 					private void pushOnStack(Resource currentRes) {
-						getTop().addProperty(Properties.CONTAINS, currentRes);
+						addPropertyWithTransitiveClosure(model, getTop(),
+								currentRes, Properties.CONTAINS,
+								Properties.CONTAINS_TRANSITIVELY);
 						resources.add(currentRes);
 					}
 
@@ -127,7 +128,7 @@ public class SourceExport {
 						ITypeBinding typeBinding = node.resolveBinding();
 						Resource currentRes = model.createResource(typeBinding
 								.getQualifiedName()); // TODO: figure out how
-														// to get the package
+						// to get the package
 						if (node.isInterface()) {
 							currentRes.addProperty(Properties.TYPE,
 									Types.INTERFACE);
@@ -164,19 +165,38 @@ public class SourceExport {
 								.resolveMethodBinding();
 						ITypeBinding typeBinding = methodBinding
 								.getDeclaringClass();
-						getTop().addProperty(
-								Properties.CALLS,
-								model.createResource(typeBinding.getQualifiedName() + "."
-										+ methodBinding.getName() + "(..)"));
+						addPropertyWithTransitiveClosure(model, getTop(), model
+								.createResource(typeBinding.getQualifiedName()
+										+ "." + methodBinding.getName()
+										+ "(..)"), Properties.CALLS,
+								Properties.CALLS_TRANSITIVELY);
 						return true;
 					}
 				});
 			}
 			if (element instanceof IParent) {
 				if (!element.getElementName().endsWith("jar")) {
-					extractBaseAssertions((IParent) element, model);
+					extractAssertions((IParent) element, model);
 				}
 			}
+		}
+	}
+
+	protected static void addPropertyWithTransitiveClosure(Model model,
+			Resource from, Resource to, Property coveringRelation,
+			Property closureRelation) {
+		from.addProperty(coveringRelation, to);
+		from.addProperty(closureRelation, to);
+		// add all (from,X) if (to,X)
+		Iterator it = model.listObjectsOfProperty(to, closureRelation);
+		while (it.hasNext()) {
+			from.addProperty(closureRelation, (Resource) it.next());
+		}
+		// add all (X,to) if (X,from)
+		it = model.listStatements(null, closureRelation, from);
+		while (it.hasNext()) {
+			Statement stmt = (Statement) it.next();
+			stmt.getSubject().addProperty(closureRelation, to);
 		}
 	}
 }
