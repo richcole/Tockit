@@ -22,6 +22,7 @@ import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
@@ -117,6 +118,7 @@ public class SourceExportJob extends Job {
 				return false;
 			}
 		}
+		
 		// add generic dependency graph
 		it = model.listStatements(null, Properties.CALLS_EXTENDED,
 				(RDFNode) null);
@@ -125,6 +127,30 @@ public class SourceExportJob extends Job {
 			stmt.getSubject().addProperty(Properties.DEPENDS_TRANSITIVELY,
 					stmt.getObject());
 		}
+		// TODO: the next ones should include upset in containment similar to 
+		// CALLS_EXTENDED maybe do union first, then go up containment hierarchies
+		it = model.listStatements(null, Properties.HAS_PARAMETER_EXTENDED,
+				(RDFNode) null); 
+		while (it.hasNext()) {
+			Statement stmt = (Statement) it.next();
+			stmt.getSubject().addProperty(Properties.DEPENDS_TRANSITIVELY,
+					stmt.getObject());
+		}
+		it = model.listStatements(null, Properties.HAS_RETURN_TYPE_EXTENDED,
+				(RDFNode) null); 
+		while (it.hasNext()) {
+			Statement stmt = (Statement) it.next();
+			stmt.getSubject().addProperty(Properties.DEPENDS_TRANSITIVELY,
+					stmt.getObject());
+		}
+		it = model.listStatements(null, Properties.HAS_FIELD_TYPE_EXTENDED,
+				(RDFNode) null); 
+		while (it.hasNext()) {
+			Statement stmt = (Statement) it.next();
+			stmt.getSubject().addProperty(Properties.DEPENDS_TRANSITIVELY,
+					stmt.getObject());
+		}
+
 		return true;
 	}
 
@@ -178,7 +204,8 @@ public class SourceExportJob extends Job {
 					}
 
 					public boolean visit(TypeDeclaration node) {
-						Resource currentRes = createResource(model, node);
+						ITypeBinding typeBinding = node.resolveBinding();
+						Resource currentRes = createResource(model, typeBinding);
 						pushOnStack(currentRes);
 						return true;
 					}
@@ -233,12 +260,12 @@ public class SourceExportJob extends Job {
 			Property closureRelation) {
 		from.addProperty(coveringRelation, to);
 		from.addProperty(closureRelation, to);
-		// add all (from,X) if (to,X)
+		// for all X: add (from,X) if (to,X)
 		Iterator it = model.listObjectsOfProperty(to, closureRelation);
 		while (it.hasNext()) {
 			from.addProperty(closureRelation, (Resource) it.next());
 		}
-		// add all (X,to) if (X,from)
+		// for all X: add (X,to) if (X,from)
 		it = model.listStatements(null, closureRelation, from);
 		while (it.hasNext()) {
 			Statement stmt = (Statement) it.next();
@@ -246,17 +273,33 @@ public class SourceExportJob extends Job {
 		}
 	}
 
-	private static Resource createResource(final Model model,
-			TypeDeclaration node) {
-		ITypeBinding typeBinding = node.resolveBinding();
-		Resource currentRes = model.createResource(Namespaces.TYPES
+	private static Resource createResource(final Model model, ITypeBinding typeBinding) {
+		Resource typeRes = model.createResource(Namespaces.TYPES
 				+ typeBinding.getQualifiedName());
-		if (node.isInterface()) {
-			currentRes.addProperty(Properties.TYPE, Types.INTERFACE);
-		} else {
-			currentRes.addProperty(Properties.TYPE, Types.CLASS);
-		}
-		return currentRes;
+		if (!model.containsResource(typeRes)) {
+			typeRes.addProperty(Properties.TYPE, Types.TYPE);
+			if (typeBinding.isInterface()) {
+				typeRes.addProperty(Properties.TYPE, Types.INTERFACE);
+			} else {
+				typeRes.addProperty(Properties.TYPE, Types.CLASS);
+			}
+			IVariableBinding[] fields = typeBinding.getDeclaredFields();
+			for (int i = 0; i < fields.length; i++) {
+				IVariableBinding field = fields[i];
+				Resource fieldTypeResource = createResource(model, field
+						.getType());
+				typeRes.addProperty(Properties.HAS_FIELD_TYPE,
+						fieldTypeResource);
+				typeRes.addProperty(Properties.HAS_FIELD_TYPE_EXTENDED,
+						fieldTypeResource);
+				if (field.getType().isArray()) {
+					typeRes.addProperty(Properties.HAS_FIELD_TYPE_EXTENDED,
+							createResource(model, field.getType()
+									.getElementType()));
+				}
+			}
+		}		
+		return typeRes;
 	}
 
 	private static Resource createResource(final Model model, IMethodBinding methodBinding) {
@@ -275,8 +318,26 @@ public class SourceExportJob extends Job {
 			uri.append(param.getQualifiedName());
 		}
 		uri.append(")");
-		Resource createResource = model.createResource(uri.toString());
-		return createResource;
+		Resource methodResource = model.createResource(uri.toString());
+		if(!model.containsResource(methodResource)) {
+			for (int i = 0; i < formalParams.length; i++) {
+				ITypeBinding param = formalParams[i];
+				Resource paramResource = createResource(model, param);
+				methodResource.addProperty(Properties.HAS_PARAMETER, paramResource);
+				methodResource.addProperty(Properties.HAS_PARAMETER_EXTENDED, paramResource);
+				if(param.isArray()) {
+					methodResource.addProperty(Properties.HAS_PARAMETER_EXTENDED, createResource(model, param.getElementType()));
+				}
+			}
+			ITypeBinding retVal = methodBinding.getReturnType();
+			Resource retValResource = createResource(model, retVal);
+			methodResource.addProperty(Properties.HAS_RETURN_TYPE, retValResource);
+			methodResource.addProperty(Properties.HAS_RETURN_TYPE_EXTENDED, retValResource);
+			if(retVal.isArray()) {
+				methodResource.addProperty(Properties.HAS_RETURN_TYPE_EXTENDED, createResource(model, retVal.getElementType()));
+			}
+		}
+		return methodResource;
 	}
 
 	protected IStatus run(IProgressMonitor monitor) {
