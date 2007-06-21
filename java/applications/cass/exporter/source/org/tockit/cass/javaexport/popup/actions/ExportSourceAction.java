@@ -1,11 +1,7 @@
 package org.tockit.cass.javaexport.popup.actions;
 
-import java.sql.SQLException;
-
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.DirectoryDialog;
@@ -13,7 +9,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionDelegate;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
-import org.tockit.cass.javaexport.SourceExport;
+import org.tockit.cass.javaexport.SourceExportJob;
 
 public class ExportSourceAction implements IObjectActionDelegate {
 	private IJavaProject theProject = null;
@@ -43,18 +39,8 @@ public class ExportSourceAction implements IObjectActionDelegate {
 			exportLocation = dd.open();
 		}		
 		if (exportLocation != null) {
-			try {
-				SourceExport.exportSource(theProject, exportLocation);
-			} catch (SQLException e) {
-				MessageDialog.openError(shell, "Error exporting Java source", e.getLocalizedMessage());
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				MessageDialog.openError(shell, "Error exporting Java source", e.getLocalizedMessage());
-				e.printStackTrace();
-			} catch (JavaModelException e) {
-				MessageDialog.openError(shell, "Error exporting Java source", e.getLocalizedMessage());
-				e.printStackTrace();
-			}
+			SourceExportJob job = new SourceExportJob(theProject, exportLocation);
+			job.schedule();
         }
 	}
 

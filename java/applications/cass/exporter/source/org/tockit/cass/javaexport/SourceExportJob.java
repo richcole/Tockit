@@ -5,6 +5,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
@@ -31,9 +36,25 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 
-public class SourceExport {
-	public static void exportSource(IJavaProject javaProject,
-			String targetLocation) throws JavaModelException,
+public class SourceExportJob extends Job {
+	private static final int ERROR_CODE_JAVA_MODEL_EXCEPTION = 1;
+	private static final int ERROR_CODE_CLASS_NOT_FOUND_EXCEPTION = 2;
+	private static final int ERROR_CODE_SQL_EXCEPTION = 3;
+	private static final String PLUGIN_NAME = "org.tockit.cass.sourceexport";
+	private IProgressMonitor progressMonitor;
+	private final IJavaProject javaProject;
+	private final String targetLocation;
+
+	public SourceExportJob(IJavaProject javaProject,
+			String targetLocation) {
+		super("Export Java source as graph");
+		this.javaProject = javaProject;
+		this.targetLocation = targetLocation;
+		this.setUser(true);
+		this.setRule(ResourcesPlugin.getWorkspace().getRoot());
+	}
+
+	public boolean exportSource() throws JavaModelException,
 			ClassNotFoundException, SQLException {
 		// set up DB connection
 		String className = "org.hsqldb.jdbcDriver";
@@ -53,19 +74,28 @@ public class SourceExport {
 		Model model = maker.createDefaultModel();
 
 		// extract assertions into model
-		extractAssertions(javaProject, model);
+		boolean completed = extractAssertions(javaProject, model);
+		if(!completed) {
+			return false;
+		}
 
 		// do some extra inferences beyond the ones done while adding
-		addExtraAssertions(model);
+		completed = addExtraAssertions(model);
+		if(!completed) {
+			return false;
+		}
 
 		// shutdown hsqldb
 		conn.getConnection().createStatement().execute("SHUTDOWN;");
 
 		// Close the database connection
 		conn.close();
+		
+		return true;
 	}
 
-	private static void addExtraAssertions(Model model) {
+	private boolean addExtraAssertions(Model model) {
+		progressMonitor.beginTask("Inferring extra relations", IProgressMonitor.UNKNOWN);
 		// add extended callgraph
 		Iterator it = model.listStatements(null, Properties.CALLS_TRANSITIVELY,
 				(RDFNode) null);
@@ -83,6 +113,9 @@ public class SourceExport {
 					contSubjStmt.getSubject().addProperty(Properties.CALLS_EXTENDED, contObjStmt.getSubject());
 				}
 			}
+			if(progressMonitor.isCanceled()) {
+				return false;
+			}
 		}
 		// add generic dependency graph
 		it = model.listStatements(null, Properties.CALLS_EXTENDED,
@@ -92,10 +125,16 @@ public class SourceExport {
 			stmt.getSubject().addProperty(Properties.DEPENDS_TRANSITIVELY,
 					stmt.getObject());
 		}
+		return true;
 	}
 
-	private static void extractAssertions(IParent parent, final Model model)
+	private boolean extractAssertions(IParent parent, final Model model)
 			throws JavaModelException {
+		if(progressMonitor.isCanceled()) {
+			return false; // note that just checking here implies finishing
+			// the whole stack, but that shouldn't make much difference
+		}
+		progressMonitor.beginTask("Parsing Java code", IProgressMonitor.UNKNOWN);
 		if (parent instanceof IPackageFragment) {
 			createResource(model, (IPackageFragment) parent);
 		}
@@ -172,6 +211,7 @@ public class SourceExport {
 				}
 			}
 		}
+		return true;
 	}
 
 	private static Resource createResource(final Model model, IJavaElement element) {
@@ -238,5 +278,24 @@ public class SourceExport {
 				+ typeBinding.getQualifiedName() + "."
 				+ methodBinding.getName() + "(..)");
 		return createResource;
+	}
+
+	protected IStatus run(IProgressMonitor monitor) {
+		this.progressMonitor = monitor;
+		try {
+			boolean exportCompleted = exportSource();
+			if (exportCompleted) {
+				return Status.OK_STATUS;
+			} else {
+				// cancelled -- TODO do some cleanup
+				return Status.CANCEL_STATUS;
+			}			
+		} catch (JavaModelException e) {
+			return new Status(Status.ERROR, PLUGIN_NAME, ERROR_CODE_JAVA_MODEL_EXCEPTION, e.getLocalizedMessage(), e);
+		} catch (ClassNotFoundException e) {
+			return new Status(Status.ERROR, PLUGIN_NAME, ERROR_CODE_CLASS_NOT_FOUND_EXCEPTION, e.getLocalizedMessage(), e);
+		} catch (SQLException e) {
+			return new Status(Status.ERROR, PLUGIN_NAME, ERROR_CODE_SQL_EXCEPTION, e.getLocalizedMessage(), e);
+		}
 	}
 }
