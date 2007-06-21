@@ -54,10 +54,10 @@ public class SourceExport {
 
 		// extract assertions into model
 		extractAssertions(javaProject, model);
-		
+
 		// do some extra inferences beyond the ones done while adding
-        addExtraAssertions(model);
-        
+		addExtraAssertions(model);
+
 		// shutdown hsqldb
 		conn.getConnection().createStatement().execute("SHUTDOWN;");
 
@@ -66,28 +66,25 @@ public class SourceExport {
 	}
 
 	private static void addExtraAssertions(Model model) {
-		Iterator it = model.listStatements(null, Properties.CALLS_EXTENDED, (RDFNode) null);
+		Iterator it = model.listStatements(null, Properties.CALLS_EXTENDED,
+				(RDFNode) null);
 		while (it.hasNext()) {
 			Statement stmt = (Statement) it.next();
-			stmt.getSubject().addProperty(Properties.DEPENDS_TRANSITIVELY, stmt.getObject());
+			stmt.getSubject().addProperty(Properties.DEPENDS_TRANSITIVELY,
+					stmt.getObject());
 		}
 	}
 
 	private static void extractAssertions(IParent parent, final Model model)
 			throws JavaModelException {
 		if (parent instanceof IPackageFragment) {
-			IPackageFragment packageFragment = (IPackageFragment) parent;
-			model.createResource(packageFragment.getElementName()).addProperty(
-					Properties.TYPE, Types.PACKAGE);
+			createResource(model, (IPackageFragment) parent);
 		}
 		for (int i = 0; i < parent.getChildren().length; i++) {
 			IJavaElement element = parent.getChildren()[i];
-			final Resource elementResource = model.createResource(element
-					.getElementName());
+			final Resource elementResource = createResource(model, element);
 			if (parent instanceof IPackageFragment) {
-				IPackageFragment packageFragment = (IPackageFragment) parent;
-				Resource packageResource = model.createResource(packageFragment
-						.getElementName());
+				Resource packageResource = createResource(model, (IPackageFragment) parent);
 				addPropertyWithTransitiveClosure(model, packageResource,
 						elementResource, Properties.CONTAINS,
 						Properties.CONTAINS_TRANSITIVELY);
@@ -99,9 +96,7 @@ public class SourceExport {
 				parser.setSource(compilationUnit);
 				parser.setResolveBindings(true);
 				ASTNode result = parser.createAST(null);
-				final Resource elementRes = model.createResource(element
-						.getElementName());
-				elementRes.addProperty(Properties.TYPE, Types.COMPILATION_UNIT);
+				final Resource elementRes = createResource(model, element);
 				result.accept(new ASTVisitor() {
 					List resources = new ArrayList() {
 						{
@@ -125,17 +120,7 @@ public class SourceExport {
 					}
 
 					public boolean visit(TypeDeclaration node) {
-						ITypeBinding typeBinding = node.resolveBinding();
-						Resource currentRes = model.createResource(typeBinding
-								.getQualifiedName()); // TODO: figure out how
-						// to get the package
-						if (node.isInterface()) {
-							currentRes.addProperty(Properties.TYPE,
-									Types.INTERFACE);
-						} else {
-							currentRes
-									.addProperty(Properties.TYPE, Types.CLASS);
-						}
+						Resource currentRes = createResource(model, node);
 						pushOnStack(currentRes);
 						return true;
 					}
@@ -145,13 +130,7 @@ public class SourceExport {
 					}
 
 					public boolean visit(MethodDeclaration node) {
-						IMethodBinding methodBinding = node.resolveBinding();
-						ITypeBinding typeBinding = methodBinding
-								.getDeclaringClass();
-						Resource currentRes = model.createResource(typeBinding
-								.getQualifiedName()
-								+ "." + methodBinding.getName() + "(..)");
-						currentRes.addProperty(Properties.TYPE, Types.METHOD);
+						Resource currentRes = createResource(model, node);
 						pushOnStack(currentRes);
 						return true;
 					}
@@ -161,14 +140,8 @@ public class SourceExport {
 					}
 
 					public boolean visit(MethodInvocation node) {
-						IMethodBinding methodBinding = node
-								.resolveMethodBinding();
-						ITypeBinding typeBinding = methodBinding
-								.getDeclaringClass();
-						addPropertyWithTransitiveClosure(model, getTop(), model
-								.createResource(typeBinding.getQualifiedName()
-										+ "." + methodBinding.getName()
-										+ "(..)"), Properties.CALLS,
+						addPropertyWithTransitiveClosure(model, getTop(),
+								createResource(model, node), Properties.CALLS,
 								Properties.CALLS_TRANSITIVELY);
 						return true;
 					}
@@ -182,7 +155,21 @@ public class SourceExport {
 		}
 	}
 
-	protected static void addPropertyWithTransitiveClosure(Model model,
+	private static Resource createResource(final Model model, IJavaElement element) {
+		// TODO: path contains package fragement root but shouldn't
+		final Resource elementRes = model.createResource(Namespaces.COMPILATION_UNITS + element.getPath());
+		elementRes.addProperty(Properties.TYPE, Types.COMPILATION_UNIT);
+		return elementRes;
+	}
+
+	private static Resource createResource(final Model model, IPackageFragment packageFragment) {
+		Resource packageResource = model.createResource(Namespaces.PACKAGES + packageFragment
+				.getElementName());
+		packageResource.addProperty(Properties.TYPE, Types.PACKAGE);
+		return packageResource;
+	}
+
+	private static void addPropertyWithTransitiveClosure(Model model,
 			Resource from, Resource to, Property coveringRelation,
 			Property closureRelation) {
 		from.addProperty(coveringRelation, to);
@@ -198,5 +185,39 @@ public class SourceExport {
 			Statement stmt = (Statement) it.next();
 			stmt.getSubject().addProperty(closureRelation, to);
 		}
+	}
+
+	private static Resource createResource(final Model model,
+			TypeDeclaration node) {
+		ITypeBinding typeBinding = node.resolveBinding();
+		Resource currentRes = model.createResource(Namespaces.TYPES
+				+ typeBinding.getQualifiedName());
+		if (node.isInterface()) {
+			currentRes.addProperty(Properties.TYPE, Types.INTERFACE);
+		} else {
+			currentRes.addProperty(Properties.TYPE, Types.CLASS);
+		}
+		return currentRes;
+	}
+
+	private static Resource createResource(final Model model,
+			MethodDeclaration node) {
+		IMethodBinding methodBinding = node.resolveBinding();
+		ITypeBinding typeBinding = methodBinding.getDeclaringClass();
+		Resource currentRes = model.createResource(Namespaces.METHODS
+				+ typeBinding.getQualifiedName() + "."
+				+ methodBinding.getName() + "(..)");
+		currentRes.addProperty(Properties.TYPE, Types.METHOD);
+		return currentRes;
+	}
+
+	private static Resource createResource(final Model model,
+			MethodInvocation node) {
+		IMethodBinding methodBinding = node.resolveMethodBinding();
+		ITypeBinding typeBinding = methodBinding.getDeclaringClass();
+		Resource createResource = model.createResource(Namespaces.METHODS
+				+ typeBinding.getQualifiedName() + "."
+				+ methodBinding.getName() + "(..)");
+		return createResource;
 	}
 }

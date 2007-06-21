@@ -4,6 +4,9 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
 
+/**
+ * Class containing constants for all the properties of the CASS RDF model.
+ */
 public class Properties {
     private static Model model = ModelFactory.createDefaultModel();
     
@@ -12,21 +15,21 @@ public class Properties {
      * 
      * Domain are all non-atomic entities, range is universal.
      */
-	public static final Property CONTAINS = model.createProperty("http://tockit.org/cass#contains");
+	public static final Property CONTAINS = model.createProperty(Namespaces.CASS_PROPERTIES + "contains");
 	
 	/**
 	 * A method calls another directly.
 	 * 
 	 * Domain and range are methods.
 	 */
-	public static final Property CALLS = model.createProperty("http://tockit.org/cass#calls");
+	public static final Property CALLS = model.createProperty(Namespaces.CASS_PROPERTIES + "calls");
 	
 	/**
 	 * Determines the type of an entity.
 	 * 
 	 * Domain is universal, range is defined in {@link Types}.
 	 */
-	public static final Property TYPE = model.createProperty("http://tockit.org/cass#type");
+	public static final Property TYPE = model.createProperty(Namespaces.CASS_PROPERTIES + "type");
 	
 	// from here on properties are usually not asserted directly, but inferred by rules
 	/**
@@ -34,14 +37,14 @@ public class Properties {
 	 * 
 	 * This is the transitive closure of the #CONTAINS property.
 	 */
-	public static final Property CONTAINS_TRANSITIVELY = model.createProperty("http://tockit.org/cass#contains_t");
+	public static final Property CONTAINS_TRANSITIVELY = model.createProperty(Namespaces.CASS_PROPERTIES + "contains_t");
 		
 	/**
 	 * Some entity calls another directly or indirectly.
 	 * 
 	 * This is the transitive closure of #CALLS.
 	 */
-	public static final Property CALLS_TRANSITIVELY = model.createProperty("http://tockit.org/cass#calls_t");
+	public static final Property CALLS_TRANSITIVELY = model.createProperty(Namespaces.CASS_PROPERTIES + "calls_t");
 	
 	/**
 	 * Some entity calls another directly.
@@ -52,7 +55,7 @@ public class Properties {
 	 * 
 	 * Domain and range is methods and anything that can contain a method.
 	 */
-	public static final Property CALLS_EXTENDED = model.createProperty("http://tockit.org/cass#calls_ext");
+	public static final Property CALLS_EXTENDED = model.createProperty(Namespaces.CASS_PROPERTIES + "calls_ext");
 
 	/**
 	 * Some entity depends on another.
@@ -60,5 +63,5 @@ public class Properties {
 	 * This is a transitive closure of the union of some other relations, such as the callgraph and type
 	 * usage. TODO: define properly.
 	 */
-	public static final Property DEPENDS_TRANSITIVELY = model.createProperty("http://tockit.org/cass#depends_t");
+	public static final Property DEPENDS_TRANSITIVELY = model.createProperty(Namespaces.CASS_PROPERTIES + "depends_t");
 }
