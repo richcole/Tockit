@@ -188,7 +188,7 @@ public class SourceExportJob extends Job {
 					}
 
 					public boolean visit(MethodDeclaration node) {
-						Resource currentRes = createResource(model, node);
+						Resource currentRes = createResource(model, node.resolveBinding());
 						pushOnStack(currentRes);
 						return true;
 					}
@@ -199,7 +199,7 @@ public class SourceExportJob extends Job {
 
 					public boolean visit(MethodInvocation node) {
 						addPropertyWithTransitiveClosure(model, getTop(),
-								createResource(model, node), Properties.CALLS,
+								createResource(model, node.resolveMethodBinding()), Properties.CALLS,
 								Properties.CALLS_TRANSITIVELY);
 						return true;
 					}
@@ -259,24 +259,23 @@ public class SourceExportJob extends Job {
 		return currentRes;
 	}
 
-	private static Resource createResource(final Model model,
-			MethodDeclaration node) {
-		IMethodBinding methodBinding = node.resolveBinding();
+	private static Resource createResource(final Model model, IMethodBinding methodBinding) {
 		ITypeBinding typeBinding = methodBinding.getDeclaringClass();
-		Resource currentRes = model.createResource(Namespaces.METHODS
-				+ typeBinding.getQualifiedName() + "."
-				+ methodBinding.getName() + "(..)");
-		currentRes.addProperty(Properties.TYPE, Types.METHOD);
-		return currentRes;
-	}
-
-	private static Resource createResource(final Model model,
-			MethodInvocation node) {
-		IMethodBinding methodBinding = node.resolveMethodBinding();
-		ITypeBinding typeBinding = methodBinding.getDeclaringClass();
-		Resource createResource = model.createResource(Namespaces.METHODS
-				+ typeBinding.getQualifiedName() + "."
-				+ methodBinding.getName() + "(..)");
+		StringBuilder uri = new StringBuilder(Namespaces.METHODS);
+		uri.append(typeBinding.getQualifiedName());
+		uri.append(".");
+		uri.append(methodBinding.getName());
+		uri.append("(");
+		ITypeBinding[] formalParams = methodBinding.getParameterTypes();
+		for (int i = 0; i < formalParams.length; i++) {
+			if(i != 0) {
+				uri.append(",");
+			}
+			ITypeBinding param = formalParams[i];
+			uri.append(param.getQualifiedName());
+		}
+		uri.append(")");
+		Resource createResource = model.createResource(uri.toString());
 		return createResource;
 	}
 
