@@ -30,6 +30,7 @@ import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 public class SourceExport {
 	public static void exportSource(IJavaProject javaProject,
@@ -66,7 +67,26 @@ public class SourceExport {
 	}
 
 	private static void addExtraAssertions(Model model) {
-		Iterator it = model.listStatements(null, Properties.CALLS_EXTENDED,
+		// add extended callgraph
+		Iterator it = model.listStatements(null, Properties.CALLS_TRANSITIVELY,
+				(RDFNode) null);
+		while (it.hasNext()) {
+			Statement stmt = (Statement) it.next();
+			Resource subject = stmt.getSubject();
+			Resource object = (Resource) stmt.getObject();
+			subject.addProperty(Properties.CALLS_EXTENDED, object);
+			Iterator it2 = model.listStatements(null, Properties.CONTAINS_TRANSITIVELY, subject);
+			while (it2.hasNext()) {
+				Statement contSubjStmt = (Statement) it2.next();
+				Iterator it3 = model.listStatements(null, Properties.CONTAINS_TRANSITIVELY, object);
+				while (it3.hasNext()) {
+					Statement contObjStmt = (Statement) it3.next();
+					contSubjStmt.getSubject().addProperty(Properties.CALLS_EXTENDED, contObjStmt.getSubject());
+				}
+			}
+		}
+		// add generic dependency graph
+		it = model.listStatements(null, Properties.CALLS_EXTENDED,
 				(RDFNode) null);
 		while (it.hasNext()) {
 			Statement stmt = (Statement) it.next();
