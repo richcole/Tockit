@@ -74,6 +74,7 @@ public class SourceExportJob extends Job {
 		progressMonitor.worked(1);
 		
 		progressMonitor.subTask("Writing output file");
+		model.setNsPrefixes(Namespaces.PREFIX_MAPPING);
 		model.write(new FileOutputStream(new File(new File(targetLocation), javaProject.getElementName() + ".rdf")));
 		progressMonitor.done();
 		
