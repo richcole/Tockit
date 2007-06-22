@@ -13,7 +13,6 @@ Eclipse-LazyStart: true
 Bundle-Vendor: The Tockit Project
 Bundle-ClassPath: .,
  libs/jena.jar,
- libs/hsqldb.jar,
  libs/commons-logging-1.1.jar,
  libs/antlr-2.7.5.jar,
  libs/arq.jar,
