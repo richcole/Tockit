@@ -17,7 +17,6 @@
 	<classpathentry exported="true" kind="lib" path="libs/xercesImpl.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/xml-apis.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/commons-logging-1.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/hsqldb.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="lib" path="libs/jena.jar" sourcepath="libs/source/jena-src.zip"/>

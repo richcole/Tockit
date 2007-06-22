@@ -1,11 +1,12 @@
 package org.tockit.cass.javaexport;
 
-import java.sql.SQLException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -27,11 +28,8 @@ import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
-import com.hp.hpl.jena.db.DBConnection;
-import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.ModelMaker;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
@@ -39,9 +37,11 @@ import com.hp.hpl.jena.rdf.model.Statement;
 
 public class SourceExportJob extends Job {
 	private static final int ERROR_CODE_JAVA_MODEL_EXCEPTION = 1;
-	private static final int ERROR_CODE_CLASS_NOT_FOUND_EXCEPTION = 2;
-	private static final int ERROR_CODE_SQL_EXCEPTION = 3;
+	private static final int ERROR_CODE_FILE_NOT_FOUND_EXCEPTION = 2;
 	private static final String PLUGIN_NAME = "org.tockit.cass.sourceexport";
+	// TODO: using a string for checking allowed chars is rather ineffective, a bitset is probably
+	// the best option
+	private static final String ALLOWED_CHARS_IN_URI = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890/:#.";
 	private IProgressMonitor progressMonitor;
 	private final IJavaProject javaProject;
 	private final String targetLocation;
@@ -52,52 +52,37 @@ public class SourceExportJob extends Job {
 		this.javaProject = javaProject;
 		this.targetLocation = targetLocation;
 		this.setUser(true);
-		this.setRule(ResourcesPlugin.getWorkspace().getRoot());
+		this.setRule(javaProject.getSchedulingRule());
 	}
 
-	public boolean exportSource() throws JavaModelException,
-			ClassNotFoundException, SQLException {
-		// set up DB connection
-		String className = "org.hsqldb.jdbcDriver";
-		Class.forName(className);
-		String DB_URL = "jdbc:hsqldb:file:" + targetLocation + "/jenaDB";
-		String DB_USER = "sa";
-		String DB_PASSWD = "";
-		String DB = "HSQL";
+	public boolean exportSource() throws JavaModelException, FileNotFoundException {
+		progressMonitor.beginTask("Exporting Java source graph", 3);
+		Model model = ModelFactory.createDefaultModel();
 
-		// Create database connection
-		IDBConnection conn = new DBConnection(DB_URL, DB_USER, DB_PASSWD, DB);
-		conn.cleanDB(); // it doesn't seem to work without this -- TODO: figure
-		// out why
-		ModelMaker maker = ModelFactory.createModelRDBMaker(conn);
-
-		// create or open the default model
-		Model model = maker.createDefaultModel();
-
-		// extract assertions into model
+		progressMonitor.subTask("Extra base data from Java code");
 		boolean completed = extractAssertions(javaProject, model);
 		if(!completed) {
 			return false;
 		}
+		progressMonitor.worked(1);
 
-		// do some extra inferences beyond the ones done while adding
+		progressMonitor.subTask("Inferring extra relations");
 		completed = addExtraAssertions(model);
 		if(!completed) {
 			return false;
 		}
-
-		// shutdown hsqldb
-		conn.getConnection().createStatement().execute("SHUTDOWN;");
-
-		// Close the database connection
-		conn.close();
+		progressMonitor.worked(1);
+		
+		progressMonitor.subTask("Writing output file");
+		model.write(new FileOutputStream(new File(new File(targetLocation), javaProject.getElementName() + ".rdf")));
+		progressMonitor.done();
 		
 		return true;
 	}
 
 	private boolean addExtraAssertions(Model model) {
-		progressMonitor.beginTask("Inferring extra relations", IProgressMonitor.UNKNOWN);
 		// add extended callgraph
+		List newStatements = new ArrayList();
 		Iterator it = model.listStatements(null, Properties.CALLS_TRANSITIVELY,
 				(RDFNode) null);
 		while (it.hasNext()) {
@@ -111,12 +96,18 @@ public class SourceExportJob extends Job {
 				Iterator it3 = model.listStatements(null, Properties.CONTAINS_TRANSITIVELY, object);
 				while (it3.hasNext()) {
 					Statement contObjStmt = (Statement) it3.next();
-					contSubjStmt.getSubject().addProperty(Properties.CALLS_EXTENDED, contObjStmt.getSubject());
+					newStatements.add(new Resource[]{contSubjStmt.getSubject(),contObjStmt.getSubject()});
 				}
 			}
 			if(progressMonitor.isCanceled()) {
 				return false;
 			}
+		}
+		// write statements collected after iteration is complete to avoid that annoying
+		// ConcurrentModificationException
+		for (Iterator nsIter = newStatements.iterator(); nsIter.hasNext();) {
+			Resource[] resources = (Resource[]) nsIter.next();
+			resources[0].addProperty(Properties.CALLS_EXTENDED, resources[1]);
 		}
 		
 		// add generic dependency graph
@@ -160,7 +151,6 @@ public class SourceExportJob extends Job {
 			return false; // note that just checking here implies finishing
 			// the whole stack, but that shouldn't make much difference
 		}
-		progressMonitor.beginTask("Parsing Java code", IProgressMonitor.UNKNOWN);
 		if (parent instanceof IPackageFragment) {
 			createResource(model, (IPackageFragment) parent);
 		}
@@ -243,14 +233,29 @@ public class SourceExportJob extends Job {
 
 	private static Resource createResource(final Model model, IJavaElement element) {
 		// TODO: path contains package fragement root but shouldn't
-		final Resource elementRes = model.createResource(Namespaces.COMPILATION_UNITS + element.getPath());
+		final Resource elementRes = model.createResource(escapeURI(Namespaces.COMPILATION_UNITS + element.getPath()));
 		elementRes.addProperty(Properties.TYPE, Types.COMPILATION_UNIT);
 		return elementRes;
 	}
 
+	private static String escapeURI(String unescapedString) {
+		StringBuilder builder = new StringBuilder();
+		char[] stringAsChars = unescapedString.toCharArray();
+		for (int i = 0; i < stringAsChars.length; i++) {
+			char character = stringAsChars[i];
+			if(ALLOWED_CHARS_IN_URI.indexOf(character) != -1) {
+				builder.append(character);
+			} else {
+				builder.append("%");
+				builder.append((int)character);
+			}
+		}
+		return builder.toString();
+	}
+
 	private static Resource createResource(final Model model, IPackageFragment packageFragment) {
-		Resource packageResource = model.createResource(Namespaces.PACKAGES + packageFragment
-				.getElementName());
+		Resource packageResource = model.createResource(escapeURI(Namespaces.PACKAGES + packageFragment
+				.getElementName()));
 		packageResource.addProperty(Properties.TYPE, Types.PACKAGE);
 		return packageResource;
 	}
@@ -274,8 +279,8 @@ public class SourceExportJob extends Job {
 	}
 
 	private static Resource createResource(final Model model, ITypeBinding typeBinding) {
-		Resource typeRes = model.createResource(Namespaces.TYPES
-				+ typeBinding.getQualifiedName());
+		Resource typeRes = model.createResource(escapeURI(Namespaces.TYPES
+				+ typeBinding.getQualifiedName()));
 		if (!model.containsResource(typeRes)) {
 			typeRes.addProperty(Properties.TYPE, Types.TYPE);
 			if (typeBinding.isInterface()) {
@@ -318,7 +323,7 @@ public class SourceExportJob extends Job {
 			uri.append(param.getQualifiedName());
 		}
 		uri.append(")");
-		Resource methodResource = model.createResource(uri.toString());
+		Resource methodResource = model.createResource(escapeURI(uri.toString()));
 		if(!model.containsResource(methodResource)) {
 			for (int i = 0; i < formalParams.length; i++) {
 				ITypeBinding param = formalParams[i];
@@ -352,10 +357,8 @@ public class SourceExportJob extends Job {
 			}			
 		} catch (JavaModelException e) {
 			return new Status(Status.ERROR, PLUGIN_NAME, ERROR_CODE_JAVA_MODEL_EXCEPTION, e.getLocalizedMessage(), e);
-		} catch (ClassNotFoundException e) {
-			return new Status(Status.ERROR, PLUGIN_NAME, ERROR_CODE_CLASS_NOT_FOUND_EXCEPTION, e.getLocalizedMessage(), e);
-		} catch (SQLException e) {
-			return new Status(Status.ERROR, PLUGIN_NAME, ERROR_CODE_SQL_EXCEPTION, e.getLocalizedMessage(), e);
+		} catch (FileNotFoundException e) {
+			return new Status(Status.ERROR, PLUGIN_NAME, ERROR_CODE_FILE_NOT_FOUND_EXCEPTION, e.getLocalizedMessage(), e);
 		}
 	}
 }
