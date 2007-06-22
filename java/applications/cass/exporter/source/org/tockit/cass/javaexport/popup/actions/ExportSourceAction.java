@@ -25,6 +25,7 @@ public class ExportSourceAction implements IObjectActionDelegate {
 	 * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
 	 */
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+		// nothing to do
 	}
 
 	/**
