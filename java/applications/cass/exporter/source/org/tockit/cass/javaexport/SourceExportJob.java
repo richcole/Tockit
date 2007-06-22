@@ -41,7 +41,7 @@ public class SourceExportJob extends Job {
 	private static final String PLUGIN_NAME = "org.tockit.cass.sourceexport";
 	// TODO: using a string for checking allowed chars is rather ineffective, a bitset is probably
 	// the best option
-	private static final String ALLOWED_CHARS_IN_URI = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890/:#.";
+	private static final String ALLOWED_CHARS_IN_URI = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890/:#.%";
 	private IProgressMonitor progressMonitor;
 	private final IJavaProject javaProject;
 	private final String targetLocation;
