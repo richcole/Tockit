@@ -73,6 +73,25 @@ public class Properties {
 	public static final Property HAS_FIELD_TYPE = model.createProperty(Namespaces.CASS_PROPERTIES + "hasFieldType");
 	
 	/**
+	 * A type extends another type.
+	 * 
+	 * Domain and range are the types (Java classes and interfaces), but only with matching pairs (i.e.
+	 * the relation is subset of the union of the two separate cross-products, not the cross-product of
+	 * the union). 
+	 */
+	public static final Property EXTENDS = model.createProperty(Namespaces.CASS_PROPERTIES + "extends");
+	
+	/**
+	 * A type implements an interface.
+	 * 
+	 * Note that this does not match the Java keyword "implements" but also includes the supertype relation
+	 * between interfaces (i.e. "extends" used on interfaces).
+	 * 
+	 * Domain are the types, range are the interfaces.
+	 */
+	public static final Property IMPLEMENTS = model.createProperty(Namespaces.CASS_PROPERTIES + "implements");
+	
+	/**
 	 * A type uses another type as field directly or indirectly.
 	 * 
 	 * This extends {@link #HAS_FIELD_TYPE} by adding the base types of arrays, i.e. a type using
@@ -115,4 +134,43 @@ public class Properties {
 	 * usage. TODO: define properly, maybe split into direct and transitive version
 	 */
 	public static final Property DEPENDS_TRANSITIVELY = model.createProperty(Namespaces.CASS_PROPERTIES + "depends_t");
+
+	/**
+	 * The generic type hierachy.
+	 * 
+	 * This is any sub-type relationship, i.e. the union of {@link #EXTENDS} and {@link #IMPLEMENTS}.
+	 * 
+	 * Domain and range are the types (Java classes and interfaces). 
+	 */
+	public static final Property DERIVED_FROM = model.createProperty(Namespaces.CASS_PROPERTIES + "derivedFrom");
+
+	/**
+	 * A type extends another type directly or indirectly.
+	 * 
+	 * This is the transitive closure of the {@link #EXTENDS} relation.
+	 * 
+	 * Domain and range are the types (Java classes and interfaces), but only with matching pairs (i.e.
+	 * the relation is subset of the union of the two separate cross-products, not the cross-product of
+	 * the union). 
+	 */
+	public static final Property EXTENDS_TRANSITIVELY = model.createProperty(Namespaces.CASS_PROPERTIES + "extends_t");
+	
+	/**
+	 * A class implements an interface directly or indirectly.
+	 * 
+	 * This is the join of the {@link #IMPLEMENTS} relation with the {@link #EXTENDS_TRANSITIVELY} relation.
+	 * 
+	 * Domain are the types, range are the interfaces.
+	 */
+	public static final Property IMPLEMENTS_TRANSITIVELY = model.createProperty(Namespaces.CASS_PROPERTIES + "implements_t");
+	
+	/**
+	 * The generic type hierachy.
+	 * 
+	 * This is the transitive closure of {@link #DERIVED_FROM} or in other words the union of 
+	 * {@link #EXTENDS_TRANSITIVELY} and {@link #IMPLEMENTS_TRANSITIVELY}.
+	 * 
+	 * Domain and range are the types (Java classes and interfaces). 
+	 */
+	public static final Property DERIVED_FROM_TRANSITIVELY = model.createProperty(Namespaces.CASS_PROPERTIES + "derivedFrom_t");
 }

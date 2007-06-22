@@ -59,7 +59,7 @@ public class SourceExportJob extends Job {
 		progressMonitor.beginTask("Exporting Java source graph", 3);
 		Model model = ModelFactory.createDefaultModel();
 
-		progressMonitor.subTask("Extra base data from Java code");
+		progressMonitor.subTask("Extract base data from Java code");
 		boolean completed = extractAssertions(javaProject, model);
 		if(!completed) {
 			return false;
@@ -77,38 +77,69 @@ public class SourceExportJob extends Job {
 		model.setNsPrefixes(Namespaces.PREFIX_MAPPING);
 		model.write(new FileOutputStream(new File(new File(targetLocation), javaProject.getElementName() + ".rdf")));
 		progressMonitor.done();
-		
+
 		return true;
 	}
 
 	private boolean addExtraAssertions(Model model) {
+		// we write statements collected after iteration is complete to avoid that annoying
+		// ConcurrentModificationException, so store new pairs which will be in the relation
+		// we are creating as two-element Resource[]
+		List newPairs = new ArrayList();
+
 		// add extended callgraph
-		List newStatements = new ArrayList();
 		Iterator it = model.listStatements(null, Properties.CALLS_TRANSITIVELY,
 				(RDFNode) null);
 		while (it.hasNext()) {
 			Statement stmt = (Statement) it.next();
 			Resource subject = stmt.getSubject();
 			Resource object = (Resource) stmt.getObject();
-			subject.addProperty(Properties.CALLS_EXTENDED, object);
+			newPairs.add(new Resource[]{subject,object});
 			Iterator it2 = model.listStatements(null, Properties.CONTAINS_TRANSITIVELY, subject);
 			while (it2.hasNext()) {
 				Statement contSubjStmt = (Statement) it2.next();
 				Iterator it3 = model.listStatements(null, Properties.CONTAINS_TRANSITIVELY, object);
 				while (it3.hasNext()) {
 					Statement contObjStmt = (Statement) it3.next();
-					newStatements.add(new Resource[]{contSubjStmt.getSubject(),contObjStmt.getSubject()});
+					newPairs.add(new Resource[]{contSubjStmt.getSubject(),contObjStmt.getSubject()});
 				}
 			}
 			if(progressMonitor.isCanceled()) {
 				return false;
 			}
 		}
-		// write statements collected after iteration is complete to avoid that annoying
-		// ConcurrentModificationException
-		for (Iterator nsIter = newStatements.iterator(); nsIter.hasNext();) {
-			Resource[] resources = (Resource[]) nsIter.next();
+		for (Iterator npIter = newPairs.iterator(); npIter.hasNext();) {
+			Resource[] resources = (Resource[]) npIter.next();
 			resources[0].addProperty(Properties.CALLS_EXTENDED, resources[1]);
+		}
+		
+		// add combined dependency graph
+		newPairs = new ArrayList();
+		it = model.listStatements(null, Properties.EXTENDS_TRANSITIVELY,
+				(RDFNode) null);
+		while (it.hasNext()) {
+			Statement stmt = (Statement) it.next();
+			Resource subject = stmt.getSubject();
+			Resource object = (Resource) stmt.getObject();
+			newPairs.add(new Resource[]{subject,object});
+			Iterator it2 = model.listStatements(object, Properties.IMPLEMENTS_TRANSITIVELY, (RDFNode) null);
+			while (it2.hasNext()) {
+				Statement implStmt = (Statement) it2.next();
+				newPairs.add(new Resource[]{subject,(Resource) implStmt.getObject()});
+			}
+			if(progressMonitor.isCanceled()) {
+				return false;
+			}
+		}
+		for (Iterator npIter = newPairs.iterator(); npIter.hasNext();) {
+			Resource[] resources = (Resource[]) npIter.next();
+			resources[0].addProperty(Properties.DERIVED_FROM_TRANSITIVELY, resources[1]);
+		}
+		it = model.listStatements(null, Properties.IMPLEMENTS_TRANSITIVELY,
+				(RDFNode) null);
+		while (it.hasNext()) {
+			Statement stmt = (Statement) it.next();
+			stmt.getSubject().addProperty(Properties.DERIVED_FROM_TRANSITIVELY, stmt.getObject());
 		}
 		
 		// add generic dependency graph
@@ -136,6 +167,13 @@ public class SourceExportJob extends Job {
 					stmt.getObject());
 		}
 		it = model.listStatements(null, Properties.HAS_FIELD_TYPE_EXTENDED,
+				(RDFNode) null); 
+		while (it.hasNext()) {
+			Statement stmt = (Statement) it.next();
+			stmt.getSubject().addProperty(Properties.DEPENDS_TRANSITIVELY,
+					stmt.getObject());
+		}
+		it = model.listStatements(null, Properties.DERIVED_FROM_TRANSITIVELY,
 				(RDFNode) null); 
 		while (it.hasNext()) {
 			Statement stmt = (Statement) it.next();
@@ -303,6 +341,17 @@ public class SourceExportJob extends Job {
 							createResource(model, field.getType()
 									.getElementType()));
 				}
+			}
+			ITypeBinding superClass = typeBinding.getSuperclass();
+			if(superClass != null) {
+				addPropertyWithTransitiveClosure(model, typeRes, createResource(model, superClass), 
+						Properties.EXTENDS, Properties.EXTENDS_TRANSITIVELY);
+			}
+			ITypeBinding[] interfaces = typeBinding.getInterfaces();
+			for (int i = 0; i < interfaces.length; i++) {
+				ITypeBinding superInterface = interfaces[i];
+				addPropertyWithTransitiveClosure(model, typeRes, createResource(model, superInterface), 
+						Properties.IMPLEMENTS, Properties.IMPLEMENTS_TRANSITIVELY);
 			}
 		}		
 		return typeRes;
