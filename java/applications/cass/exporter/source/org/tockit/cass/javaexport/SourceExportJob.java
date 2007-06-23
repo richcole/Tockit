@@ -57,6 +57,7 @@ public class SourceExportJob extends Job {
 	}
 
 	public boolean exportSource() throws JavaModelException, FileNotFoundException {
+		long start = System.currentTimeMillis();
 		progressMonitor.beginTask("Exporting Java source graph", 3);
 		Model model = ModelFactory.createDefaultModel();
 
@@ -79,6 +80,7 @@ public class SourceExportJob extends Job {
 		model.write(new FileOutputStream(new File(new File(targetLocation), javaProject.getElementName() + ".rdf")));
 		progressMonitor.done();
 
+		System.out.println((System.currentTimeMillis() - start)/60000d);
 		return true;
 	}
 
@@ -293,17 +295,28 @@ public class SourceExportJob extends Job {
 	}
 
 	private static Resource createResource(Model model, IPackageBinding packageBinding) {
+		return createPackageResource(model, packageBinding.getName());
+	}
+
+	private static Resource createPackageResource(Model model, String packageName) {
 		Resource packageResource = model.createResource(escapeURI(Namespaces.PACKAGES + 
-				packageBinding.getName()));
-		packageResource.addProperty(Properties.TYPE, Types.PACKAGE);
+				packageName));
+		if (!model.containsResource(packageResource)) {
+			packageResource.addProperty(Properties.TYPE, Types.PACKAGE);
+			int lastDot = packageName.lastIndexOf('.');
+			if (lastDot != -1) {
+				Resource parentPackageResource = createPackageResource(model,
+						packageName.substring(0, lastDot));
+				addPropertyWithTransitiveClosure(model, parentPackageResource,
+						packageResource, Properties.CONTAINS,
+						Properties.CONTAINS_TRANSITIVELY);
+			}
+		}		
 		return packageResource;
 	}
 
 	private static Resource createResource(final Model model, IPackageFragment packageFragment) {
-		Resource packageResource = model.createResource(escapeURI(Namespaces.PACKAGES + packageFragment
-				.getElementName()));
-		packageResource.addProperty(Properties.TYPE, Types.PACKAGE);
-		return packageResource;
+		return createPackageResource(model, packageFragment.getElementName());
 	}
 
 	private static void addPropertyWithTransitiveClosure(Model model,
