@@ -197,12 +197,6 @@ public class SourceExportJob extends Job {
 		}
 		for (int i = 0; i < parent.getChildren().length; i++) {
 			IJavaElement element = parent.getChildren()[i];
-			final Resource elementResource = createResource(model, element);
-			if (packageResource != null) {
-				addPropertyWithTransitiveClosure(model, packageResource,
-						elementResource, Properties.CONTAINS,
-						Properties.CONTAINS_TRANSITIVELY);
-			}
 			if (element instanceof ICompilationUnit) {
 				ICompilationUnit compilationUnit = (ICompilationUnit) element;
 				ASTParser parser = ASTParser.newParser(AST.JLS3);
@@ -210,11 +204,16 @@ public class SourceExportJob extends Job {
 				parser.setSource(compilationUnit);
 				parser.setResolveBindings(true);
 				ASTNode result = parser.createAST(null);
-				final Resource elementRes = createResource(model, element);
+				final Resource elementResource = createResource(model, element);
+				if (packageResource != null) {
+					addPropertyWithTransitiveClosure(model, packageResource,
+							elementResource, Properties.CONTAINS,
+							Properties.CONTAINS_TRANSITIVELY);
+				}
 				result.accept(new ASTVisitor() {
 					List resources = new ArrayList() {
 						{
-							add(elementRes);
+							add(elementResource);
 						}
 					};
 
