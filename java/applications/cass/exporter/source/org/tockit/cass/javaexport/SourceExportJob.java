@@ -22,6 +22,7 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
@@ -190,14 +191,14 @@ public class SourceExportJob extends Job {
 			return false; // note that just checking here implies finishing
 			// the whole stack, but that shouldn't make much difference
 		}
+		Resource packageResource = null;
 		if (parent instanceof IPackageFragment) {
-			createResource(model, (IPackageFragment) parent);
+			packageResource = createResource(model, (IPackageFragment) parent);
 		}
 		for (int i = 0; i < parent.getChildren().length; i++) {
 			IJavaElement element = parent.getChildren()[i];
 			final Resource elementResource = createResource(model, element);
-			if (parent instanceof IPackageFragment) {
-				Resource packageResource = createResource(model, (IPackageFragment) parent);
+			if (packageResource != null) {
 				addPropertyWithTransitiveClosure(model, packageResource,
 						elementResource, Properties.CONTAINS,
 						Properties.CONTAINS_TRANSITIVELY);
@@ -292,6 +293,13 @@ public class SourceExportJob extends Job {
 		return builder.toString();
 	}
 
+	private static Resource createResource(Model model, IPackageBinding packageBinding) {
+		Resource packageResource = model.createResource(escapeURI(Namespaces.PACKAGES + 
+				packageBinding.getName()));
+		packageResource.addProperty(Properties.TYPE, Types.PACKAGE);
+		return packageResource;
+	}
+
 	private static Resource createResource(final Model model, IPackageFragment packageFragment) {
 		Resource packageResource = model.createResource(escapeURI(Namespaces.PACKAGES + packageFragment
 				.getElementName()));
@@ -321,11 +329,27 @@ public class SourceExportJob extends Job {
 		Resource typeRes = model.createResource(escapeURI(Namespaces.TYPES
 				+ typeBinding.getQualifiedName()));
 		if (!model.containsResource(typeRes)) {
+			if(typeBinding.getPackage() != null) {
+				Resource packageRes = createResource(model, typeBinding.getPackage());
+				addPropertyWithTransitiveClosure(model, packageRes, typeRes, 
+						Properties.CONTAINS, Properties.CONTAINS_TRANSITIVELY);
+			}
 			typeRes.addProperty(Properties.TYPE, Types.TYPE);
 			if (typeBinding.isInterface()) {
 				typeRes.addProperty(Properties.TYPE, Types.INTERFACE);
 			} else {
 				typeRes.addProperty(Properties.TYPE, Types.CLASS);
+			}
+			ITypeBinding superClass = typeBinding.getSuperclass();
+			if(superClass != null) {
+				addPropertyWithTransitiveClosure(model, typeRes, createResource(model, superClass), 
+						Properties.EXTENDS, Properties.EXTENDS_TRANSITIVELY);
+			}
+			ITypeBinding[] interfaces = typeBinding.getInterfaces();
+			for (int i = 0; i < interfaces.length; i++) {
+				ITypeBinding superInterface = interfaces[i];
+				addPropertyWithTransitiveClosure(model, typeRes, createResource(model, superInterface), 
+						Properties.IMPLEMENTS, Properties.IMPLEMENTS_TRANSITIVELY);
 			}
 			IVariableBinding[] fields = typeBinding.getDeclaredFields();
 			for (int i = 0; i < fields.length; i++) {
@@ -341,17 +365,6 @@ public class SourceExportJob extends Job {
 							createResource(model, field.getType()
 									.getElementType()));
 				}
-			}
-			ITypeBinding superClass = typeBinding.getSuperclass();
-			if(superClass != null) {
-				addPropertyWithTransitiveClosure(model, typeRes, createResource(model, superClass), 
-						Properties.EXTENDS, Properties.EXTENDS_TRANSITIVELY);
-			}
-			ITypeBinding[] interfaces = typeBinding.getInterfaces();
-			for (int i = 0; i < interfaces.length; i++) {
-				ITypeBinding superInterface = interfaces[i];
-				addPropertyWithTransitiveClosure(model, typeRes, createResource(model, superInterface), 
-						Properties.IMPLEMENTS, Properties.IMPLEMENTS_TRANSITIVELY);
 			}
 		}		
 		return typeRes;
