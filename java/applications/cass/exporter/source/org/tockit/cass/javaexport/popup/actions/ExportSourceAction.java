@@ -1,5 +1,7 @@
 package org.tockit.cass.javaexport.popup.actions;
 
+import java.io.File;
+
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -40,7 +42,8 @@ public class ExportSourceAction implements IObjectActionDelegate {
 			exportLocation = dd.open();
 		}		
 		if (exportLocation != null) {
-			SourceExportJob job = new SourceExportJob(theProject, exportLocation);
+			File targetFile = new File(new File(exportLocation), theProject.getElementName() + ".n3");
+			SourceExportJob job = new SourceExportJob(theProject, targetFile, "N3");
 			job.schedule();
         }
 	}

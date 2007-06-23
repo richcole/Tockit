@@ -45,13 +45,15 @@ public class SourceExportJob extends Job {
 	private static final String ALLOWED_CHARS_IN_URI = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890/:#.%";
 	private IProgressMonitor progressMonitor;
 	private final IJavaProject javaProject;
-	private final String targetLocation;
+	private final File targetFile;
+	private String fileFormat;
 
 	public SourceExportJob(IJavaProject javaProject,
-			String targetLocation) {
+			File targetFile, String fileFormat) {
 		super("Export Java source as graph");
 		this.javaProject = javaProject;
-		this.targetLocation = targetLocation;
+		this.targetFile = targetFile;
+		this.fileFormat = fileFormat;
 		this.setUser(true);
 		this.setRule(javaProject.getSchedulingRule());
 	}
@@ -76,7 +78,8 @@ public class SourceExportJob extends Job {
 		
 		progressMonitor.subTask("Writing output file");
 		model.setNsPrefixes(Namespaces.PREFIX_MAPPING);
-		model.write(new FileOutputStream(new File(new File(targetLocation), javaProject.getElementName() + ".rdf")));
+		fileFormat = "N3";
+		model.write(new FileOutputStream(targetFile),fileFormat);
 		progressMonitor.done();
 
 		return true;
@@ -338,7 +341,7 @@ public class SourceExportJob extends Job {
 
 	private static Resource createResource(final Model model, ITypeBinding typeBinding) {
 		Resource typeRes = model.createResource(escapeURI(Namespaces.TYPES
-				+ typeBinding.getQualifiedName()));
+				+ typeBinding.getKey()));
 		if (!model.containsResource(typeRes)) {
 			typeRes.addProperty(Properties.CONTAINS_CLOSURE, typeRes);
 			typeRes.addProperty(Properties.EXTENDS_CLOSURE, typeRes);
@@ -384,25 +387,11 @@ public class SourceExportJob extends Job {
 	}
 
 	private static Resource createResource(final Model model, IMethodBinding methodBinding) {
-		ITypeBinding typeBinding = methodBinding.getDeclaringClass();
-		StringBuilder uri = new StringBuilder(Namespaces.METHODS);
-		uri.append(typeBinding.getQualifiedName());
-		uri.append(".");
-		uri.append(methodBinding.getName());
-		uri.append("(");
-		ITypeBinding[] formalParams = methodBinding.getParameterTypes();
-		for (int i = 0; i < formalParams.length; i++) {
-			if(i != 0) {
-				uri.append(",");
-			}
-			ITypeBinding param = formalParams[i];
-			uri.append(param.getQualifiedName());
-		}
-		uri.append(")");
-		Resource methodResource = model.createResource(escapeURI(uri.toString()));
+		Resource methodResource = model.createResource(escapeURI(Namespaces.METHODS + methodBinding.getKey()));
 		if(!model.containsResource(methodResource)) {
 			methodResource.addProperty(Properties.CALLS_CLOSURE, methodResource);
 			methodResource.addProperty(Properties.CONTAINS_CLOSURE, methodResource);
+			ITypeBinding[] formalParams = methodBinding.getParameterTypes();
 			for (int i = 0; i < formalParams.length; i++) {
 				ITypeBinding param = formalParams[i];
 				Resource paramResource = createResource(model, param);
