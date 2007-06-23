@@ -57,7 +57,6 @@ public class SourceExportJob extends Job {
 	}
 
 	public boolean exportSource() throws JavaModelException, FileNotFoundException {
-		long start = System.currentTimeMillis();
 		progressMonitor.beginTask("Exporting Java source graph", 3);
 		Model model = ModelFactory.createDefaultModel();
 
@@ -80,7 +79,6 @@ public class SourceExportJob extends Job {
 		model.write(new FileOutputStream(new File(new File(targetLocation), javaProject.getElementName() + ".rdf")));
 		progressMonitor.done();
 
-		System.out.println((System.currentTimeMillis() - start)/60000d);
 		return true;
 	}
 
@@ -91,17 +89,17 @@ public class SourceExportJob extends Job {
 		List newPairs = new ArrayList();
 
 		// add extended callgraph
-		Iterator it = model.listStatements(null, Properties.CALLS_TRANSITIVELY,
+		Iterator it = model.listStatements(null, Properties.CALLS_CLOSURE,
 				(RDFNode) null);
 		while (it.hasNext()) {
 			Statement stmt = (Statement) it.next();
 			Resource subject = stmt.getSubject();
 			Resource object = (Resource) stmt.getObject();
 			newPairs.add(new Resource[]{subject,object});
-			Iterator it2 = model.listStatements(null, Properties.CONTAINS_TRANSITIVELY, subject);
+			Iterator it2 = model.listStatements(null, Properties.CONTAINS_CLOSURE, subject);
 			while (it2.hasNext()) {
 				Statement contSubjStmt = (Statement) it2.next();
-				Iterator it3 = model.listStatements(null, Properties.CONTAINS_TRANSITIVELY, object);
+				Iterator it3 = model.listStatements(null, Properties.CONTAINS_CLOSURE, object);
 				while (it3.hasNext()) {
 					Statement contObjStmt = (Statement) it3.next();
 					newPairs.add(new Resource[]{contSubjStmt.getSubject(),contObjStmt.getSubject()});
@@ -118,14 +116,14 @@ public class SourceExportJob extends Job {
 		
 		// add combined dependency graph
 		newPairs = new ArrayList();
-		it = model.listStatements(null, Properties.EXTENDS_TRANSITIVELY,
+		it = model.listStatements(null, Properties.EXTENDS_CLOSURE,
 				(RDFNode) null);
 		while (it.hasNext()) {
 			Statement stmt = (Statement) it.next();
 			Resource subject = stmt.getSubject();
 			Resource object = (Resource) stmt.getObject();
 			newPairs.add(new Resource[]{subject,object});
-			Iterator it2 = model.listStatements(object, Properties.IMPLEMENTS_TRANSITIVELY, (RDFNode) null);
+			Iterator it2 = model.listStatements(object, Properties.IMPLEMENTS_CLOSURE, (RDFNode) null);
 			while (it2.hasNext()) {
 				Statement implStmt = (Statement) it2.next();
 				newPairs.add(new Resource[]{subject,(Resource) implStmt.getObject()});
@@ -136,13 +134,13 @@ public class SourceExportJob extends Job {
 		}
 		for (Iterator npIter = newPairs.iterator(); npIter.hasNext();) {
 			Resource[] resources = (Resource[]) npIter.next();
-			resources[0].addProperty(Properties.DERIVED_FROM_TRANSITIVELY, resources[1]);
+			resources[0].addProperty(Properties.DERIVED_FROM_CLOSURE, resources[1]);
 		}
-		it = model.listStatements(null, Properties.IMPLEMENTS_TRANSITIVELY,
+		it = model.listStatements(null, Properties.IMPLEMENTS_CLOSURE,
 				(RDFNode) null);
 		while (it.hasNext()) {
 			Statement stmt = (Statement) it.next();
-			stmt.getSubject().addProperty(Properties.DERIVED_FROM_TRANSITIVELY, stmt.getObject());
+			stmt.getSubject().addProperty(Properties.DERIVED_FROM_CLOSURE, stmt.getObject());
 		}
 		
 		// add generic dependency graph
@@ -176,7 +174,7 @@ public class SourceExportJob extends Job {
 			stmt.getSubject().addProperty(Properties.DEPENDS_TRANSITIVELY,
 					stmt.getObject());
 		}
-		it = model.listStatements(null, Properties.DERIVED_FROM_TRANSITIVELY,
+		it = model.listStatements(null, Properties.DERIVED_FROM_CLOSURE,
 				(RDFNode) null); 
 		while (it.hasNext()) {
 			Statement stmt = (Statement) it.next();
@@ -210,7 +208,7 @@ public class SourceExportJob extends Job {
 				if (packageResource != null) {
 					addPropertyWithTransitiveClosure(model, packageResource,
 							elementResource, Properties.CONTAINS,
-							Properties.CONTAINS_TRANSITIVELY);
+							Properties.CONTAINS_CLOSURE);
 				}
 				result.accept(new ASTVisitor() {
 					List resources = new ArrayList() {
@@ -226,7 +224,7 @@ public class SourceExportJob extends Job {
 					private void pushOnStack(Resource currentRes) {
 						addPropertyWithTransitiveClosure(model, getTop(),
 								currentRes, Properties.CONTAINS,
-								Properties.CONTAINS_TRANSITIVELY);
+								Properties.CONTAINS_CLOSURE);
 						resources.add(currentRes);
 					}
 
@@ -258,7 +256,7 @@ public class SourceExportJob extends Job {
 					public boolean visit(MethodInvocation node) {
 						addPropertyWithTransitiveClosure(model, getTop(),
 								createResource(model, node.resolveMethodBinding()), Properties.CALLS,
-								Properties.CALLS_TRANSITIVELY);
+								Properties.CALLS_CLOSURE);
 						return true;
 					}
 				});
@@ -303,13 +301,14 @@ public class SourceExportJob extends Job {
 				packageName));
 		if (!model.containsResource(packageResource)) {
 			packageResource.addProperty(Properties.TYPE, Types.PACKAGE);
+			packageResource.addProperty(Properties.CONTAINS_CLOSURE, packageResource);
 			int lastDot = packageName.lastIndexOf('.');
 			if (lastDot != -1) {
 				Resource parentPackageResource = createPackageResource(model,
 						packageName.substring(0, lastDot));
 				addPropertyWithTransitiveClosure(model, parentPackageResource,
 						packageResource, Properties.CONTAINS,
-						Properties.CONTAINS_TRANSITIVELY);
+						Properties.CONTAINS_CLOSURE);
 			}
 		}		
 		return packageResource;
@@ -341,10 +340,12 @@ public class SourceExportJob extends Job {
 		Resource typeRes = model.createResource(escapeURI(Namespaces.TYPES
 				+ typeBinding.getQualifiedName()));
 		if (!model.containsResource(typeRes)) {
+			typeRes.addProperty(Properties.CONTAINS_CLOSURE, typeRes);
+			typeRes.addProperty(Properties.EXTENDS_CLOSURE, typeRes);
 			if(typeBinding.getPackage() != null) {
 				Resource packageRes = createResource(model, typeBinding.getPackage());
 				addPropertyWithTransitiveClosure(model, packageRes, typeRes, 
-						Properties.CONTAINS, Properties.CONTAINS_TRANSITIVELY);
+						Properties.CONTAINS, Properties.CONTAINS_CLOSURE);
 			}
 			typeRes.addProperty(Properties.TYPE, Types.TYPE);
 			if (typeBinding.isInterface()) {
@@ -355,13 +356,13 @@ public class SourceExportJob extends Job {
 			ITypeBinding superClass = typeBinding.getSuperclass();
 			if(superClass != null) {
 				addPropertyWithTransitiveClosure(model, typeRes, createResource(model, superClass), 
-						Properties.EXTENDS, Properties.EXTENDS_TRANSITIVELY);
+						Properties.EXTENDS, Properties.EXTENDS_CLOSURE);
 			}
 			ITypeBinding[] interfaces = typeBinding.getInterfaces();
 			for (int i = 0; i < interfaces.length; i++) {
 				ITypeBinding superInterface = interfaces[i];
 				addPropertyWithTransitiveClosure(model, typeRes, createResource(model, superInterface), 
-						Properties.IMPLEMENTS, Properties.IMPLEMENTS_TRANSITIVELY);
+						Properties.IMPLEMENTS, Properties.IMPLEMENTS_CLOSURE);
 			}
 			IVariableBinding[] fields = typeBinding.getDeclaredFields();
 			for (int i = 0; i < fields.length; i++) {
@@ -400,6 +401,8 @@ public class SourceExportJob extends Job {
 		uri.append(")");
 		Resource methodResource = model.createResource(escapeURI(uri.toString()));
 		if(!model.containsResource(methodResource)) {
+			methodResource.addProperty(Properties.CALLS_CLOSURE, methodResource);
+			methodResource.addProperty(Properties.CONTAINS_CLOSURE, methodResource);
 			for (int i = 0; i < formalParams.length; i++) {
 				ITypeBinding param = formalParams[i];
 				Resource paramResource = createResource(model, param);

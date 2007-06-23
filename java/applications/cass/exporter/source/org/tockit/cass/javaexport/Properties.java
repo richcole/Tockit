@@ -105,21 +105,21 @@ public class Properties {
 	/**
 	 * Some entity contains another directly or indirectly.
 	 * 
-	 * This is the transitive closure of the #CONTAINS property.
+	 * This is the transitive and reflexive closure of the {@link #CONTAINS} property.
 	 */
-	public static final Property CONTAINS_TRANSITIVELY = model.createProperty(Namespaces.CASS_PROPERTIES + "contains_t");
+	public static final Property CONTAINS_CLOSURE = model.createProperty(Namespaces.CASS_PROPERTIES + "contains_tr");
 		
 	/**
 	 * Some entity calls another directly or indirectly.
 	 * 
-	 * This is the transitive closure of #CALLS.
+	 * This is the transitive and reflexive closure of {@link #CALLS}.
 	 */
-	public static final Property CALLS_TRANSITIVELY = model.createProperty(Namespaces.CASS_PROPERTIES + "calls_t");
+	public static final Property CALLS_CLOSURE = model.createProperty(Namespaces.CASS_PROPERTIES + "calls_tr");
 	
 	/**
 	 * Some entity calls another directly.
 	 * 
-	 * This is the #CALLS_TRANSITIVELY property extended along the #CONTAINS_TRANSITIVELY 
+	 * This is the {@link #CALLS_CLOSURE} property extended along the {@link #CONTAINS_CLOSURE} 
 	 * property by the following rule: if method A calls method B, then anything that contains 
 	 * A calls anything that contains B.  
 	 * 
@@ -130,10 +130,10 @@ public class Properties {
 	/**
 	 * Some entity depends on another.
 	 * 
-	 * This is a transitive closure of the union of some other relations, such as the callgraph and type
+	 * This is a transitive and reflexive closure of the union of some other relations, such as the callgraph and type
 	 * usage. TODO: define properly, maybe split into direct and transitive version
 	 */
-	public static final Property DEPENDS_TRANSITIVELY = model.createProperty(Namespaces.CASS_PROPERTIES + "depends_t");
+	public static final Property DEPENDS_TRANSITIVELY = model.createProperty(Namespaces.CASS_PROPERTIES + "depends_tr");
 
 	/**
 	 * The generic type hierachy.
@@ -147,30 +147,30 @@ public class Properties {
 	/**
 	 * A type extends another type directly or indirectly.
 	 * 
-	 * This is the transitive closure of the {@link #EXTENDS} relation.
+	 * This is the transitive and reflexive closure of the {@link #EXTENDS} relation.
 	 * 
 	 * Domain and range are the types (Java classes and interfaces), but only with matching pairs (i.e.
 	 * the relation is subset of the union of the two separate cross-products, not the cross-product of
 	 * the union). 
 	 */
-	public static final Property EXTENDS_TRANSITIVELY = model.createProperty(Namespaces.CASS_PROPERTIES + "extends_t");
+	public static final Property EXTENDS_CLOSURE = model.createProperty(Namespaces.CASS_PROPERTIES + "extends_tr");
 	
 	/**
 	 * A class implements an interface directly or indirectly.
 	 * 
-	 * This is the join of the {@link #IMPLEMENTS} relation with the {@link #EXTENDS_TRANSITIVELY} relation.
+	 * This is the join of the {@link #IMPLEMENTS} relation with the {@link #EXTENDS_CLOSURE} relation.
 	 * 
 	 * Domain are the types, range are the interfaces.
 	 */
-	public static final Property IMPLEMENTS_TRANSITIVELY = model.createProperty(Namespaces.CASS_PROPERTIES + "implements_t");
+	public static final Property IMPLEMENTS_CLOSURE = model.createProperty(Namespaces.CASS_PROPERTIES + "implements_t");
 	
 	/**
 	 * The generic type hierachy.
 	 * 
-	 * This is the transitive closure of {@link #DERIVED_FROM} or in other words the union of 
-	 * {@link #EXTENDS_TRANSITIVELY} and {@link #IMPLEMENTS_TRANSITIVELY}.
+	 * This is the transitive and reflexive closure of {@link #DERIVED_FROM} or in other words the union of 
+	 * {@link #EXTENDS_CLOSURE} and {@link #IMPLEMENTS_CLOSURE}.
 	 * 
 	 * Domain and range are the types (Java classes and interfaces). 
 	 */
-	public static final Property DERIVED_FROM_TRANSITIVELY = model.createProperty(Namespaces.CASS_PROPERTIES + "derivedFrom_t");
+	public static final Property DERIVED_FROM_CLOSURE = model.createProperty(Namespaces.CASS_PROPERTIES + "derivedFrom_tr");
 }
