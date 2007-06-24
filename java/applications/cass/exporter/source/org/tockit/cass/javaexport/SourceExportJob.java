@@ -3,6 +3,8 @@ package org.tockit.cass.javaexport;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -40,9 +42,6 @@ public class SourceExportJob extends Job {
 	private static final int ERROR_CODE_JAVA_MODEL_EXCEPTION = 1;
 	private static final int ERROR_CODE_FILE_NOT_FOUND_EXCEPTION = 2;
 	private static final String PLUGIN_NAME = "org.tockit.cass.sourceexport";
-	// TODO: using a string for checking allowed chars is rather ineffective, a bitset is probably
-	// the best option
-	private static final String ALLOWED_CHARS_IN_URI = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890/:#.%";
 	private IProgressMonitor progressMonitor;
 	private final IJavaProject javaProject;
 	private final File targetFile;
@@ -274,24 +273,17 @@ public class SourceExportJob extends Job {
 
 	private static Resource createResource(final Model model, IJavaElement element) {
 		// TODO: path contains package fragement root but shouldn't
-		final Resource elementRes = model.createResource(escapeURI(Namespaces.COMPILATION_UNITS + element.getPath()));
+		final Resource elementRes = model.createResource(Namespaces.COMPILATION_UNITS + encodeForURI(element.getPath().toString()));
 		elementRes.addProperty(Properties.TYPE, Types.COMPILATION_UNIT);
 		return elementRes;
 	}
 
-	private static String escapeURI(String unescapedString) {
-		StringBuilder builder = new StringBuilder();
-		char[] stringAsChars = unescapedString.toCharArray();
-		for (int i = 0; i < stringAsChars.length; i++) {
-			char character = stringAsChars[i];
-			if(ALLOWED_CHARS_IN_URI.indexOf(character) != -1) {
-				builder.append(character);
-			} else {
-				builder.append("%");
-				builder.append((int)character);
-			}
+	private static String encodeForURI(String unescapedString) {
+		try {
+			return URLEncoder.encode(unescapedString, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException("Encoding 'UTF-8' not available, but should be");
 		}
-		return builder.toString();
 	}
 
 	private static Resource createResource(Model model, IPackageBinding packageBinding) {
@@ -299,8 +291,8 @@ public class SourceExportJob extends Job {
 	}
 
 	private static Resource createPackageResource(Model model, String packageName) {
-		Resource packageResource = model.createResource(escapeURI(Namespaces.PACKAGES + 
-				packageName));
+		Resource packageResource = model.createResource(Namespaces.PACKAGES + 
+				encodeForURI(packageName));
 		if (!model.containsResource(packageResource)) {
 			packageResource.addProperty(Properties.TYPE, Types.PACKAGE);
 			packageResource.addProperty(Properties.CONTAINS_CLOSURE, packageResource);
@@ -339,8 +331,8 @@ public class SourceExportJob extends Job {
 	}
 
 	private static Resource createResource(final Model model, ITypeBinding typeBinding) {
-		Resource typeRes = model.createResource(escapeURI(Namespaces.TYPES
-				+ typeBinding.getKey()));
+		Resource typeRes = model.createResource(Namespaces.TYPES
+				+ encodeForURI(typeBinding.getKey()));
 		if (!model.containsResource(typeRes)) {
 			typeRes.addProperty(Properties.CONTAINS_CLOSURE, typeRes);
 			typeRes.addProperty(Properties.EXTENDS_CLOSURE, typeRes);
@@ -386,7 +378,7 @@ public class SourceExportJob extends Job {
 	}
 
 	private static Resource createResource(final Model model, IMethodBinding methodBinding) {
-		Resource methodResource = model.createResource(escapeURI(Namespaces.METHODS + methodBinding.getKey()));
+		Resource methodResource = model.createResource(Namespaces.METHODS + encodeForURI(methodBinding.getKey()));
 		if(!model.containsResource(methodResource)) {
 			methodResource.addProperty(Properties.CALLS_CLOSURE, methodResource);
 			methodResource.addProperty(Properties.CONTAINS_CLOSURE, methodResource);
