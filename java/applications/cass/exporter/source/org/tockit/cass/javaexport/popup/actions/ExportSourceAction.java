@@ -6,7 +6,8 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionDelegate;
 import org.eclipse.ui.IObjectActionDelegate;
@@ -15,6 +16,8 @@ import org.tockit.cass.javaexport.SourceExportJob;
 
 public class ExportSourceAction implements IObjectActionDelegate {
 	private IJavaProject theProject = null;
+
+	private String lastFile = null;
 
 	/**
 	 * Constructor for Action1.
@@ -34,24 +37,41 @@ public class ExportSourceAction implements IObjectActionDelegate {
 	 * @see IActionDelegate#run(IAction)
 	 */
 	public void run(IAction action) {
-        Shell shell = new Shell();
-        String exportLocation = System.getProperty("org.tockit.cass.javaexport.ExportLocation");
-		if (exportLocation == null) {
-			DirectoryDialog dd = new DirectoryDialog(shell);
-			dd.setText("Choose directory to export Java source graph into");
-			exportLocation = dd.open();
-		}		
-		if (exportLocation != null) {
-			File targetFile = new File(new File(exportLocation), theProject.getElementName() + ".n3");
-			SourceExportJob job = new SourceExportJob(theProject, targetFile, "N3");
-			job.schedule();
-        }
+		Shell shell = new Shell();
+		FileDialog fd = new FileDialog(shell, SWT.SAVE);
+		if (lastFile != null) {
+			File lastFolder = (new File(lastFile)).getParentFile();
+			fd.setFilterPath(lastFolder.getAbsolutePath());
+			// proposed file name has the same extension as last time,
+			// just with the current project name
+			String proposedFileName = theProject.getElementName()
+					+ lastFile.substring(lastFile.lastIndexOf('.'));
+			fd.setFileName(proposedFileName);
+		}
+		fd.setText("Choose file to export Java source graph into");
+		String selectedFile = fd.open();
+		if (selectedFile == null) { // user cancelled
+			return;
+		}
+
+		lastFile = selectedFile; // TODO figure out how to persist this
+		// without being a view part
+		File targetFile = new File(selectedFile);
+		String targetFormat = "RDF/XML";
+		if (targetFile.getName().endsWith(".n3")) {
+			targetFormat = "n3";
+		}
+
+		SourceExportJob job = new SourceExportJob(theProject, targetFile,
+				targetFormat);
+		job.schedule();
 	}
 
 	/**
 	 * @see IActionDelegate#selectionChanged(IAction, ISelection)
 	 */
 	public void selectionChanged(IAction action, ISelection selection) {
-		theProject = (IJavaProject) ((StructuredSelection) selection).getFirstElement();
+		theProject = (IJavaProject) ((StructuredSelection) selection)
+				.getFirstElement();
 	}
 }

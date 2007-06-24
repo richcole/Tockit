@@ -78,7 +78,6 @@ public class SourceExportJob extends Job {
 		
 		progressMonitor.subTask("Writing output file");
 		model.setNsPrefixes(Namespaces.PREFIX_MAPPING);
-		fileFormat = "N3";
 		model.write(new FileOutputStream(targetFile),fileFormat);
 		progressMonitor.done();
 
