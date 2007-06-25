@@ -18,6 +18,12 @@ public class ExportSourceAction implements IObjectActionDelegate {
 	private IJavaProject theProject = null;
 
 	private String lastFile = null;
+	
+	private static final String[] IGNORE_LIST = new String[]{
+		".*\\.jar",
+		".*\\.test",
+		".*\\.tests"
+	};
 
 	/**
 	 * Constructor for Action1.
@@ -58,12 +64,12 @@ public class ExportSourceAction implements IObjectActionDelegate {
 		// without being a view part
 		File targetFile = new File(selectedFile);
 		String targetFormat = "RDF/XML";
-		if (targetFile.getName().endsWith(".n3")) {
-			targetFormat = "n3";
+		if (targetFile.getName().toLowerCase().endsWith(".n3")) {
+			targetFormat = "N3";
 		}
 
 		SourceExportJob job = new SourceExportJob(theProject, targetFile,
-				targetFormat);
+				targetFormat, IGNORE_LIST);
 		job.schedule();
 	}
 

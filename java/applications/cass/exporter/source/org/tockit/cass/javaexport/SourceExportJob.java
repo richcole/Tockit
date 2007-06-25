@@ -8,6 +8,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -45,14 +46,19 @@ public class SourceExportJob extends Job {
 	private IProgressMonitor progressMonitor;
 	private final IJavaProject javaProject;
 	private final File targetFile;
-	private String fileFormat;
+	private final String fileFormat;
+	private final Pattern[] ignorePattern;
 
 	public SourceExportJob(IJavaProject javaProject,
-			File targetFile, String fileFormat) {
+			File targetFile, String fileFormat, String[] ignorePattern) {
 		super("Export Java source as graph");
 		this.javaProject = javaProject;
 		this.targetFile = targetFile;
 		this.fileFormat = fileFormat;
+		this.ignorePattern = new Pattern[ignorePattern.length];
+		for (int i = 0; i < ignorePattern.length; i++) {
+			this.ignorePattern[i] = Pattern.compile(ignorePattern[i]);
+		}
 		this.setUser(true);
 		this.setRule(javaProject.getSchedulingRule());
 	}
@@ -196,8 +202,14 @@ public class SourceExportJob extends Job {
 		if (parent instanceof IPackageFragment) {
 			packageResource = createResource(model, (IPackageFragment) parent);
 		}
-		for (int i = 0; i < parent.getChildren().length; i++) {
+		mainLoop: for (int i = 0; i < parent.getChildren().length; i++) {
 			IJavaElement element = parent.getChildren()[i];
+			for (int j = 0; j < ignorePattern.length; j++) {
+				Pattern pattern = ignorePattern[j];
+				if(pattern.matcher(element.getElementName()).matches()) {
+					continue mainLoop;
+				}
+			}
 			if (element instanceof ICompilationUnit) {
 				ICompilationUnit compilationUnit = (ICompilationUnit) element;
 				ASTParser parser = ASTParser.newParser(AST.JLS3);
@@ -263,9 +275,7 @@ public class SourceExportJob extends Job {
 				});
 			}
 			if (element instanceof IParent) {
-				if (!element.getElementName().endsWith("jar")) {
-					extractAssertions((IParent) element, model);
-				}
+				extractAssertions((IParent) element, model);
 			}
 		}
 		return true;
