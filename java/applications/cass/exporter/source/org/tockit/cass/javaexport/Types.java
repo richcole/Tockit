@@ -36,11 +36,4 @@ public class Types {
 	 * Represents a method.
 	 */
 	public static final Resource METHOD = model.createProperty(Namespaces.CASS_TYPES + "method");
-	
-	/**
-	 * Represents a compilation unit.
-	 * 
-	 * Compilation units are Java source files and JARs.
-	 */
-	public static final Resource COMPILATION_UNIT = model.createProperty(Namespaces.CASS_TYPES + "compilationUnit");
 }

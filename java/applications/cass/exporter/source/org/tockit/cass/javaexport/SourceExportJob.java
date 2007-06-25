@@ -217,18 +217,12 @@ public class SourceExportJob extends Job {
 				parser.setSource(compilationUnit);
 				parser.setResolveBindings(true);
 				ASTNode result = parser.createAST(null);
-				final Resource elementResource = createResource(model, element);
+				final ArrayList startStack = new ArrayList();
 				if (packageResource != null) {
-					addPropertyWithTransitiveClosure(model, packageResource,
-							elementResource, Properties.CONTAINS,
-							Properties.CONTAINS_CLOSURE);
+					startStack.add(packageResource);
 				}
 				result.accept(new ASTVisitor() {
-					List resources = new ArrayList() {
-						{
-							add(elementResource);
-						}
-					};
+					List resources = startStack;
 
 					private Resource getTop() {
 						return ((Resource) resources.get(resources.size() - 1));
@@ -279,13 +273,6 @@ public class SourceExportJob extends Job {
 			}
 		}
 		return true;
-	}
-
-	private static Resource createResource(final Model model, IJavaElement element) {
-		// TODO: path contains package fragement root but shouldn't
-		final Resource elementRes = model.createResource(Namespaces.COMPILATION_UNITS + encodeForURI(element.getPath().toString()));
-		elementRes.addProperty(Properties.TYPE, Types.COMPILATION_UNIT);
-		return elementRes;
 	}
 
 	private static String encodeForURI(String unescapedString) {
