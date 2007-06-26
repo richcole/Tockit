@@ -90,40 +90,16 @@ public class SourceExportJob extends Job {
 	}
 
 	private boolean addExtraAssertions(Model model) {
-		// we write statements collected after iteration is complete to avoid that annoying
-		// ConcurrentModificationException, so store new pairs which will be in the relation
-		// we are creating as two-element Resource[]
-		List newPairs = new ArrayList();
-
 		// add extended callgraph
-		Iterator it = model.listStatements(null, Properties.CALLS_CLOSURE,
-				(RDFNode) null);
-		while (it.hasNext()) {
-			Statement stmt = (Statement) it.next();
-			Resource subject = stmt.getSubject();
-			Resource object = (Resource) stmt.getObject();
-			newPairs.add(new Resource[]{subject,object});
-			Iterator it2 = model.listStatements(null, Properties.CONTAINS_CLOSURE, subject);
-			while (it2.hasNext()) {
-				Statement contSubjStmt = (Statement) it2.next();
-				Iterator it3 = model.listStatements(null, Properties.CONTAINS_CLOSURE, object);
-				while (it3.hasNext()) {
-					Statement contObjStmt = (Statement) it3.next();
-					newPairs.add(new Resource[]{contSubjStmt.getSubject(),contObjStmt.getSubject()});
-				}
-			}
-			if(progressMonitor.isCanceled()) {
-				return false;
-			}
-		}
-		for (Iterator npIter = newPairs.iterator(); npIter.hasNext();) {
-			Resource[] resources = (Resource[]) npIter.next();
-			resources[0].addProperty(Properties.CALLS_EXTENDED, resources[1]);
+		boolean uninterupted = addClosureAlongContainsProperty(model,
+				Properties.CALLS_CLOSURE, Properties.CALLS_EXTENDED);
+		if (!uninterupted) {
+			return false;
 		}
 		
 		// add combined dependency graph
-		newPairs = new ArrayList();
-		it = model.listStatements(null, Properties.EXTENDS_CLOSURE,
+		List newPairs = new ArrayList();
+		Iterator it = model.listStatements(null, Properties.EXTENDS_CLOSURE,
 				(RDFNode) null);
 		while (it.hasNext()) {
 			Statement stmt = (Statement) it.next();
@@ -158,37 +134,87 @@ public class SourceExportJob extends Job {
 			stmt.getSubject().addProperty(Properties.DEPENDS_TRANSITIVELY,
 					stmt.getObject());
 		}
-		// TODO: the next ones should include upset in containment similar to 
-		// CALLS_EXTENDED maybe do union first, then go up containment hierarchies
-		it = model.listStatements(null, Properties.HAS_PARAMETER_EXTENDED,
-				(RDFNode) null); 
-		while (it.hasNext()) {
-			Statement stmt = (Statement) it.next();
-			stmt.getSubject().addProperty(Properties.DEPENDS_TRANSITIVELY,
-					stmt.getObject());
+
+		// having anything that uses a type as parameter creates a dependency
+		uninterupted = addClosureAlongContainsProperty(model,
+				Properties.HAS_PARAMETER_EXTENDED,
+				Properties.DEPENDS_TRANSITIVELY);
+		if (!uninterupted) {
+			return false;
 		}
-		it = model.listStatements(null, Properties.HAS_RETURN_TYPE_EXTENDED,
-				(RDFNode) null); 
-		while (it.hasNext()) {
-			Statement stmt = (Statement) it.next();
-			stmt.getSubject().addProperty(Properties.DEPENDS_TRANSITIVELY,
-					stmt.getObject());
+		
+		// having anything that uses a type as return type creates a dependency
+		uninterupted = addClosureAlongContainsProperty(model,
+				Properties.HAS_RETURN_TYPE_EXTENDED,
+				Properties.DEPENDS_TRANSITIVELY);
+		if (!uninterupted) {
+			return false;
 		}
-		it = model.listStatements(null, Properties.HAS_FIELD_TYPE_EXTENDED,
-				(RDFNode) null); 
-		while (it.hasNext()) {
-			Statement stmt = (Statement) it.next();
-			stmt.getSubject().addProperty(Properties.DEPENDS_TRANSITIVELY,
-					stmt.getObject());
+		
+		// having anything that uses a type as field type creates a dependency
+		uninterupted = addClosureAlongContainsProperty(model,
+				Properties.HAS_FIELD_TYPE_EXTENDED,
+				Properties.DEPENDS_TRANSITIVELY);
+		if (!uninterupted) {
+			return false;
 		}
-		it = model.listStatements(null, Properties.DERIVED_FROM_CLOSURE,
-				(RDFNode) null); 
-		while (it.hasNext()) {
-			Statement stmt = (Statement) it.next();
-			stmt.getSubject().addProperty(Properties.DEPENDS_TRANSITIVELY,
-					stmt.getObject());
+		
+		// having anything that derives from a type creates a dependency
+		uninterupted = addClosureAlongContainsProperty(model,
+				Properties.DERIVED_FROM_CLOSURE,
+				Properties.DEPENDS_TRANSITIVELY);
+		if (!uninterupted) {
+			return false;
 		}
 
+		return true;
+	}
+
+	/**
+	 * Creates a new relation by extending an existing one along the containment hierarchy.
+	 * 
+	 * All pairs (S startProperty O) are found, and new properties are added for all X in the
+	 * upset of S regarding the {@link Properties#CONTAINS_CLOSURE} relation, using targetProperty
+	 * as property and all Y in the upset of O regarding the same relation as values.
+	 * 
+	 * @param model The model to modify. Must not be null.
+	 * @param startProperty The property to search for. Must not be null.
+	 * @param targetProperty The property to set. Must not be null.
+	 * @return true iff the process was not interrupted by the user.
+	 */
+	private boolean addClosureAlongContainsProperty(Model model,
+			Property startProperty, Property targetProperty) {
+		Iterator it = model.listStatements(null, startProperty, (RDFNode) null);
+		// we write statements collected after iteration is complete to avoid
+		// that annoying ConcurrentModificationException, so store new pairs
+		// which will be in the relation we are creating as two-element
+		// Resource[]
+		List newPairs = new ArrayList();
+		while (it.hasNext()) {
+			Statement stmt = (Statement) it.next();
+			Resource subject = stmt.getSubject();
+			Resource object = (Resource) stmt.getObject();
+			newPairs.add(new Resource[] { subject, object });
+			Iterator it2 = model.listStatements(null,
+					Properties.CONTAINS_CLOSURE, subject);
+			while (it2.hasNext()) {
+				Statement contSubjStmt = (Statement) it2.next();
+				Iterator it3 = model.listStatements(null,
+						Properties.CONTAINS_CLOSURE, object);
+				while (it3.hasNext()) {
+					Statement contObjStmt = (Statement) it3.next();
+					newPairs.add(new Resource[] { contSubjStmt.getSubject(),
+							contObjStmt.getSubject() });
+				}
+			}
+			if (progressMonitor.isCanceled()) {
+				return false;
+			}
+		}
+		for (Iterator npIter = newPairs.iterator(); npIter.hasNext();) {
+			Resource[] resources = (Resource[]) npIter.next();
+			resources[0].addProperty(targetProperty, resources[1]);
+		}
 		return true;
 	}
 
