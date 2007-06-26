@@ -1,10 +1,13 @@
 package org.tockit.cass.javaexport;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
  * Class containing constants for all the namespaces of the CASS RDF model.
+ *
+ * The main method prints the prefix mappings in SPARQL syntax.
  */
 public class Namespaces {
 	public static final String CASS_TYPES = "http://tockit.org/cass/entityTypes#";
@@ -22,4 +25,11 @@ public class Namespaces {
 		put("type", TYPES);
 		put("method", METHODS);
 	}};
+	
+	public static void main(String[] args) {
+		for (Iterator iter = PREFIX_MAPPING.entrySet().iterator(); iter.hasNext();) {
+			Map.Entry entry = (Map.Entry) iter.next();
+			System.out.println("PREFIX " + entry.getKey() + ": <" + entry.getValue() + ">");
+		}
+	}
 }
