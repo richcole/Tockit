@@ -1,0 +1,255 @@
+\documentclass[pdf,prettybox]{prosper}
+
+\newcommand{\ignore[1]}{}
+
+\title{Analysing Software Structure as Conceptual Model}
+\subtitle{The CASS Toolkit}
+\author{Peter Becker}
+\email{peter@peterbecker.de}
+\institution{PhD student at the Philipps University Marburg}
+
+\myitem{1}{{\scriptsize\darkblue%
+      \raisebox{2pt}{\ensuremath{\bullet}}}}
+\myitem{2}{{\scriptsize\black%
+      \raisebox{2pt}{\ensuremath{\bullet}}}}
+\myitem{3}{{\scriptsize\black%
+      \raisebox{2pt}{\ensuremath{\bullet}}}}
+
+\begin{document}
+\maketitle
+
+\part{Introduction}
+
+\overlays{5}{
+\begin{slide}{Motivation}
+\begin{itemstep}
+ \item Any significant program gets conceptually complex
+ \item Understanding the conceptual structure is crucial
+ \item Maintaining a good structure helps understanding
+ \item Tools can help a lot
+ \item Are we using the right tools?
+\end{itemstep}
+\end{slide}
+}
+
+\overlays{5}{
+\begin{slide}{Stuck with Files?}
+\begin{itemstep}
+ \item Software development is still file-oriented and text based
+ \item Reference format are ASCII files
+ \item Normalization through pretty-printing/coding standards
+ \item Modularisation through folders
+ \item Change sets are maintained as textual differences
+\end{itemstep}
+\end{slide}
+}
+
+\overlays{7}{
+\begin{slide}{IDEs lifting the View}
+\begin{itemstep}
+ \item In modern IDEs a higher-level view is provided by means of an AST or DOM
+ \begin{itemstep}
+  \item Access types directly
+  \item Open type hierarchy or type outlines
+  \item Navigate into methods/types
+  \item Find usages of types or methods
+ \end{itemstep}
+ \item Treeviews are used for visualization
+ \item Change sets are shown in terms of the AST/DOM
+\end{itemstep}
+\end{slide}
+}
+
+\overlays{8}{
+\begin{slide}{Software still too complex}
+\begin{itemstep}
+ \item Treeviews handle only trees
+ \begin{itemstep}
+  \item Inheritance hierachy is not necessarily a tree
+  \item Callgraph is rarely a tree
+ \end{itemstep}
+ \item There is always only one item under consideration
+ \begin{itemstep}
+  \item Who calls this \textbf{one} method?
+  \item Who depends on this \textbf{one} type?
+ \end{itemstep}
+ \item ``Who uses this class but not that?'' is still hard to answer
+ \item Getting an overview of all but the simple call patterns is still tedious
+\end{itemstep}
+\end{slide}
+}
+
+\overlays{6}{
+\begin{slide}{Conceptual Knowledge Processing}
+\begin{itemstep}
+ \item Idea: use tools made for processing conceptual structures
+ \begin{itemstep}
+  \item Conceptual Graphs (CGs) as data representation and query language
+  \item Formal Concept Analysis (FCA) as visualisation technique
+ \end{itemstep}
+ \item CG technology not really evolved
+ \begin{itemstep}
+  \item Represent data in RDF instead
+  \item Keep the graphical syntax of CGs as query interface
+ \end{itemstep}
+\end{itemstep}
+\end{slide}
+}
+
+\part{Technologies used}
+
+\overlays{5}{
+\begin{slide}{RDF}
+\begin{itemstep}
+ \item 
+ \item 
+ \item 
+ \item 
+ \item 
+\end{itemstep}
+\end{slide}
+}
+
+\overlays{5}{
+\begin{slide}{FCA}
+\begin{itemstep}
+ \item 
+ \item 
+ \item 
+ \item 
+ \item 
+\end{itemstep}
+\end{slide}
+}
+
+\overlays{5}{
+\begin{slide}{Conceptual Graphs}
+\begin{itemstep}
+ \item 
+ \item 
+ \item 
+ \item 
+ \item 
+\end{itemstep}
+\end{slide}
+}
+
+\part{Overview of the CASS toolkit}
+
+\overlays{4}{
+\begin{slide}{Bits and pieces}
+\begin{itemstep}
+ \item Jena as RDF storage and query engine
+ \item Eclipse for extracting the source code structure
+ \item Tupleware as FCA visualisation tool
+ \item Crepe as CG editor
+\end{itemstep}
+\end{slide}
+}
+
+\overlays{5}{
+\begin{slide}{Jena}
+\begin{itemstep}
+ \item 
+ \item 
+ \item 
+ \item 
+ \item 
+\end{itemstep}
+\end{slide}
+}
+
+\overlays{5}{
+\begin{slide}{Eclipse}
+\begin{itemstep}
+ \item 
+ \item 
+ \item 
+ \item 
+ \item 
+\end{itemstep}
+\end{slide}
+}
+
+\overlays{5}{
+\begin{slide}{Tupleware}
+\begin{itemstep}
+ \item 
+ \item 
+ \item 
+ \item 
+ \item 
+\end{itemstep}
+\end{slide}
+}
+
+\overlays{5}{
+\begin{slide}{Crepe}
+\begin{itemstep}
+ \item 
+ \item 
+ \item 
+ \item 
+ \item 
+\end{itemstep}
+\end{slide}
+}
+
+\part{Example}
+
+% TJ code, revision and size info, storyline
+
+% Example: dependencies of toplevel packages
+% Example: some more complex hierarchy
+
+\part{Outlook}
+
+\overlays{4}{
+\begin{slide}{Technical Issues}
+\begin{itemstep}
+ \item Crepe is not integrated yet
+ \item The other tools need better integration, too
+ \item There will be bugs/glitches left
+ \item Exploration currently limited to the ToscanaJ source code
+       $\Rightarrow$ try CASS on various OSS Java projects
+\end{itemstep}
+\end{slide}
+}
+
+\overlays{5}{
+\begin{slide}{Open Research Questions}
+\begin{itemstep}
+ \item Are there ways of using CASS that are helpful in most cases?
+ \item What questions can be answered easily, which ones can't?
+ \item How can the approach be used for automated testing?
+ \begin{itemstep}
+  \item Idea: extract rulesets for something like PMD from the CASS views
+ \end{itemstep}
+ \item Can we include calling sequences in the analysis (e.g. \texttt{init()}
+       must be called before other methods)?
+\end{itemstep}
+\end{slide}
+}
+
+\part{Thank you!}
+
+\end{document}
+
+% templates
+\ignore{
+
+% slide with five items unfolding
+\overlays{5}{
+\begin{slide}{}
+\begin{itemstep}
+ \item 
+ \item 
+ \item 
+ \item 
+ \item 
+\end{itemstep}
+\end{slide}
+}
+
+
+}
