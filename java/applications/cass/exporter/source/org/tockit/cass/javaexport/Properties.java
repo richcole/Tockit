@@ -49,14 +49,14 @@ public class Properties {
 	public static final Property HAS_PARAMETER_EXTENDED = model.createProperty(Namespaces.CASS_PROPERTIES + "hasParameter_ext");
 
 	/**
-	 * A method has a type as return value.
+	 * A method has a type as return type.
 	 * 
 	 * Domain are the methods, range are the types (Java classes and interfaces).
 	 */
 	public static final Property HAS_RETURN_TYPE = model.createProperty(Namespaces.CASS_PROPERTIES + "hasReturnValue");
 	
 	/**
-	 * A method has a type as parameter directly or indirectly.
+	 * A method has a type as return type directly or indirectly.
 	 * 
 	 * This extends {@link #HAS_RETURN_TYPE} by adding the base types of arrays, i.e. a method returning
 	 * "java.lang.String[]" would also be bound to "java.lang.String". 
@@ -158,7 +158,7 @@ public class Properties {
 	/**
 	 * A class implements an interface directly or indirectly.
 	 * 
-	 * This is the join of the {@link #IMPLEMENTS} relation with the {@link #EXTENDS_CLOSURE} relation.
+	 * This is the transitive closure of the {@link #IMPLEMENTS} relation.
 	 * 
 	 * Domain are the types, range are the interfaces.
 	 */
