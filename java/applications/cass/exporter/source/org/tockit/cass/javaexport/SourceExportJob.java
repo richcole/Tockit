@@ -69,14 +69,12 @@ public class SourceExportJob extends Job {
 		progressMonitor.beginTask("Exporting Java source graph", 3);
 		Model model = ModelFactory.createDefaultModel();
 
-		progressMonitor.subTask("Extract base data from Java code");
 		boolean completed = extractAssertions(javaProject, model);
 		if(!completed) {
 			return false;
 		}
 		progressMonitor.worked(1);
 
-		progressMonitor.subTask("Inferring extra relations");
 		completed = addExtraAssertions(model);
 		if(!completed) {
 			return false;
@@ -93,6 +91,7 @@ public class SourceExportJob extends Job {
 
 	private boolean addExtraAssertions(Model model) {
 		// add extended callgraph
+		progressMonitor.subTask("Inferring extra relations: extended callgraph");
 		boolean uninterupted = addClosureAlongContainsProperty(model,
 				Properties.CALLS_CLOSURE, Properties.CALLS_EXTENDED);
 		if (!uninterupted) {
@@ -100,6 +99,7 @@ public class SourceExportJob extends Job {
 		}
 		
 		// add combined type hierarchy
+		progressMonitor.subTask("Inferring extra relations: combined type hierarchy");
 		List newPairs = new ArrayList();
 		Iterator it = model.listStatements(null, Properties.EXTENDS_CLOSURE,
 				(RDFNode) null);
@@ -129,6 +129,7 @@ public class SourceExportJob extends Job {
 		}
 		
 		// add generic dependency graph
+		progressMonitor.subTask("Inferring extra relations: generic dependencies from callgraph");
 		it = model.listStatements(null, Properties.CALLS_EXTENDED,
 				(RDFNode) null);
 		while (it.hasNext()) {
@@ -138,6 +139,7 @@ public class SourceExportJob extends Job {
 		}
 
 		// having anything that uses a type as parameter creates a dependency
+		progressMonitor.subTask("Inferring extra relations: generic dependencies from parameter usage");
 		uninterupted = addClosureAlongContainsProperty(model,
 				Properties.HAS_PARAMETER_EXTENDED,
 				Properties.DEPENDS_TRANSITIVELY);
@@ -146,6 +148,7 @@ public class SourceExportJob extends Job {
 		}
 		
 		// having anything that uses a type as return type creates a dependency
+		progressMonitor.subTask("Inferring extra relations: generic dependencies from return type usage");
 		uninterupted = addClosureAlongContainsProperty(model,
 				Properties.HAS_RETURN_TYPE_EXTENDED,
 				Properties.DEPENDS_TRANSITIVELY);
@@ -154,6 +157,7 @@ public class SourceExportJob extends Job {
 		}
 		
 		// having anything that uses a type as field type creates a dependency
+		progressMonitor.subTask("Inferring extra relations: generic dependencies from field usage");
 		uninterupted = addClosureAlongContainsProperty(model,
 				Properties.HAS_FIELD_TYPE_EXTENDED,
 				Properties.DEPENDS_TRANSITIVELY);
@@ -162,12 +166,15 @@ public class SourceExportJob extends Job {
 		}
 		
 		// having anything that derives from a type creates a dependency
+		progressMonitor.subTask("Inferring extra relations: generic dependencies from inheritance");
 		uninterupted = addClosureAlongContainsProperty(model,
 				Properties.DERIVED_FROM_CLOSURE,
 				Properties.DEPENDS_TRANSITIVELY);
 		if (!uninterupted) {
 			return false;
 		}
+		
+		// TODO: variable use is missing!
 
 		return true;
 	}
@@ -228,7 +235,9 @@ public class SourceExportJob extends Job {
 		}
 		Resource packageResource = null;
 		if (parent instanceof IPackageFragment) {
-			packageResource = createResource(model, (IPackageFragment) parent);
+			IPackageFragment packageFragment = (IPackageFragment) parent;
+			progressMonitor.subTask("Extract base data from Java code: " + packageFragment.getElementName());
+			packageResource = createResource(model, packageFragment);
 		}
 		mainLoop: for (int i = 0; i < parent.getChildren().length; i++) {
 			IJavaElement element = parent.getChildren()[i];
