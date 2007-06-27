@@ -20,7 +20,7 @@ public class ExportSourceAction implements IObjectActionDelegate {
 	private String lastFile = null;
 	
 	private static final String[] IGNORE_LIST = new String[]{
-		".*\\.jar",
+		"(?i).*\\.jar",
 		".*\\.test",
 		".*\\.tests"
 	};
