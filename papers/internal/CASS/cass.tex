@@ -101,40 +101,55 @@
 \overlays{5}{
 \begin{slide}{RDF}
 \begin{itemstep}
- \item 
- \item 
- \item 
- \item 
- \item 
+ \item The Resource Description Framework (RDF) defines a number of formats 
+       for storing structured data
+ \item The basic unit is the statement (triple): subject, predicate, object
+       (also subject, property, value)
+ \item The domains are resources (identified by URIs) and literals
+ \item Apart from different syntax definitions you can get schema languages,
+       inference definitions and query languages around RDF
+ \item Many tools are available
 \end{itemstep}
 \end{slide}
 }
 
-\overlays{5}{
+\overlays{4}{
 \begin{slide}{FCA}
 \begin{itemstep}
- \item 
- \item 
- \item 
- \item 
- \item 
+ \item Formal Concept Analysis (FCA) is a restructuring of lattice theory
+ \item FCA starts with a structure called ``Formal Context'', which is a
+       triple of a set of objects, a set of attributes and an incidence
+       relation between those
+ \item A ``Formal Concept'' is a pair of a subset of the objects and a
+       subset of the attributes where the objects are all those objects
+       common to the attributes and vice versa
+ \item All formal concepts of a contexts form a lattice regarding the
+       subconcept relation defined by the subset relation on the
+       object sets (alternatively the superset relation on the attributes)
 \end{itemstep}
 \end{slide}
 }
 
-\overlays{5}{
+\overlays{4}{
 \begin{slide}{Conceptual Graphs}
 \begin{itemstep}
- \item 
- \item 
- \item 
- \item 
- \item 
+ \item Conceptual Graphs (CGs) are another form of representing statements
+ \item They allow more than binary statements
+ \item They have a number of different syntactical forms
+ \item The best known is the Display Form (DF), which is a graphical
+       representation
 \end{itemstep}
 \end{slide}
 }
 
 \part{Overview of the CASS toolkit}
+
+\begin{slide}{Architecture}
+\begin{center}
+ \includegraphics[height=0.8 \textheight]{img/system1.eps}
+ % system1.eps: 1179666x1179666 pixel, 300dpi, 9987.84x9987.84 cm, bb=0 0 310 412
+\end{center}
+\end{slide}
 
 \overlays{4}{
 \begin{slide}{Bits and pieces}
@@ -147,26 +162,25 @@
 \end{slide}
 }
 
-\overlays{5}{
+\overlays{4}{
 \begin{slide}{Jena}
 \begin{itemstep}
- \item 
- \item 
- \item 
- \item 
- \item 
+ \item Jena is an Java library for storing, manipulating and querying RDF
+ \item It was originally developed by Hewlett Packard
+ \item It is available as OSS project on Sourceforge
+ \item It has been around for a long time
 \end{itemstep}
 \end{slide}
 }
 
-\overlays{5}{
+\overlays{4}{
 \begin{slide}{Eclipse}
 \begin{itemstep}
- \item 
- \item 
- \item 
- \item 
- \item 
+ \item Eclipse is best known as Java IDE
+ \item It is a large framework consisting of many different plugins
+ \item The strong emphasis on plugins makes it easy to extend
+ \item The Java Development Tools (JDT) offer access to a combination
+       of AST and DOM
 \end{itemstep}
 \end{slide}
 }
@@ -174,23 +188,24 @@
 \overlays{5}{
 \begin{slide}{Tupleware}
 \begin{itemstep}
- \item 
- \item 
- \item 
- \item 
- \item 
+ \item Tupleware is a fork of the ToscanaJ project
+ \item It generates Hasse diagrams using the ToscanaJ components
+ \item The approach of creating the diagrams is rather different
+ \begin{itemstep}
+  \item ToscanaJ uses Conceptual Scaling
+  \item Tupleware uses relational algebra
+ \end{itemstep}
 \end{itemstep}
 \end{slide}
 }
 
-\overlays{5}{
+\overlays{3}{
 \begin{slide}{Crepe}
 \begin{itemstep}
- \item 
- \item 
- \item 
- \item 
- \item 
+ \item Crepe is a prototypical CG editor
+ \item It uses the graphical display form
+ \item It was designed to study how strong schema support
+       can make formal statement design easier
 \end{itemstep}
 \end{slide}
 }
@@ -204,11 +219,12 @@
 
 \part{Outlook}
 
-\overlays{4}{
+\overlays{5}{
 \begin{slide}{Technical Issues}
 \begin{itemstep}
  \item Crepe is not integrated yet
  \item The other tools need better integration, too
+ \item No UI for refining queries using the diagrams
  \item There will be bugs/glitches left
  \item Exploration currently limited to the ToscanaJ source code
        $\Rightarrow$ try CASS on various OSS Java projects
@@ -216,7 +232,7 @@
 \end{slide}
 }
 
-\overlays{5}{
+\overlays{6}{
 \begin{slide}{Open Research Questions}
 \begin{itemstep}
  \item Are there ways of using CASS that are helpful in most cases?
@@ -227,11 +243,14 @@
  \end{itemstep}
  \item Can we include calling sequences in the analysis (e.g. \texttt{init()}
        must be called before other methods)?
+ \item Can this be used to see changes over time? How would that be visualized?
 \end{itemstep}
 \end{slide}
 }
 
 \part{Thank you!}
+
+\part{Extras}
 
 \end{document}
 
