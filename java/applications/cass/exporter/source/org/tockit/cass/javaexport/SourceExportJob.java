@@ -97,7 +97,7 @@ public class SourceExportJob extends Job {
 			return false;
 		}
 		
-		// add combined dependency graph
+		// add combined type hierarchy
 		List newPairs = new ArrayList();
 		Iterator it = model.listStatements(null, Properties.EXTENDS_CLOSURE,
 				(RDFNode) null);
