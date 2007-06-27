@@ -156,10 +156,11 @@ public class SourceExportJob extends Job {
 			return false;
 		}
 		
-		// having anything that uses a type as field type creates a dependency
-		progressMonitor.subTask("Inferring extra relations: generic dependencies from field usage");
+		// having anything that uses a type as variable creates a dependency
+		// (note that this includes fields)
+		progressMonitor.subTask("Inferring extra relations: generic dependencies from variable usage");
 		uninterupted = addClosureAlongContainsProperty(model,
-				Properties.HAS_FIELD_TYPE_EXTENDED,
+				Properties.HAS_VARIABLE_TYPE_EXTENDED,
 				Properties.DEPENDS_TRANSITIVELY);
 		if (!uninterupted) {
 			return false;
@@ -174,8 +175,6 @@ public class SourceExportJob extends Job {
 			return false;
 		}
 		
-		// TODO: variable use is missing!
-
 		return true;
 	}
 
