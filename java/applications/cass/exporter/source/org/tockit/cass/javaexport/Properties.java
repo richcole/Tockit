@@ -53,7 +53,7 @@ public class Properties {
 	 * 
 	 * Domain are the methods, range are the types (Java classes and interfaces).
 	 */
-	public static final Property HAS_RETURN_TYPE = model.createProperty(Namespaces.CASS_PROPERTIES + "hasReturnValue");
+	public static final Property HAS_RETURN_TYPE = model.createProperty(Namespaces.CASS_PROPERTIES + "hasReturnType");
 	
 	/**
 	 * A method has a type as return type directly or indirectly.
@@ -73,6 +73,35 @@ public class Properties {
 	public static final Property HAS_FIELD_TYPE = model.createProperty(Namespaces.CASS_PROPERTIES + "hasFieldType");
 	
 	/**
+	 * A type uses another type as field directly or indirectly.
+	 * 
+	 * This extends {@link #HAS_FIELD_TYPE} by adding the base types of arrays, i.e. a type using
+	 * "java.lang.String[]" would also be bound to "java.lang.String". 
+	 * 
+	 * Domain and range are the types (Java classes and interfaces).
+	 */
+	public static final Property HAS_FIELD_TYPE_EXTENDED = model.createProperty(Namespaces.CASS_PROPERTIES + "hasFieldType_ext");
+
+	/**
+	 * A method or class uses a type for a variable.
+	 * 
+	 * With a method this refers to a local variable, with a class it refers to a field.
+	 * 
+	 * Domain are the methods and classes, range are the types (Java classes, interfaces and primitices)
+	 */
+	public static final Property HAS_VARIABLE_TYPE = model.createProperty(Namespaces.CASS_PROPERTIES + "hasVariableType");
+	
+	/**
+	 * A method or class uses a type for a variable directly or indirectly.
+	 * 
+	 * This extends {@link #HAS_VARIABLE_TYPE} by adding the base types of arrays, i.e. a method returning
+	 * "java.lang.String[]" would also be bound to "java.lang.String". 
+	 * 
+	 * Domain are the methods and classes, range are the types (Java classes and interfaces).
+	 */
+	public static final Property HAS_VARIABLE_TYPE_EXTENDED = model.createProperty(Namespaces.CASS_PROPERTIES + "hasVariableType_ext");
+
+	/**
 	 * A type extends another type.
 	 * 
 	 * Domain and range are the types (Java classes and interfaces), but only with matching pairs (i.e.
@@ -91,16 +120,6 @@ public class Properties {
 	 */
 	public static final Property IMPLEMENTS = model.createProperty(Namespaces.CASS_PROPERTIES + "implements");
 	
-	/**
-	 * A type uses another type as field directly or indirectly.
-	 * 
-	 * This extends {@link #HAS_FIELD_TYPE} by adding the base types of arrays, i.e. a type using
-	 * "java.lang.String[]" would also be bound to "java.lang.String". 
-	 * 
-	 * Domain and range are the types (Java classes and interfaces).
-	 */
-	public static final Property HAS_FIELD_TYPE_EXTENDED = model.createProperty(Namespaces.CASS_PROPERTIES + "hasFieldType_ext");
-
 	// from here on properties are usually not asserted directly, but inferred by rules
 	/**
 	 * Some entity contains another directly or indirectly.

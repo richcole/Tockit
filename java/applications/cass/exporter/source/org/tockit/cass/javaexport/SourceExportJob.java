@@ -24,6 +24,7 @@ import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.ConstructorInvocation;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -31,6 +32,7 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
+import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -290,6 +292,25 @@ public class SourceExportJob extends Job {
 						addPropertyWithTransitiveClosure(model, getTop(),
 								createResource(model, node.resolveMethodBinding()), Properties.CALLS,
 								Properties.CALLS_CLOSURE);
+						return true;
+					}
+					
+					public boolean visit(ConstructorInvocation node) {
+						addPropertyWithTransitiveClosure(model, getTop(), 
+								createResource(model, node.resolveConstructorBinding()), 
+								Properties.CALLS, Properties.CALLS_CLOSURE);
+						return true;
+					}
+
+					public boolean visit(VariableDeclarationFragment node) {
+						ITypeBinding typeBinding = node.resolveBinding().getType();
+						Resource typeResource = createResource(model, typeBinding);
+						getTop().addProperty(Properties.HAS_VARIABLE_TYPE, typeResource);
+						getTop().addProperty(Properties.HAS_VARIABLE_TYPE_EXTENDED, typeResource);
+						if(typeBinding.isArray()) {
+							getTop().addProperty(Properties.HAS_VARIABLE_TYPE_EXTENDED,
+									createResource(model, typeBinding.getElementType()));
+						}
 						return true;
 					}
 				});
