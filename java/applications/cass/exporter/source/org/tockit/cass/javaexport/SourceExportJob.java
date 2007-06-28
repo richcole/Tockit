@@ -41,6 +41,9 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 
+// TODO: while this code works on generics, it just treats everything as the raw type,
+// thus potentially ignoring dependencies (e.g. a return value of List<MyClass> creates
+// a dependency to MyClass, which might not be there otherwise)
 public class SourceExportJob extends Job {
 	private static final int ERROR_CODE_JAVA_MODEL_EXCEPTION = 1;
 	private static final int ERROR_CODE_FILE_NOT_FOUND_EXCEPTION = 2;
@@ -383,34 +386,35 @@ public class SourceExportJob extends Job {
 	}
 
 	private static Resource createResource(final Model model, ITypeBinding typeBinding) {
+		ITypeBinding erasureTypeBinding = typeBinding.getErasure();
 		Resource typeRes = model.createResource(Namespaces.TYPES
-				+ encodeForURI(typeBinding.getKey()));
+				+ encodeForURI(erasureTypeBinding.getKey()));
 		if (!model.containsResource(typeRes)) {
 			typeRes.addProperty(Properties.CONTAINS_CLOSURE, typeRes);
 			typeRes.addProperty(Properties.EXTENDS_CLOSURE, typeRes);
-			if(typeBinding.getPackage() != null) {
-				Resource packageRes = createResource(model, typeBinding.getPackage());
+			if(erasureTypeBinding.getPackage() != null) {
+				Resource packageRes = createResource(model, erasureTypeBinding.getPackage());
 				addPropertyWithTransitiveClosure(model, packageRes, typeRes, 
 						Properties.CONTAINS, Properties.CONTAINS_CLOSURE);
 			}
 			typeRes.addProperty(Properties.TYPE, Types.TYPE);
-			if (typeBinding.isInterface()) {
+			if (erasureTypeBinding.isInterface()) {
 				typeRes.addProperty(Properties.TYPE, Types.INTERFACE);
 			} else {
 				typeRes.addProperty(Properties.TYPE, Types.CLASS);
 			}
-			ITypeBinding superClass = typeBinding.getSuperclass();
+			ITypeBinding superClass = erasureTypeBinding.getSuperclass();
 			if(superClass != null) {
 				addPropertyWithTransitiveClosure(model, typeRes, createResource(model, superClass), 
 						Properties.EXTENDS, Properties.EXTENDS_CLOSURE);
 			}
-			ITypeBinding[] interfaces = typeBinding.getInterfaces();
+			ITypeBinding[] interfaces = erasureTypeBinding.getInterfaces();
 			for (int i = 0; i < interfaces.length; i++) {
 				ITypeBinding superInterface = interfaces[i];
 				addPropertyWithTransitiveClosure(model, typeRes, createResource(model, superInterface), 
 						Properties.IMPLEMENTS, Properties.IMPLEMENTS_CLOSURE);
 			}
-			IVariableBinding[] fields = typeBinding.getDeclaredFields();
+			IVariableBinding[] fields = erasureTypeBinding.getDeclaredFields();
 			for (int i = 0; i < fields.length; i++) {
 				IVariableBinding field = fields[i];
 				Resource fieldTypeResource = createResource(model, field
