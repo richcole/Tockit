@@ -53,6 +53,12 @@ public class ExportSourceAction implements IObjectActionDelegate {
 			String proposedFileName = theProject.getElementName()
 					+ lastFile.substring(lastFile.lastIndexOf('.'));
 			fd.setFileName(proposedFileName);
+		} else {
+			// proposed file name is the current project name with RDF 
+			// extension
+			String proposedFileName = theProject.getElementName()
+					+ ".rdf";
+			fd.setFileName(proposedFileName);
 		}
 		fd.setText("Choose file to export Java source graph into");
 		String selectedFile = fd.open();
