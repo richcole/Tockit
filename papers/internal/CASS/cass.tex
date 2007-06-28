@@ -120,12 +120,11 @@
  \item FCA starts with a structure called ``Formal Context'', which is a
        triple of a set of objects, a set of attributes and an incidence
        relation between those
- \item A ``Formal Concept'' is a pair of a subset of the objects and a
-       subset of the attributes where the objects are all those objects
+ \item A ``Formal Concept'' is a pair of a set of objects and a set of attributes 
+       where the objects are all those objects
        common to the attributes and vice versa
  \item All formal concepts of a contexts form a lattice regarding the
-       subconcept relation defined by the subset relation on the
-       object sets (alternatively the superset relation on the attributes)
+       subconcept relation
 \end{itemstep}
 \end{slide}
 }
@@ -233,7 +232,7 @@
 
 \begin{slide}{Navigation Spaces: focus}
  \begin{center}
-  \includegraphics[height=0.8 \textheight]{img/callgraph-2.eps}
+  \includegraphics[height=0.3 \textheight]{img/callgraph-2.eps}
  \end{center}
 \end{slide}
 
@@ -263,42 +262,53 @@
 
 \part{Structural Decomposition}
 
-\overlays{5}{
+\overlays{4}{
 \begin{slide}{Structural Decomposition}
 \begin{itemstep}
- \item describe idea
- \item 
- \item 
- \item 
- \item 
+ \item Many structures found can be decomposed into a set of simpler structures
+ \item Horizontal decomposition just splits into two parts that connect only
+       at the top and bottom of the lattice
+ \item More interesting is usually factorization: explain a larger structure
+       by considering it as a product of two independent factors
+ \item This is not just coincidentally related to ``refactoring''
 \end{itemstep}
 \end{slide}
 }
 
 \overlays{2}{
 \begin{slide}{Structural Decomposition: STL container classes}
- \onlySlide*{1}{
+ \onlySlide*{1}{%
   \begin{center}
    \includegraphics[height=0.5 \textheight]{img/stl.eps}
   \end{center}
- }
- \onlySlide*{2}{
+ }%
+ \onlySlide*{2}{%
   \begin{center}
    \includegraphics[height=0.6 \textheight]{img/stl_derived.eps}
   \end{center}
- }
+ }%
 \end{slide}
 }
 
 \overlays{5}{
 \begin{slide}{Decomposing the STL classes}
-\begin{itemstep}
- \item 
- \item 
- \item 
- \item 
- \item 
-\end{itemstep}
+ \begin{center}
+ \fromSlide{1}{%
+  \includegraphics*[width=0.8 \textwidth,viewport=0 100 1409 750,clip]{img/k1234.eps} \\
+ }%
+ \fromSlide{2}{%
+  \includegraphics[width=0.23 \textwidth]{img/k2.eps}
+ }%
+ \fromSlide{3}{%
+  \includegraphics[width=0.23 \textwidth]{img/k3.eps}
+ }%
+ \fromSlide{4}{%
+  \includegraphics[width=0.23 \textwidth]{img/k4.eps}
+ }%
+ \fromSlide{5}{%
+  \includegraphics[width=0.1 \textwidth]{img/k1.eps}
+ }%
+ \end{center}
 \end{slide}
 }
 
@@ -308,15 +318,22 @@
  \end{center}
 \end{slide}
 
-\overlays{5}{
+\overlays{4}{
 \begin{slide}{Decomposing the Collection API}
-\begin{itemstep}
- \item 
- \item 
- \item 
- \item 
- \item 
-\end{itemstep}
+ \begin{center}
+ \fromSlide{1}{%
+  \includegraphics[height=0.3 \textheight]{img/jk1.eps}
+ }%
+ \fromSlide{2}{%
+  \includegraphics[height=0.3 \textheight]{img/jk2.eps} \\
+ }%
+ \fromSlide{3}{%
+  \includegraphics[width=0.4 \textwidth]{img/jk12.eps}
+ }%
+ \fromSlide{4}{%
+  \includegraphics[width=0.4 \textwidth]{img/class-hierarchy.eps}
+ }%
+ \end{center}
 \end{slide}
 }
 
@@ -335,15 +352,12 @@
 \end{slide}
 }
 
-\overlays{6}{
+\overlays{5}{
 \begin{slide}{Open Research Questions}
 \begin{itemstep}
  \item Are there ways of using CASS that are helpful in most cases?
  \item What questions can be answered easily, which ones can't?
  \item How can the approach be used for automated testing?
- \begin{itemstep}
-  \item Idea: extract rulesets for something like PMD from the CASS views
- \end{itemstep}
  \item Can we include calling sequences in the analysis (e.g. \texttt{init()}
        must be called before other methods)?
  \item Can this be used to see changes over time? How would that be visualized?
@@ -359,6 +373,12 @@
  \begin{center}
  \includegraphics[width = \textwidth]{img/jenaToplevelDependencies.eps}
  % jenaToplevelDependencies.eps: 1x33 pixel, 300dpi, 0.01x0.28 cm, bb=20 239 575 552
+\end{center}
+\end{slide}
+
+\begin{slide}{Example: small hierarchy}
+ \begin{center}
+ \includegraphics[height = 0.8 \textheight]{img/derives-4.eps}
 \end{center}
 \end{slide}
 
