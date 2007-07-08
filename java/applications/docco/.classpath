@@ -25,6 +25,5 @@
 	<classpathentry kind="lib" path="libs/lucene-analyzers.jar" sourcepath="libs/src/lucene-analyzers-src.zip"/>
 	<classpathentry kind="lib" path="libs/BrowserLauncher2.jar"/>
 	<classpathentry kind="src" path="resources"/>
-	<classpathentry kind="src" path="plugins/multivalent/source"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
