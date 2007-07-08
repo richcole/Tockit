@@ -10,6 +10,7 @@ public class GuiMessages {
 			.getBundle(BUNDLE_NAME);
 
 	private GuiMessages() {
+		// nothing to do, just hiding constructor
 	}
 
 	public static String getString(String key) {

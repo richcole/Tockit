@@ -10,6 +10,7 @@ public class CliMessages {
 			.getBundle(BUNDLE_NAME);
 
 	private CliMessages() {
+		// nothing to do, just hiding constructor
 	}
 
 	public static String getString(String key) {
