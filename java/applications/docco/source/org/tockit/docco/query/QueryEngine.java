@@ -9,8 +9,10 @@
 package org.tockit.docco.query;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.queryParser.ParseException;
@@ -20,8 +22,6 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
 import org.tockit.docco.index.Index;
-import org.tockit.docco.query.util.HitReferencesSet;
-import org.tockit.docco.query.util.HitReferencesSetImplementation;
 
 
 public class QueryEngine {
@@ -65,7 +65,7 @@ public class QueryEngine {
 	}
 	
 	private QueryWithResult executeQuery (Searcher searcher, Query query, String label) throws IOException {
-		HitReferencesSet result = new HitReferencesSetImplementation();
+		Set result = new HashSet();
 		Hits hits = searcher.search(query);
 		for (int i = 0; i < hits.length(); i++) {
 			Document doc = hits.doc(i);

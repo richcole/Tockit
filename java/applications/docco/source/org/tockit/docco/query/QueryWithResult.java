@@ -7,17 +7,18 @@
  */
 package org.tockit.docco.query;
 
+import java.util.Set;
+
 import org.apache.lucene.search.Query;
-import org.tockit.docco.query.util.*;
 
 
 public class QueryWithResult {
 
 	private Query query;
-	private HitReferencesSet resultSet;
+	private Set resultSet;
 	private String label;
 	
-	public QueryWithResult (Query query, HitReferencesSet resultSet, String label) {
+	public QueryWithResult (Query query, Set resultSet, String label) {
 		this.query = query;
 		this.resultSet = resultSet;
 		this.label = label;
@@ -27,7 +28,7 @@ public class QueryWithResult {
 		return query;
 	}
 
-	public HitReferencesSet getResultSet() {
+	public Set getResultSet() {
 		return resultSet;
 	}
 	

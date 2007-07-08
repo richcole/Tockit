@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
 import net.sourceforge.toscanaj.controller.ndimlayout.DefaultDimensionStrategy;
@@ -30,8 +31,6 @@ import net.sourceforge.toscanaj.model.ndimdiagram.NDimDiagramNode;
 import org.tockit.docco.gui.GuiMessages;
 import org.tockit.docco.query.HitReference;
 import org.tockit.docco.query.QueryWithResult;
-import org.tockit.docco.query.util.HitReferencesSet;
-import org.tockit.docco.query.util.HitReferencesSetImplementation;
 
 public class DiagramGenerator {
 	/**
@@ -161,7 +160,7 @@ public class DiagramGenerator {
 	}
 
 	private static Concept[] createConcepts(QueryWithResult[] results) {
-		HitReferencesSet allObjects = new HitReferencesSetImplementation();
+		Set allObjects = new HashSet();
         for (int i = 0; i < results.length; i++) {
             QueryWithResult queryWithResult = results[i];
             allObjects.addAll(queryWithResult.getResultSet());
@@ -177,14 +176,13 @@ public class DiagramGenerator {
 		
 		for (int i = 0; i < concepts.length; i++) {
 			ConceptImplementation concept = concepts[i];
-			HitReferencesSet objectContingent = 
-						new HitReferencesSetImplementation(new HashSet(allObjects.toSet()));
+			Set objectContingent = new HashSet(allObjects);
 			for (int j = 0; j < n; j++) {
 				int currentBit = 1<<j;
 				if (i == currentBit) {
 					concept.addAttribute(new FCAElementImplementation(results[j].getLabel()));
 				}
-				HitReferencesSet currentHitReferences = results[j].getResultSet();
+				Set currentHitReferences = results[j].getResultSet();
 				if ((i & currentBit) == currentBit) {
 					objectContingent.retainAll(currentHitReferences);
 				} else {
