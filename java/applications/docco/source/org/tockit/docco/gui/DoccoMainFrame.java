@@ -1272,6 +1272,7 @@ public class DoccoMainFrame extends JFrame {
     }
 
     private void closeMainPanel() {
+    	statusBarMessage.setText(GuiMessages.getString("DoccoMainFrame.statusBar.shuttingDownMessage")); //$NON-NLS-1$
 		// shut down indexers
 		try {
 			for (Iterator iter = this.indexes.iterator(); iter.hasNext();) {
