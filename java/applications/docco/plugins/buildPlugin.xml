@@ -76,6 +76,8 @@
 
 	<target name="_setProperties" depends="_tryReadingVersionNumber,_ensureVersionAvailable">
 		<property name="plugin.versioned.name" value="${plugin.name}-${plugin.version.name}"/>
+		<property name="plugin.versioned.dist.dir.name" value="${plugin.dist.dir.name}-${plugin.version.name}"/>
+		<property name="plugin.full.dist.dir" value="${plugin.dist.dir}/${plugin.versioned.dist.dir.name}"/>
 	</target>
 
 	<target name="_ensureVersionAvailable" unless="plugin.version.name">
@@ -103,14 +105,11 @@
 	
 	<target name="dist" depends="compile">	
 		<mkdir dir="${plugin.dist.dir}"/>
-		<property name="plugin.versioned.dist.dir.name" value="${plugin.dist.dir.name}-${plugin.version.name}"/>
-		<property name="plugin.full.dist.dir" value="${plugin.dist.dir}/${plugin.versioned.dist.dir.name}"/>
 		<mkdir dir="${plugin.full.dist.dir}"/>
 		<jar jarfile="${plugin.full.dist.dir}/${plugin.jar.name}" basedir="${plugin.build.dir}" />
 		<copy todir="${plugin.full.dist.dir}" includeEmptyDirs="no">
 			<fileset dir="${basedir}">
 		        <include name="libs/**"/>
-		        <include name="${plugin.jar.name}"/>
 	        	<include name="${plugin.description.file}"/>
             </fileset>
 		</copy>
@@ -126,10 +125,8 @@
 		<property name="plugin.versioned.dist.dir.name" value="${plugin.dist.dir.name}-${plugin.version.name}"/>
 		<property name="plugin.full.target.dir" value="${plugin.target.dir}/${plugin.versioned.dist.dir.name}"/>
 		<copy todir="${plugin.full.target.dir}" includeEmptyDirs="no">
-			<fileset dir="${basedir}">
-		        <include name="libs/**"/>
-		        <include name="${plugin.jar.name}"/>
-	        	<include name="${plugin.description.file}"/>
+			<fileset dir="${plugin.full.dist.dir}">
+		        <include name="*/**"/>
             </fileset>
 		</copy>
 	</target>
