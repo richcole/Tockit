@@ -24,6 +24,7 @@
 	<classpathentry kind="lib" path="libs/jdom.jar"/>
 	<classpathentry kind="lib" path="libs/lucene-analyzers.jar" sourcepath="libs/src/lucene-analyzers-src.zip"/>
 	<classpathentry kind="lib" path="libs/BrowserLauncher2.jar"/>
+	<classpathentry kind="lib" path="plugins/pdfbox/libs/FontBox-0.1.0-dev.jar"/>
 	<classpathentry kind="src" path="resources"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
