@@ -7,3 +7,8 @@ PDFBox.jar:
 log4j.jar:
   log4j logging library, needed by PDF box, version from PDFBox distribution
   (http://jakarta.apache.org/log4j/docs/index.html, license in LICENSE-log4j.txt)
+
+FontBox.jar:
+  FontBox Font library, needed by PDF box, version from PDFBox distribution.
+  (http://www.fontbox.org, license in LICENSE-FontBox.txt)
+  
