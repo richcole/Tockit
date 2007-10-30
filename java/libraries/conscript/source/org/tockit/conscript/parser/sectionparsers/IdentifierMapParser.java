@@ -17,10 +17,12 @@ import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
 class IdentifierMapParser extends CSCFileSectionParser {
+	@Override
 	public String getStartToken() {
 		return "IDENTIFIER_MAP";
 	}
 
+	@Override
 	public void parse(CSCTokenizer tokenizer, CSCFile file) throws IOException, DataFormatException {
         String id = tokenizer.popCurrentToken();
         IdentifierMap map = getIdentifierMap(file, id);

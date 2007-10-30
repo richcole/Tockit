@@ -24,25 +24,32 @@ public class PlasticLoader implements Plugin {
     public void load() {
         try {
             SkyBlue theme = new SkyBlue(){
-                protected ColorUIResource getSecondary3() {
+                @Override
+				protected ColorUIResource getSecondary3() {
                      return new ColorUIResource(214,212,206);
                 }
-                protected ColorUIResource getPrimary1() {
+                @Override
+				protected ColorUIResource getPrimary1() {
                     return new ColorUIResource(150,150,200);
                 }
-                protected ColorUIResource getPrimary3() {
+                @Override
+				protected ColorUIResource getPrimary3() {
                     return new ColorUIResource(150,150,200);
                 }
-                public ColorUIResource getPrimaryControlHighlight() {
+                @Override
+				public ColorUIResource getPrimaryControlHighlight() {
                     return new ColorUIResource(230,230,255);
                 }
-                public ColorUIResource getPrimaryControlDarkShadow() {
+                @Override
+				public ColorUIResource getPrimaryControlDarkShadow() {
                     return new ColorUIResource(100,100,150);
                 }
-                public ColorUIResource getFocusColor() {
+                @Override
+				public ColorUIResource getFocusColor() {
                     return new ColorUIResource(50,50,80);
                 }
-                public ColorUIResource getHighlightedTextColor() {
+                @Override
+				public ColorUIResource getHighlightedTextColor() {
                     return new ColorUIResource(255,255,255);
                 }
             };

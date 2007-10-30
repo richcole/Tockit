@@ -40,7 +40,8 @@ public class StringTokenizerTest extends TestCase {
         }
     }
     
-    protected void setUp() throws Exception {
+    @Override
+	protected void setUp() throws Exception {
         this.tokenizer = new StringTokenizer(
                 "one,'two,three','four&'five'&,,&&six",
                 ',',

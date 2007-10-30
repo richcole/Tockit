@@ -23,6 +23,7 @@ import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
 class FormalContextParser extends CSCFileSectionParser {
+	@Override
 	public void parse(CSCTokenizer tokenizer, CSCFile file)
 	                        throws IOException, DataFormatException {
 		String contextId = tokenizer.popCurrentToken();
@@ -119,6 +120,7 @@ class FormalContextParser extends CSCFileSectionParser {
         CSCParser.logger.log(Level.FINER, "Formal context added: '" + context.getName() + "'");
 	}
 
+	@Override
 	public String getStartToken() {
 		return "FORMAL_CONTEXT";
 	}

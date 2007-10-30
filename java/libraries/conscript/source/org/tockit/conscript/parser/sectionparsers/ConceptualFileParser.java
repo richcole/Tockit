@@ -19,10 +19,12 @@ import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
 class ConceptualFileParser extends CSCFileSectionParser {
+	@Override
 	public String getStartToken() {
 		return "CONCEPTUAL_FILE";
 	}
 
+	@Override
 	public void parse(CSCTokenizer tokenizer, CSCFile file) throws IOException, DataFormatException {
         String fileId = tokenizer.popCurrentToken();
         tokenizer.consumeToken("=");

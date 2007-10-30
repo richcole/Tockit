@@ -19,10 +19,12 @@ import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
 class AbstractScaleParser extends CSCFileSectionParser {
+	@Override
 	public String getStartToken() {
 		return "ABSTRACT_SCALE";
 	}
 
+	@Override
 	public void parse(CSCTokenizer tokenizer, CSCFile file) throws IOException, DataFormatException {
         String name = tokenizer.popCurrentToken();
         AbstractScale scale = getAbstractScale(file, name);

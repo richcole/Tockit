@@ -20,10 +20,12 @@ import org.tockit.conscript.parser.DataFormatException;
 class IncludeParser extends CSCFileSectionParser {
     private static final String[] INCLUDE_DIRS = {"skalen","scales","abstract","concrete"};
 
-    public String getStartToken() {
+    @Override
+	public String getStartToken() {
 		return "#INCLUDE";
 	}
 
+	@Override
 	public void parse(CSCTokenizer tokenizer, CSCFile file) throws IOException, DataFormatException {
         String includeLocation = tokenizer.popCurrentToken();
         tokenizer.consumeToken(";");

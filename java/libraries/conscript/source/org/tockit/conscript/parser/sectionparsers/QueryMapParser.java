@@ -17,11 +17,13 @@ import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
 class QueryMapParser extends CSCFileSectionParser {
-    public String getStartToken() {
+    @Override
+	public String getStartToken() {
         return "QUERY_MAP";
     }
 
-    public void parse(CSCTokenizer tokenizer, CSCFile file)
+    @Override
+	public void parse(CSCTokenizer tokenizer, CSCFile file)
         throws IOException, DataFormatException {
         String queryMapId = tokenizer.popCurrentToken();
         QueryMap queryMap = getQueryMap(file, queryMapId);

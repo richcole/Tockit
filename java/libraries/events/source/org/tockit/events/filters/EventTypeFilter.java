@@ -20,6 +20,7 @@ public class EventTypeFilter implements EventFilter {
 		return eventType.isAssignableFrom(event.getClass());
 	}
 	
+	@Override
 	public boolean equals(Object other) {
 		if(! (other instanceof EventTypeFilter) ) {
 			return false;
@@ -31,11 +32,13 @@ public class EventTypeFilter implements EventFilter {
 		return true;
 	}
 	
+	@Override
 	public int hashCode() {
 		return eventType.hashCode();
 	}
     
-    public String toString() {
+    @Override
+	public String toString() {
         return "with event instantiating " + this.eventType.getName();
     }
 }

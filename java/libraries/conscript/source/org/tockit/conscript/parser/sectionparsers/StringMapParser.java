@@ -19,10 +19,12 @@ import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
 class StringMapParser extends CSCFileSectionParser {
+	@Override
 	public String getStartToken() {
 		return "STRING_MAP";
 	}
 
+	@Override
 	public void parse(CSCTokenizer tokenizer, CSCFile file) throws IOException, DataFormatException {
         String id = tokenizer.popCurrentToken();
         StringMap map = getStringMap(file, id);

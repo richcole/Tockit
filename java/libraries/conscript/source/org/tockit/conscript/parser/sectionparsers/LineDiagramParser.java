@@ -26,10 +26,12 @@ import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
 class LineDiagramParser extends CSCFileSectionParser {
+	@Override
 	public String getStartToken() {
 		return "LINE_DIAGRAM";
 	}
 
+	@Override
 	public void parse(CSCTokenizer tokenizer, CSCFile file)
 	                        throws IOException, DataFormatException {
 		String identifier = tokenizer.popCurrentToken();

@@ -16,10 +16,12 @@ import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
 class RemarkParser extends CSCFileSectionParser {
+	@Override
 	public String getStartToken() {
 		return "REMARK";
 	}
 
+	@Override
 	public void parse(CSCTokenizer tokenizer, CSCFile file) throws IOException, DataFormatException {
         String remark = tokenizer.popCurrentToken();
         file.addRemark(remark);

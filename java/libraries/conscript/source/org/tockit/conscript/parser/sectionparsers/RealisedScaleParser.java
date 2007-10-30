@@ -19,10 +19,12 @@ import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
 class RealisedScaleParser extends CSCFileSectionParser {
+	@Override
 	public String getStartToken() {
 		return "REALISED_SCALE";
 	}
 
+	@Override
 	public void parse(CSCTokenizer tokenizer, CSCFile file) throws IOException, DataFormatException {
         String name = tokenizer.popCurrentToken();
         RealisedScale scale = getRealisedScale(file, name);

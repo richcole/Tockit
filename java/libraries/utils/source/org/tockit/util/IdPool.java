@@ -50,7 +50,8 @@ public class IdPool {
      * @param id
      * @return
      */
-    public boolean idIsReserved (String id) {
+    @Deprecated
+	public boolean idIsReserved (String id) {
     	return this.idReserved(id);
     }
 

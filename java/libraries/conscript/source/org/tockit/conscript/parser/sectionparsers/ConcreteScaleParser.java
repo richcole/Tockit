@@ -20,10 +20,12 @@ import org.tockit.conscript.parser.CSCTokenizer;
 import org.tockit.conscript.parser.DataFormatException;
 
 class ConcreteScaleParser extends CSCFileSectionParser {
+	@Override
 	public String getStartToken() {
 		return "CONCRETE_SCALE";
 	}
 
+	@Override
 	public void parse(CSCTokenizer tokenizer, CSCFile file) throws IOException, DataFormatException {
         String name = tokenizer.popCurrentToken();
         ConcreteScale scale = getConcreteScale(file, name);
