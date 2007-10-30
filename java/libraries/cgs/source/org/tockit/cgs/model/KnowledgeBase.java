@@ -41,7 +41,7 @@ public class KnowledgeBase {
     }
 
     @SuppressWarnings("unchecked")
-	public KnowledgeBase(Element element, EventBroker eventBroker) {
+	public KnowledgeBase(Element element, EventBroker<KnowledgeBase> eventBroker) {
         this.eventBroker = eventBroker;
         this.element = element;
         Type.setDefaultKnowledgeBase(this);
