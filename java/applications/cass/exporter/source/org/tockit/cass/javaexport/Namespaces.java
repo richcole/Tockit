@@ -16,7 +16,7 @@ public class Namespaces {
 	public static final String TYPES = "http://tockit.org/cass/types#";
 	public static final String METHODS = "http://tockit.org/cass/methods#";
 	
-	public static final Map PREFIX_MAPPING = new HashMap() {{
+	public static final Map<String,String> PREFIX_MAPPING = new HashMap<String,String>() {{
 		put("cassType", CASS_TYPES);
 		put("cassProp", CASS_PROPERTIES);
 		put("package", PACKAGES);
@@ -25,8 +25,8 @@ public class Namespaces {
 	}};
 	
 	public static void main(String[] args) {
-		for (Iterator iter = PREFIX_MAPPING.entrySet().iterator(); iter.hasNext();) {
-			Map.Entry entry = (Map.Entry) iter.next();
+		for (Iterator<Map.Entry<String,String>> iter = PREFIX_MAPPING.entrySet().iterator(); iter.hasNext();) {
+			Map.Entry<String,String> entry = iter.next();
 			System.out.println("PREFIX " + entry.getKey() + ": <" + entry.getValue() + ">");
 		}
 	}

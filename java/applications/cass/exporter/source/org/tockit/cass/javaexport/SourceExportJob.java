@@ -92,6 +92,7 @@ public class SourceExportJob extends Job {
 		return true;
 	}
 
+	@SuppressWarnings("unchecked")
 	private boolean addExtraAssertions(Model model) {
 		// add extended callgraph
 		progressMonitor.subTask("Inferring extra relations: extended callgraph");
@@ -103,31 +104,31 @@ public class SourceExportJob extends Job {
 		
 		// add combined type hierarchy
 		progressMonitor.subTask("Inferring extra relations: combined type hierarchy");
-		List newPairs = new ArrayList();
-		Iterator it = model.listStatements(null, Properties.EXTENDS_CLOSURE,
+		List<Resource[]> newPairs = new ArrayList<Resource[]>();
+		Iterator<Statement> it = model.listStatements(null, Properties.EXTENDS_CLOSURE,
 				(RDFNode) null);
 		while (it.hasNext()) {
-			Statement stmt = (Statement) it.next();
+			Statement stmt = it.next();
 			Resource subject = stmt.getSubject();
 			Resource object = (Resource) stmt.getObject();
 			newPairs.add(new Resource[]{subject,object});
-			Iterator it2 = model.listStatements(object, Properties.IMPLEMENTS_CLOSURE, (RDFNode) null);
+			Iterator<Statement> it2 = model.listStatements(object, Properties.IMPLEMENTS_CLOSURE, (RDFNode) null);
 			while (it2.hasNext()) {
-				Statement implStmt = (Statement) it2.next();
+				Statement implStmt = it2.next();
 				newPairs.add(new Resource[]{subject,(Resource) implStmt.getObject()});
 			}
 			if(progressMonitor.isCanceled()) {
 				return false;
 			}
 		}
-		for (Iterator npIter = newPairs.iterator(); npIter.hasNext();) {
-			Resource[] resources = (Resource[]) npIter.next();
+		for (Iterator<Resource[]> npIter = newPairs.iterator(); npIter.hasNext();) {
+			Resource[] resources = npIter.next();
 			resources[0].addProperty(Properties.DERIVED_FROM_CLOSURE, resources[1]);
 		}
 		it = model.listStatements(null, Properties.IMPLEMENTS_CLOSURE,
 				(RDFNode) null);
 		while (it.hasNext()) {
-			Statement stmt = (Statement) it.next();
+			Statement stmt = it.next();
 			stmt.getSubject().addProperty(Properties.DERIVED_FROM_CLOSURE, stmt.getObject());
 		}
 		
@@ -136,7 +137,7 @@ public class SourceExportJob extends Job {
 		it = model.listStatements(null, Properties.CALLS_EXTENDED,
 				(RDFNode) null);
 		while (it.hasNext()) {
-			Statement stmt = (Statement) it.next();
+			Statement stmt = it.next();
 			stmt.getSubject().addProperty(Properties.DEPENDS_TRANSITIVELY,
 					stmt.getObject());
 		}
@@ -193,27 +194,28 @@ public class SourceExportJob extends Job {
 	 * @param targetProperty The property to set. Must not be null.
 	 * @return true iff the process was not interrupted by the user.
 	 */
+	@SuppressWarnings("unchecked")
 	private boolean addClosureAlongContainsProperty(Model model,
 			Property startProperty, Property targetProperty) {
-		Iterator it = model.listStatements(null, startProperty, (RDFNode) null);
+		Iterator<Statement> it = model.listStatements(null, startProperty, (RDFNode) null);
 		// we write statements collected after iteration is complete to avoid
 		// that annoying ConcurrentModificationException, so store new pairs
 		// which will be in the relation we are creating as two-element
 		// Resource[]
-		List newPairs = new ArrayList();
+		List<Resource[]> newPairs = new ArrayList<Resource[]>();
 		while (it.hasNext()) {
-			Statement stmt = (Statement) it.next();
+			Statement stmt = it.next();
 			Resource subject = stmt.getSubject();
 			Resource object = (Resource) stmt.getObject();
 			newPairs.add(new Resource[] { subject, object });
-			Iterator it2 = model.listStatements(null,
+			Iterator<Statement> it2 = model.listStatements(null,
 					Properties.CONTAINS_CLOSURE, subject);
 			while (it2.hasNext()) {
-				Statement contSubjStmt = (Statement) it2.next();
-				Iterator it3 = model.listStatements(null,
+				Statement contSubjStmt = it2.next();
+				Iterator<Statement> it3 = model.listStatements(null,
 						Properties.CONTAINS_CLOSURE, object);
 				while (it3.hasNext()) {
-					Statement contObjStmt = (Statement) it3.next();
+					Statement contObjStmt = it3.next();
 					newPairs.add(new Resource[] { contSubjStmt.getSubject(),
 							contObjStmt.getSubject() });
 				}
@@ -222,8 +224,8 @@ public class SourceExportJob extends Job {
 				return false;
 			}
 		}
-		for (Iterator npIter = newPairs.iterator(); npIter.hasNext();) {
-			Resource[] resources = (Resource[]) npIter.next();
+		for (Iterator<Resource[]> npIter = newPairs.iterator(); npIter.hasNext();) {
+			Resource[] resources = npIter.next();
 			resources[0].addProperty(targetProperty, resources[1]);
 		}
 		return true;
@@ -256,15 +258,15 @@ public class SourceExportJob extends Job {
 				parser.setSource(compilationUnit);
 				parser.setResolveBindings(true);
 				ASTNode result = parser.createAST(null);
-				final ArrayList startStack = new ArrayList();
+				final ArrayList<Resource> startStack = new ArrayList<Resource>();
 				if (packageResource != null) {
 					startStack.add(packageResource);
 				}
 				result.accept(new ASTVisitor() {
-					List resources = startStack;
+					List<Resource> resources = startStack;
 
 					private Resource getTop() {
-						return ((Resource) resources.get(resources.size() - 1));
+						return resources.get(resources.size() - 1);
 					}
 
 					private void pushOnStack(Resource currentRes) {
@@ -367,20 +369,21 @@ public class SourceExportJob extends Job {
 		return createPackageResource(model, packageFragment.getElementName());
 	}
 
+	@SuppressWarnings("unchecked")
 	private static void addPropertyWithTransitiveClosure(Model model,
 			Resource from, Resource to, Property coveringRelation,
 			Property closureRelation) {
 		from.addProperty(coveringRelation, to);
 		from.addProperty(closureRelation, to);
 		// for all X: add (from,X) if (to,X)
-		Iterator it = model.listObjectsOfProperty(to, closureRelation);
+		Iterator<Resource> it = model.listObjectsOfProperty(to, closureRelation);
 		while (it.hasNext()) {
-			from.addProperty(closureRelation, (Resource) it.next());
+			from.addProperty(closureRelation, it.next());
 		}
 		// for all X: add (X,to) if (X,from)
-		it = model.listStatements(null, closureRelation, from);
-		while (it.hasNext()) {
-			Statement stmt = (Statement) it.next();
+		Iterator<Statement> it2 = model.listStatements(null, closureRelation, from);
+		while (it2.hasNext()) {
+			Statement stmt = it2.next();
 			stmt.getSubject().addProperty(closureRelation, to);
 		}
 	}
