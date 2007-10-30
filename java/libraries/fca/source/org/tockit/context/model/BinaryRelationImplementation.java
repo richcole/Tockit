@@ -10,29 +10,30 @@ package org.tockit.context.model;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Map;
 
-public class BinaryRelationImplementation implements BinaryRelation {
-    private Hashtable rows = new Hashtable();
+public class BinaryRelationImplementation<D,R> implements BinaryRelation<D,R> {
+    private Map<D, Collection<R>> rows = new Hashtable<D, Collection<R>>();
 
-    public boolean contains(Object domainObject, Object rangeObject) {
-        Collection objectAttributes = (Collection) rows.get(domainObject);
+    public boolean contains(D domainObject, R rangeObject) {
+        Collection<R> objectAttributes = rows.get(domainObject);
         if (objectAttributes == null) {
             return false;
         }
         return objectAttributes.contains(rangeObject);
     }
 
-    public void insert(Object domainObject, Object rangeObject) {
-        Collection objectAttributes = (Collection) rows.get(domainObject);
+    public void insert(D domainObject, R rangeObject) {
+        Collection<R> objectAttributes = rows.get(domainObject);
         if (objectAttributes == null) {
-            objectAttributes = new HashSet();
+            objectAttributes = new HashSet<R>();
             rows.put(domainObject, objectAttributes);
         }
         objectAttributes.add(rangeObject);
     }
 
-    public void remove(Object domainObject, Object rangeObject) {
-        Collection objectAttributes = (Collection) rows.get(domainObject);
+    public void remove(D domainObject, R rangeObject) {
+        Collection<R> objectAttributes = rows.get(domainObject);
         if (objectAttributes == null) {
             return; // nothing to remove
         }

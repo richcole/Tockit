@@ -15,33 +15,33 @@ import java.util.List;
 
 public class LineDiagram extends ConscriptStructure{
 	private TypedSize unitLength;
-	private List points = new ArrayList();
-	private List lines = new ArrayList();
-	private List objects = new ArrayList();
-	private List attributes = new ArrayList();
-	private List concepts = new ArrayList();
+	private List<Point> points = new ArrayList<Point>();
+	private List<Line> lines = new ArrayList<Line>();
+	private List<FCAObject> objects = new ArrayList<FCAObject>();
+	private List<FCAAttribute> attributes = new ArrayList<FCAAttribute>();
+	private List<Concept> concepts = new ArrayList<Concept>();
 	
 	public LineDiagram(String identifier) {
         super(identifier);
 	}
 
-	public List getAttributes() {
+	public List<FCAAttribute> getAttributes() {
 		return Collections.unmodifiableList(this.attributes);
 	}
 
-	public List getConcepts() {
+	public List<Concept> getConcepts() {
 		return Collections.unmodifiableList(this.concepts);
 	}
 
-	public List getLines() {
+	public List<Line> getLines() {
 		return Collections.unmodifiableList(this.lines);
 	}
 
-	public List getObjects() {
+	public List<FCAObject> getObjects() {
 		return Collections.unmodifiableList(this.objects);
 	}
 
-	public List getPoints() {
+	public List<Point> getPoints() {
 		return Collections.unmodifiableList(this.points);
 	}
 
@@ -79,28 +79,28 @@ public class LineDiagram extends ConscriptStructure{
             stream.println("\t\tUNITLENGTH " + this.unitLength);
         }
         stream.println("\t\tPOINTS");
-        for (Iterator iter = this.points.iterator(); iter.hasNext();) {
-            Point point = (Point) iter.next();
+        for (Iterator<Point> iter = this.points.iterator(); iter.hasNext();) {
+            Point point = iter.next();
             stream.println("\t\t\t" + point.toString());
         }
         stream.println("\t\tLINES");
-        for (Iterator iter = this.lines.iterator(); iter.hasNext();) {
-            Line line = (Line) iter.next();
+        for (Iterator<Line> iter = this.lines.iterator(); iter.hasNext();) {
+            Line line = iter.next();
             stream.println("\t\t\t" + line.toString());
         }
         stream.println("\t\tOBJECTS");
-        for (Iterator iter = this.objects.iterator(); iter.hasNext();) {
-            FCAObject object = (FCAObject) iter.next();
+        for (Iterator<FCAObject> iter = this.objects.iterator(); iter.hasNext();) {
+            FCAObject object = iter.next();
             stream.println("\t\t\t" + object.toString());
         }
         stream.println("\t\tATTRIBUTES");
-        for (Iterator iter = this.attributes.iterator(); iter.hasNext();) {
-            FCAAttribute attribute = (FCAAttribute) iter.next();
+        for (Iterator<FCAAttribute> iter = this.attributes.iterator(); iter.hasNext();) {
+            FCAAttribute attribute = iter.next();
             stream.println("\t\t\t" + attribute.toString());
         }
         stream.println("\t\tCONCEPTS");
-        for (Iterator iter = this.concepts.iterator(); iter.hasNext();) {
-            Concept concept = (Concept) iter.next();
+        for (Iterator<Concept> iter = this.concepts.iterator(); iter.hasNext();) {
+            Concept concept = iter.next();
             stream.println("\t\t\t" + concept.toString());
         }
         stream.println("\t\t;");

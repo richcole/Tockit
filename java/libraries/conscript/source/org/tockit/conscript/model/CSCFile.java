@@ -22,10 +22,10 @@ import org.tockit.conscript.parser.DataFormatException;
 public class CSCFile {
 	private URL location;
     private CSCFile parent;
-    private List remarks = new ArrayList();
+    private List<String> remarks = new ArrayList<String>();
     
     private static class StructureId {
-        static List ids = new ArrayList(); 
+        static List<StructureId> ids = new ArrayList<StructureId>(); 
         private String idString;
         public StructureId(String idString) {
             this.idString = idString;
@@ -39,8 +39,13 @@ public class CSCFile {
     /**
      * We use a map instead of different members to allow reusing code more
      * without introspection.
+     * 
+     * @TODO this is not fully typesafe since users expect a particular ConscriptStructure --
+     *       mapping a Class<T> to a Map<String,T> might be a better approach instead of the
+     *       StructureIds 
      */
-    private Map structures = new Hashtable();
+    private Map<StructureId, Map<String,ConscriptStructure>> structures = 
+    	new Hashtable<StructureId, Map<String,ConscriptStructure>>();
     
     private final static StructureId FORMAL_CONTEXT = new StructureId("FORMAL_CONTEXT");
     private final static StructureId LINE_DIAGRAM = new StructureId("LINE_DIAGRAM");
@@ -54,14 +59,14 @@ public class CSCFile {
     private final static StructureId CONCEPTUAL_SCHEMA = new StructureId("CONCEPTUAL_SCHEME");
     private final static StructureId CONCEPTUAL_FILE = new StructureId("CONCEPTUAL_FILE");
 
-    private List includeFiles = new ArrayList();
+    private List<CSCFile> includeFiles = new ArrayList<CSCFile>();
 
     public CSCFile(URL file, CSCFile parent) {
 		this.location = file;
         this.parent = parent;
-        for (Iterator iter = StructureId.ids.iterator(); iter.hasNext();) {
-            StructureId id = (StructureId) iter.next();
-            this.structures.put(id, new Hashtable());
+        for (Iterator<StructureId> iter = StructureId.ids.iterator(); iter.hasNext();) {
+            StructureId id = iter.next();
+            this.structures.put(id, new Hashtable<String,ConscriptStructure>());
         }
         if(parent != null) {
             parent.includeFiles.add(this);
@@ -76,11 +81,11 @@ public class CSCFile {
         return this.parent;
     }
     
-    public List getRemarks() {
+    public List<String> getRemarks() {
         return Collections.unmodifiableList(this.remarks);
     }
     
-    public List getIncludeFiles() {
+    public List<CSCFile> getIncludeFiles() {
         return Collections.unmodifiableList(this.includeFiles);
     }
     
@@ -89,105 +94,105 @@ public class CSCFile {
     }
     
     public void add(FormalContext context) {
-        Map formalContexts = (Map) this.structures.get(FORMAL_CONTEXT);
+        Map<String, ConscriptStructure> formalContexts = this.structures.get(FORMAL_CONTEXT);
         formalContexts.put(context.getName(), context);
     }
 
     public void add(LineDiagram diagram) {
-        Map lineDiagrams = (Map) this.structures.get(LINE_DIAGRAM);
+        Map<String, ConscriptStructure> lineDiagrams = this.structures.get(LINE_DIAGRAM);
         lineDiagrams.put(diagram.getName(), diagram);
     }
 
     public void add(StringMap map) {
-        Map stringMaps = (Map) this.structures.get(STRING_MAP);
+        Map<String, ConscriptStructure> stringMaps = this.structures.get(STRING_MAP);
         stringMaps.put(map.getName(), map);
     }
 
     public void add(IdentifierMap map) {
-        Map identifierMaps = (Map) this.structures.get(IDENTIFIER_MAP);
+        Map<String, ConscriptStructure> identifierMaps = this.structures.get(IDENTIFIER_MAP);
         identifierMaps.put(map.getName(), map);
     }
 
     public void add(QueryMap map) {
-        Map queryMaps = (Map) this.structures.get(QUERY_MAP);
+        Map<String, ConscriptStructure> queryMaps = this.structures.get(QUERY_MAP);
         queryMaps.put(map.getName(), map);
     }
 
     public void add(AbstractScale scale) {
-        Map abstractScales = (Map) this.structures.get(ABSTRACT_SCALE);
+        Map<String, ConscriptStructure> abstractScales = this.structures.get(ABSTRACT_SCALE);
         abstractScales.put(scale.getName(), scale);
     }
 
     public void add(ConcreteScale scale) {
-        Map concreteScales = (Map) this.structures.get(CONCRETE_SCALE);
+        Map<String, ConscriptStructure> concreteScales = this.structures.get(CONCRETE_SCALE);
         concreteScales.put(scale.getName(), scale);
     }
 
     public void add(RealisedScale scale) {
-        Map realisedScales = (Map) this.structures.get(REALIZED_SCALE);
+        Map<String, ConscriptStructure> realisedScales = this.structures.get(REALIZED_SCALE);
         realisedScales.put(scale.getName(), scale);
     }
 
     public void add(DatabaseDefinition dbDefinition) {
-        Map dbDefs = (Map) this.structures.get(DATABASE_DEFINITION);
+        Map<String, ConscriptStructure> dbDefs = this.structures.get(DATABASE_DEFINITION);
         dbDefs.put(dbDefinition.getName(), dbDefinition);
     }
 
     public void add(ConceptualSchema schema) {
-        Map schemas = (Map) this.structures.get(CONCEPTUAL_SCHEMA);
+        Map<String, ConscriptStructure> schemas = this.structures.get(CONCEPTUAL_SCHEMA);
         schemas.put(schema.getName(), schema);
     }
 
     public void add(ConceptualFile file) {
-        Map files = (Map) this.structures.get(CONCEPTUAL_FILE);
+        Map<String, ConscriptStructure> files = this.structures.get(CONCEPTUAL_FILE);
         files.put(file.getName(), file);
     }
     
-    public List getFormalContexts() {
+    public List<ConscriptStructure> getFormalContexts() {
         return getListGlobal(FORMAL_CONTEXT);
     }
     
-    public List getLineDiagrams() {
+    public List<ConscriptStructure> getLineDiagrams() {
         return getListGlobal(LINE_DIAGRAM);
     }
     
-    public List getStringMaps() {
+    public List<ConscriptStructure> getStringMaps() {
         return getListGlobal(STRING_MAP);
     }
     
-    public List getIdentiferMaps() {
+    public List<ConscriptStructure> getIdentiferMaps() {
         return getListGlobal(IDENTIFIER_MAP);
     }
     
-    public List getQueryMaps() {
+    public List<ConscriptStructure> getQueryMaps() {
         return getListGlobal(QUERY_MAP);
     }
     
-    public List getAbstractScales() {
+    public List<ConscriptStructure> getAbstractScales() {
         return getListGlobal(ABSTRACT_SCALE);
     }
     
-    public List getConcreteScales() {
+    public List<ConscriptStructure> getConcreteScales() {
         return getListGlobal(CONCRETE_SCALE);
     }
     
-    public List getRealisedScales() {
+    public List<ConscriptStructure> getRealisedScales() {
         return getListGlobal(REALIZED_SCALE);
     }
     
-    public List getDatabaseDefinitions() {
+    public List<ConscriptStructure> getDatabaseDefinitions() {
         return getListGlobal(DATABASE_DEFINITION);
     }
     
-    public List getConceptualSchemas() {
+    public List<ConscriptStructure> getConceptualSchemas() {
         return getListGlobal(CONCEPTUAL_SCHEMA);
     }
     
-    public List getConceptualFiles() {
+    public List<ConscriptStructure> getConceptualFiles() {
         return getListGlobal(CONCEPTUAL_FILE);
     }
     
-    private List getListGlobal(StructureId structure) {
+    private List<ConscriptStructure> getListGlobal(StructureId structure) {
         if(this.parent != null) {
             return this.parent.getListGlobal(structure);
         } else {
@@ -195,11 +200,11 @@ public class CSCFile {
         }
     }
 
-    private List getList(StructureId structure) {
-        Map structureMap = (Map) this.structures.get(structure);
-        List retVal = new ArrayList(structureMap.values());
-        for (Iterator iter = this.includeFiles.iterator(); iter.hasNext();) {
-            CSCFile includeFile = (CSCFile) iter.next();
+    private List<ConscriptStructure> getList(StructureId structure) {
+        Map<String,ConscriptStructure> structureMap = this.structures.get(structure);
+        List<ConscriptStructure> retVal = new ArrayList<ConscriptStructure>(structureMap.values());
+        for (Iterator<CSCFile> iter = this.includeFiles.iterator(); iter.hasNext();) {
+            CSCFile includeFile = iter.next();
             retVal.addAll(includeFile.getList(structure));
         }
         return retVal;
@@ -258,13 +263,13 @@ public class CSCFile {
     }
 
     private ConscriptStructure findSchemaPart(StructureId structure, String name) {
-        Map structureMap = (Map) this.structures.get(structure);
-        ConscriptStructure part = (ConscriptStructure) structureMap.get(name);
+        Map<String,ConscriptStructure> structureMap = this.structures.get(structure);
+        ConscriptStructure part = structureMap.get(name);
         if(part != null) {
             return part;
         }
-        for (Iterator iter = this.includeFiles.iterator(); iter.hasNext();) {
-            CSCFile includeFile = (CSCFile) iter.next();
+        for (Iterator<CSCFile> iter = this.includeFiles.iterator(); iter.hasNext();) {
+            CSCFile includeFile = iter.next();
             part = includeFile.findSchemaPart(structure, name);
             if(part != null) {
                 return part;
@@ -274,12 +279,12 @@ public class CSCFile {
     }
 
     public void checkForInitialization() throws DataFormatException {
-        Collection structureMaps = this.structures.values();
-        for (Iterator iter = structureMaps.iterator(); iter.hasNext();) {
-            Map structureMap = (Map) iter.next();
-            Collection structureList = structureMap.values();
-            for (Iterator iterator = structureList.iterator(); iterator.hasNext();) {
-                ConscriptStructure structure = (ConscriptStructure) iterator.next();
+        Collection<Map<String,ConscriptStructure>> structureMaps = this.structures.values();
+        for (Iterator<Map<String,ConscriptStructure>> iter = structureMaps.iterator(); iter.hasNext();) {
+            Map<String,ConscriptStructure> structureMap = iter.next();
+            Collection<ConscriptStructure> structureList = structureMap.values();
+            for (Iterator<ConscriptStructure> iterator = structureList.iterator(); iterator.hasNext();) {
+                ConscriptStructure structure = iterator.next();
                 if(!structure.isInitialized()) {
                     throw new DataFormatException("Structure '" + structure.getName() + "' of type '" +
                             structure.getClass().getName() + "' was not initialised.");
@@ -289,8 +294,8 @@ public class CSCFile {
     }
     
     public boolean hasInclude(URL includeURL) {
-        for (Iterator iter = this.includeFiles.iterator(); iter.hasNext();) {
-            CSCFile includeFile = (CSCFile) iter.next();
+        for (Iterator<CSCFile> iter = this.includeFiles.iterator(); iter.hasNext();) {
+            CSCFile includeFile = iter.next();
             if(includeFile.location.equals(includeURL) || includeFile.hasInclude(includeURL)) {
                 return true;
             }
@@ -301,30 +306,30 @@ public class CSCFile {
     public void printCSC(PrintStream stream) {
         if(!this.remarks.isEmpty()) {
             stream.println("REMARK");
-            for (Iterator iter = this.remarks.iterator(); iter.hasNext();) {
-                String remark = (String) iter.next();
+            for (Iterator<String> iter = this.remarks.iterator(); iter.hasNext();) {
+                String remark = iter.next();
                 stream.println("\"" + remark + "\";");
             }
         }
 
-        for (Iterator iter = StructureId.ids.iterator(); iter.hasNext();) {
-            StructureId id = (StructureId) iter.next();
+        for (Iterator<StructureId> iter = StructureId.ids.iterator(); iter.hasNext();) {
+            StructureId id = iter.next();
             printStructures(id, stream);
         }
         
-        for (Iterator iter = this.includeFiles.iterator(); iter.hasNext();) {
-            CSCFile includeFile = (CSCFile) iter.next();
+        for (Iterator<CSCFile> iter = this.includeFiles.iterator(); iter.hasNext();) {
+            CSCFile includeFile = iter.next();
             includeFile.printCSC(stream);
         }
     }
     
     private void printStructures(StructureId structureType, PrintStream stream) {
-        Map structureMap = (Map) this.structures.get(structureType);
-        Collection values = structureMap.values();
+        Map<String,ConscriptStructure> structureMap = this.structures.get(structureType);
+        Collection<ConscriptStructure> values = structureMap.values();
         if(!values.isEmpty()) {
             stream.println(structureType.getIdString());
-            for (Iterator iter = values.iterator(); iter.hasNext();) {
-                ConscriptStructure element = (ConscriptStructure) iter.next();
+            for (Iterator<ConscriptStructure> iter = values.iterator(); iter.hasNext();) {
+                ConscriptStructure element = iter.next();
                 element.printCSC(stream);
                 stream.println();
             }

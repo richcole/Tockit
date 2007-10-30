@@ -15,8 +15,8 @@ package org.tockit.relations.model;
  * For convenience there are two ways of accessing tuples: either with the getLength()
  * and getElement(int) methods or via getting the full data via getData().
  */
-public class Tuple {
-	private Object[] data;
+public class Tuple<D> {
+	private D[] data;
 
 	private Tuple(){ // used for fromString()
 	}
@@ -28,20 +28,21 @@ public class Tuple {
 	 * array is used. Of course changes in the elements can't be avoided since we don't want to
 	 * enforce clonable objects. Data is still considered immutable. 
 	 */
-	public Tuple(Object[] data) {
-		this.data = new Object[data.length];
+	@SuppressWarnings("unchecked")
+	public Tuple(D[] data) {
+		this.data = (D[]) new Object[data.length];
 		for (int i = 0; i < data.length; i++) {
             this.data[i] = data[i];
         }    
 	}
 	
-	public static Tuple fromString(String tabDelimitedData) {
-		Tuple retVal = new Tuple();
+	public static Tuple<String> fromString(String tabDelimitedData) {
+		Tuple<String> retVal = new Tuple<String>();
 		retVal.data = tabDelimitedData.split("\t");
 		return retVal;
 	}
 	
-	public Object[] getData() {
+	public D[] getData() {
 		return this.data;
 	}
 	
@@ -56,15 +57,16 @@ public class Tuple {
 	 * 
 	 * @throws ArrayIndexOutOfBoundsException iff dimension parameter invalid
 	 */
-	public Object getElement(int dimension) {
+	public D getElement(int dimension) {
 		return this.data[dimension];
 	}
 
+	@Override
 	public boolean equals(Object other) {
 		if(this.getClass() != other.getClass()) {
 			return false;
 		}
-		Tuple otherTuple = (Tuple) other;
+		Tuple<?> otherTuple = (Tuple<?>) other;
 		if(otherTuple.data.length != this.data.length) {
 			return false;
 		}
@@ -79,6 +81,7 @@ public class Tuple {
 		return true;
 	}
 
+	@Override
 	public int hashCode() {
 		int hashCode = 7;
 		for (int i = 0; i < this.data.length; i++) {
@@ -93,6 +96,7 @@ public class Tuple {
 	 * 
 	 * The toString method will be called on each element.
 	 */
+	@Override
 	public String toString() {
 		StringBuffer retVal = new StringBuffer();
 		for (int i = 0; i < this.data.length; i++) {

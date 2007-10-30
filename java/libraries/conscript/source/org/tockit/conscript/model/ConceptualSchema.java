@@ -16,13 +16,13 @@ import java.util.List;
 
 public class ConceptualSchema extends ConscriptStructure{
 	private DatabaseDefinition database;
-	private List concreteScales = new ArrayList();
+	private List<ConcreteScale> concreteScales = new ArrayList<ConcreteScale>();
 	
 	public ConceptualSchema(String identifier) {
         super(identifier);
 	}
 
-	public List getConcreteScales() {
+	public List<ConcreteScale> getConcreteScales() {
 		return Collections.unmodifiableList(concreteScales);
 	}
 
@@ -41,8 +41,8 @@ public class ConceptualSchema extends ConscriptStructure{
     public void printCSC(PrintStream stream) {
         printTitleRemarkSpecials(stream);
         stream.print("\t\t(" + this.database.getName());
-        for (Iterator iter = this.concreteScales.iterator(); iter.hasNext();) {
-            ConcreteScale scale = (ConcreteScale) iter.next();
+        for (Iterator<ConcreteScale> iter = this.concreteScales.iterator(); iter.hasNext();) {
+            ConcreteScale scale = iter.next();
             stream.println(",");
             stream.print("\t\t\t" + scale.getName());
         }

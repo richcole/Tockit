@@ -9,15 +9,15 @@ package org.tockit.events;
 
 import java.io.PrintStream;
 
-public class LoggingEventListener implements EventBrokerListener {
+public class LoggingEventListener<T> implements EventBrokerListener<T> {
     private PrintStream printStream;
 
-    public LoggingEventListener(EventBroker eventBroker, Class eventType, Class subjectType, PrintStream printStream) {
+    public LoggingEventListener(EventBroker<T> eventBroker, Class<? extends Event<T>> eventType, Class<T> subjectType, PrintStream printStream) {
         this.printStream = printStream;
         eventBroker.subscribe(this, eventType, subjectType);
     }
 
-    public void processEvent(Event e) {
+    public void processEvent(Event<T> e) {
         printStream.println("Event: " + e.getClass() + "  Subject: " + e.getSubject().getClass());
     }
 }

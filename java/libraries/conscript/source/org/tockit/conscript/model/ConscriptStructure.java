@@ -22,7 +22,7 @@ public abstract class ConscriptStructure {
     private String name;
     private FormattedString title = null;
     private String remark = null;
-    private Map specials = new Hashtable();
+    private Map<String, Set> specials = new Hashtable<String, Set>();
     
     private boolean initialized = false;
 
@@ -38,12 +38,12 @@ public abstract class ConscriptStructure {
     	return remark;
     }
 
-    public Map getSpecials() {
+    public Map<String, Set> getSpecials() {
         return Collections.unmodifiableMap(specials);
     }
 
     public Set getSpecials(String specialGroup) {
-        return Collections.unmodifiableSet((Set) specials.get(specialGroup));
+        return Collections.unmodifiableSet(specials.get(specialGroup));
     }
 
     public FormattedString getTitle() {
@@ -61,9 +61,9 @@ public abstract class ConscriptStructure {
         if(this.isInitialized()) {
             throw new IllegalStateException("Structure already initialized");
         }
-        Set specialSet = (Set) this.specials.get(special);
+        Set<String> specialSet = this.specials.get(special);
         if(specialSet == null) {
-            specialSet = new HashSet();
+            specialSet = new HashSet<String>();
             this.specials.put(special, specialSet);
         }
         specialSet.add(value);
@@ -99,9 +99,9 @@ public abstract class ConscriptStructure {
         }
         if(!this.specials.isEmpty()) {
             stream.println("\t\tSPECIAL");
-            for (Iterator iter = this.specials.keySet().iterator(); iter.hasNext();) {
-                String special = (String) iter.next();
-                Set specialSet = (Set) this.specials.get(special);
+            for (Iterator<String> iter = this.specials.keySet().iterator(); iter.hasNext();) {
+                String special = iter.next();
+                Set specialSet = this.specials.get(special);
                 for (Iterator innerIter = specialSet.iterator(); innerIter.hasNext();) {
                     String value = (String) innerIter.next();
                     stream.println("\t\t\t\"" + special + ":" + value + "\"");

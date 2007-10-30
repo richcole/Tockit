@@ -8,10 +8,10 @@
 package org.tockit.lattice.model;
 
 
-public interface Lattice {
-    Concept[] getConcepts();
+public interface Lattice<O,A> {
+    Concept<O,A>[] getConcepts();
 
-    Concept getTop();
+    Concept<O,A> getTop();
 
-    Concept getBottom();
+    Concept<O,A> getBottom();
 }

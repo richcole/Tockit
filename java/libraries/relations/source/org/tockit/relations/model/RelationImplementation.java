@@ -18,9 +18,9 @@ import java.util.Set;
  * 
  * @see Relation
  */
-public class RelationImplementation implements Relation {
+public class RelationImplementation<R> implements Relation<R> {
     private String[] dimensionNames;
-    private Set tuples = new HashSet();
+    private Set<Tuple<R>> tuples = new HashSet<Tuple<R>>();
     
     /**
      * Creates a relation with the given arity but no names.
@@ -42,7 +42,7 @@ public class RelationImplementation implements Relation {
     /**
      * Implements Relation.addTuple(Tuple).
      */    
-    public void addTuple(Tuple tuple) {
+    public void addTuple(Tuple<R> tuple) {
         if(tuple.getLength() != this.dimensionNames.length) {
             throw new IllegalArgumentException("Tuples have to have the same length as the relation's arity");
         }
@@ -52,8 +52,8 @@ public class RelationImplementation implements Relation {
     /**
      * Implements Relation.addTuple(Object[]).
      */    
-    public void addTuple(Object[] data) {
-        addTuple(new Tuple(data));
+    public void addTuple(R[] data) {
+        addTuple(new Tuple<R>(data));
     }
 
     /**
@@ -80,14 +80,14 @@ public class RelationImplementation implements Relation {
     /**
      * Implements Relation.getTuples().
      */    
-    public Set getTuples() {
+    public Set<Tuple<R>> getTuples() {
         return Collections.unmodifiableSet(tuples);
     }
 
     /**
      * Implements Relation.isRelated(Tuple).
      */    
-    public boolean isRelated(Tuple tuple) {
+    public boolean isRelated(Tuple<R> tuple) {
         if(tuple.getLength() != this.dimensionNames.length) {
             throw new IllegalArgumentException("Tuples have to have the same length as the relation's arity");
         }
@@ -97,11 +97,11 @@ public class RelationImplementation implements Relation {
     /**
      * Implements Relation.isRelated(Object[]).
      */    
-    public boolean isRelated(Object[] data) {
-        return isRelated(new Tuple(data));
+    public boolean isRelated(R[] data) {
+        return isRelated(new Tuple<R>(data));
     }
 
-    public Set toSet() {
+    public Set<Tuple<R>> toSet() {
         return Collections.unmodifiableSet(this.tuples);
     }
 
@@ -133,10 +133,11 @@ public class RelationImplementation implements Relation {
         return retVal;
     }
     
-    public String toString() {
+    @Override
+	public String toString() {
         StringBuffer buffer = new StringBuffer();
-        for (Iterator iter = this.tuples.iterator(); iter.hasNext();) {
-            Tuple tuple = (Tuple) iter.next();
+        for (Iterator<Tuple<R>> iter = this.tuples.iterator(); iter.hasNext();) {
+            Tuple<R> tuple = iter.next();
             buffer.append(tuple);
             buffer.append("\n");
         }

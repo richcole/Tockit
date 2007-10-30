@@ -40,7 +40,7 @@ public class UnionOperationTest extends AbstractRelationOperationTest {
     	testCases.setUp();
     	
 		RelationTestSetup one = new RelationTestSetup();
-		Relation testRelOne = RelationTest.stringRelation;
+		Relation<Object> testRelOne = RelationTest.stringRelation;
 		one.input = new Relation[]{testRelOne, testRelOne};
 		one.expectedOutputArity = testRelOne.getArity();
 		one.expectedOutputSize = testRelOne.getSize();

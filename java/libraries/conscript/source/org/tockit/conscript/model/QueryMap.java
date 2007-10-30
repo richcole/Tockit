@@ -18,18 +18,18 @@ public class QueryMap extends ConscriptStructure {
      * We store the information in the opposite direction given, since that is
      * the lookup direction.
      */
-    private Map map = new Hashtable();
+    private Map<String, String> map = new Hashtable<String, String>();
 		
 	public QueryMap(String identifier) {
         super(identifier);
     }
 
-	public Map getMap() {
+	public Map<String, String> getMap() {
 		return Collections.unmodifiableMap(map);
 	}
     
     public String getQuery(String abstractObjectId) {
-        return (String) this.map.get(abstractObjectId);
+        return this.map.get(abstractObjectId);
     }
 
 	public void addEntry(String concreteObject, String abstractObjectId) {
@@ -38,8 +38,8 @@ public class QueryMap extends ConscriptStructure {
 
     public void printCSC(PrintStream stream) {
         printTitleRemarkSpecials(stream);
-        for (Iterator iter = this.map.keySet().iterator(); iter.hasNext(); ) {
-            String concreteObj = (String) iter.next();
+        for (Iterator<String> iter = this.map.keySet().iterator(); iter.hasNext(); ) {
+            String concreteObj = iter.next();
             stream.println("\t\t(\"" + concreteObj + "\", " + this.map.get(concreteObj) + ");");
         }
     }

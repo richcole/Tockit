@@ -11,14 +11,16 @@ package org.tockit.events;
  * This interface has to be implemented to listen to events.
  *
  * Each object implementing this interface can subscribe to the EventBroker
- * and will get called on processEvent(Event) whenever an event matching the
+ * and will get called on processEvent(Event<T>) whenever an event matching the
  * subscription criteria passes the broker.
+ * 
+ * T is the base type for all subjects we are interested in.
  *
  * @see EventBroker.subscribe(EventBrokerListener, Class, Class)
  */
-public interface EventBrokerListener {
+public interface EventBrokerListener<T> {
     /**
      * The callback for receiving events.
      */
-    void processEvent(Event e);
+    void processEvent(Event<T> e);
 }

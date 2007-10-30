@@ -44,15 +44,15 @@ import org.tockit.events.filters.SubjectTypeFilter;
  * (i.e. as reaction on the first event), the new event will be processed after
  * the processing of the first one has finished.
  */
-public class EventBroker implements EventBrokerListener {
-    private class SubscriptionEvent extends StandardEvent {
-        public SubscriptionEvent(Object subject) {
+public class EventBroker<T> implements EventBrokerListener<T> {
+    private class SubscriptionEvent extends StandardEvent<EventSubscription<T>> {
+        public SubscriptionEvent(EventSubscription<T> subject) {
             super(subject);
         }
     }
 
-    private class SubscriptionRemovalEvent extends StandardEvent {
-        public SubscriptionRemovalEvent(Object subject) {
+    private class SubscriptionRemovalEvent extends StandardEvent<EventSubscription<T>> {
+        public SubscriptionRemovalEvent(EventSubscription<T> subject) {
             super(subject);
         }
     }
@@ -60,23 +60,20 @@ public class EventBroker implements EventBrokerListener {
     /**
      * Stores the list of subscriptions.
      */
-    private List subscriptions = new ArrayList();
+    private List<EventSubscription<T>> subscriptions = new ArrayList<EventSubscription<T>>();
 
     /**
      * The event queue.
+     * 
+     * @TODO the queue currently can hold both Event<T>s and Event<EventSubscription<T>>s, which stops us
+     *       from being typesafe all the way
      */
-    private List eventQueue = new LinkedList();
+    private List<Event<?>> eventQueue = new LinkedList<Event<?>>();
 
     /**
      * True if we are already processing some events.
      */
     private boolean processingEvents = false;
-
-    /**
-     * We store the package of this class as constant since Class.getPackage()
-     * does not always work.
-     */
-    private static final String PACKAGE_NAME = "org.tockit.events";
 
     /**
      * Creates a new broker.
@@ -94,23 +91,15 @@ public class EventBroker implements EventBrokerListener {
      * extends or implements the given subject type (given as class
      * or interface).
      */
-    public void subscribe(EventBrokerListener listener, Class eventType, Class subjectType) {
-    	try {
-    		Class eventInterface = Class.forName(PACKAGE_NAME + ".Event");
-    		if (!eventInterface.isAssignableFrom(eventType)) {
-    			throw new RuntimeException("Subscription to class not implementing Event impossible");
-    		}
-    	} catch (ClassNotFoundException e) {
-    		throw new RuntimeException("Internal error in EventBroker, class Event not found");
-    	}
+    public void subscribe(EventBrokerListener<T> listener, Class<? extends Event<?>> eventType, Class<?> subjectType) {
     	subscribe(listener, new EventFilter[]{new EventTypeFilter(eventType), new SubjectTypeFilter(subjectType)});
     }
     
-    public void subscribe(EventBrokerListener listener, EventFilter[] filters) {
+    public void subscribe(EventBrokerListener<T> listener, EventFilter[] filters) {
     	if (listener == this) {
     		throw new RuntimeException("Trying to subscribe EventBroker to itself");
     	}
-    	this.eventQueue.add(new SubscriptionEvent(new EventSubscription(listener, filters)));
+    	this.eventQueue.add(new SubscriptionEvent(new EventSubscription<T>(listener, filters)));
     	processEvents();
     }
 
@@ -119,9 +108,9 @@ public class EventBroker implements EventBrokerListener {
      *
      * Afterwards the listener will not receive any events anymore.
      */
-	public void removeSubscriptions(EventBrokerListener listener) {
-		for (Iterator iterator = subscriptions.iterator(); iterator.hasNext();) {
-			EventSubscription subscription = (EventSubscription) iterator.next();
+	public void removeSubscriptions(EventBrokerListener<T> listener) {
+		for (Iterator<EventSubscription<T>> iterator = subscriptions.iterator(); iterator.hasNext();) {
+			EventSubscription<T> subscription = iterator.next();
 			if (subscription.getListener().equals(listener)) {
 				this.eventQueue.add(new SubscriptionRemovalEvent(subscription));
 			}
@@ -136,14 +125,24 @@ public class EventBroker implements EventBrokerListener {
 	 * found it will be removed. This does not check for subclasses or
 	 * implemented interfaces, only exact matches will be removed.
 	 */
-	public void removeSubscription(EventBrokerListener listener, Class eventType, Class subjectType) {
-		removeSubscription(listener, new EventSubscription(listener, new EventFilter[]{new EventTypeFilter(eventType),
+	public void removeSubscription(EventBrokerListener<T> listener, Class<? extends Event<?>> eventType, Class<?> subjectType) {
+		removeSubscription(new EventSubscription<T>(listener, new EventFilter[]{new EventTypeFilter(eventType),
 																					   new SubjectTypeFilter(subjectType)}));
 	}
 
-	public void removeSubscription(EventBrokerListener listener, EventSubscription subscription) {
-		for (Iterator iterator = subscriptions.iterator(); iterator.hasNext();) {
-			EventSubscription cur = (EventSubscription) iterator.next();
+	
+	/**
+	 * Deprecated, the first parameter is no longer required.
+	 */
+	@Deprecated
+	public void removeSubscription(@SuppressWarnings("unused") EventBrokerListener<T> listener, 
+			                       EventSubscription<T> subscription) {
+		removeSubscription(subscription);
+	}
+	
+	public void removeSubscription(EventSubscription<T> subscription) {
+		for (Iterator<EventSubscription<T>> iterator = subscriptions.iterator(); iterator.hasNext();) {
+			EventSubscription<T> cur = iterator.next();
 			if (cur.equals(subscription)) {
 				this.eventQueue.add(new SubscriptionRemovalEvent(cur));
 			}
@@ -164,7 +163,7 @@ public class EventBroker implements EventBrokerListener {
      *       to all listeners of the event type. This is consistent if one sees null as
      *       universally typed.
      */
-    public void processEvent(Event event) {
+    public void processEvent(Event<T> event) {
         if (event.getSubject() == null) {
             throw new RuntimeException("Event needs subject to be processed, null not allowed.");
         }
@@ -175,28 +174,32 @@ public class EventBroker implements EventBrokerListener {
 
     /**
      * Processes the current event queue until it is empty.
+     * 
+     * @TODO this suffers from the event queue not being single-typed, thus the
+     *       suppressed warnings. This should be changed, possibly to have to queues.
      */
-    private void processEvents() {
+    @SuppressWarnings("unchecked")
+	private void processEvents() {
         if (processingEvents) {
             return;
         }
         processingEvents = true;
         while (!eventQueue.isEmpty()) {
-            Event event = (Event) eventQueue.remove(0);
-            if (event instanceof SubscriptionEvent) {
-                this.subscriptions.add(event.getSubject());
-            } else if (event instanceof SubscriptionRemovalEvent) {
+            Event<?> event = eventQueue.remove(0);
+            if (event instanceof EventBroker.SubscriptionEvent) {
+                this.subscriptions.add(((SubscriptionEvent)event).getSubject());
+            } else if (event instanceof EventBroker.SubscriptionRemovalEvent) {
                 this.subscriptions.remove(event.getSubject());
             } else {
-                processExternalEvent(event);
+                processExternalEvent((Event<T>) event);
             }
         }
         processingEvents = false;
     }
 
-    private void processExternalEvent(Event event) {
-        for (Iterator iterator = subscriptions.iterator(); iterator.hasNext();) {
-            EventSubscription subscription = (EventSubscription) iterator.next();
+    private void processExternalEvent(Event<T> event) {
+        for (Iterator<EventSubscription<T>> iterator = subscriptions.iterator(); iterator.hasNext();) {
+            EventSubscription<T> subscription = iterator.next();
         	if (subscription.matchesEvent(event)) {
                 subscription.getListener().processEvent(event);
             }

@@ -14,7 +14,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 public class ValueGroupTest extends TestCase {
-    final static Class THIS = ValueGroupTest.class;
+    final static Class<ValueGroupTest> THIS = ValueGroupTest.class;
 
     public ValueGroupTest(String s) {
         super(s);

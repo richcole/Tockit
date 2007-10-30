@@ -14,9 +14,10 @@ import org.tockit.util.ListSet;
 import org.tockit.util.ListSetImplementation;
 
 public class CernatoTable {
-    private ListSet objects = new ListSetImplementation();
-    private ListSet properties = new ListSetImplementation();
-    private Hashtable relation = new Hashtable();
+    private ListSet<CernatoObject> objects = new ListSetImplementation<CernatoObject>();
+    private ListSet<Property> properties = new ListSetImplementation<Property>();
+    private Hashtable<CernatoObject, Hashtable<Property, Value>> relation = 
+    	new Hashtable<CernatoObject, Hashtable<Property, Value>>();
 
     public CernatoTable() {
         // nothing to do
@@ -24,10 +25,10 @@ public class CernatoTable {
 
     public void add(CernatoObject object) {
         objects.add(object);
-        relation.put(object, new Hashtable());
+        relation.put(object, new Hashtable<Property, Value>());
     }
 
-    public Set getObjects() {
+    public Set<CernatoObject> getObjects() {
         return objects;
     }
 
@@ -35,17 +36,17 @@ public class CernatoTable {
         properties.add(property);
     }
 
-    public Set getProperties() {
+    public Set<Property> getProperties() {
         return properties;
     }
 
     public void setRelationship(CernatoObject object, Property property, Value value) {
-        Hashtable row = (Hashtable) relation.get(object);
+        Hashtable<Property, Value> row = relation.get(object);
         row.put(property, value);
     }
 
     public Value getRelationship(CernatoObject object, Property property) {
-        Hashtable row = (Hashtable) relation.get(object);
-        return (Value) row.get(property);
+        Hashtable<Property, Value> row = relation.get(object);
+        return row.get(property);
     }
 }

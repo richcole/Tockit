@@ -9,33 +9,37 @@ package org.tockit.events.filters;
 
 import org.tockit.events.Event;
 
-public class SubjectTypeFilter implements EventFilter {
-	private Class subjectType;
+public class SubjectTypeFilter<S, T extends Event<S>> implements EventFilter<T> {
+	private Class<S> subjectType;
 
-	public SubjectTypeFilter(Class subjectType) {
+	public SubjectTypeFilter(Class<S> subjectType) {
 		this.subjectType = subjectType;
 	}
 
-	public boolean isMatch(Event event) {
+	public boolean isMatch(T event) {
 		return subjectType.isAssignableFrom(event.getSubject().getClass());
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
 	public boolean equals(Object other) {
 		if(! (other instanceof SubjectTypeFilter) ) {
 			return false;
 		}
-		SubjectTypeFilter otherFilter = (SubjectTypeFilter) other;
+		SubjectTypeFilter<S,T> otherFilter = (SubjectTypeFilter<S,T>) other;
 		if(!otherFilter.subjectType.equals(subjectType)) {
 			return false;
 		}
 		return true;
 	}
 
+	@Override
 	public int hashCode() {
 		return subjectType.hashCode();
 	}
     
-    public String toString() {
+    @Override
+	public String toString() {
         return "with subject instantiating " + this.subjectType.getName();
     }
 }

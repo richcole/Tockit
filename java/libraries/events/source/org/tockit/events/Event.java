@@ -12,9 +12,9 @@ package org.tockit.events;
  *
  * This is used in the EventBroker.
  */
-public interface Event {
+public interface Event<T> {
     /**
      * The subject of the event, it must not be null.
      */
-    Object getSubject();
+    T getSubject();
 }

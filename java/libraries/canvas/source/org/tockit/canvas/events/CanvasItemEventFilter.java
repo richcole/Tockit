@@ -7,10 +7,9 @@
  */
 package org.tockit.canvas.events;
 
-import org.tockit.events.Event;
 import org.tockit.events.filters.EventFilter;
 
-public class CanvasItemEventFilter implements EventFilter {
+public class CanvasItemEventFilter implements EventFilter<CanvasItemEvent> {
 	private int onMask;
 	private int offMask;
 	
@@ -19,11 +18,7 @@ public class CanvasItemEventFilter implements EventFilter {
 		this.offMask = offMask;
 	}
 
-	public boolean isMatch(Event event) {
-		if(!CanvasItemEvent.class.isAssignableFrom(event.getClass())) {
-			return false;
-		}
-		CanvasItemEvent canvasEv = (CanvasItemEvent) event;
+	public boolean isMatch(CanvasItemEvent canvasEv) {
 		if ((canvasEv.getModifiers() & (onMask | offMask)) != onMask) {
 			return false;
 		}

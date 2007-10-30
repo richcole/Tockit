@@ -12,7 +12,7 @@ import java.util.List;
 
 public class View {
     private String name;
-    private List criteria = new ArrayList();
+    private List<Criterion> criteria = new ArrayList<Criterion>();
 
     public View(String name) {
         this.name = name;
@@ -22,7 +22,7 @@ public class View {
         criteria.add(criterion);
     }
 
-    public List getCriteria() {
+    public List<Criterion> getCriteria() {
         return criteria;
     }
 

@@ -85,9 +85,9 @@ public class DiagramExportSettings {
             this.lastImageExportFile = new File(lastImage);
         } else { 
         //no last image file so we get the first format from the graphic format registry
-            Iterator formatIterator = GraphicFormatRegistry.getIterator();
+            Iterator<GraphicFormat> formatIterator = GraphicFormatRegistry.getIterator();
             if (formatIterator.hasNext()){
-                this.format = (GraphicFormat) formatIterator.next();    
+                this.format = formatIterator.next();    
             }
             // can't find last image, so set last image file to null.
             this.lastImageExportFile = null; 

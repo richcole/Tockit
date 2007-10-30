@@ -26,11 +26,11 @@ public class UnionOperation extends AbstractBinaryRelationOperation {
     		throw new IllegalArgumentException("Relation arities don't match for union");
     	}
     	RelationImplementation result = new RelationImplementation(leftHandInput.getDimensionNames());
-		for (Iterator iter = leftHandInput.getTuples().iterator(); iter.hasNext();) {
-			result.addTuple((Tuple) iter.next());            
+		for (Iterator<Tuple> iter = leftHandInput.getTuples().iterator(); iter.hasNext();) {
+			result.addTuple(iter.next());            
 		}
-		for (Iterator iter = rightHandInput.getTuples().iterator(); iter.hasNext();) {
-			result.addTuple((Tuple) iter.next());            
+		for (Iterator<Tuple> iter = rightHandInput.getTuples().iterator(); iter.hasNext();) {
+			result.addTuple(iter.next());            
 		}
         return result;
     }

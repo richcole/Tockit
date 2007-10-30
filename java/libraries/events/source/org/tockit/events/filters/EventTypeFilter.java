@@ -10,9 +10,9 @@ package org.tockit.events.filters;
 import org.tockit.events.Event;
 
 public class EventTypeFilter implements EventFilter {
-	private Class eventType;
+	private Class<? extends Event<?>> eventType;
 	
-	public EventTypeFilter(Class eventType) {
+	public EventTypeFilter(Class<? extends Event<?>> eventType) {
 		this.eventType = eventType;
 	}
 

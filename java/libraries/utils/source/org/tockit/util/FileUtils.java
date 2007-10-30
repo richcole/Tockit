@@ -20,13 +20,13 @@ public abstract class FileUtils {
      * Retrieves a list of all parent files.
      */
     public static File[] getAncenstors(File file) {
-        List result = new ArrayList();
+        List<File> result = new ArrayList<File>();
         File currentFile = file.getParentFile();
         while(currentFile.getParentFile() != null) {
             result.add(0,currentFile);
             currentFile = currentFile.getParentFile();
         }
-        return (File[]) result.toArray(new File[result.size()]);
+        return result.toArray(new File[result.size()]);
     }
 
     /**

@@ -20,6 +20,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -68,13 +69,13 @@ public class PluginClassLoader extends ClassLoader {
 
 	private File pluginsDirLocation;
 
-	private List foundResources = new ArrayList();
+	private List<Resource> foundResources = new ArrayList<Resource>();
 	
 	/**
 	 * keys - fully qualified class names
 	 * values - classes
 	 */
-	private Hashtable loadedClasses = new Hashtable();
+	private Map<String, Class<?>> loadedClasses = new Hashtable<String, Class<?>>();
 	
 	private String classNotFound;
 
@@ -114,6 +115,7 @@ public class PluginClassLoader extends ClassLoader {
 			return this.file.toURI().toURL();
 		}
 
+		@Override
 		public String toString () {
 			return "FileResource, file: " + this.file;
 		}
@@ -168,6 +170,7 @@ public class PluginClassLoader extends ClassLoader {
 			return url;
 		}
 		
+		@Override
 		public String toString () {
 			return "JarResource, file: " + this.zipEntry + ", jar: " + this.jarFile;
 		}
@@ -201,28 +204,29 @@ public class PluginClassLoader extends ClassLoader {
 	 * classes contained in the plugin directory.
 	 * </p>
 	 */
-	public Class[] findClassesImplementingGivenIterface (Class interfaceClass) 
+	@SuppressWarnings("unchecked")
+	public <T> Class<T>[] findClassesImplementingGivenIterface (Class<T> interfaceClass) 
 						throws ClassNotFoundException, NoClassDefFoundError {
-		List result = new ArrayList();
-		Iterator it = this.foundResources.iterator();
+		List<Class<T>> result = new ArrayList<Class<T>>();
+		Iterator<Resource> it = this.foundResources.iterator();
 		while (it.hasNext()) {
-			Resource curResource = (Resource) it.next();
+			Resource curResource = it.next();
 			String name = curResource.getRelativePath();
 			if (name.endsWith(".class")) {
-				Class curClass = loadClass(curResource);
+				Class<?> curClass = loadClass(curResource);
 				if (result.contains(curClass)) {
 					continue;
 				}
-				Class[] interfaces = curClass.getInterfaces();
+				Class<?>[] interfaces = curClass.getInterfaces();
 				for (int i = 0; i < interfaces.length; i++) {
-					Class class1 = interfaces[i];
+					Class<?> class1 = interfaces[i];
 					if (class1.equals(interfaceClass)) {
-						result.add(curClass);
+						result.add((Class<T>) curClass);
 					}
 				}
 			}
 		}
-		return (Class[]) result.toArray(new Class[result.size()]);
+		return result.toArray(new Class[result.size()]);
 	}
 	
 	/**
@@ -249,6 +253,7 @@ public class PluginClassLoader extends ClassLoader {
 	 * NOTE: first found resource will be returned.
 	 * </p>
 	 */
+	@Override
 	public URL findResource (String name) {
         logger.entering(this.getClass().getName(), "findResource(String)", new Object[] {name});
 		Resource resource = findResourceLocation(name);
@@ -286,7 +291,8 @@ public class PluginClassLoader extends ClassLoader {
 	 * @param name - fully qualified class name.
 	 * </p>
 	 */
-	public Class findClass(String name) throws ClassNotFoundException {
+	@Override
+	public Class<?> findClass(String name) throws ClassNotFoundException {
 		// the ClassNotFoundException will not go up through the native ClassLoader code,
 		// thus we use a member variable to indicate the class causing the error
 		this.classNotFound = null;
@@ -298,15 +304,15 @@ public class PluginClassLoader extends ClassLoader {
 			logger.throwing("PluginClassLoader", "findClass", exc);
 			throw exc;
 		}
-		Class res = loadClass(resource);
+		Class<?> res = loadClass(resource);
 		logger.exiting("PluginClassLoader", "findClass",res);
 		return res;
 	 }
 	 
-	 private Class loadClass (Resource resource) 
+	 private Class<?> loadClass (Resource resource) 
 	 								throws ClassNotFoundException, 
 	 								NoClassDefFoundError {
-	 	Class resClass = null;
+	 	Class<?> resClass = null;
 		logger.fine("Trying to load class for resource " + resource);
 		try {
 			byte [] b = resource.getData();
@@ -316,7 +322,7 @@ public class PluginClassLoader extends ClassLoader {
 				String className = resource.getRelativePath().replace('/','.').replaceAll(".class", "");
 				logger.fine("DUPLICATE class def for " + className);
 				if (this.loadedClasses.containsKey(className)) {
-					resClass = (Class) this.loadedClasses.get(className);
+					resClass = this.loadedClasses.get(className);
 					logger.fine("Class " + className + " is loaded using " + this.getClass().getName());
 				}
 				else {
@@ -344,18 +350,18 @@ public class PluginClassLoader extends ClassLoader {
 	 }
 
 	private Resource findResourceLocation (String name) {
-		List currentResources = findResourcesLocation(name);
+		List<Resource> currentResources = findResourcesLocation(name);
 		if (currentResources.size() > 0) {
-			return (Resource) currentResources.get(0); 
+			return currentResources.get(0); 
 		}
 		return null;
 	}
 
-	private List findResourcesLocation (String name) {
-		Iterator it = this.foundResources.iterator();
-		List result = new ArrayList();
+	private List<Resource> findResourcesLocation (String name) {
+		Iterator<Resource> it = this.foundResources.iterator();
+		List<Resource> result = new ArrayList<Resource>();
 		while (it.hasNext()) {
-			Resource curResource = (Resource) it.next();
+			Resource curResource = it.next();
 			String curResourceName = curResource.getRelativePath();
 			if (curResourceName.equals(name)) {
 				result.add(curResource);
@@ -369,10 +375,10 @@ public class PluginClassLoader extends ClassLoader {
 	 	for (int i = 0; i < files.length; i++) {
 			File curFile = files[i];
 			if (curFile.getName().endsWith(".jar") || curFile.getName().endsWith(".zip")) {
-				List jarEntriesList = readArchive(curFile);
-				Iterator it = jarEntriesList.iterator();
+				List<ZipEntry> jarEntriesList = readArchive(curFile);
+				Iterator<ZipEntry> it = jarEntriesList.iterator();
 				while (it.hasNext()) {
-					ZipEntry curEntry = (ZipEntry) it.next();
+					ZipEntry curEntry = it.next();
 					JarResource jarResource = new JarResource(curFile, curEntry); 
 					logger.fine("Found " + jarResource);
 					this.foundResources.add(jarResource);
@@ -388,13 +394,13 @@ public class PluginClassLoader extends ClassLoader {
 	 }
 	 
 	 
-	private List readArchive(File file) {
-		List zipFileEntriesList = new ArrayList();
+	private List<ZipEntry> readArchive(File file) {
+		List<ZipEntry> zipFileEntriesList = new ArrayList<ZipEntry>();
 		try {
 			ZipFile zipFile = new ZipFile(file);
-			Enumeration enumeration = zipFile.entries();
+			Enumeration<? extends ZipEntry> enumeration = zipFile.entries();
 			while (enumeration.hasMoreElements()) {
-				ZipEntry curEntry = (ZipEntry) enumeration.nextElement();
+				ZipEntry curEntry = enumeration.nextElement();
 				zipFileEntriesList.add(curEntry);
 			}
 		} catch (ZipException e) {
@@ -430,12 +436,13 @@ public class PluginClassLoader extends ClassLoader {
 		return file.getName();
 	}
 
-	protected Enumeration findResources(String name) throws IOException {
-		Vector resources = new Vector();
-		List currentResources = findResourcesLocation(name);
-		Iterator it = currentResources.iterator();
+	@Override
+	protected Enumeration<URL> findResources(String name) throws IOException {
+		Vector<URL> resources = new Vector<URL>();
+		List<Resource> currentResources = findResourcesLocation(name);
+		Iterator<Resource> it = currentResources.iterator();
 		while (it.hasNext()) {
-			Resource curResource = (Resource) it.next();
+			Resource curResource = it.next();
 			resources.add(curResource.getURL());
 		}
 		

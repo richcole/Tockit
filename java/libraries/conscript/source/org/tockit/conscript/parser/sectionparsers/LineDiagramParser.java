@@ -49,7 +49,7 @@ class LineDiagramParser extends CSCFileSectionParser {
 
 		tokenizer.consumeToken("POINTS");
 
-        Map points = new Hashtable();
+        Map<Long, Point> points = new Hashtable<Long, Point>();
 		while (!tokenizer.getCurrentToken().equals("LINES")) {
 			Long id = new Long(tokenizer.popCurrentToken());
 
@@ -72,13 +72,13 @@ class LineDiagramParser extends CSCFileSectionParser {
             Long to = new Long(tokenizer.popCurrentToken());
             tokenizer.consumeToken(")");
             
-            Point fromPoint = (Point)points.get(from);
+            Point fromPoint = points.get(from);
             if(fromPoint == null) {
                 throw new DataFormatException("Can not resolve line start point " +
                                               from +" in LINE_DIAGRAM '" + diagram.getName() +
                                               "' in file '" + file.getLocation() +"', line " + tokenizer.getCurrentLine());
             }
-            Point toPoint = (Point)points.get(to);
+            Point toPoint = points.get(to);
             if(toPoint == null) {
                 throw new DataFormatException("Can not resolve line end point " +
                                               to +" in LINE_DIAGRAM '" + diagram.getName() +
@@ -90,7 +90,7 @@ class LineDiagramParser extends CSCFileSectionParser {
 
 		while (!tokenizer.getCurrentToken().equals("ATTRIBUTES")) {
             Long pointId = new Long(tokenizer.popCurrentToken());
-            Point point = (Point) points.get(pointId);
+            Point point = points.get(pointId);
             if(point == null) {
                 throw new DataFormatException("Can not resolve point " +
                                               point +" for object in LINE_DIAGRAM '" + diagram.getName() +
@@ -121,7 +121,7 @@ class LineDiagramParser extends CSCFileSectionParser {
 
 		while (!tokenizer.getCurrentToken().equals("CONCEPTS")) {
             Long pointId = new Long(tokenizer.popCurrentToken());
-            Point point = (Point) points.get(pointId);
+            Point point = points.get(pointId);
             if(point == null) {
                 throw new DataFormatException("Can not resolve point " +
                                               point +" for attribute in LINE_DIAGRAM '" + diagram.getName() +

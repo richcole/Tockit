@@ -32,9 +32,9 @@ public class CernatoXMLParser {
 
         CernatoModel model = new CernatoModel();
 
-        Hashtable types = new Hashtable();
-        Hashtable properties = new Hashtable();
-        Hashtable objects = new Hashtable();
+        Hashtable<String, TypeImplementation> types = new Hashtable<String, TypeImplementation>();
+        Hashtable<String, Property> properties = new Hashtable<String, Property>();
+        Hashtable<String, CernatoObject> objects = new Hashtable<String, CernatoObject>();
 
         parseTypes(rootElement, model, types);
         parseProperties(rootElement, model, types, properties);
@@ -45,7 +45,7 @@ public class CernatoXMLParser {
         return model;
     }
 
-    private static void parseTypes(Element root, CernatoModel model, Hashtable types) throws DataFormatException {
+    private static void parseTypes(Element root, CernatoModel model, Hashtable<String, TypeImplementation> types) throws DataFormatException {
         Element typesElement = root.getChild("types");
         if (typesElement == null) {
             throw new DataFormatException("Could not find types");
@@ -61,7 +61,7 @@ public class CernatoXMLParser {
         }
     }
 
-    private static void parseTextualType(Element element, CernatoModel model, Hashtable types) throws DataFormatException {
+    private static void parseTextualType(Element element, CernatoModel model, Hashtable<String, TypeImplementation> types) throws DataFormatException {
         String id = element.getAttributeValue("id");
         if (id == null) {
             throw new DataFormatException("Type missing id");
@@ -92,7 +92,7 @@ public class CernatoXMLParser {
         model.getTypes().add(newType);
     }
 
-    private static void parseNumericalType(Element element, CernatoModel model, Hashtable types) throws DataFormatException {
+    private static void parseNumericalType(Element element, CernatoModel model, Hashtable<String, TypeImplementation> types) throws DataFormatException {
         String id = element.getAttributeValue("id");
         if (id == null) {
             throw new DataFormatException("Type missing id");
@@ -125,7 +125,7 @@ public class CernatoXMLParser {
         model.getTypes().add(newType);
     }
 
-    private static void parseProperties(Element root, CernatoModel model, Hashtable types, Hashtable properties)
+    private static void parseProperties(Element root, CernatoModel model, Hashtable<String, TypeImplementation> types, Hashtable<String, Property> properties)
             throws DataFormatException {
         Element propertiesElement = root.getChild("properties");
         if (propertiesElement == null) {
@@ -137,13 +137,13 @@ public class CernatoXMLParser {
             String id = propElem.getAttributeValue("id");
             String name = propElem.getChild("name").getText();
             String typeref = propElem.getChild("type_ref").getAttributeValue("type");
-            Property property = new Property((PropertyType) types.get(typeref), name);
+            Property property = new Property(types.get(typeref), name);
             properties.put(id, property);
             model.getContext().add(property);
         }
     }
 
-    private static void parseObjects(Element root, CernatoModel model, Hashtable objects)
+    private static void parseObjects(Element root, CernatoModel model, Hashtable<String, CernatoObject> objects)
             throws DataFormatException {
         Element objectsElement = root.getChild("objects");
         if (objectsElement == null) {
@@ -160,7 +160,7 @@ public class CernatoXMLParser {
         }
     }
 
-    private static void parseRelation(Element root, CernatoModel model, Hashtable properties, Hashtable objects)
+    private static void parseRelation(Element root, CernatoModel model, Hashtable<String, Property> properties, Hashtable<String, CernatoObject> objects)
             throws DataFormatException {
         Element relationElement = root.getChild("relation");
         if (relationElement == null) {
@@ -170,7 +170,7 @@ public class CernatoXMLParser {
         for (Iterator iterator = rowElems.iterator(); iterator.hasNext();) {
             Element rowElem = (Element) iterator.next();
             String objectid = rowElem.getAttributeValue("object");
-            CernatoObject object = (CernatoObject) objects.get(objectid);
+            CernatoObject object = objects.get(objectid);
             List cellElems = rowElem.getChildren("cell");
             for (Iterator iterator2 = cellElems.iterator(); iterator2.hasNext();) {
                 Element cellElem = (Element) iterator2.next();
@@ -179,7 +179,7 @@ public class CernatoXMLParser {
                 	continue;
                 }
                 String propertyid = cellElem.getAttributeValue("property");
-                Property property = (Property) properties.get(propertyid);
+                Property property = properties.get(propertyid);
                 if (property.getType() instanceof TextualType) {
                     model.getContext().setRelationship(object, property, new TextualValue(content));
                 } else if (property.getType() instanceof NumericalType) {
@@ -189,7 +189,7 @@ public class CernatoXMLParser {
         }
     }
 
-    private static void parseViews(Element rootElement, CernatoModel model, Hashtable properties)
+    private static void parseViews(Element rootElement, CernatoModel model, Hashtable<String, Property> properties)
             throws DataFormatException {
         Element viewsElem = rootElement.getChild("views");
         if (viewsElem == null) {
@@ -203,7 +203,7 @@ public class CernatoXMLParser {
             List criteriaElems = viewElem.getChildren("criterion");
             for (Iterator iterator2 = criteriaElems.iterator(); iterator2.hasNext();) {
                 Element criterionElem = (Element) iterator2.next();
-                Property property = (Property) properties.get(criterionElem.getChild("property_ref").
+                Property property = properties.get(criterionElem.getChild("property_ref").
                         getAttributeValue("property"));
                 ValueGroup valgroup = property.getType().getValueGroup(criterionElem.getChild("value_group_ref").
                         getAttributeValue("value_group"));

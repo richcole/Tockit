@@ -25,7 +25,7 @@ public class DatabaseDriverLoader extends LoaderBase {
 	private static final Logger logger = Logger.getLogger(DatabaseDriverLoader.class.getName());
 	private static final String dbDriverDescriptorFileName = "driver.txt";
 	
-	private static List errors = new ArrayList();
+	private static List<Error> errors = new ArrayList<Error>();
 
 	private static class DriverWrapper implements Driver {
 		private final Driver finalDriver;
@@ -90,10 +90,10 @@ public class DatabaseDriverLoader extends LoaderBase {
 			File curDriverDir = driverDirs[i];
 			try {
 				logger.fine("Loading class loader for " + curDriverDir);
-				Class[] foundDriverClasses = findClassesInDir(curDriverDir, dbDriverDescriptorFileName, Driver.class, logger);
+				Class<Driver>[] foundDriverClasses = findClassesInDir(curDriverDir, dbDriverDescriptorFileName, Driver.class, logger);
 				for (int j = 0; j < foundDriverClasses.length; j++) {
-					Class cur = foundDriverClasses[j];
-					Driver driver = (Driver) cur.newInstance();
+					Class<Driver> cur = foundDriverClasses[j];
+					Driver driver = cur.newInstance();
 					DriverManager.registerDriver(new DriverWrapper(driver));
 					logger.finer("Instantiated driver: " + driver.getClass().getName());
 				}
@@ -104,7 +104,7 @@ public class DatabaseDriverLoader extends LoaderBase {
 		}
 		
 		logger.fine("FINISHED loading drivers with " + errors.size() + " error(s)");
-		DatabaseDriverLoader.Error[] errorsRes = (DatabaseDriverLoader.Error[]) errors.toArray(new DatabaseDriverLoader.Error[errors.size()]);
+		DatabaseDriverLoader.Error[] errorsRes = errors.toArray(new DatabaseDriverLoader.Error[errors.size()]);
 		return errorsRes;
 	}
 }

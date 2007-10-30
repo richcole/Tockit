@@ -9,12 +9,12 @@ package org.tockit.context.model;
 
 import java.util.Set;
 
-public interface Context {
+public interface Context<O,A> {
 	String getName();
 	
-    Set getObjects();
+    Set<O> getObjects();
 
-    Set getAttributes();
+    Set<A> getAttributes();
 
-    BinaryRelation getRelation();
+    BinaryRelation<O,A> getRelation();
 }

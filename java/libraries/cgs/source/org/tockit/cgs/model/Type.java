@@ -141,7 +141,7 @@ public class Type {
     }
 
     public Type[] getDirectSubtypes() {
-        Collection subtypes = this.knowledgeBase.getDirectSubtypes(this);
+        Collection<Type> subtypes = this.knowledgeBase.getDirectSubtypes(this);
         Type[] retVal = new Type[subtypes.size()];
         subtypes.toArray(retVal);
         return retVal;

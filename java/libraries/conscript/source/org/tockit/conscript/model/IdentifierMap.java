@@ -14,18 +14,18 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class IdentifierMap extends ConscriptStructure{
-    private Map map = new Hashtable();
+    private Map<String, String> map = new Hashtable<String, String>();
     
 	public IdentifierMap(String identifier) {
         super(identifier);
     }
 		
-	public Map getMap() {
+	public Map<String, String> getMap() {
 		return Collections.unmodifiableMap(map);
 	}
     
     public String getTargetIdentifier(String fromId) {
-        return (String) this.map.get(fromId);
+        return this.map.get(fromId);
     }
 
     public void addEntry(String fromId, String toId) {
@@ -34,8 +34,8 @@ public class IdentifierMap extends ConscriptStructure{
 
     public void printCSC(PrintStream stream) {
         printTitleRemarkSpecials(stream);
-        for (Iterator iter = this.map.keySet().iterator(); iter.hasNext(); ) {
-            String from = (String) iter.next();
+        for (Iterator<String> iter = this.map.keySet().iterator(); iter.hasNext(); ) {
+            String from = iter.next();
             stream.println("\t\t(" + from + ", " + this.map.get(from) + ");");
         }
     }

@@ -14,7 +14,7 @@ import java.util.List;
 public class TextualValueGroup implements ValueGroup {
     private TextualType type;
     private String name;
-    private List values = new ArrayList();
+    private List<String> values = new ArrayList<String>();
 
     public TextualValueGroup(TextualType type, String name, String id) {
         this.type = type;
@@ -51,8 +51,8 @@ public class TextualValueGroup implements ValueGroup {
         if (otherTVGroup.type != type) {
             return false;
         }
-        for (Iterator iterator = otherTVGroup.values.iterator(); iterator.hasNext();) {
-            String value = (String) iterator.next();
+        for (Iterator<String> iterator = otherTVGroup.values.iterator(); iterator.hasNext();) {
+            String value = iterator.next();
             if (!this.values.contains(value)) {
                 return false;
             }
@@ -68,8 +68,8 @@ public class TextualValueGroup implements ValueGroup {
         if (otherVG.type != type) {
             return false;
         }
-        for (Iterator iterator = values.iterator(); iterator.hasNext();) {
-            String value = (String) iterator.next();
+        for (Iterator<String> iterator = values.iterator(); iterator.hasNext();) {
+            String value = iterator.next();
             if (!otherVG.values.contains(value)) {
                 return false;
             }

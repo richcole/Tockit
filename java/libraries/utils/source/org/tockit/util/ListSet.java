@@ -20,7 +20,7 @@ import java.util.Set;
  * Note that the implementation of the add(Object) method can not follow
  * both definitions at the same time.  
  */
-public interface ListSet extends List, Set {
+public interface ListSet<E> extends List<E>, Set<E> {
     /**
      * Adds an object into the list if not already added.
      * 
@@ -33,7 +33,7 @@ public interface ListSet extends List, Set {
      * a call to add(Object) returns false and does not change the collection
      * in the case the object does already exist in it.
      */
-    boolean add(Object o);
+    boolean add(E e);
     
     /**
      * Adds an object at the specified position.
@@ -45,5 +45,5 @@ public interface ListSet extends List, Set {
      * Note that it is not possible to insert an object at size() in that
      * case, it will cause an IndexOutOfBoundException.
      */
-    void add(int index, Object element);
+    void add(int index, E element);
 }

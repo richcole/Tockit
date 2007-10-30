@@ -15,7 +15,7 @@ import java.util.List;
 
 public class AbstractScale extends ConscriptStructure{
 	private FormalContext context;
-	private List lineDiagrams = new ArrayList();
+	private List<LineDiagram> lineDiagrams = new ArrayList<LineDiagram>();
 	
 	public AbstractScale(String name) {
         super(name);
@@ -24,7 +24,7 @@ public class AbstractScale extends ConscriptStructure{
 	public FormalContext getContext() {
 		return context;
 	}
-	public List getLineDiagrams() {
+	public List<LineDiagram> getLineDiagrams() {
 		return Collections.unmodifiableList(lineDiagrams);
 	}
 
@@ -39,8 +39,8 @@ public class AbstractScale extends ConscriptStructure{
     public void printCSC(PrintStream stream) {
         printTitleRemarkSpecials(stream);
         stream.print("\t\t(" + this.context.getName() + ", "); // two commas for the missing lattice bit
-        for (Iterator iter = this.lineDiagrams.iterator(); iter.hasNext();) {
-            LineDiagram diagram = (LineDiagram) iter.next();
+        for (Iterator<LineDiagram> iter = this.lineDiagrams.iterator(); iter.hasNext();) {
+            LineDiagram diagram = iter.next();
             stream.print(", " + diagram.getName());
         }
         stream.println(");");

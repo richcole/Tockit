@@ -7,6 +7,6 @@
  */
 package org.tockit.context.model;
 
-public interface BinaryRelation {
-    boolean contains(Object domainObject, Object rangeObject);
+public interface BinaryRelation<D,R> {
+    boolean contains(D domainObject, R rangeObject);
 }

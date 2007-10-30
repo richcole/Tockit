@@ -15,7 +15,7 @@ import java.util.List;
 
 public class ConceptualFile extends ConscriptStructure {
 	private StringMap objectMap;
-	private List realisedScales = new ArrayList();
+	private List<RealisedScale> realisedScales = new ArrayList<RealisedScale>();
 	
 	public ConceptualFile(String name) {
         super(name);
@@ -25,7 +25,7 @@ public class ConceptualFile extends ConscriptStructure {
 		return objectMap;
 	}
 
-	public List getRealisedScales() {
+	public List<RealisedScale> getRealisedScales() {
 		return Collections.unmodifiableList(realisedScales);
 	}
 
@@ -40,8 +40,8 @@ public class ConceptualFile extends ConscriptStructure {
     public void printCSC(PrintStream stream) {
         printTitleRemarkSpecials(stream);
         stream.print("\t\t(" + this.objectMap.getName());
-        for (Iterator iter = this.realisedScales.iterator(); iter.hasNext();) {
-            RealisedScale scale = (RealisedScale) iter.next();
+        for (Iterator<RealisedScale> iter = this.realisedScales.iterator(); iter.hasNext();) {
+            RealisedScale scale = iter.next();
             stream.print(", " + scale.getName());
         }
         stream.println(");");

@@ -10,18 +10,22 @@ package org.tockit.cgs.model.events;
 import org.tockit.cgs.model.KnowledgeBase;
 import org.tockit.events.Event;
 
-public class KnowledgeBaseChangeEvent implements Event {
+public class KnowledgeBaseChangeEvent implements Event<KnowledgeBase> {
     private KnowledgeBase knowledgeBase;
 
     public KnowledgeBaseChangeEvent(KnowledgeBase subject) {
         this.knowledgeBase = subject;
     }
 
-    public KnowledgeBase getKnowledgeBase() {
+    /**
+     * @deprecated use getSubject() instead.
+     */
+    @Deprecated
+	public KnowledgeBase getKnowledgeBase() {
         return knowledgeBase;
     }
 
-    public Object getSubject() {
+    public KnowledgeBase getSubject() {
         return knowledgeBase;
     }
 }

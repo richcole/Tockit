@@ -15,47 +15,39 @@ import org.tockit.context.model.BinaryRelation;
 import org.tockit.context.model.Context;
 
 
-public class ViewContext implements Context {
+public class ViewContext implements Context<CernatoObject, Criterion> {
     private CernatoTable context;
     private ScalingRelation relation;
-    private Set attributes;
+    private Set<Criterion> attributes;
     private String name;
 
-    private class ScalingRelation implements BinaryRelation {
-        public boolean contains(Object domainObject, Object rangeObject) {
-            if (!(domainObject instanceof CernatoObject)) {
-                return false;
-            }
-            CernatoObject fcaObject = (CernatoObject) domainObject;
-            if (!(rangeObject instanceof Criterion)) {
-                return false;
-            }
-            Criterion criterion = (Criterion) rangeObject;
-            Value relationValue = context.getRelationship(fcaObject, criterion.getProperty());
-            return criterion.getValueGroup().containsValue(relationValue);
+    private class ScalingRelation implements BinaryRelation<CernatoObject, Criterion> {
+        public boolean contains(CernatoObject domainObject, Criterion rangeObject) {
+            Value relationValue = context.getRelationship(domainObject, rangeObject.getProperty());
+            return rangeObject.getValueGroup().containsValue(relationValue);
         }
     }
 
     public ViewContext(CernatoTable context, View view) {
         this.context = context;
         this.relation = new ScalingRelation();
-        attributes = new HashSet();
-        for (Iterator iterator = view.getCriteria().iterator(); iterator.hasNext();) {
-            Criterion criterion = (Criterion) iterator.next();
+        attributes = new HashSet<Criterion>();
+        for (Iterator<Criterion> iterator = view.getCriteria().iterator(); iterator.hasNext();) {
+            Criterion criterion = iterator.next();
             attributes.add(criterion);
         }
         this.name = view.getName();
     }
 
-    public Set getObjects() {
+    public Set<CernatoObject> getObjects() {
         return context.getObjects();
     }
 
-    public Set getAttributes() {
+    public Set<Criterion> getAttributes() {
         return attributes;
     }
 
-    public BinaryRelation getRelation() {
+    public BinaryRelation<CernatoObject, Criterion> getRelation() {
         return relation;
     }
 

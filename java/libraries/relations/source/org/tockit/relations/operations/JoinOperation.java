@@ -64,10 +64,10 @@ public class JoinOperation extends AbstractBinaryRelationOperation {
 		}
         String[] dimensionNames = getDimensionNames(leftHandInput, rightHandInput, arity);
     	RelationImplementation result = new RelationImplementation(dimensionNames);
-		for (Iterator iterLeft = leftHandInput.getTuples().iterator(); iterLeft.hasNext();) {
-			Tuple leftTuple = (Tuple) iterLeft.next();
-			for (Iterator iterRight = rightHandInput.getTuples().iterator(); iterRight.hasNext();) {
-				Tuple rightTuple = (Tuple) iterRight.next();
+		for (Iterator<Tuple> iterLeft = leftHandInput.getTuples().iterator(); iterLeft.hasNext();) {
+			Tuple leftTuple = iterLeft.next();
+			for (Iterator<Tuple> iterRight = rightHandInput.getTuples().iterator(); iterRight.hasNext();) {
+				Tuple rightTuple = iterRight.next();
 				if(joinPossible(leftTuple, rightTuple)) {
 					result.addTuple(join(leftTuple, rightTuple, arity));
 				}

@@ -30,7 +30,7 @@ public class NegationOperationTest extends AbstractRelationOperationTest {
 	}
 
     protected RelationOperation getOperation() {
-    	Set domain = new HashSet();
+    	Set<String> domain = new HashSet<String>();
 		domain.add("1");
 		domain.add("2");
 		domain.add("3");
@@ -50,7 +50,7 @@ public class NegationOperationTest extends AbstractRelationOperationTest {
     	testCases.setUp();
     	
     	RelationTestSetup one = new RelationTestSetup();
-    	Relation testRelOne = RelationTest.stringRelation;
+    	Relation<Object> testRelOne = RelationTest.stringRelation;
         one.input = new Relation[]{testRelOne};
     	one.expectedOutputArity = testRelOne.getArity();
     	one.expectedOutputSize = 7 * 7 * 7 - testRelOne.getSize();

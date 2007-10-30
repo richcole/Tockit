@@ -30,7 +30,8 @@ public class RelationImportPanel extends JPanel {
             return this.character;
         }
         
-        public String toString() {
+        @Override
+		public String toString() {
             return this.displayName;
         }
     }

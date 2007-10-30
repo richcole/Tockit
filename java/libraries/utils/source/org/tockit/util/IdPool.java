@@ -12,7 +12,7 @@ import java.util.Set;
 
 
 public class IdPool {
-    private Set allocatedIds = new HashSet();
+    private Set<String> allocatedIds = new HashSet<String>();
     private int nextNumber = 1;
 
     public String getFreeId() {

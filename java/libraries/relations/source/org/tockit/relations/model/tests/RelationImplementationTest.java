@@ -23,11 +23,13 @@ public class RelationImplementationTest extends RelationTest {
 		return new TestSuite(RelationImplementationTest.class);
 	}
     
-    protected Relation createRelation(String[] dimensionNames) {
-        return new RelationImplementation(dimensionNames);
+    @Override
+	protected Relation<Object> createRelation(String[] dimensionNames) {
+        return new RelationImplementation<Object>(dimensionNames);
     }
 
-    protected Relation createRelation(int arity) {
-        return new RelationImplementation(arity);
+    @Override
+    protected Relation<Object> createRelation(int arity) {
+        return new RelationImplementation<Object>(arity);
     }
 }

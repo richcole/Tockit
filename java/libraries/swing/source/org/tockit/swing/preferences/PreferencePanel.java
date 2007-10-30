@@ -16,25 +16,18 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.Serializable;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 
 import javax.swing.*;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JColorChooser;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
 
 
 public class PreferencePanel extends JTabbedPane {
     private static final Dimension FIELD_SIZE = new Dimension(60,20);
 
-    private HashMap changes = new HashMap();
+    private HashMap<ConfigurationEntry, Serializable> changes = new HashMap<ConfigurationEntry, Serializable>();
 
     public PreferencePanel(ConfigurationSection[] sections, Component parent) {
         for (int i = 0; i < sections.length; i++) {
@@ -133,7 +126,8 @@ public class PreferencePanel extends JTabbedPane {
             field.setHorizontalAlignment(SwingConstants.RIGHT);
             field.setText("" + prefs.getDouble(entry.getKey(), 0));
             field.setInputVerifier(new InputVerifier() {
-                public boolean verify(JComponent input) {
+                @Override
+				public boolean verify(JComponent input) {
                     try {
                         Double value = new Double(field.getText());
                         prefs.putDouble(entry.getKey(), value.doubleValue());
@@ -151,7 +145,8 @@ public class PreferencePanel extends JTabbedPane {
             field.setHorizontalAlignment(SwingConstants.RIGHT);
             field.setText("" + prefs.getInt(entry.getKey(), 0));
             field.setInputVerifier(new InputVerifier() {
-                public boolean verify(JComponent input) {
+                @Override
+				public boolean verify(JComponent input) {
                     try {
                         Integer value = new Integer(field.getText());
                         prefs.putInt(entry.getKey(), value.intValue());
@@ -169,7 +164,8 @@ public class PreferencePanel extends JTabbedPane {
             field.setHorizontalAlignment(SwingConstants.RIGHT);
             field.setText(prefs.get(entry.getKey(), ""));
             field.setInputVerifier(new InputVerifier() {
-                public boolean verify(JComponent input) {
+                @Override
+				public boolean verify(JComponent input) {
                     prefs.put(entry.getKey(), field.getText());
                     return true;
                 }
@@ -199,8 +195,8 @@ public class PreferencePanel extends JTabbedPane {
     }
 
     public void applyChanges() {
-        for (Iterator iter = this.changes.keySet().iterator(); iter.hasNext(); ) {
-            ConfigurationEntry entry = (ConfigurationEntry) iter.next();
+        for (Iterator<ConfigurationEntry> iter = this.changes.keySet().iterator(); iter.hasNext(); ) {
+            ConfigurationEntry entry = iter.next();
             ExtendedPreferences prefs = entry.getNode();
             if(entry.getType() == ConfigurationType.BOOLEAN) {
                 Boolean bool = (Boolean) this.changes.get(entry);

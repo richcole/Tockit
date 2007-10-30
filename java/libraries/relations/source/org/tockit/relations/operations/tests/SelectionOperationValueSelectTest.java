@@ -39,7 +39,7 @@ public class SelectionOperationValueSelectTest extends AbstractRelationOperation
     	testCases.setUp();
     	
     	RelationTestSetup one = new RelationTestSetup();
-    	Relation testRelOne = RelationTest.stringRelation;
+    	Relation<Object> testRelOne = RelationTest.stringRelation;
         one.input = new Relation[]{testRelOne};
     	one.expectedOutputArity = testRelOne.getArity();
     	one.expectedOutputSize = 2;

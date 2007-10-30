@@ -10,7 +10,7 @@ package org.tockit.context.model;
 import org.tockit.util.ListSet;
 
 
-public interface ListsContext extends Context {
-    ListSet getObjectList();
-    ListSet getAttributeList();
+public interface ListsContext<O,A> extends Context<O,A> {
+    ListSet<O> getObjectList();
+    ListSet<A> getAttributeList();
 }

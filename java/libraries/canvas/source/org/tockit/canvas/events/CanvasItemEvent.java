@@ -13,7 +13,7 @@ import org.tockit.events.Event;
 /**
  * A generic class for all canvas item related events.
  */
-abstract public class CanvasItemEvent implements Event {
+abstract public class CanvasItemEvent implements Event<CanvasItem> {
     private CanvasItem item;
     private int modifiers;
 
@@ -28,7 +28,10 @@ abstract public class CanvasItemEvent implements Event {
 
     /**
      * Returns the item attached to the event.
+     * 
+     * @deprecated same effect as getSubject().
      */
+    @Deprecated
     public CanvasItem getItem() {
         return item;
     }
@@ -36,7 +39,7 @@ abstract public class CanvasItemEvent implements Event {
     /**
      * Implements Event.getSource() by returning the item attached to this event.
      */
-    public Object getSubject() {
+    public CanvasItem getSubject() {
         return item;
     }
 

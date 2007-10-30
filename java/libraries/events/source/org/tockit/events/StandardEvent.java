@@ -7,14 +7,14 @@
  */
 package org.tockit.events;
 
-public class StandardEvent implements Event {
-    private Object subject;
+public class StandardEvent<T> implements Event<T> {
+    private T subject;
 
-    public StandardEvent(Object subject) {
+    public StandardEvent(T subject) {
         this.subject = subject;
     }
 
-    public Object getSubject() {
+    public T getSubject() {
         return subject;
     }
 }

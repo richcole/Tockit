@@ -14,8 +14,8 @@ import java.util.Vector;
  */
 public class CernatoModel {
     private CernatoTable context = new CernatoTable();
-    private Vector types = new Vector();
-    private Vector views = new Vector();
+    private Vector<TypeImplementation> types = new Vector<TypeImplementation>();
+    private Vector<View> views = new Vector<View>();
 
     public CernatoModel() {
         // nothing to do
@@ -25,11 +25,11 @@ public class CernatoModel {
         return context;
     }
 
-    public Vector getTypes() {
+    public Vector<TypeImplementation> getTypes() {
         return types;
     }
 
-    public Vector getViews() {
+    public Vector<View> getViews() {
         return views;
     }
 }

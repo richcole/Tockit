@@ -67,8 +67,8 @@ public class PermutationOperation extends AbstractUnaryRelationOperation {
     public Relation apply(Relation input) {
         String[] dimensionNames = getDimensionNames(input);
     	RelationImplementation result = new RelationImplementation(dimensionNames);
-    	for (Iterator iter = input.getTuples().iterator(); iter.hasNext();) {
-            Tuple tuple = (Tuple) iter.next();
+    	for (Iterator<Tuple> iter = input.getTuples().iterator(); iter.hasNext();) {
+            Tuple tuple = iter.next();
             result.addTuple(permute(tuple.getData()));
         }
         return result;

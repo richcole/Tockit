@@ -64,22 +64,26 @@ public class ExtendedUndoManager extends UndoManager {
 		redoAction.putValue(Action.NAME, getRedoPresentationName());
 	}
 	
+	@Override
 	public synchronized boolean addEdit(UndoableEdit anEdit) {
 		boolean result = super.addEdit(anEdit);
 		updateActions();
 		return result;
 	}
 	
+	@Override
 	public synchronized void discardAllEdits() {
 		super.discardAllEdits();
 		updateActions();
 	}
 	
+	@Override
 	public synchronized void redo() throws CannotRedoException {
 		super.redo();
 		updateActions();
 	}
 
+	@Override
 	public synchronized void undo() throws CannotUndoException {
 		super.undo();
 		updateActions();

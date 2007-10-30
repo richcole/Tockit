@@ -17,8 +17,11 @@ import java.util.Set;
  * String[]. If you don't want names, use the constructor taking an int. In that
  * case the names will all be null, but the call to getVariableNames() will never
  * return null itself.
+ * 
+ * R is the overall range of the relation, i.e. the base type of all types allowed
+ * in any column of the relation.
  */
-public interface Relation {
+public interface Relation<R> {
     /**
      * Adds a tuple into the relation.
      * 
@@ -26,7 +29,7 @@ public interface Relation {
      * @param tuple a Tuple matching the relation's arity
      * @throws IllegalArgumentException if the arity is not matched
      */
-    void addTuple(Tuple tuple);
+    void addTuple(Tuple<R> tuple);
     
     /**
      * Adds an array of objects as Tuple into the relation.
@@ -38,7 +41,7 @@ public interface Relation {
      * @param data an Object[] matching the relation's arity
      * @throws IllegalArgumentException if the arity is not matched
      */
-    void addTuple(Object[] data);
+    void addTuple(R[] data);
     
     /**
      * Returns the names for the dimensions of the relation.
@@ -69,7 +72,7 @@ public interface Relation {
      * 
      * @return Set all tuples as unmodifiable collection, type Tuple
      */
-    Set getTuples();
+    Set<Tuple<R>> getTuples();
     
     /**
      * Returns true iff the given Tuple is part of the relation.
@@ -78,7 +81,7 @@ public interface Relation {
      * @param tuple a Tuple matching the relation's arity
      * @throws IllegalArgumentException if the arity is not matched
      */
-    boolean isRelated(Tuple tuple);
+    boolean isRelated(Tuple<R> tuple);
     
     /**
      * Returns true iff the given array is part of the relation.
@@ -89,14 +92,14 @@ public interface Relation {
      * @param data an Object[] matching the relation's arity
      * @throws IllegalArgumentException if the arity is not matched
      */
-    boolean isRelated(Object[] data);
+    boolean isRelated(R[] data);
 
 	/**
 	 * Returns the relation as a set of tuples.
 	 * 
-	 * The dimension names will get lost in the reutrn value.
+	 * The dimension names will get lost in the return value.
 	 * 
 	 * @return a read-only Set of the tuples of the relation.
 	 */
-    Set toSet();
+    Set<Tuple<R>> toSet();
 }

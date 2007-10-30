@@ -33,32 +33,32 @@ import org.tockit.util.ListSetImplementation;
  * buildClosures() can be called to extent this to the full sub-/superconcept
  * relation.
  */
-public class ConceptImplementation implements Concept {
-    private ListSet attributeContingent = new ListSetImplementation();
-    private ListSet objectContingent = new ListSetImplementation();
+public class ConceptImplementation<O,A> implements Concept<O,A> {
+    private ListSet<A> attributeContingent = new ListSetImplementation<A>();
+    private ListSet<O> objectContingent = new ListSetImplementation<O>();
 
     /**
      * This class implements an iterator that iterates over all attribute
      * contingents of a given concept set.
      */
-    class AttributeIterator implements Iterator {
+    class AttributeIterator implements Iterator<A> {
         /**
          * Stores the main iterator on the concepts.
          */
-        Iterator mainIterator;
+        Iterator<Concept<O,A>> mainIterator;
 
         /**
          * Stores the secondary iterator on the attributes of one concept.
          */
-        Iterator secondaryIterator;
+        Iterator<A> secondaryIterator;
 
         /**
          * We start with the iterator of all concepts that we want to visit.
          */
-        AttributeIterator(Iterator main) {
+        AttributeIterator(Iterator<Concept<O,A>> main) {
             this.mainIterator = main;
             if (main.hasNext()) {
-                Concept first = (Concept) main.next();
+                Concept<O,A> first = main.next();
                 this.secondaryIterator = first.getAttributeContingentIterator();
             } else {
                 this.secondaryIterator = null;
@@ -77,7 +77,7 @@ public class ConceptImplementation implements Concept {
             // empty contingents coming ahead
             while (!this.secondaryIterator.hasNext() && this.mainIterator.hasNext()) {
                 // go to next concept
-                Concept next = (Concept) this.mainIterator.next();
+                Concept<O,A> next = this.mainIterator.next();
                 this.secondaryIterator = next.getAttributeContingentIterator();
             }
             return this.secondaryIterator.hasNext();
@@ -86,7 +86,7 @@ public class ConceptImplementation implements Concept {
         /**
          * Returns the next attribute.
          */
-        public Object next() {
+        public A next() {
             if (this.secondaryIterator == null) {
                 throw new NoSuchElementException();
             }
@@ -99,7 +99,7 @@ public class ConceptImplementation implements Concept {
             // empty contingents coming ahead
             while (!this.secondaryIterator.hasNext() && this.mainIterator.hasNext()) {
                 // go to next concept
-                Concept next = (Concept) this.mainIterator.next();
+                Concept<O,A> next = this.mainIterator.next();
                 this.secondaryIterator = next.getAttributeContingentIterator();
             }
             return this.secondaryIterator.next();
@@ -117,24 +117,24 @@ public class ConceptImplementation implements Concept {
      * This class implements an iterator that iterates over all object
      * contingents of a given concept set.
      */
-    class ObjectIterator implements Iterator {
+    class ObjectIterator implements Iterator<O> {
         /**
          * Stores the main iterator on the concepts.
          */
-        Iterator mainIterator;
+        Iterator<Concept<O,A>> mainIterator;
 
         /**
          * Stores the secondary iterator on the objects of one concept.
          */
-        Iterator secondaryIterator;
+        Iterator<O> secondaryIterator;
 
         /**
          * We start with the iterator of all concepts that we want to visit.
          */
-        ObjectIterator(Iterator main) {
+        ObjectIterator(Iterator<Concept<O,A>> main) {
             this.mainIterator = main;
             if (main.hasNext()) {
-                Concept first = (Concept) main.next();
+                Concept<O,A> first = main.next();
                 this.secondaryIterator = first.getObjectContingentIterator();
             } else {
                 this.secondaryIterator = null;
@@ -153,7 +153,7 @@ public class ConceptImplementation implements Concept {
             // empty contingents coming ahead
             while (!this.secondaryIterator.hasNext() && this.mainIterator.hasNext()) {
                 // go to next concept
-                Concept next = (Concept) this.mainIterator.next();
+                Concept<O,A> next = this.mainIterator.next();
                 this.secondaryIterator = next.getObjectContingentIterator();
             }
             return this.secondaryIterator.hasNext();
@@ -162,7 +162,7 @@ public class ConceptImplementation implements Concept {
         /**
          * Returns the next object.
          */
-        public Object next() {
+        public O next() {
             if (this.secondaryIterator == null) {
                 throw new NoSuchElementException();
             }
@@ -175,7 +175,7 @@ public class ConceptImplementation implements Concept {
             // empty contingents coming ahead
             while (!this.secondaryIterator.hasNext() && this.mainIterator.hasNext()) {
                 // go to next concept
-                Concept next = (Concept) this.mainIterator.next();
+                Concept<O,A> next = this.mainIterator.next();
                 this.secondaryIterator = next.getObjectContingentIterator();
             }
             return this.secondaryIterator.next();
@@ -192,12 +192,12 @@ public class ConceptImplementation implements Concept {
     /**
      * Stores all concepts in the filter, including this.
      */
-    protected Set filter = new HashSet();
+    protected Set<Concept<O,A>> filter = new HashSet<Concept<O,A>>();
 
     /**
      * Stores all concepts in the ideal, including this.
      */
-    protected Set ideal = new HashSet();
+    protected Set<Concept<O,A>> ideal = new HashSet<Concept<O,A>>();
 
     /**
      * Stores the number of objects in the extent to avoid unneccessary
@@ -230,14 +230,14 @@ public class ConceptImplementation implements Concept {
     /**
      * Adds a concept to the filter.
      */
-    public void addSuperConcept(Concept superConcept) {
+    public void addSuperConcept(Concept<O,A> superConcept) {
         this.filter.add(superConcept);
     }
 
     /**
      * Adds a concept to the ideal.
      */
-    public void addSubConcept(Concept subConcept) {
+    public void addSubConcept(Concept<O,A> subConcept) {
         this.ideal.add(subConcept);
     }
 
@@ -250,24 +250,24 @@ public class ConceptImplementation implements Concept {
      * transitive closures.
      */
     public void buildClosures() {
-        List idealList = new LinkedList(ideal);
+        List<Concept<O,A>> idealList = new LinkedList<Concept<O,A>>(ideal);
         while (!idealList.isEmpty()) {
-            ConceptImplementation other = (ConceptImplementation) idealList.remove(0);
-            Iterator it = other.ideal.iterator();
+        	Concept<O,A> other = idealList.remove(0);
+            Iterator<Concept<O,A>> it = other.getDownset().iterator();
             while (it.hasNext()) {
-                Object trans = it.next();
+            	Concept<O,A> trans = it.next();
                 if (ideal.add(trans)) {
                     idealList.add(trans);
                 }
             }
         }
 
-        List filterList = new LinkedList(filter);
+        List<Concept<O,A>> filterList = new LinkedList<Concept<O,A>>(filter);
         while (!filterList.isEmpty()) {
-            ConceptImplementation other = (ConceptImplementation) filterList.remove(0);
-            Iterator it = other.filter.iterator();
+        	Concept<O,A> other = filterList.remove(0);
+            Iterator<Concept<O,A>> it = other.getUpset().iterator();
             while (it.hasNext()) {
-                Object trans = it.next();
+            	Concept<O,A> trans = it.next();
                 if (filter.add(trans)) {
                     filterList.add(trans);
                 }
@@ -281,9 +281,9 @@ public class ConceptImplementation implements Concept {
     public int getIntentSize() {
         if (intentSize < 0) { // not yet calculated
             intentSize = 0;
-            Iterator it = filter.iterator();
+            Iterator<Concept<O, A>> it = filter.iterator();
             while (it.hasNext()) {
-                Concept cur = (Concept) it.next();
+                Concept<O,A> cur = it.next();
                 intentSize += cur.getAttributeContingentSize();
             }
         }
@@ -303,9 +303,9 @@ public class ConceptImplementation implements Concept {
     public int getExtentSize() {
         if (extentSize < 0) { // not yet calculated
             extentSize = 0;
-            Iterator it = ideal.iterator();
+            Iterator<Concept<O,A>> it = ideal.iterator();
             while (it.hasNext()) {
-                Concept cur = (Concept) it.next();
+                Concept<O,A> cur = it.next();
                 extentSize += cur.getObjectContingentSize();
             }
         }
@@ -322,14 +322,14 @@ public class ConceptImplementation implements Concept {
     /**
      * Iterates over all attribute contingents in the filter.
      */
-    public Iterator getIntentIterator() {
+    public Iterator<A> getIntentIterator() {
         return new AttributeIterator(this.filter.iterator());
     }
 
     /**
      * Iterates over all object contingents in the ideal.
      */
-    public Iterator getExtentIterator() {
+    public Iterator<O> getExtentIterator() {
         return new ObjectIterator(this.ideal.iterator());
     }
 
@@ -353,18 +353,18 @@ public class ConceptImplementation implements Concept {
      * This is equal to the size of the extent of the top node.
      */
     private int getNumberOfObjects() {
-        ConceptImplementation cur = this;
-        while (cur.filter.size() != 1) {
+        Concept<O,A> cur = this;
+        while (cur.getUpset().size() != 1) {
             // there is another concept in the filter which is not this
             // (this is always the first) ==> go up
             // The concept itself is in the filter, too -- we have to avoid
             // infinite recursion here
-            Iterator it = cur.filter.iterator();
-            Object next = cur;
+            Iterator<Concept<O,A>> it = cur.getUpset().iterator();
+            Concept<O,A> next = cur;
             while (cur == next) { // we know there has to be a next()
                 next = it.next();
             }
-            cur = (ConceptImplementation) next;
+            cur = next;
         }
         // now we are at the top
         return cur.getExtentSize();
@@ -376,18 +376,18 @@ public class ConceptImplementation implements Concept {
      * This is equal to the size of the intent of the bottom node.
      */
     private int getNumberOfAttributes() {
-        ConceptImplementation cur = this;
-        while (cur.ideal.size() != 1) {
+        Concept<O,A> cur = this;
+        while (cur.getDownset().size() != 1) {
             // there is another concept in the ideal which is not this
             // (this is always the first) ==> go down
             // The concept itself is in the filter, too -- we have to avoid
             // infinite recursion here
-            Iterator it = cur.ideal.iterator();
-            Object next = cur;
+            Iterator<Concept<O,A>> it = cur.getDownset().iterator();
+            Concept<O,A> next = cur;
             while (cur == next) { // we know there has to be a next()
                 next = it.next();
             }
-            cur = (ConceptImplementation) next;
+            cur = next;
         }
         // now we are at the bottom
         return cur.getIntentSize();
@@ -410,22 +410,22 @@ public class ConceptImplementation implements Concept {
     /**
      * Returns true iff the given concept is in the filter of this one.
      */
-    public boolean hasSuperConcept(Concept concept) {
+    public boolean hasSuperConcept(Concept<O,A> concept) {
         return this.filter.contains(concept);
     }
 
     /**
      * Returns true iff the given concept is in the ideal of this one.
      */
-    public boolean hasSubConcept(Concept concept) {
+    public boolean hasSubConcept(Concept<O,A> concept) {
         return this.ideal.contains(concept);
     }
 
-    public Collection getDownset() {
+    public Collection<Concept<O,A>> getDownset() {
         return this.ideal;
     }
 
-    public Collection getUpset() {
+    public Collection<Concept<O,A>> getUpset() {
         return this.filter;
     }
 
@@ -437,40 +437,40 @@ public class ConceptImplementation implements Concept {
         return this.objectContingent.size();
     }
 
-    public Iterator getAttributeContingentIterator() {
+    public Iterator<A> getAttributeContingentIterator() {
         return this.attributeContingent.iterator();
     }
 
-    public Iterator getObjectContingentIterator() {
+    public Iterator<O> getObjectContingentIterator() {
         return this.objectContingent.iterator();
     }
 
-    public void addObject(Object object) {
+    public void addObject(O object) {
         this.objectContingent.add(object);
     }
 
-    public void addAttribute(Object attribute) {
+    public void addAttribute(A attribute) {
         this.attributeContingent.add(attribute);
     }
     
-    public void replaceObject(Object objectToReplace, Object newObject) {
+    public void replaceObject(O objectToReplace, O newObject) {
 		// @todo make sure new object is inserted at the same position where old one was
     	this.objectContingent.remove(objectToReplace);
     	this.objectContingent.add(newObject);
     }
 
-    public void removeObject(Object object) {
+    public void removeObject(O object) {
         this.objectContingent.remove(object);
     }
 
-    public void removeAttribute(Object attribute) {
+    public void removeAttribute(A attribute) {
         this.attributeContingent.remove(attribute);
     }
 
     public boolean isMeetIrreducible() {
-        for (Iterator iterator = filter.iterator(); iterator.hasNext();) {
-            ConceptImplementation conceptImplementation = (ConceptImplementation) iterator.next();
-            if (conceptImplementation.filter.size() == this.filter.size() - 1) {
+        for (Iterator<Concept<O,A>> iterator = filter.iterator(); iterator.hasNext();) {
+            Concept<O,A> concept = iterator.next();
+            if (concept.getUpset().size() == this.filter.size() - 1) {
                 return true;
             }
         }
@@ -478,9 +478,9 @@ public class ConceptImplementation implements Concept {
     }
 
     public boolean isJoinIrreducible() {
-        for (Iterator iterator = filter.iterator(); iterator.hasNext();) {
-            ConceptImplementation conceptImplementation = (ConceptImplementation) iterator.next();
-            if (conceptImplementation.filter.size() == this.filter.size() - 1) {
+        for (Iterator<Concept<O,A>> iterator = getDownset().iterator(); iterator.hasNext();) {
+        	Concept<O,A> concept = iterator.next();
+            if (concept.getDownset().size() == this.getDownset().size() - 1) {
                 return true;
             }
         }
@@ -491,26 +491,26 @@ public class ConceptImplementation implements Concept {
     	this.objectContingent.clear();
     }
 
-	public Concept getTopConcept() {
-		Concept topCandidate = this;
+	public Concept<O,A> getTopConcept() {
+		Concept<O,A> topCandidate = this;
 		while (!topCandidate.isTop()) {
-			Concept other = topCandidate;
-			Iterator it = topCandidate.getUpset().iterator();
+			Concept<O,A> other = topCandidate;
+			Iterator<Concept<O,A>> it = topCandidate.getUpset().iterator();
 			do {
-				other = (Concept) it.next();
+				other = it.next();
 			} while (other == topCandidate);
 			topCandidate = other;
 		}
 		return topCandidate;
 	}
 
-	public Concept getBottomConcept() {
-		Concept bottomCandidate = this;
+	public Concept<O,A> getBottomConcept() {
+		Concept<O,A> bottomCandidate = this;
 		while (!bottomCandidate.isBottom()) {
-			Concept other = bottomCandidate;
-			Iterator it = bottomCandidate.getDownset().iterator();
+			Concept<O,A> other = bottomCandidate;
+			Iterator<Concept<O,A>> it = bottomCandidate.getDownset().iterator();
 			do {
-				other = (Concept) it.next();
+				other = it.next();
 			} while (other == bottomCandidate);
 			bottomCandidate = other;
 		}

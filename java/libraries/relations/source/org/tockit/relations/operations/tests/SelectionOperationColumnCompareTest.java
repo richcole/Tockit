@@ -39,7 +39,7 @@ public class SelectionOperationColumnCompareTest extends AbstractRelationOperati
     	testCases.setUp();
     	
     	RelationTestSetup one = new RelationTestSetup();
-    	Relation testRelOne = RelationTest.stringRelation;
+    	Relation<Object> testRelOne = RelationTest.stringRelation;
     	testRelOne.addTuple(new String[]{"6","6","6"});
         one.input = new Relation[]{testRelOne};
     	one.expectedOutputArity = testRelOne.getArity();

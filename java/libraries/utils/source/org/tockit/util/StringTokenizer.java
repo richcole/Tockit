@@ -117,10 +117,10 @@ public class StringTokenizer implements Iterator {
      * @return all tokens found in the original string
      */
     public String[] tokenizeAll() {
-        List result = new ArrayList();
+        List<Object> result = new ArrayList<Object>();
         while(this.hasNext()) {
             result.add(next());
         }
-        return (String[]) result.toArray(new String[] {});
+        return result.toArray(new String[] {});
     }
 }

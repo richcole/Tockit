@@ -15,17 +15,21 @@ import org.tockit.events.Event;
  * 
  * This is useful for animations and user feedback.
  */
-public class CanvasDrawnEvent implements Event {
+public class CanvasDrawnEvent implements Event<Canvas> {
     private Canvas subject;
 
     public CanvasDrawnEvent(Canvas subject) {
         this.subject = subject;
     }
 
-    public Object getSubject() {
+    public Canvas getSubject() {
         return subject;
     }
     
+    /**
+     * Same effect as calling getSubject().
+     */
+    @Deprecated
     public Canvas getCanvas() {
     	return subject;
     }

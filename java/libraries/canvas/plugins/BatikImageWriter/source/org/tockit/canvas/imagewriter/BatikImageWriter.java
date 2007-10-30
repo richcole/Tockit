@@ -36,14 +36,16 @@ public class BatikImageWriter implements ImageWriter {
         /**
          * Implements GraphicFormat.getName().
          */
-        public String getName() {
+        @Override
+		public String getName() {
             return "Scalable Vector Graphics";
         }
 
         /**
          * Implements GraphicFormat.getExtensions().
          */
-        public String[] getExtensions() {
+        @Override
+		public String[] getExtensions() {
             String[] retVal = new String[1];
             retVal[0] = "svg";
             return retVal;
@@ -52,7 +54,8 @@ public class BatikImageWriter implements ImageWriter {
         /**
          * Implements GraphicFormat.getWriter().
          */
-        public ImageWriter getWriter() {
+        @Override
+		public ImageWriter getWriter() {
             return singleton;
         }
     }
@@ -64,14 +67,16 @@ public class BatikImageWriter implements ImageWriter {
         /**
          * Implements GraphicFormat.getName().
          */
-        public String getName() {
+        @Override
+		public String getName() {
             return "Scalable Vector Graphics (compressed)";
         }
 
         /**
          * Implements GraphicFormat.getExtensions().
          */
-        public String[] getExtensions() {
+        @Override
+		public String[] getExtensions() {
             String[] retVal = new String[1];
             retVal[0] = "svgz";
             return retVal;
@@ -80,7 +85,8 @@ public class BatikImageWriter implements ImageWriter {
         /**
          * Implements GraphicFormat.getWriter().
          */
-        public ImageWriter getWriter() {
+        @Override
+		public ImageWriter getWriter() {
             return singleton;
         }
     }

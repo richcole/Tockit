@@ -16,20 +16,20 @@ import java.util.List;
 import java.util.ListIterator;
 
 
-public class ListSetImplementation extends AbstractList implements ListSet {
-    private List list;
+public class ListSetImplementation<E> extends AbstractList<E> implements ListSet<E> {
+    private List<E> list;
     
-    private static final class UnmodifiableListSet implements ListSet {
-        private static final class UnmodifiableListIterator implements ListIterator {
-            ListIterator origIt;
-            private UnmodifiableListIterator(ListIterator i) {
+    private static final class UnmodifiableListSet<E> implements ListSet<E> {
+        private static final class UnmodifiableListIterator<E> implements ListIterator<E> {
+            ListIterator<E> origIt;
+            private UnmodifiableListIterator(ListIterator<E> i) {
                 super();
                 this.origIt = i;
             }
             public boolean hasNext()     {return origIt.hasNext();}
-            public Object next()         {return origIt.next();}
+            public E next()         {return origIt.next();}
             public boolean hasPrevious() {return origIt.hasPrevious();}
-            public Object previous()     {return origIt.previous();}
+            public E previous()     {return origIt.previous();}
             public int nextIndex()       {return origIt.nextIndex();}
             public int previousIndex()   {return origIt.previousIndex();}
             public void remove() {
@@ -43,9 +43,9 @@ public class ListSetImplementation extends AbstractList implements ListSet {
             }
         }
 
-        private ListSet orig;
+        private ListSet<E> orig;
         
-        public UnmodifiableListSet(ListSet orig) {
+        public UnmodifiableListSet(ListSet<E> orig) {
             if(orig == null) {
                 throw new NullPointerException("Wrapped ListSet must not be null");
             }
@@ -68,11 +68,11 @@ public class ListSetImplementation extends AbstractList implements ListSet {
             return this.orig.toArray();
         }
 
-        public Object get(int index) {
+        public E get(int index) {
             return this.orig.get(index);
         }
 
-        public Object remove(int index) {
+        public E remove(int index) {
             throw new UnsupportedOperationException();
         }
 
@@ -100,77 +100,82 @@ public class ListSetImplementation extends AbstractList implements ListSet {
             throw new UnsupportedOperationException();
         }
 
-        public boolean addAll(int index, Collection c) {
+        public boolean addAll(int index, Collection<? extends E> c) {
             throw new UnsupportedOperationException();
         }
 
-        public boolean addAll(Collection c) {
+        public boolean addAll(Collection<? extends E> c) {
             throw new UnsupportedOperationException();
         }
 
-        public boolean containsAll(Collection c) {
+        public boolean containsAll(Collection<?> c) {
             return this.orig.containsAll(c);
         }
 
-        public boolean removeAll(Collection c) {
+        public boolean removeAll(Collection<?> c) {
             throw new UnsupportedOperationException();
         }
 
-        public boolean retainAll(Collection c) {
+        public boolean retainAll(Collection<?> c) {
             throw new UnsupportedOperationException();
         }
 
-        public Iterator iterator() {
-            return new UnmodifiableListIterator(this.orig.listIterator());
+        public Iterator<E> iterator() {
+            return new UnmodifiableListIterator<E>(this.orig.listIterator());
         }
 
-        public List subList(int fromIndex, int toIndex) {
+        public List<E> subList(int fromIndex, int toIndex) {
             return Collections.unmodifiableList(orig.subList(fromIndex, toIndex));
         }
 
-        public ListIterator listIterator() {
-            return new UnmodifiableListIterator(this.orig.listIterator());
+        public ListIterator<E> listIterator() {
+            return new UnmodifiableListIterator<E>(this.orig.listIterator());
         }
 
-        public ListIterator listIterator(int index) {
-            return new UnmodifiableListIterator(this.orig.listIterator(index));
+        public ListIterator<E> listIterator(int index) {
+            return new UnmodifiableListIterator<E>(this.orig.listIterator(index));
         }
 
-        public Object set(int index, Object element) {
+        public E set(int index, E element) {
             throw new UnsupportedOperationException();
         }
 
-        public Object[] toArray(Object[] a) {
+        public <T> T[] toArray(T[] a) {
             return this.orig.toArray(a);
         }
     }
     
     public ListSetImplementation() {
-        this.list = new ArrayList();
+        this.list = new ArrayList<E>();
     }
     
-    public ListSetImplementation(Collection other) {
-        this.list = new ArrayList();
+    public ListSetImplementation(Collection<E> other) {
+        this.list = new ArrayList<E>();
         addAll(other);
     }
     
-    public int size() {
+    @Override
+	public int size() {
         return this.list.size();
     }
 
-    public void clear() {
+    @Override
+	public void clear() {
         this.list.clear();
     }
     
-    public boolean isEmpty() {
+    @Override
+	public boolean isEmpty() {
         return this.list.isEmpty();
     }
 
-    public Object[] toArray() {
+    @Override
+	public Object[] toArray() {
         return this.list.toArray();
     }
 
-    public boolean add(Object o) {
+    @Override
+	public boolean add(E o) {
         if(this.list.contains(o)) {
             return false;
         }
@@ -178,29 +183,33 @@ public class ListSetImplementation extends AbstractList implements ListSet {
         return true;
     }
 
-    public Object get(int index) {
+    @Override
+	public E get(int index) {
         return this.list.get(index);
     }
 
-    public void add(int index, Object element) {
+    @Override
+	public void add(int index, E element) {
         if(this.list.contains(element)) {
             this.list.remove(element);
         }
         this.list.add(index, element);
     }
 
-    public Object remove(int index) {
+    @Override
+	public E remove(int index) {
         return this.list.remove(index);
     }
 
-    public Object set(int index, Object element) {
+    @Override
+	public E set(int index, E element) {
         if(this.list.contains(element) && this.list.get(index) != element) {
             throw new IllegalArgumentException("Can not add objects twice");
         }
         return this.list.set(index, element);
     }
 
-    public static ListSet unmodifiableListSet(ListSet set) {
-        return new UnmodifiableListSet(set);
+    public static<T> ListSet<T> unmodifiableListSet(ListSet<T> set) {
+        return new UnmodifiableListSet<T>(set);
     }
 }

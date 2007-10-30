@@ -87,9 +87,9 @@ class FormalContextParser extends CSCFileSectionParser {
                                           file.getLocation() + "'");
         }
 
-		Iterator objIt = context.getObjects().iterator(); // iterate over objects/rows
+		Iterator<FCAObject> objIt = context.getObjects().iterator(); // iterate over objects/rows
 		while (objIt.hasNext()) {
-			FCAObject object = (FCAObject) objIt.next();
+			FCAObject object = objIt.next();
 			String row = tokenizer.getCurrentToken(); // get row string
 			if (row.length() == 0) {
 				throw new DataFormatException(
@@ -101,10 +101,10 @@ class FormalContextParser extends CSCFileSectionParser {
 					"Incomplete row in the relation in line "
 						+ tokenizer.getCurrentLine());
 			}
-			Iterator attrIt = context.getAttributes().iterator(); // iterate over attributes
+			Iterator<FCAAttribute> attrIt = context.getAttributes().iterator(); // iterate over attributes
 			int i = 0; // count pos in string
 			while (attrIt.hasNext()) {
-				FCAAttribute attribute = (FCAAttribute) attrIt.next();
+				FCAAttribute attribute = attrIt.next();
 				if (row.charAt(i) == '*') {
 					context.setRelationship(object,attribute); // hit --> add to relation
 				}

@@ -27,24 +27,27 @@ public class DropColumnsOperationTest extends AbstractRelationOperationTest {
 		return new TestSuite(DropColumnsOperationTest.class);
 	}
 
-    protected RelationOperation getOperation() {
+    @Override
+	protected RelationOperation getOperation() {
         return new DropColumnsOperation(new int[]{1,3});
     }
 
-    protected int getExpectedArity() {
+    @Override
+	protected int getExpectedArity() {
         return 1;
     }
 
-    protected RelationTestSetup[] getTests() {
+    @Override
+	protected RelationTestSetup[] getTests() {
     	RelationImplementationTest testCases = new RelationImplementationTest("test cases");
     	testCases.setUp();
     	
     	RelationTestSetup one = new RelationTestSetup();
-    	Relation testRelOne = RelationTest.objectRelation;
+    	Relation<Object> testRelOne = RelationTest.objectRelation;
         one.input = new Relation[]{testRelOne};
     	one.expectedOutputArity = 3; // we dropped 2 out of 5
     	one.expectedOutputSize = 4; // 2 out of the 5 are the same after projection
-    	Tuple first = (Tuple) testRelOne.getTuples().iterator().next();
+    	Tuple<Object> first = testRelOne.getTuples().iterator().next();
 		one.expectedTuples = new Object[][]{new Object[]{first.getElement(0), first.getElement(2), first.getElement(4)}};
     	
         return new RelationTestSetup[]{one};

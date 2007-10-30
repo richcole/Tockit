@@ -69,7 +69,7 @@ public class Canvas extends JPanel implements Printable {
      * with the layerNameMapping, but we need both to ensure the proper order of
      * the layers.
      */
-    protected List canvasLayers = new ArrayList();
+    protected List<List<CanvasItem>> canvasLayers = new ArrayList<List<CanvasItem>>();
 
     /**
      * Stores the names of the layers as a mapping into the layer objects.
@@ -79,7 +79,7 @@ public class Canvas extends JPanel implements Printable {
      * backwards compatibility), otherwise each layer has to have its unique
      * name.
      */
-    protected Hashtable layerNameMapping = new Hashtable();
+    protected Hashtable<String, List<CanvasItem>> layerNameMapping = new Hashtable<String, List<CanvasItem>>();
 
     /**
      * These items are marked to be raised.
@@ -89,7 +89,7 @@ public class Canvas extends JPanel implements Printable {
      * 
      * @todo we need the same for addition
      */
-    protected List itemsToRaise = new ArrayList();
+    protected List<CanvasItem> itemsToRaise = new ArrayList<CanvasItem>();
 
     /**
      * Stores the transformation matrix we used on the last draw event.
@@ -148,12 +148,12 @@ public class Canvas extends JPanel implements Printable {
         this.background.draw(graphics);
         raiseMarkedItems();
         // paint all items on canvas
-        Iterator layerIt = this.canvasLayers.iterator();
+        Iterator<List<CanvasItem>> layerIt = this.canvasLayers.iterator();
         while (layerIt.hasNext()) {
-            Collection layer = (Collection) layerIt.next();
-            Iterator itemIt = layer.iterator();
+            Collection<CanvasItem> layer = layerIt.next();
+            Iterator<CanvasItem> itemIt = layer.iterator();
             while (itemIt.hasNext()) {
-                CanvasItem cur = (CanvasItem) itemIt.next();
+                CanvasItem cur = itemIt.next();
                 if (cur.getPosition() != null) {
                     cur.draw(graphics);
                 }
@@ -171,13 +171,13 @@ public class Canvas extends JPanel implements Printable {
      * ConcurrentModificationExceptions).
      */
     private void raiseMarkedItems() {
-        for (Iterator iterator = itemsToRaise.iterator();
+        for (Iterator<CanvasItem> iterator = itemsToRaise.iterator();
             iterator.hasNext();
             ) {
-            CanvasItem canvasItem = (CanvasItem) iterator.next();
-            Iterator layerIt = this.canvasLayers.iterator();
+            CanvasItem canvasItem = iterator.next();
+            Iterator<List<CanvasItem>> layerIt = this.canvasLayers.iterator();
             while (layerIt.hasNext()) {
-                Collection layer = (Collection) layerIt.next();
+                Collection<CanvasItem> layer = layerIt.next();
                 if (layer.contains(canvasItem)) {
                     layer.remove(canvasItem);
                     layer.add(canvasItem);
@@ -219,12 +219,12 @@ public class Canvas extends JPanel implements Printable {
      */
     public Rectangle2D getCanvasSize(Graphics2D graphics) {
         Rectangle2D retVal = null;
-        Iterator layerIt = this.canvasLayers.iterator();
+        Iterator<List<CanvasItem>> layerIt = this.canvasLayers.iterator();
         while (layerIt.hasNext()) {
-            Collection layer = (Collection) layerIt.next();
-            Iterator itemIt = layer.iterator();
+            Collection<CanvasItem> layer = layerIt.next();
+            Iterator<CanvasItem> itemIt = layer.iterator();
             while (itemIt.hasNext()) {
-                CanvasItem cur = (CanvasItem) itemIt.next();
+                CanvasItem cur = itemIt.next();
                 Rectangle2D curBounds = cur.getCanvasBounds(graphics);
                 if (curBounds == null) {
                     continue; // not visible
@@ -331,13 +331,13 @@ public class Canvas extends JPanel implements Printable {
      * If multiple items are overlapping, the highest one will be returned.
      */
     public CanvasItem getCanvasItemAt(Point2D point) {
-        ListIterator layerIt =
+        ListIterator<List<CanvasItem>> layerIt =
             this.canvasLayers.listIterator(this.canvasLayers.size());
         while (layerIt.hasPrevious()) {
-            List layer = (List) layerIt.previous();
-            ListIterator itemIt = layer.listIterator(layer.size());
+            List<CanvasItem> layer = layerIt.previous();
+            ListIterator<CanvasItem> itemIt = layer.listIterator(layer.size());
             while (itemIt.hasPrevious()) {
-                CanvasItem cur = (CanvasItem) itemIt.previous();
+                CanvasItem cur = itemIt.previous();
                 if (cur.containsPoint(point)) {
                     return cur;
                 }
@@ -349,15 +349,15 @@ public class Canvas extends JPanel implements Printable {
     /**
      * Returns all canvas items at the given point except the background.
      */
-    public Collection getCanvasItemsAt(Point2D point) {
-        Collection retVal = new HashSet();
-        ListIterator layerIt =
+    public Collection<CanvasItem> getCanvasItemsAt(Point2D point) {
+        Collection<CanvasItem> retVal = new HashSet<CanvasItem>();
+        ListIterator<List<CanvasItem>> layerIt =
             this.canvasLayers.listIterator(this.canvasLayers.size());
         while (layerIt.hasPrevious()) {
-            List layer = (List) layerIt.previous();
-            ListIterator itemIt = layer.listIterator(layer.size());
+            List<CanvasItem> layer = layerIt.previous();
+            ListIterator<CanvasItem> itemIt = layer.listIterator(layer.size());
             while (itemIt.hasPrevious()) {
-                CanvasItem cur = (CanvasItem) itemIt.previous();
+                CanvasItem cur = itemIt.previous();
                 if (cur.containsPoint(point)) {
                     retVal.add(cur);
                 }
@@ -410,12 +410,12 @@ public class Canvas extends JPanel implements Printable {
     		throw new NullPointerException("CanvasItem to be added must not be null.");
     	}
         if (this.canvasLayers.isEmpty()) {
-            List newLayer = new ArrayList();
+            List<CanvasItem> newLayer = new ArrayList<CanvasItem>();
             this.canvasLayers.add(newLayer);
             this.layerNameMapping.put("", newLayer);
         }
-        List uppermostLayer =
-            (List) this.canvasLayers.get(this.canvasLayers.size() - 1);
+        List<CanvasItem> uppermostLayer =
+            this.canvasLayers.get(this.canvasLayers.size() - 1);
         uppermostLayer.add(node);
     }
 
@@ -425,7 +425,7 @@ public class Canvas extends JPanel implements Printable {
      * The item will be the uppermost item in the layer.
      */
     public void addCanvasItem(CanvasItem node, String layerName) {
-        List layer = (List) layerNameMapping.get(layerName);
+        List<CanvasItem> layer = layerNameMapping.get(layerName);
         if (layer == null) {
             throw new NoSuchLayerException(
                 "Could not find layer with name \"" + layerName + "\"");
@@ -437,9 +437,9 @@ public class Canvas extends JPanel implements Printable {
      * Removes an item from the canvas.
      */
     public void removeCanvasItem(CanvasItem item) {
-        Iterator layerIt = this.canvasLayers.iterator();
+        Iterator<List<CanvasItem>> layerIt = this.canvasLayers.iterator();
         while (layerIt.hasNext()) {
-            List layer = (List) layerIt.next();
+            List<CanvasItem> layer = layerIt.next();
             layer.remove(item);
         }
         this.itemsToRaise.remove(item);
@@ -451,13 +451,13 @@ public class Canvas extends JPanel implements Printable {
      * Every layer is searched for items of this type and the matches are
      * returned as a list, from the bottommost item upwards.
      */
-    public List getCanvasItemsByType(Class type) {
-        List retVal = new ArrayList();
-        Iterator layerIt = this.canvasLayers.iterator();
+    public List<CanvasItem> getCanvasItemsByType(Class<? extends CanvasItem> type) {
+        List<CanvasItem> retVal = new ArrayList<CanvasItem>();
+        Iterator<List<CanvasItem>> layerIt = this.canvasLayers.iterator();
         while (layerIt.hasNext()) {
-            List layer = (List) layerIt.next();
-            for (Iterator iterator = layer.iterator(); iterator.hasNext();) {
-                CanvasItem canvasItem = (CanvasItem) iterator.next();
+            List<CanvasItem> layer = layerIt.next();
+            for (Iterator<CanvasItem> iterator = layer.iterator(); iterator.hasNext();) {
+                CanvasItem canvasItem = iterator.next();
                 if (type.isAssignableFrom(canvasItem.getClass())) {
                     retVal.add(canvasItem);
                 }
@@ -472,13 +472,13 @@ public class Canvas extends JPanel implements Printable {
      * Canvas items (excluding the background) are returned as a single list,
      * from the bottommost item upwards.
      */
-    public List getCanvasItems() {
-        List retVal = new ArrayList();
-        Iterator layerIt = this.canvasLayers.iterator();
+    public List<CanvasItem> getCanvasItems() {
+        List<CanvasItem> retVal = new ArrayList<CanvasItem>();
+        Iterator<List<CanvasItem>> layerIt = this.canvasLayers.iterator();
         while (layerIt.hasNext()) {
-            List layer = (List) layerIt.next();
-            for (Iterator iterator = layer.iterator(); iterator.hasNext();) {
-                CanvasItem canvasItem = (CanvasItem) iterator.next();
+            List<CanvasItem> layer = layerIt.next();
+            for (Iterator<CanvasItem> iterator = layer.iterator(); iterator.hasNext();) {
+                CanvasItem canvasItem = iterator.next();
                 retVal.add(canvasItem);
             }
         }
@@ -502,7 +502,7 @@ public class Canvas extends JPanel implements Printable {
         if (this.hasLayer(layerName)) {
             throw new IllegalLayerNameException("Layer name does already exist");
         }
-        List newLayer = new ArrayList();
+        List<CanvasItem> newLayer = new ArrayList<CanvasItem>();
         this.canvasLayers.add(newLayer);
         this.layerNameMapping.put(layerName, newLayer);
     }

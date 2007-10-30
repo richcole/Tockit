@@ -9,6 +9,6 @@ package org.tockit.events.filters;
 
 import org.tockit.events.Event;
 
-public interface EventFilter {
-	boolean isMatch(Event event);
+public interface EventFilter<T extends Event<?>> {
+	boolean isMatch(T event);
 }

@@ -56,7 +56,7 @@ public class PluginLoader extends LoaderBase {
 	private static final Logger logger = Logger.getLogger(PluginLoader.class.getName());
 	private static final String pluginDescriptorFileName = "plugin.txt";
 	
-	private static List errors = new ArrayList();
+	private static List<Error> errors = new ArrayList<Error>();
 	
 	/**
 	 * <p>
@@ -108,7 +108,7 @@ public class PluginLoader extends LoaderBase {
 			File curPluginDir = pluginDirs[i];
 			try {
 				logger.fine("Loading class loader for " + curPluginDir);
-				Class[] foundPlugins = findClassesInDir(curPluginDir, pluginDescriptorFileName, Plugin.class, logger);
+				Class<? extends Plugin>[] foundPlugins = findClassesInDir(curPluginDir, pluginDescriptorFileName, Plugin.class, logger);
 				loadPluginClasses(foundPlugins);
 				logger.fine("Finished loading plugins in " + curPluginDir);
 			} catch (Exception e) {
@@ -120,15 +120,15 @@ public class PluginLoader extends LoaderBase {
 		}
 		
 		logger.fine("FINISHED loading plugins with " + errors.size() + " error(s)");
-		PluginLoader.Error[] res = (PluginLoader.Error[]) errors.toArray(new PluginLoader.Error[errors.size()]);
+		PluginLoader.Error[] res = errors.toArray(new PluginLoader.Error[errors.size()]);
 		return res;
 	}
 
-	private static void loadPluginClasses (Class[] plugins) throws InstantiationException,
+	private static void loadPluginClasses (Class<? extends Plugin>[] plugins) throws InstantiationException,
 											IllegalAccessException {
 		for (int i = 0; i < plugins.length; i++) {
-			Class cur = plugins[i];
-			Plugin plugin = (Plugin) cur.newInstance();
+			Class<? extends Plugin> cur = plugins[i];
+			Plugin plugin = cur.newInstance();
 			logger.finer("Loading plugin " + plugin.getClass().getName());
 			plugin.load();
 		}

@@ -26,7 +26,7 @@ public class GraphicFormatRegistry {
     /**
      * The list of graphic types known.
      */
-    static private List formats = new LinkedList();
+    static private List<GraphicFormat> formats = new LinkedList<GraphicFormat>();
     
     /**
      * Initialize the default writer.
@@ -52,7 +52,7 @@ public class GraphicFormatRegistry {
     /**
      * Gives an iterator iterating on all types.
      */
-    static public Iterator getIterator() {
+    static public Iterator<GraphicFormat> getIterator() {
         return formats.iterator();
     }
 
@@ -68,9 +68,9 @@ public class GraphicFormatRegistry {
     static public GraphicFormat getTypeByExtension(String fileName) {
         int lastDot = fileName.lastIndexOf('.');
         String extension = fileName.substring(lastDot + 1);
-        Iterator it = formats.iterator();
+        Iterator<GraphicFormat> it = formats.iterator();
         while (it.hasNext()) {
-            GraphicFormat format = (GraphicFormat) it.next();
+            GraphicFormat format = it.next();
             String[] extensions = format.getExtensions();
             for (int i = 0; i < extensions.length; i++) {
                 if (extension.equals(extensions[i])) {
@@ -92,9 +92,9 @@ public class GraphicFormatRegistry {
      * @see GraphicFormat.getName()
      */
     static public GraphicFormat getTypeByName(String name) {
-        Iterator it = formats.iterator();
+        Iterator<GraphicFormat> it = formats.iterator();
         while (it.hasNext()) {
-            GraphicFormat format = (GraphicFormat) it.next();
+            GraphicFormat format = it.next();
             if (name.equals(format.getName())) {
                 return format;
             }

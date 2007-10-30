@@ -23,11 +23,12 @@ import java.util.logging.Logger;
 
 public abstract class LoaderBase {
 
-	protected static List loadPluginDescriptorSpecifedClasses(
+	@SuppressWarnings("unchecked")
+	protected static <T> List<Class<T>> loadPluginDescriptorSpecifedClasses(
 											File curPluginDir,
 											PluginClassLoader classLoader,
 											String descriptorFileName,
-											Class interfaceClass,
+											Class<T> interfaceClass,
 											Logger logger)
 											throws
 												FileNotFoundException,
@@ -36,7 +37,7 @@ public abstract class LoaderBase {
 												PluginLoadFailedException {
 
 		File descriptorFile = new File(curPluginDir, descriptorFileName);
-		List descriptorClasses = new ArrayList();
+		List<Class<T>> descriptorClasses = new ArrayList<Class<T>>();
 		if (descriptorFile.exists()) {
 			logger.finer("Found descriptor file");
 			InputStream fileInStream = new FileInputStream(descriptorFile);
@@ -45,7 +46,7 @@ public abstract class LoaderBase {
 			String line;
 			while ((line = br.readLine()) != null) {
 				logger.finer("Looking for class with name: '" + line + "'");
-				Class className = classLoader.findClass(line.trim());
+				Class<?> className = classLoader.findClass(line.trim());
 				if (!interfaceClass.isAssignableFrom(className)) {
 					throw new PluginLoadFailedException(
 						"Expected implementation of "
@@ -53,7 +54,7 @@ public abstract class LoaderBase {
 							+ " interface in "
 							+ className);
 				}
-				descriptorClasses.add(className);
+				descriptorClasses.add((Class<T>) className);
 			}
 		}
 		return descriptorClasses;
@@ -68,10 +69,11 @@ public abstract class LoaderBase {
 	}
 
 
-	protected static Class[] findClassesInDir(
+	@SuppressWarnings("unchecked")
+	protected static <T> Class<T>[] findClassesInDir(
 									File curPluginDir,
 									String pluginDescriptorFileName,
-									Class interfaceClass,
+									Class<T> interfaceClass,
 									Logger logger)
 									throws
 										FileNotFoundException,
@@ -81,15 +83,15 @@ public abstract class LoaderBase {
 										PluginLoadFailedException {
 
 		PluginClassLoader classLoader = new PluginClassLoader(curPluginDir);
-		List descriptorClasses = LoaderBase.loadPluginDescriptorSpecifedClasses(
+		List<Class<T>> descriptorClasses = LoaderBase.loadPluginDescriptorSpecifedClasses(
 											curPluginDir,
 											classLoader,
 											pluginDescriptorFileName,
 											interfaceClass,
 											logger);
-		Class[] foundPlugins = null;
+		Class<T>[] foundPlugins = null;
 		if (descriptorClasses.size() > 0) {
-			foundPlugins = (Class[]) descriptorClasses.toArray(new Class[descriptorClasses.size()]);
+			foundPlugins = descriptorClasses.toArray(new Class[descriptorClasses.size()]);
 		}
 		else {
 			foundPlugins = classLoader.findClassesImplementingGivenIterface(interfaceClass);

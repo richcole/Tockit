@@ -17,7 +17,7 @@ import org.jdom.Element;
 public class Relation {
     private Element element = null;
     private KnowledgeBase knowledgeBase = null;
-    private static Vector universal = new Vector();
+    private static Vector<Relation> universal = new Vector<Relation>();
     private static KnowledgeBase defaultKB = null;
 
     private static class UniversalRelation extends Relation {
@@ -76,7 +76,7 @@ public class Relation {
             universal.setSize(newArity);
             universal.set(newArity - 1, newUniversal);
         }
-        return (Relation) universal.get(arity - 1);
+        return universal.get(arity - 1);
     }
 
     public Relation(KnowledgeBase knowledgeBase, String name, Type[] signature) {
@@ -147,7 +147,7 @@ public class Relation {
     }
 
     public Relation[] getDirectSubtypes() {
-        Collection subtypes = this.knowledgeBase.getDirectSubtypes(this);
+        Collection<Relation> subtypes = this.knowledgeBase.getDirectSubtypes(this);
         Relation[] retVal = new Relation[subtypes.size()];
         subtypes.toArray(retVal);
         return retVal;

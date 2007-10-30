@@ -13,24 +13,28 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.tockit.context.model.BinaryRelation;
+import org.tockit.context.model.BinaryRelationImplementation;
+
 public class FormalContext extends ConscriptStructure{
-    private List objects = new ArrayList();
-	private List attributes = new ArrayList();
-	private BinaryRelationImplementation relation = new BinaryRelationImplementation();
+    private List<FCAObject> objects = new ArrayList<FCAObject>();
+	private List<FCAAttribute> attributes = new ArrayList<FCAAttribute>();
+	private BinaryRelationImplementation<FCAObject, FCAAttribute> relation = 
+					new BinaryRelationImplementation<FCAObject, FCAAttribute>();
 
 	public FormalContext(String identifier) {
         super(identifier);
     }
 
-	public List getAttributes() {
+	public List<FCAAttribute> getAttributes() {
 		return Collections.unmodifiableList(attributes);
 	}
 
-	public List getObjects() {
+	public List<FCAObject> getObjects() {
 		return Collections.unmodifiableList(objects);
 	}
 
-	public BinaryRelation getRelation() {
+	public BinaryRelation<FCAObject, FCAAttribute> getRelation() {
 		return relation;
 	}
 
@@ -50,27 +54,28 @@ public class FormalContext extends ConscriptStructure{
         this.relation.remove(object, attribute);
     }
 
-    public void printCSC(PrintStream stream) {
+    @Override
+	public void printCSC(PrintStream stream) {
         printTitleRemarkSpecials(stream);
         stream.println("\tOBJECTS");
-        for (Iterator iter = this.objects.iterator(); iter.hasNext();) {
-            FCAObject object = (FCAObject) iter.next();
+        for (Iterator<FCAObject> iter = this.objects.iterator(); iter.hasNext();) {
+            FCAObject object = iter.next();
             stream.println("\t\t" + object.getPoint() + " " + object.getIdentifier() + " " + 
                            object.getDescription());
         }
         stream.println("\tATTRIBUTES");
-        for (Iterator iter = this.attributes.iterator(); iter.hasNext();) {
-            FCAAttribute attribute = (FCAAttribute) iter.next();
+        for (Iterator<FCAAttribute> iter = this.attributes.iterator(); iter.hasNext();) {
+            FCAAttribute attribute = iter.next();
             stream.println("\t\t" + attribute.getPoint() + " " + attribute.getIdentifier() + " " + 
                            attribute.getDescription());
         }
         stream.println("\tRELATION");
         stream.println("\t\t" + this.objects.size() + " " + this.attributes.size());
-        for (Iterator it1 = this.objects.iterator(); it1.hasNext();) {
-            FCAObject object = (FCAObject) it1.next();
+        for (Iterator<FCAObject> it1 = this.objects.iterator(); it1.hasNext();) {
+            FCAObject object = it1.next();
             stream.print("\t\t");
-            for (Iterator it2 = this.attributes.iterator(); it2.hasNext();) {
-                FCAAttribute attribute = (FCAAttribute) it2.next();
+            for (Iterator<FCAAttribute> it2 = this.attributes.iterator(); it2.hasNext();) {
+                FCAAttribute attribute = it2.next();
                 if(this.relation.contains(object, attribute)) {
                     stream.print("*");
                 } else {

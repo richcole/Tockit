@@ -27,24 +27,27 @@ public class IdentityOperationTest extends AbstractRelationOperationTest {
 		return new TestSuite(IdentityOperationTest.class);
 	}
 
-    protected RelationOperation getOperation() {
+    @Override
+	protected RelationOperation getOperation() {
         return new IdentityOperation();
     }
 
-    protected int getExpectedArity() {
+    @Override
+	protected int getExpectedArity() {
         return 1;
     }
 
-    protected RelationTestSetup[] getTests() {
+    @Override
+	protected RelationTestSetup[] getTests() {
     	RelationImplementationTest testCases = new RelationImplementationTest("test cases");
     	testCases.setUp();
     	
     	RelationTestSetup one = new RelationTestSetup();
-    	Relation testRelOne = RelationTest.stringRelation;
+    	Relation<Object> testRelOne = RelationTest.stringRelation;
         one.input = new Relation[]{testRelOne};
     	one.expectedOutputArity = testRelOne.getArity();
     	one.expectedOutputSize = testRelOne.getSize();
-    	Tuple firstInputTuple = (Tuple) testRelOne.getTuples().iterator().next();
+    	Tuple<Object> firstInputTuple = testRelOne.getTuples().iterator().next();
         one.expectedTuples = new Object[][]{firstInputTuple.getData()};
     	
         return new RelationTestSetup[]{one};

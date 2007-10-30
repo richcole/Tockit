@@ -13,8 +13,8 @@ import java.util.List;
 
 public abstract class TypeImplementation implements PropertyType {
     protected String name;
-    protected Hashtable valueGroups = new Hashtable();
-    protected List values = new ArrayList();
+    protected Hashtable<String, ValueGroup> valueGroups = new Hashtable<String, ValueGroup>();
+    protected List<Value> values = new ArrayList<Value>();
 
     public TypeImplementation(String name) {
         this.name = name;
@@ -25,7 +25,7 @@ public abstract class TypeImplementation implements PropertyType {
     }
 
     public Value[] getValueRange() {
-        return (Value[]) this.values.toArray(new Value[this.values.size()]);
+        return this.values.toArray(new Value[this.values.size()]);
     }
     
     public void addValue(Value value) {
@@ -37,7 +37,7 @@ public abstract class TypeImplementation implements PropertyType {
     }
 
     public ValueGroup getValueGroup(String id) {
-        return (ValueGroup) valueGroups.get(id);
+        return valueGroups.get(id);
     }
 
     public ValueGroup[] getValueGroups() {

@@ -17,10 +17,10 @@ import org.tockit.util.ListSetImplementation;
 /**
  * @todo hide access to collections and relation by playing man in the middle.
  */
-public class ContextImplementation implements Context {
-    private ListSet objects = new ListSetImplementation();
-    private ListSet attributes = new ListSetImplementation();
-    private BinaryRelationImplementation relation = new BinaryRelationImplementation();
+public class ContextImplementation<O,A> implements ListsContext<O,A> {
+    private ListSet<O> objects = new ListSetImplementation<O>();
+    private ListSet<A> attributes = new ListSetImplementation<A>();
+    private BinaryRelationImplementation<O,A> relation = new BinaryRelationImplementation<O,A>();
     private String name = null;
 
     public ContextImplementation() {
@@ -31,19 +31,19 @@ public class ContextImplementation implements Context {
     	this.name = name;
     }
 
-    public Set getObjects() {
+    public Set<O> getObjects() {
         return objects;
     }
 
-    public Set getAttributes() {
+    public Set<A> getAttributes() {
         return attributes;
     }
 
-    public BinaryRelation getRelation() {
+    public BinaryRelation<O,A> getRelation() {
         return relation;
     }
     
-    public BinaryRelationImplementation getRelationImplementation() {
+    public BinaryRelationImplementation<O,A> getRelationImplementation() {
     	return this.relation;
     }
 
@@ -55,40 +55,40 @@ public class ContextImplementation implements Context {
 		this.name = name;
 	}
 	
-	public Context createSum(Context other, String title) {
-		ContextImplementation context = new ContextImplementation(title);
-		Set allObjects = context.getObjects();
-		Set allAttributes = context.getAttributes();
+	public Context<O,A> createSum(Context<O,A> other, String title) {
+		ContextImplementation<O,A> context = new ContextImplementation<O,A>(title);
+		Set<O> allObjects = context.getObjects();
+		Set<A> allAttributes = context.getAttributes();
         // @todo this is probably a bug: the relation gets changed and potentially there is overlap in
         // the objects
-		BinaryRelationImplementation combinedRelation = context.getRelationImplementation();
+		BinaryRelationImplementation<O,A> combinedRelation = context.getRelationImplementation();
 		
-		Iterator objIt = this.getObjects().iterator();
+		Iterator<O> objIt = this.getObjects().iterator();
 		while (objIt.hasNext()) {
-			Object object = objIt.next();
+			O object = objIt.next();
 			allObjects.add(object);
 		}
 		objIt = other.getObjects().iterator();
 		while (objIt.hasNext()) {
-			Object object = objIt.next();
+			O object = objIt.next();
 			allObjects.add(object);
 		}
-		Iterator attrIt = this.getAttributes().iterator();
+		Iterator<A> attrIt = this.getAttributes().iterator();
 		while (attrIt.hasNext()) {
-			Object attribute = attrIt.next();
+			A attribute = attrIt.next();
 			allAttributes.add(attribute);
 		}
 		attrIt = other.getAttributes().iterator();
 		while (attrIt.hasNext()) {
-			Object attribute = attrIt.next();
+			A attribute = attrIt.next();
 			allAttributes.add(attribute);
 		}
 		objIt = allObjects.iterator();
 		while (objIt.hasNext()) {
-			Object object = objIt.next();
+			O object = objIt.next();
 			attrIt = allAttributes.iterator();
 			while (attrIt.hasNext()) {
-				Object attribute = attrIt.next();
+				A attribute = attrIt.next();
 				if(this.getRelation().contains(object,attribute) ||
 				   other.getRelation().contains(object,attribute)) {
 					combinedRelation.insert(object,attribute);
@@ -98,11 +98,11 @@ public class ContextImplementation implements Context {
 		return context;
 	}
 
-    public ListSet getObjectList() {
+    public ListSet<O> getObjectList() {
         return this.objects;
     }
 
-    public ListSet getAttributeList() {
+    public ListSet<A> getAttributeList() {
         return this.attributes;
     }
 }

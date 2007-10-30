@@ -10,6 +10,7 @@ package org.tockit.canvas.manipulators;
 import java.awt.geom.Point2D;
 
 import org.tockit.canvas.Canvas;
+import org.tockit.canvas.CanvasItem;
 import org.tockit.canvas.MovableCanvasItem;
 import org.tockit.canvas.events.CanvasItemDraggedEvent;
 import org.tockit.canvas.events.CanvasItemDroppedEvent;
@@ -18,22 +19,22 @@ import org.tockit.events.Event;
 import org.tockit.events.EventBroker;
 import org.tockit.events.EventBrokerListener;
 
-public class ItemMovementManipulator implements EventBrokerListener {
+/**
+ * @TODO find a way to get the type of the listener down to <MoveableCanvasItem>
+ */
+public class ItemMovementManipulator implements EventBrokerListener<CanvasItem> {
     protected Canvas canvas;
 
-    public ItemMovementManipulator(Canvas canvas, EventBroker eventBroker) {
+    public ItemMovementManipulator(Canvas canvas, EventBroker<CanvasItem> eventBroker) {
         this(canvas, MovableCanvasItem.class, eventBroker);
     }
 
-    public ItemMovementManipulator(Canvas canvas, Class itemType, EventBroker eventBroker) {
-        if(! MovableCanvasItem.class.isAssignableFrom(itemType) ){
-            throw new RuntimeException("ItemMovementManipulator can only be subscribed to MovableCanvasItem or subtypes");
-        }
+    public ItemMovementManipulator(Canvas canvas, Class<? extends MovableCanvasItem> itemType, EventBroker<CanvasItem> eventBroker) {
         eventBroker.subscribe(this, CanvasItemDraggedEvent.class, itemType);
         this.canvas = canvas;
     }
 
-    public void processEvent(Event e) {
+    public void processEvent(Event<CanvasItem> e) {
         if( e instanceof CanvasItemPickupEvent ) {
             dragStart((CanvasItemPickupEvent) e);
         } else if( e instanceof CanvasItemDroppedEvent ) {

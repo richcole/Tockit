@@ -77,8 +77,8 @@ public class SelectionOperation extends AbstractUnaryRelationOperation {
 
     public Relation apply(Relation input) {
     	RelationImplementation result = new RelationImplementation(input.getDimensionNames());
-    	for (Iterator iter = input.getTuples().iterator(); iter.hasNext();) {
-            Tuple tuple = (Tuple) iter.next();
+    	for (Iterator<Tuple> iter = input.getTuples().iterator(); iter.hasNext();) {
+            Tuple tuple = iter.next();
             if(this.predicate.test(tuple)) {
 				result.addTuple(tuple);
             }

@@ -22,12 +22,12 @@ import org.tockit.util.IdPool;
 
 public class KnowledgeBase {
     private Element element = null; // root element
-    private Hashtable graphDict = new Hashtable();
-    private Hashtable nodeDict = new Hashtable();
-    private Hashtable typeDict = new Hashtable();
-    private Hashtable instanceDict = new Hashtable();
-    private Hashtable linkDict = new Hashtable();
-    private Hashtable relationDict = new Hashtable();
+    private Hashtable<String, ConceptualGraph> graphDict = new Hashtable<String, ConceptualGraph>();
+    private Hashtable<String, Node> nodeDict = new Hashtable<String, Node>();
+    private Hashtable<String, Type> typeDict = new Hashtable<String, Type>();
+    private Hashtable<String, Instance> instanceDict = new Hashtable<String, Instance>();
+    private Hashtable<String, Link> linkDict = new Hashtable<String, Link>();
+    private Hashtable<String, Relation> relationDict = new Hashtable<String, Relation>();
     private IdPool nodeIdPool = new IdPool();
     private IdPool linkIdPool = new IdPool();
     private IdPool graphIdPool = new IdPool();
@@ -91,7 +91,7 @@ public class KnowledgeBase {
     }
 
     public ConceptualGraph getGraph(String graphId) {
-        return (ConceptualGraph) graphDict.get(graphId);
+        return graphDict.get(graphId);
     }
 
     public void addNode(Node node) {
@@ -99,7 +99,7 @@ public class KnowledgeBase {
     }
 
     public Node getNode(String nodeId) {
-        return (Node) nodeDict.get(nodeId);
+        return nodeDict.get(nodeId);
     }
 
     public void addType(Type type, boolean addXML) {
@@ -114,7 +114,7 @@ public class KnowledgeBase {
         if(typeId == null) {
             return Type.UNIVERSAL;
         }
-        return (Type) typeDict.get(typeId);
+        return typeDict.get(typeId);
     }
 
     public void addInstance(Instance instance, boolean addXML) {
@@ -126,7 +126,7 @@ public class KnowledgeBase {
     }
 
     public Instance getInstance(String instanceId) {
-        return (Instance) instanceDict.get(instanceId);
+        return instanceDict.get(instanceId);
     }
 
     public void addLink(Link link) {
@@ -134,7 +134,7 @@ public class KnowledgeBase {
     }
 
     public Link getLink(String linkId) {
-        return (Link) linkDict.get(linkId);
+        return linkDict.get(linkId);
     }
 
     public void addRelation(Relation relation, boolean addXML) {
@@ -146,7 +146,7 @@ public class KnowledgeBase {
     }
 
     public Relation getRelation(String relationName) {
-        return (Relation) this.relationDict.get(relationName);
+        return this.relationDict.get(relationName);
     }
 
     String createNewNodeId() {
@@ -177,54 +177,54 @@ public class KnowledgeBase {
         return element;
     }
 
-    public Collection getGraphIds() {
+    public Collection<String> getGraphIds() {
         return this.graphDict.keySet();
     }
 
-    public Collection getRelationNames() {
+    public Collection<String> getRelationNames() {
         return this.relationDict.keySet();
     }
 
-    public Collection getInstanceIdentifiers() {
+    public Collection<String> getInstanceIdentifiers() {
         return this.instanceDict.keySet();
     }
 
-    public Collection getTypeNames() {
+    public Collection<String> getTypeNames() {
         return this.typeDict.keySet();
     }
 
-    public Collection getRelations() {
+    public Collection<Relation> getRelations() {
         return this.relationDict.values();
     }
 
-    public Collection getTypes() {
+    public Collection<Type> getTypes() {
         return this.typeDict.values();
     }
 
     public void remove(Node node) {
         this.nodeDict.remove(node.getId());
-        Collection graphs = this.graphDict.values();
-        for (Iterator iterator = graphs.iterator(); iterator.hasNext();) {
-            ConceptualGraph graph = (ConceptualGraph) iterator.next();
+        Collection<ConceptualGraph> graphs = this.graphDict.values();
+        for (Iterator<ConceptualGraph> iterator = graphs.iterator(); iterator.hasNext();) {
+            ConceptualGraph graph = iterator.next();
             graph.remove(node);
         }
     }
 
     public void remove(Link link) {
         this.linkDict.remove(link.getId());
-        Collection graphs = this.graphDict.values();
-        for (Iterator iterator = graphs.iterator(); iterator.hasNext();) {
-            ConceptualGraph graph = (ConceptualGraph) iterator.next();
+        Collection<ConceptualGraph> graphs = this.graphDict.values();
+        for (Iterator<ConceptualGraph> iterator = graphs.iterator(); iterator.hasNext();) {
+            ConceptualGraph graph = iterator.next();
             graph.remove(link);
         }
     }
 
-    public Collection getDirectSubtypes(Type type) {
-        Set retVal = new HashSet();
-        Collection types = getTypes();
+    public Collection<Type> getDirectSubtypes(Type type) {
+        Set<Type> retVal = new HashSet<Type>();
+        Collection<Type> types = getTypes();
         if (type != Type.ABSURD) {
-            for (Iterator iterator = types.iterator(); iterator.hasNext();) {
-                Type other = (Type) iterator.next();
+            for (Iterator<Type> iterator = types.iterator(); iterator.hasNext();) {
+                Type other = iterator.next();
                 Type[] candidates = other.getDirectSupertypes();
                 for (int i = 0; i < candidates.length; i++) {
                     Type candidate = candidates[i];
@@ -237,11 +237,11 @@ public class KnowledgeBase {
         return retVal;
     }
 
-    public Collection getDirectSubtypes(Relation relation) {
-        Set retVal = new HashSet();
-        Collection types = getRelations();
-        for (Iterator iterator = types.iterator(); iterator.hasNext();) {
-            Relation other = (Relation) iterator.next();
+    public Collection<Relation> getDirectSubtypes(Relation relation) {
+        Set<Relation> retVal = new HashSet<Relation>();
+        Collection<Relation> types = getRelations();
+        for (Iterator<Relation> iterator = types.iterator(); iterator.hasNext();) {
+            Relation other = iterator.next();
             Relation[] candidates = other.getDirectSupertypes();
             for (int i = 0; i < candidates.length; i++) {
                 Relation candidate = candidates[i];
@@ -253,11 +253,11 @@ public class KnowledgeBase {
         return retVal;
     }
 
-    public Collection getInstancesForType(Type type) {
-        Collection retVal = new HashSet();
-        Iterator it = this.instanceDict.values().iterator();
+    public Collection<Instance> getInstancesForType(Type type) {
+        Collection<Instance> retVal = new HashSet<Instance>();
+        Iterator<Instance> it = this.instanceDict.values().iterator();
         while (it.hasNext()) {
-            Instance instance = (Instance) it.next();
+            Instance instance = it.next();
             if(instance.getType().hasSupertype(type)) {
                 retVal.add(instance);
             }
@@ -265,11 +265,11 @@ public class KnowledgeBase {
         return retVal;
     }
 
-    public Collection getInstances() {
+    public Collection<Instance> getInstances() {
         return this.instanceDict.values();
     }
 
-    public Collection getGraphs() {
+    public Collection<ConceptualGraph> getGraphs() {
         return this.graphDict.values();
     }
 }

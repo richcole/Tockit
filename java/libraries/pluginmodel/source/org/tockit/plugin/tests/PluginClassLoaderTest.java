@@ -9,6 +9,7 @@ package org.tockit.plugin.tests;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -52,7 +53,7 @@ public class PluginClassLoaderTest extends TestCase {
 		assertNull(classLoader.getResource("Multivalent.class"));
 		assertNotNull(classLoader.getResource("sys/Preferences.txt"));
 
-		Enumeration enumeration = classLoader.getResources("sys/Preferences.txt");
+		Enumeration<URL> enumeration = classLoader.getResources("sys/Preferences.txt");
 		assertNotNull(enumeration);
 		assertEquals(true, enumeration.hasMoreElements());
 	}

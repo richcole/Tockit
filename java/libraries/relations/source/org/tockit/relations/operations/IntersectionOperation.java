@@ -26,8 +26,8 @@ public class IntersectionOperation extends AbstractBinaryRelationOperation {
     		throw new IllegalArgumentException("Relation arities don't match for intersection");
     	}
     	RelationImplementation result = new RelationImplementation(leftHandInput.getDimensionNames());
-		for (Iterator iter = leftHandInput.getTuples().iterator(); iter.hasNext();) {
-			Tuple tuple = (Tuple) iter.next();
+		for (Iterator<Tuple> iter = leftHandInput.getTuples().iterator(); iter.hasNext();) {
+			Tuple tuple = iter.next();
 			if(rightHandInput.isRelated(tuple)) {
                 result.addTuple(tuple);            
 			}

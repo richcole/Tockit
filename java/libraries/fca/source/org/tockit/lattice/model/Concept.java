@@ -29,7 +29,7 @@ import java.util.Iterator;
  *
  * The contingents are usually used for labelling the diagram.
  */
-public interface Concept {
+public interface Concept<O,A> {
     /**
      * Returns the size of the intent.
      */
@@ -56,7 +56,7 @@ public interface Concept {
      * The Java objects returned from the iterator should offer a toString()
      * implementation suited for displaying the attributes.
      */
-    Iterator getIntentIterator();
+    Iterator<A> getIntentIterator();
 
     /**
      * Returns an iterator returning the objects from the extent.
@@ -64,7 +64,7 @@ public interface Concept {
      * The Java objects returned from the iterator should offer a toString()
      * implementation suited for displaying the objects.
      */
-    Iterator getExtentIterator();
+    Iterator<O> getExtentIterator();
 
     /**
      * Returns an iterator returning the attributes from the contingent.
@@ -72,7 +72,7 @@ public interface Concept {
      * The Java objects returned from the iterator should offer a toString()
      * implementation suited for displaying the attributes.
      */
-    Iterator getAttributeContingentIterator();
+    Iterator<A> getAttributeContingentIterator();
 
     /**
      * Returns an iterator returning the objects from the contingent.
@@ -80,7 +80,7 @@ public interface Concept {
      * The Java objects returned from the iterator should offer a toString()
      * implementation suited for displaying the objects.
      */
-    Iterator getObjectContingentIterator();
+    Iterator<O> getObjectContingentIterator();
 
     /**
      * Returns true iff this is the top concept.
@@ -95,22 +95,22 @@ public interface Concept {
     /**
      * Returns true iff the given concept is a superconcept of the object.
      */
-    boolean hasSuperConcept(Concept concept);
+    boolean hasSuperConcept(Concept<O,A> concept);
 
     /**
      * Returns true iff the given concept is a subconcept of the object.
      */
-    boolean hasSubConcept(Concept concept);
+    boolean hasSubConcept(Concept<O,A> concept);
 
-    Collection getDownset();
+    Collection<Concept<O,A>> getDownset();
 
-    Collection getUpset();
+    Collection<Concept<O,A>> getUpset();
 
     boolean isMeetIrreducible();
 
     boolean isJoinIrreducible();
 
-	public Concept getTopConcept();
+	public Concept<O,A> getTopConcept();
 	
-	public Concept getBottomConcept();
+	public Concept<O,A> getBottomConcept();
 }

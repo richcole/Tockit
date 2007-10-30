@@ -53,7 +53,7 @@ public class ExtendedPreferences extends Preferences {
      * 
      * @return a node representing the class in the preferences
      */    
-    public static ExtendedPreferences userNodeForClass(Class cl) {
+    public static ExtendedPreferences userNodeForClass(Class<?> cl) {
         String name = getUnqualifiedClassName(cl);
         return new ExtendedPreferences(Preferences.userNodeForPackage(cl).node(name));
     }
@@ -68,7 +68,7 @@ public class ExtendedPreferences extends Preferences {
      * 
      * @return a node representing the class in the preferences
      */    
-    public static ExtendedPreferences systemNodeForClass(Class cl) {
+    public static ExtendedPreferences systemNodeForClass(Class<?> cl) {
         String name = getUnqualifiedClassName(cl);
         return new ExtendedPreferences(Preferences.systemNodeForPackage(cl).node(name));
     }
@@ -76,7 +76,7 @@ public class ExtendedPreferences extends Preferences {
     /**
      * Stores the placement of a window in the preferences.
      * 
-     * This includes position, size and flags such as maximimzed.
+     * This includes position, size and flags such as maximized.
      * 
      * The naming scheme differs for the storeWindowPlacement/restoreWindowPlacement
      * methods to indicate that they do more than the put/get methods -- they affect
@@ -102,7 +102,7 @@ public class ExtendedPreferences extends Preferences {
     /**
      * Restores the placement of a window from the preferences.
      * 
-     * This includes position, size and flags such as maximimzed. If the settings
+     * This includes position, size and flags such as maximized. If the settings
      * can not be found in the preferences, the given rectangle is used instead.
      * 
      * The naming scheme differs for the storeWindowPlacement/restoreWindowPlacement
@@ -136,10 +136,10 @@ public class ExtendedPreferences extends Preferences {
      * 
      * @see restoreStringList(String)
      */
-    public void putStringList(String nodeName, Collection data) {
+    public void putStringList(String nodeName, Collection<?> data) {
         Preferences listPrefs = this.javaPreferences.node(nodeName);
         int count = 1;
-        for (Iterator iter = data.iterator(); iter.hasNext();) {
+        for (Iterator<?> iter = data.iterator(); iter.hasNext();) {
             String string = iter.next().toString();
             listPrefs.put(String.valueOf(count), string);
             count++;
@@ -155,8 +155,8 @@ public class ExtendedPreferences extends Preferences {
      * 
      * @see storeStringList(String, Collection)
      */
-    public List getStringList(String nodeName) {
-        List retVal = new ArrayList();
+    public List<String> getStringList(String nodeName) {
+        List<String> retVal = new ArrayList<String>();
         Preferences listPrefs = this.javaPreferences.node(nodeName);
         int count = 1;
         while(true) {
@@ -238,7 +238,7 @@ public class ExtendedPreferences extends Preferences {
      * 
      * @return the unqualified name of the class
      */
-    private static String getUnqualifiedClassName(Class cl) {
+    private static String getUnqualifiedClassName(Class<?> cl) {
         // if there is no dot in the string the lastIndexOf will be
         // -1, thus the full string will be returned
         String fullName = cl.getName();
@@ -264,139 +264,173 @@ public class ExtendedPreferences extends Preferences {
 
     // from here on it is the implementation of the preferences API by delegation
     
-    public void clear() throws BackingStoreException {
+    @Override
+	public void clear() throws BackingStoreException {
         this.javaPreferences.clear();
     }
 
-    public void flush() throws BackingStoreException {
+    @Override
+	public void flush() throws BackingStoreException {
         this.javaPreferences.flush();
     }
 
-    public void removeNode() throws BackingStoreException {
+    @Override
+	public void removeNode() throws BackingStoreException {
         this.javaPreferences.removeNode();
     }
 
-    public void sync() throws BackingStoreException {
+    @Override
+	public void sync() throws BackingStoreException {
         this.javaPreferences.sync();
     }
 
-    public boolean isUserNode() {
+    @Override
+	public boolean isUserNode() {
         return this.javaPreferences.isUserNode();
     }
 
-    public void exportNode(OutputStream os) throws IOException, BackingStoreException {
+    @Override
+	public void exportNode(OutputStream os) throws IOException, BackingStoreException {
         this.javaPreferences.exportNode(os);
     }
 
-    public void exportSubtree(OutputStream os) throws IOException, BackingStoreException {
+    @Override
+	public void exportSubtree(OutputStream os) throws IOException, BackingStoreException {
         this.javaPreferences.exportSubtree(os);
     }
 
-    public String absolutePath() {
+    @Override
+	public String absolutePath() {
         return this.javaPreferences.absolutePath();
     }
 
-    public String name() {
+    @Override
+	public String name() {
         return this.javaPreferences.name();
     }
 
-    public String toString() {
+    @Override
+	public String toString() {
         return this.javaPreferences.toString();
     }
 
-    public String[] childrenNames() throws BackingStoreException {
+    @Override
+	public String[] childrenNames() throws BackingStoreException {
         return this.javaPreferences.childrenNames();
     }
 
-    public String[] keys() throws BackingStoreException {
+    @Override
+	public String[] keys() throws BackingStoreException {
         return this.javaPreferences.keys();
     }
 
-    public void remove(String key) {
+    @Override
+	public void remove(String key) {
         this.javaPreferences.remove(key);
     }
 
-    public boolean nodeExists(String pathName) throws BackingStoreException {
+    @Override
+	public boolean nodeExists(String pathName) throws BackingStoreException {
         return this.javaPreferences.nodeExists(pathName);
     }
 
-    public double getDouble(String key, double def) {
+    @Override
+	public double getDouble(String key, double def) {
         return this.javaPreferences.getDouble(key, def);
     }
 
-    public void putDouble(String key, double value) {
+    @Override
+	public void putDouble(String key, double value) {
         this.javaPreferences.putDouble(key, value);
     }
 
-    public float getFloat(String key, float def) {
+    @Override
+	public float getFloat(String key, float def) {
         return this.javaPreferences.getFloat(key, def);
     }
 
-    public void putFloat(String key, float value) {
+    @Override
+	public void putFloat(String key, float value) {
         this.javaPreferences.putFloat(key, value);
     }
 
-    public int getInt(String key, int def) {
+    @Override
+	public int getInt(String key, int def) {
         return this.javaPreferences.getInt(key, def);
     }
 
-    public void putInt(String key, int value) {
+    @Override
+	public void putInt(String key, int value) {
         this.javaPreferences.putInt(key, value);
     }
 
-    public long getLong(String key, long def) {
+    @Override
+	public long getLong(String key, long def) {
         return this.javaPreferences.getLong(key, def);
     }
 
-    public void putLong(String key, long value) {
+    @Override
+	public void putLong(String key, long value) {
         this.javaPreferences.putLong(key, value);
     }
 
-    public void putBoolean(String key, boolean value) {
+    @Override
+	public void putBoolean(String key, boolean value) {
         this.javaPreferences.putBoolean(key, value);
     }
 
-    public boolean getBoolean(String key, boolean def) {
+    @Override
+	public boolean getBoolean(String key, boolean def) {
         return this.javaPreferences.getBoolean(key, def);
     }
 
-    public void putByteArray(String key, byte[] value) {
+    @Override
+	public void putByteArray(String key, byte[] value) {
         this.javaPreferences.putByteArray(key, value);
     }
 
-    public byte[] getByteArray(String key, byte[] def) {
+    @Override
+	public byte[] getByteArray(String key, byte[] def) {
         return this.javaPreferences.getByteArray(key, def);
     }
 
-    public void addNodeChangeListener(NodeChangeListener ncl) {
+    @Override
+	public void addNodeChangeListener(NodeChangeListener ncl) {
         this.javaPreferences.addNodeChangeListener(ncl);
     }
 
-    public void removeNodeChangeListener(NodeChangeListener ncl) {
+    @Override
+	public void removeNodeChangeListener(NodeChangeListener ncl) {
         this.javaPreferences.removeNodeChangeListener(ncl);
     }
 
-    public void addPreferenceChangeListener(PreferenceChangeListener pcl) {
+    @Override
+	public void addPreferenceChangeListener(PreferenceChangeListener pcl) {
         this.javaPreferences.addPreferenceChangeListener(pcl);
     }
 
-    public void removePreferenceChangeListener(PreferenceChangeListener pcl) {
+    @Override
+	public void removePreferenceChangeListener(PreferenceChangeListener pcl) {
         this.javaPreferences.removePreferenceChangeListener(pcl);
     }
 
-    public Preferences parent() {
+    @Override
+	public Preferences parent() {
         return this.javaPreferences.parent();
     }
 
-    public void put(String key, String value) {
+    @Override
+	public void put(String key, String value) {
         this.javaPreferences.put(key, value);
     }
 
-    public Preferences node(String pathName) {
+    @Override
+	public Preferences node(String pathName) {
         return this.javaPreferences.node(pathName);
     }
 
-    public String get(String key, String def) {
+    @Override
+	public String get(String key, String def) {
         return this.javaPreferences.get(key, def);
     }
 }
