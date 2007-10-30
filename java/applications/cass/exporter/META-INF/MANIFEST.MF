@@ -31,7 +31,6 @@ Bundle-ClassPath: .,
  libs/xml-apis.jar
 Export-Package: EDU.oswego.cs.dl.util.concurrent,
  META-INF,
- META-INF.services,
  antlr,
  antlr.actions.cpp,
  antlr.actions.csharp,
