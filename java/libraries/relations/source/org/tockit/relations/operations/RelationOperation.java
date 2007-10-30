@@ -17,7 +17,7 @@ import org.tockit.relations.model.Relation;
  * @see UnaryRelationOperation
  * @see BinaryRelationOperation
  */
-public interface RelationOperation {
+public interface RelationOperation<D> {
 	/**
 	 * Returns a name for UI and debug usage.
 	 * 
@@ -50,5 +50,5 @@ public interface RelationOperation {
 	 * @throws IllegalArgumentException iff the size of the array doesn't match the
 	 *          arity of the operation
 	 */
-	Relation apply(Relation[] input);
+	Relation<D> apply(Relation<D>... input);
 }

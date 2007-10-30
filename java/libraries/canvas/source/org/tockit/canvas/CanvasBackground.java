@@ -50,7 +50,8 @@ public class CanvasBackground extends CanvasItem {
 	/**
 	 * Draws the background filling and grid if requested.
 	 */
-    public void draw(Graphics2D g) {
+    @Override
+	public void draw(Graphics2D g) {
         Rectangle clipBounds = g.getClipBounds();
 		Paint oldPaint = g.getPaint();
         if (paint != null && clipBounds != null) {
@@ -86,7 +87,8 @@ public class CanvasBackground extends CanvasItem {
      * The background is assumed to cover the whole canvas, so it
      * is always hit.
      */
-    public boolean containsPoint(Point2D point) {
+    @Override
+	public boolean containsPoint(Point2D point) {
         return true;
     }
 
@@ -97,7 +99,8 @@ public class CanvasBackground extends CanvasItem {
      * placed on the origin of the coordinate system, which means the
      * origin will always be on the canvas.
      */
-    public Rectangle2D getCanvasBounds(Graphics2D g) {
+    @Override
+	public Rectangle2D getCanvasBounds(Graphics2D g) {
         return new Rectangle2D.Double(0, 0, 0, 0);
     }
 
@@ -125,11 +128,13 @@ public class CanvasBackground extends CanvasItem {
         return paint;
     }
 
-    public Point2D getPosition() {
+    @Override
+	public Point2D getPosition() {
         return new Point2D.Double(0,0);
     }
 
-    public boolean hasAutoRaise() {
+    @Override
+	public boolean hasAutoRaise() {
         return false;
     }
 }

@@ -62,7 +62,8 @@ public class Point {
 		this.y = y;
 	}
     
-    public String toString() {
+    @Override
+	public String toString() {
         if(this.x == Double.MIN_VALUE) {
             return "" + this.number;
         }

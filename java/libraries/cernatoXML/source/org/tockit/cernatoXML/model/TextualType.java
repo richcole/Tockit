@@ -12,7 +12,8 @@ public class TextualType extends TypeImplementation {
         super(name);
     }
 
-    public void addValueGroup(ValueGroup valueGroup, String id) {
+    @Override
+	public void addValueGroup(ValueGroup valueGroup, String id) {
         if (valueGroup instanceof TextualValueGroup) {
             super.addValueGroup(valueGroup, id);
             return;

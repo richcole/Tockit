@@ -28,8 +28,8 @@ public class IdentityOperationTest extends AbstractRelationOperationTest {
 	}
 
     @Override
-	protected RelationOperation getOperation() {
-        return new IdentityOperation();
+	protected RelationOperation<Object> getOperation() {
+        return new IdentityOperation<Object>();
     }
 
     @Override
@@ -37,7 +37,8 @@ public class IdentityOperationTest extends AbstractRelationOperationTest {
         return 1;
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
 	protected RelationTestSetup[] getTests() {
     	RelationImplementationTest testCases = new RelationImplementationTest("test cases");
     	testCases.setUp();

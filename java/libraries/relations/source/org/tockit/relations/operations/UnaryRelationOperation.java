@@ -7,28 +7,18 @@
  */
 package org.tockit.relations.operations;
 
-import org.tockit.relations.model.Relation;
 
 /**
  * An operation taking one relation as input.
  */
-public interface UnaryRelationOperation extends RelationOperation {
-	/**
-	 * A convenience method for applying the operation straigth to a single relation.
-	 * 
-	 * Equivalent to calling apply(new Relation[]{input}).
-	 * 
-	 * @see apply(Relation[])
-	 */
-	Relation apply(Relation input);
-	
+public interface UnaryRelationOperation<D> extends RelationOperation<D> {
 	/**
 	 * Creates a new operator applying this one to the result of the other.
 	 * 
 	 * @param other another unary relation operation, not null
 	 * @throws NullPointerException iff other is null
 	 */
-	UnaryRelationOperation concatenate(UnaryRelationOperation other);
+	UnaryRelationOperation<D> concatenate(UnaryRelationOperation<D> other);
 
 	/**
 	 * Creates a new operator applying this one to the result of the other.
@@ -36,5 +26,5 @@ public interface UnaryRelationOperation extends RelationOperation {
 	 * @param other another binary relation operation, not null
 	 * @throws NullPointerException iff other is null
 	 */
-	BinaryRelationOperation concatenate(BinaryRelationOperation other);
+	BinaryRelationOperation<D> concatenate(BinaryRelationOperation<D> other);
 }

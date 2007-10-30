@@ -28,7 +28,8 @@ public class Criterion {
         return property.getName() + ":" + valueGroup.getName();
     }
 
-    public String toString() {
+    @Override
+	public String toString() {
         return getDisplayString();
     }
 

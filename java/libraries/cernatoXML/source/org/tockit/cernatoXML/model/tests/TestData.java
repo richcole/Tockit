@@ -46,7 +46,7 @@ public class TestData {
     public static View View2;
     public static View View3;
     // this is Hashtable(objects -> Hashtable(properties -> List(all positive value groups)))
-    public static Hashtable<CernatoObject, Hashtable<Property, Set>> ScaledRelation;
+    public static Hashtable<CernatoObject, Hashtable<Property, Set<ValueGroup>>> ScaledRelation;
 
     static {
         initializeTestModel();
@@ -206,12 +206,12 @@ public class TestData {
     }
 
     private static void createScaledRelation() {
-        ScaledRelation = new Hashtable<CernatoObject, Hashtable<Property, Set>>();
-        Hashtable<Property, Set> propMap;
+        ScaledRelation = new Hashtable<CernatoObject, Hashtable<Property, Set<ValueGroup>>>();
+        Hashtable<Property, Set<ValueGroup>> propMap;
         Set<ValueGroup> positives;
 
         // object 1
-        propMap = new Hashtable<Property, Set>();
+        propMap = new Hashtable<Property, Set<ValueGroup>>();
         positives = new HashSet<ValueGroup>();
         positives.add(NumGroup1);
         positives.add(NumGroup2);
@@ -240,7 +240,7 @@ public class TestData {
         ScaledRelation.put(Object1, propMap);
 
         // object 2
-        propMap = new Hashtable<Property, Set>();
+        propMap = new Hashtable<Property, Set<ValueGroup>>();
         positives = new HashSet<ValueGroup>();
         positives.add(NumGroup1);
         positives.add(NumGroup2);
@@ -271,7 +271,7 @@ public class TestData {
         ScaledRelation.put(Object2, propMap);
 
         // object 3
-        propMap = new Hashtable<Property, Set>();
+        propMap = new Hashtable<Property, Set<ValueGroup>>();
         positives = new HashSet<ValueGroup>();
         positives.add(NumGroup1);
         positives.add(NumGroup2);
@@ -305,7 +305,7 @@ public class TestData {
         ScaledRelation.put(Object3, propMap);
 
         // object 4
-        propMap = new Hashtable<Property, Set>();
+        propMap = new Hashtable<Property, Set<ValueGroup>>();
         positives = new HashSet<ValueGroup>();
         positives.add(NumGroup1);
         positives.add(NumGroup2);
@@ -336,7 +336,7 @@ public class TestData {
         ScaledRelation.put(Object4, propMap);
 
         // object 5
-        propMap = new Hashtable<Property, Set>();
+        propMap = new Hashtable<Property, Set<ValueGroup>>();
         positives = new HashSet<ValueGroup>();
         positives.add(NumGroup1);
         positives.add(NumGroup2);
@@ -364,7 +364,7 @@ public class TestData {
         ScaledRelation.put(Object5, propMap);
 
         // object 6
-        propMap = new Hashtable<Property, Set>();
+        propMap = new Hashtable<Property, Set<ValueGroup>>();
         positives = new HashSet<ValueGroup>();
         positives.add(NumGroup1);
         positives.add(NumGroup2);
@@ -394,7 +394,7 @@ public class TestData {
         ScaledRelation.put(Object6, propMap);
 
         // object 7
-        propMap = new Hashtable<Property, Set>();
+        propMap = new Hashtable<Property, Set<ValueGroup>>();
         positives = new HashSet<ValueGroup>();
         positives.add(NumGroup1);
         positives.add(NumGroup6);
@@ -426,11 +426,11 @@ public class TestData {
     }
 
     static boolean isInScaledRelation(CernatoObject object, Criterion criterion) {
-        Hashtable propMap = ScaledRelation.get(object);
+        Hashtable<Property,Set<ValueGroup>> propMap = ScaledRelation.get(object);
         if (propMap == null) {
             return false;
         }
-        Set positives = (Set) propMap.get(criterion.getProperty());
+        Set<ValueGroup> positives = propMap.get(criterion.getProperty());
         if (positives == null) {
             return false;
         }

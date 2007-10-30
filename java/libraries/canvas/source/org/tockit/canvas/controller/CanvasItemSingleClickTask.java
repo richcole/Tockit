@@ -27,14 +27,14 @@ class CanvasItemSingleClickTask extends TimerTask {
 
     private int modifiers;
 
-    private EventBroker context;
+    private EventBroker<? super CanvasItem> context;
 
     /**
      * Creates a new task for sending a message.
      */
     public CanvasItemSingleClickTask(CanvasItem target, int modifiers,
                                      Point2D canvasPosition, Point2D awtPosition,
-                                     EventBroker context) {
+                                     EventBroker<? super CanvasItem> context) {
         this.target = target;
         this.modifiers = modifiers;
         this.canvasPosition = canvasPosition;
@@ -45,7 +45,8 @@ class CanvasItemSingleClickTask extends TimerTask {
     /**
      * Sends the message.
      */
-    public void run() {
+    @Override
+	public void run() {
         context.processEvent(new CanvasItemSelectedEvent(target, modifiers,
                                                          this.canvasPosition, this.awtPosition));
     }

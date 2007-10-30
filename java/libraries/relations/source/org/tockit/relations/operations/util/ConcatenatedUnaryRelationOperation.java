@@ -10,11 +10,11 @@ package org.tockit.relations.operations.util;
 import org.tockit.relations.model.Relation;
 import org.tockit.relations.operations.UnaryRelationOperation;
 
-public class ConcatenatedUnaryRelationOperation extends AbstractUnaryRelationOperation {
-	private UnaryRelationOperation first;
-	private UnaryRelationOperation second;
+public class ConcatenatedUnaryRelationOperation<D> extends AbstractUnaryRelationOperation<D> {
+	private UnaryRelationOperation<D> first;
+	private UnaryRelationOperation<D> second;
 	
-	public ConcatenatedUnaryRelationOperation(UnaryRelationOperation first, UnaryRelationOperation second) {
+	public ConcatenatedUnaryRelationOperation(UnaryRelationOperation<D> first, UnaryRelationOperation<D> second) {
 		if(first == null || second == null) {
 			throw new NullPointerException("Input parameter for concatenation must not be null");			
 		}
@@ -22,7 +22,9 @@ public class ConcatenatedUnaryRelationOperation extends AbstractUnaryRelationOpe
 		this.second = second;
 	}
 
-	public Relation apply(Relation input) {
+	@SuppressWarnings("unchecked")
+	@Override
+	public Relation<D> doApply(Relation<D> input) {
 		return second.apply(first.apply(input));
 	}
 

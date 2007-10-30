@@ -15,15 +15,15 @@ import org.tockit.relations.model.Tuple;
 import org.tockit.relations.operations.util.AbstractUnaryRelationOperation;
 
 
-public class PermutationOperation extends AbstractUnaryRelationOperation {
-	public static Relation permute(Relation input, int[] columnsToPermute) {
-		PermutationOperation op = new PermutationOperation(columnsToPermute);
-		return op.apply(input);
+public class PermutationOperation<D> extends AbstractUnaryRelationOperation<D> {
+	public static<R> Relation<R> permute(Relation<R> input, int[] columnsToPermute) {
+		PermutationOperation<R> op = new PermutationOperation<R>(columnsToPermute);
+		return op.doApply(input);
 	}
 	
-	public static Relation exchange(Relation input, int column1, int column2) {
-		PermutationOperation op = new PermutationOperation(new int[]{column1, column2});
-		return op.apply(input);
+	public static<R> Relation<R> exchange(Relation<R> input, int column1, int column2) {
+		PermutationOperation<R> op = new PermutationOperation<R>(new int[]{column1, column2});
+		return op.doApply(input);
 	}
 	
 	private int[] columnsToPermute;
@@ -60,21 +60,23 @@ public class PermutationOperation extends AbstractUnaryRelationOperation {
         return name;
     }
 
-    public String[] getParameterNames() {
+    @Override
+	public String[] getParameterNames() {
         return new String[]{"input"};
     }
 
-    public Relation apply(Relation input) {
+    @Override
+	public Relation<D> doApply(Relation<D> input) {
         String[] dimensionNames = getDimensionNames(input);
-    	RelationImplementation result = new RelationImplementation(dimensionNames);
-    	for (Iterator<Tuple> iter = input.getTuples().iterator(); iter.hasNext();) {
-            Tuple tuple = iter.next();
+    	RelationImplementation<D> result = new RelationImplementation<D>(dimensionNames);
+    	for (Iterator<Tuple<D>> iter = input.getTuples().iterator(); iter.hasNext();) {
+            Tuple<D> tuple = iter.next();
             result.addTuple(permute(tuple.getData()));
         }
         return result;
     }
 
-	private String[] getDimensionNames(Relation input) {
+	private String[] getDimensionNames(Relation<?> input) {
 		String[] dimensionNames = new String[input.getArity()];
 		for (int i = 0; i < dimensionNames.length; i++) {
 			String curDimName = input.getDimensionNames()[i];
@@ -89,10 +91,11 @@ public class PermutationOperation extends AbstractUnaryRelationOperation {
 		return dimensionNames;
 	}
 
-	private Object[] permute(Object[] input) {
-		Object[] result = new Object[input.length];
+	@SuppressWarnings("unchecked")
+	private D[] permute(D[] input) {
+		D[] result = (D[]) new Object[input.length];
 		for (int i = 0; i < input.length; i++) {
-			Object elem = input[i];
+			D elem = input[i];
 			for (int j = 0; j < this.columnsToPermute.length - 1; j++) {
 				if(i == this.columnsToPermute[j]) {
 					elem = input[this.columnsToPermute[j+1]];

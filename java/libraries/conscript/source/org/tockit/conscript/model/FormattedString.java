@@ -32,7 +32,8 @@ public class FormattedString {
 		this.format = format;
 	}
 
-    public String toString() {
+    @Override
+	public String toString() {
         String retVal = "\"" + this.content + "\" ";
         if(this.format != null) {
             retVal += this.format.toString();

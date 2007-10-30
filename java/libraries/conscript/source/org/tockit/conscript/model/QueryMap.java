@@ -36,7 +36,8 @@ public class QueryMap extends ConscriptStructure {
 		this.map.put(abstractObjectId, concreteObject);
 	}
 
-    public void printCSC(PrintStream stream) {
+    @Override
+	public void printCSC(PrintStream stream) {
         printTitleRemarkSpecials(stream);
         for (Iterator<String> iter = this.map.keySet().iterator(); iter.hasNext(); ) {
             String concreteObj = iter.next();

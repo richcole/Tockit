@@ -31,54 +31,55 @@ public class KnowledgeBase {
     private IdPool nodeIdPool = new IdPool();
     private IdPool linkIdPool = new IdPool();
     private IdPool graphIdPool = new IdPool();
-    private EventBroker eventBroker;
+    private EventBroker<KnowledgeBase> eventBroker;
 
-    public KnowledgeBase(EventBroker eventBroker) {
+    public KnowledgeBase(EventBroker<KnowledgeBase> eventBroker) {
         this.eventBroker = eventBroker;
         this.element = new Element("knowledgeBase");
         Type.setDefaultKnowledgeBase(this);
         Relation.setDefaultKnowledgeBase(this);
     }
 
-    public KnowledgeBase(Element element, EventBroker eventBroker) {
+    @SuppressWarnings("unchecked")
+	public KnowledgeBase(Element element, EventBroker eventBroker) {
         this.eventBroker = eventBroker;
         this.element = element;
         Type.setDefaultKnowledgeBase(this);
         Relation.setDefaultKnowledgeBase(this);
 
-        Iterator it = element.getChildren("conceptualGraph").iterator();
+        Iterator<Element> it = element.getChildren("conceptualGraph").iterator();
         while (it.hasNext()) {
-            Element descriptorElem = (Element) it.next();
+            Element descriptorElem = it.next();
             new ConceptualGraph(this, descriptorElem);
         }
 
         it = element.getChildren("node").iterator();
         while (it.hasNext()) {
-            Element nodeElem = (Element) it.next();
+            Element nodeElem = it.next();
             new Node(this, nodeElem);
         }
 
         it = element.getChildren("type").iterator();
         while (it.hasNext()) {
-            Element typeElem = (Element) it.next();
+            Element typeElem = it.next();
             new Type(this, typeElem);
         }
 
         it = element.getChildren("instance").iterator();
         while (it.hasNext()) {
-            Element instanceElem = (Element) it.next();
+            Element instanceElem = it.next();
             new Instance(this, instanceElem);
         }
 
         it = element.getChildren("link").iterator();
         while (it.hasNext()) {
-            Element linkElem = (Element) it.next();
+            Element linkElem = it.next();
             new Link(this, linkElem);
         }
 
         it = element.getChildren("relation").iterator();
         while (it.hasNext()) {
-            Element relationElem = (Element) it.next();
+            Element relationElem = it.next();
             new Relation(this, relationElem);
         }
     }

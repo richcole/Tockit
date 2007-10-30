@@ -15,25 +15,25 @@ import org.tockit.relations.model.Tuple;
 import org.tockit.relations.operations.util.AbstractBinaryRelationOperation;
 
 
-public class JoinOperation extends AbstractBinaryRelationOperation {
-	public static Relation join(Relation left, int[] leftColumns, Relation right, int[] rightColumns) {
-		JoinOperation op = new JoinOperation(leftColumns, false, rightColumns, true);
-		return op.apply(left, right);
+public class JoinOperation<D> extends AbstractBinaryRelationOperation<D> {
+	public static<R> Relation<R> join(Relation<R> left, int[] leftColumns, Relation<R> right, int[] rightColumns) {
+		JoinOperation<R> op = new JoinOperation<R>(leftColumns, false, rightColumns, true);
+		return op.doApply(left, right);
 	}
 	
-	public static Relation join(Relation left, int leftColumn, Relation right, int rightColumn) {
-		JoinOperation op = new JoinOperation(new int[]{leftColumn}, false, new int[]{rightColumn}, true);
-		return op.apply(left, right);
+	public static<R> Relation<R> join(Relation<R> left, int leftColumn, Relation<R> right, int rightColumn) {
+		JoinOperation<R> op = new JoinOperation<R>(new int[]{leftColumn}, false, new int[]{rightColumn}, true);
+		return op.doApply(left, right);
 	}
 	
-	public static Relation join(Relation left, int[] leftColumns, Relation right, int[] rightColumns, boolean dropColumns) {
-		JoinOperation op = new JoinOperation(leftColumns, dropColumns, rightColumns, true);
-		return op.apply(left, right);
+	public static<R> Relation<R> join(Relation<R> left, int[] leftColumns, Relation<R> right, int[] rightColumns, boolean dropColumns) {
+		JoinOperation<R> op = new JoinOperation<R>(leftColumns, dropColumns, rightColumns, true);
+		return op.doApply(left, right);
 	}
 	
-	public static Relation join(Relation left, int leftColumn, Relation right, int rightColumn, boolean dropColumn) {
-		JoinOperation op = new JoinOperation(new int[]{leftColumn}, dropColumn, new int[]{rightColumn}, true);
-		return op.apply(left, right);
+	public static<R> Relation<R> join(Relation<R> left, int leftColumn, Relation<R> right, int rightColumn, boolean dropColumn) {
+		JoinOperation<R> op = new JoinOperation<R>(new int[]{leftColumn}, dropColumn, new int[]{rightColumn}, true);
+		return op.doApply(left, right);
 	}
 	
     private int[] leftHandColumns;
@@ -54,7 +54,8 @@ public class JoinOperation extends AbstractBinaryRelationOperation {
 		this.dropRightHandColumns = dropRightHandColumns;	
 	}
 	
-    public Relation apply(Relation leftHandInput, Relation rightHandInput) {
+    @Override
+	public Relation<D> doApply(Relation<D> leftHandInput, Relation<D> rightHandInput) {
 		int arity = leftHandInput.getArity() + rightHandInput.getArity();
 		if(this.dropLeftHandColumns) {
 			arity -= this.leftHandColumns.length;
@@ -63,11 +64,11 @@ public class JoinOperation extends AbstractBinaryRelationOperation {
 			arity -= this.rightHandColumns.length;
 		}
         String[] dimensionNames = getDimensionNames(leftHandInput, rightHandInput, arity);
-    	RelationImplementation result = new RelationImplementation(dimensionNames);
-		for (Iterator<Tuple> iterLeft = leftHandInput.getTuples().iterator(); iterLeft.hasNext();) {
-			Tuple leftTuple = iterLeft.next();
-			for (Iterator<Tuple> iterRight = rightHandInput.getTuples().iterator(); iterRight.hasNext();) {
-				Tuple rightTuple = iterRight.next();
+    	RelationImplementation<D> result = new RelationImplementation<D>(dimensionNames);
+		for (Iterator<Tuple<D>> iterLeft = leftHandInput.getTuples().iterator(); iterLeft.hasNext();) {
+			Tuple<D> leftTuple = iterLeft.next();
+			for (Iterator<Tuple<D>> iterRight = rightHandInput.getTuples().iterator(); iterRight.hasNext();) {
+				Tuple<D> rightTuple = iterRight.next();
 				if(joinPossible(leftTuple, rightTuple)) {
 					result.addTuple(join(leftTuple, rightTuple, arity));
 				}
@@ -76,8 +77,9 @@ public class JoinOperation extends AbstractBinaryRelationOperation {
         return result;
     }
 
-    private Object[] join(Tuple leftTuple, Tuple rightTuple, int arity) {
-    	Object[] result = new Object[arity];
+    @SuppressWarnings("unchecked")
+	private D[] join(Tuple<D> leftTuple, Tuple<D> rightTuple, int arity) {
+    	D[] result = (D[]) new Object[arity];
 		int skippedDimensions = 0;
 		tupleLoop: for (int i = 0; i < leftTuple.getLength(); i++) {
 			if(this.dropLeftHandColumns) {
@@ -104,7 +106,7 @@ public class JoinOperation extends AbstractBinaryRelationOperation {
 		return result;
     }
 
-    private boolean joinPossible(Tuple leftTuple, Tuple rightTuple) {
+    private boolean joinPossible(Tuple<D> leftTuple, Tuple<D> rightTuple) {
     	for (int i = 0; i < this.leftHandColumns.length; i++) {
 			int colLeft = this.leftHandColumns[i];
 			int colRight = this.rightHandColumns[i];
@@ -115,7 +117,7 @@ public class JoinOperation extends AbstractBinaryRelationOperation {
         return true;
     }
 
-    private String[] getDimensionNames(Relation leftHandInput, Relation rightHandInput, int arity) {
+    private String[] getDimensionNames(Relation<D> leftHandInput, Relation<D> rightHandInput, int arity) {
         String[] dimensionNames = new String[arity];
         int skippedDimensions = 0;
         for (int i = 0; i < leftHandInput.getDimensionNames().length; i++) {

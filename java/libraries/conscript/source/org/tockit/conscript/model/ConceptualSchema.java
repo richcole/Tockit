@@ -38,7 +38,8 @@ public class ConceptualSchema extends ConscriptStructure{
 		this.database = database;
 	}
 
-    public void printCSC(PrintStream stream) {
+    @Override
+	public void printCSC(PrintStream stream) {
         printTitleRemarkSpecials(stream);
         stream.print("\t\t(" + this.database.getName());
         for (Iterator<ConcreteScale> iter = this.concreteScales.iterator(); iter.hasNext();) {

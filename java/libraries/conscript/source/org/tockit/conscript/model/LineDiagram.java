@@ -73,7 +73,8 @@ public class LineDiagram extends ConscriptStructure{
 		this.unitLength = unitLength;
 	}
 
-    public void printCSC(PrintStream stream) {
+    @Override
+	public void printCSC(PrintStream stream) {
         printTitleRemarkSpecials(stream);
         if(this.unitLength != null) {
             stream.println("\t\tUNITLENGTH " + this.unitLength);

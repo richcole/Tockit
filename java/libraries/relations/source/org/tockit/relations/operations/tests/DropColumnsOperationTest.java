@@ -28,8 +28,8 @@ public class DropColumnsOperationTest extends AbstractRelationOperationTest {
 	}
 
     @Override
-	protected RelationOperation getOperation() {
-        return new DropColumnsOperation(new int[]{1,3});
+	protected RelationOperation<Object> getOperation() {
+        return new DropColumnsOperation<Object>(new int[]{1,3});
     }
 
     @Override
@@ -37,7 +37,8 @@ public class DropColumnsOperationTest extends AbstractRelationOperationTest {
         return 1;
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
 	protected RelationTestSetup[] getTests() {
     	RelationImplementationTest testCases = new RelationImplementationTest("test cases");
     	testCases.setUp();

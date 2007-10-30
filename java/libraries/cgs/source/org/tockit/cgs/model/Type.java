@@ -25,15 +25,18 @@ public class Type {
             this.name = name;
         }
 
-        public String getName() {
+        @Override
+		public String getName() {
             return name;
         }
 
-        public Type[] getDirectSupertypes() {
+        @Override
+		public Type[] getDirectSupertypes() {
             return new Type[0];
         }
 
-        public Element getElement() {
+        @Override
+		public Element getElement() {
             return null;
         }
     }
@@ -95,15 +98,16 @@ public class Type {
         this.element.setAttribute("name", name);
     }
 
-    public Type[] getDirectSupertypes() {
-        List supertypeChildren = this.element.getChildren("supertype");
+    @SuppressWarnings("unchecked")
+	public Type[] getDirectSupertypes() {
+        List<Element> supertypeChildren = this.element.getChildren("supertype");
         if(supertypeChildren.size() == 0) {
             return new Type[]{Type.UNIVERSAL};
         }
         Type[] retVal = new Type[supertypeChildren.size()];
         int pos = 0;
-        for (Iterator iterator = supertypeChildren.iterator(); iterator.hasNext();) {
-            Element supertypeElem = (Element) iterator.next();
+        for (Iterator<Element> iterator = supertypeChildren.iterator(); iterator.hasNext();) {
+            Element supertypeElem = iterator.next();
             Type type = this.knowledgeBase.getType(supertypeElem.getAttributeValue("name"));
             retVal[pos] = type;
             pos++;

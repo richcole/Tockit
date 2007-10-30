@@ -11,7 +11,7 @@ import org.tockit.relations.model.Relation;
 import org.tockit.relations.operations.BinaryRelationOperation;
 import org.tockit.relations.operations.UnaryRelationOperation;
 
-public abstract class AbstractUnaryRelationOperation implements UnaryRelationOperation {
+public abstract class AbstractUnaryRelationOperation<D> implements UnaryRelationOperation<D> {
 	/**
 	 * Implements RelationOperation.getArity().
 	 **/
@@ -29,27 +29,30 @@ public abstract class AbstractUnaryRelationOperation implements UnaryRelationOpe
 	/**
 	 * Implements RelationOperation.apply(Relation[]).
 	 **/
-	public Relation apply(Relation[] input) {
+	final public Relation<D> apply(Relation<D>... input) {
 		if(input.length != 1) {
 			throw new IllegalArgumentException("Parameter length for unary relation operation is not one");
 		}
-		return apply(input[0]);
+		return doApply(input[0]);
 	}
+	
+	protected abstract Relation<D> doApply(Relation<D> input);
 
 	/**
 	 * Implements UnaryRelationOperation.concatenate(UnaryRelationOperation).
 	 **/
-	public UnaryRelationOperation concatenate(UnaryRelationOperation other) {
-		return new ConcatenatedUnaryRelationOperation(other, this);
+	public UnaryRelationOperation<D> concatenate(UnaryRelationOperation<D> other) {
+		return new ConcatenatedUnaryRelationOperation<D>(other, this);
 	}
 	
 	/**
 	 * Implements UnaryRelationOperation.concatenate(BinaryRelationOperation).
 	 **/
-	public BinaryRelationOperation concatenate(BinaryRelationOperation other) {
-		return new ConcatenatedUnaryAfterBinaryRelationOperation(other, this);
+	public BinaryRelationOperation<D> concatenate(BinaryRelationOperation<D> other) {
+		return new ConcatenatedUnaryAfterBinaryRelationOperation<D>(other, this);
 	}
 	
+	@Override
 	public String toString() {
 		return getName();
 	}

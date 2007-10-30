@@ -26,20 +26,24 @@ public class PermutationOperationTest extends AbstractRelationOperationTest {
 		return new TestSuite(PermutationOperationTest.class);
 	}
 
-    protected RelationOperation getOperation() {
-        return new PermutationOperation(new int[]{1,3,5});
+    @Override
+	protected RelationOperation<Object> getOperation() {
+        return new PermutationOperation<Object>(new int[]{1,3,5});
     }
 
-    protected int getExpectedArity() {
+    @Override
+	protected int getExpectedArity() {
         return 1;
     }
 
-    protected RelationTestSetup[] getTests() {
-		RelationImplementation testRelOne = new RelationImplementation(6);
-		testRelOne.addTuple(new Tuple(new String[]{"a","b","c","d","e","f"}));
-		testRelOne.addTuple(new Tuple(new String[]{"b","c","d","e","f","a"}));
-		testRelOne.addTuple(new Tuple(new String[]{"a","b","d","e","f","c"}));
-		testRelOne.addTuple(new Tuple(new String[]{"f","b","c","d","e","a"}));
+    @SuppressWarnings("unchecked")
+	@Override
+	protected RelationTestSetup[] getTests() {
+		RelationImplementation<Object> testRelOne = new RelationImplementation<Object>(6);
+		testRelOne.addTuple(new Tuple<Object>(new String[]{"a","b","c","d","e","f"}));
+		testRelOne.addTuple(new Tuple<Object>(new String[]{"b","c","d","e","f","a"}));
+		testRelOne.addTuple(new Tuple<Object>(new String[]{"a","b","d","e","f","c"}));
+		testRelOne.addTuple(new Tuple<Object>(new String[]{"f","b","c","d","e","a"}));
 
 		RelationTestSetup one = new RelationTestSetup();
         one.input = new Relation[]{testRelOne};

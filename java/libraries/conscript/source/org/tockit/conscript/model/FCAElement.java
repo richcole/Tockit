@@ -30,7 +30,8 @@ public abstract class FCAElement {
         return this.label;
     }
     
-    public String toString() {
+    @Override
+	public String toString() {
         return "" + this.point.getNumber() + " " + 
                this.identifier + " " + this.label;
     }

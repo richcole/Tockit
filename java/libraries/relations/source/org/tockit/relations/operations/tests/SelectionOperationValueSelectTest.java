@@ -26,15 +26,19 @@ public class SelectionOperationValueSelectTest extends AbstractRelationOperation
 		return new TestSuite(SelectionOperationValueSelectTest.class);
 	}
 
-    protected RelationOperation getOperation() {
-        return SelectionOperation.getValueSelect(1, "6");
+    @Override
+	protected RelationOperation<Object> getOperation() {
+        return SelectionOperation.getValueSelect(1, (Object)"6");
     }
 
-    protected int getExpectedArity() {
+    @Override
+	protected int getExpectedArity() {
         return 1;
     }
 
-    protected RelationTestSetup[] getTests() {
+    @SuppressWarnings("unchecked")
+	@Override
+	protected RelationTestSetup[] getTests() {
     	RelationImplementationTest testCases = new RelationImplementationTest("test cases");
     	testCases.setUp();
     	

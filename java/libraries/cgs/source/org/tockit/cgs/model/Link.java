@@ -47,12 +47,13 @@ public class Link {
         knowledgeBase.addLink(this);
     }
 
-    public Node[] getReferences() {
-        List referenceChildren = this.element.getChildren("reference");
+    @SuppressWarnings("unchecked")
+	public Node[] getReferences() {
+        List<Element> referenceChildren = this.element.getChildren("reference");
         Node[] retVal = new Node[referenceChildren.size()];
         int pos = 0;
-        for (Iterator iterator = referenceChildren.iterator(); iterator.hasNext();) {
-            Element referenceElem = (Element) iterator.next();
+        for (Iterator<Element> iterator = referenceChildren.iterator(); iterator.hasNext();) {
+            Element referenceElem = iterator.next();
             Node node = this.knowledgeBase.getNode(referenceElem.getTextNormalize());
             retVal[pos] = node;
             pos++;

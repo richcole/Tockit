@@ -21,15 +21,15 @@ import org.tockit.relations.operations.util.AbstractUnaryRelationOperation;
  * The operation takes an int[] as defining parameter, which denotes the columns to pick
  * from the input relation. Any order is possible, repetitions are allowed. 
  */
-public class PickColumnsOperation extends AbstractUnaryRelationOperation {
-	public static Relation pickColumns(Relation input, int[] columnsToPick) {
-		PickColumnsOperation op = new PickColumnsOperation(columnsToPick);
-		return op.apply(input);
+public class PickColumnsOperation<D> extends AbstractUnaryRelationOperation<D> {
+	public static<R> Relation<R> pickColumns(Relation<R> input, int[] columnsToPick) {
+		PickColumnsOperation<R> op = new PickColumnsOperation<R>(columnsToPick);
+		return op.doApply(input);
 	}
 	
-	public static Relation pickColumn(Relation input, int columnToPick) {
-		PickColumnsOperation op = new PickColumnsOperation(new int[]{columnToPick});
-		return op.apply(input);
+	public static<R> Relation<R> pickColumn(Relation<R> input, int columnToPick) {
+		PickColumnsOperation<R> op = new PickColumnsOperation<R>(new int[]{columnToPick});
+		return op.doApply(input);
 	}
 	
 	private int[] columnsToPick;
@@ -55,29 +55,32 @@ public class PickColumnsOperation extends AbstractUnaryRelationOperation {
         return name;
     }
 
-    public String[] getParameterNames() {
+    @Override
+	public String[] getParameterNames() {
         return new String[]{"input"};
     }
 
 	/**
 	 * @throws ArrayIndexOutOfBoundsException iff one of the column positions is out of range
 	 */
-    public Relation apply(Relation input) {
+    @Override
+	public Relation<D> doApply(Relation<D> input) {
     	String[] dimensionNames = new String[this.columnsToPick.length];
 		for (int i = 0; i < this.columnsToPick.length; i++) {
 			int col = this.columnsToPick[i];
 			dimensionNames[i] = input.getDimensionNames()[col];
 		}
-    	RelationImplementation result = new RelationImplementation(dimensionNames);
-    	for (Iterator<Tuple> iter = input.getTuples().iterator(); iter.hasNext();) {
-            Tuple tuple = iter.next();
+    	RelationImplementation<D> result = new RelationImplementation<D>(dimensionNames);
+    	for (Iterator<Tuple<D>> iter = input.getTuples().iterator(); iter.hasNext();) {
+            Tuple<D> tuple = iter.next();
             result.addTuple(project(tuple.getData()));
         }
         return result;
     }
     
-    private Object[] project(Object[] input) {
-    	Object[] result = new Object[this.columnsToPick.length];
+    @SuppressWarnings("unchecked")
+	private D[] project(D[] input) {
+    	D[] result = (D[]) new Object[this.columnsToPick.length];
     	for (int i = 0; i < this.columnsToPick.length; i++) {
             int col = this.columnsToPick[i];
             result[i] = input[col];

@@ -26,15 +26,19 @@ public class SelectionOperationColumnCompareTest extends AbstractRelationOperati
 		return new TestSuite(SelectionOperationColumnCompareTest.class);
 	}
 
-    protected RelationOperation getOperation() {
+    @Override
+	protected RelationOperation<Object> getOperation() {
         return SelectionOperation.getColumnEqualitySelect(1,2);
     }
 
-    protected int getExpectedArity() {
+    @Override
+	protected int getExpectedArity() {
         return 1;
     }
 
-    protected RelationTestSetup[] getTests() {
+    @SuppressWarnings("unchecked")
+	@Override
+	protected RelationTestSetup[] getTests() {
     	RelationImplementationTest testCases = new RelationImplementationTest("test cases");
     	testCases.setUp();
     	

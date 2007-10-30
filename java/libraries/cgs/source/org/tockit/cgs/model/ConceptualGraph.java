@@ -24,17 +24,18 @@ public class ConceptualGraph {
         knowledgeBase.addGraph(this, true);
     }
 
-    public ConceptualGraph(KnowledgeBase knowledgeBase, Element element) {
+    @SuppressWarnings("unchecked")
+	public ConceptualGraph(KnowledgeBase knowledgeBase, Element element) {
         this.knowledgeBase = knowledgeBase;
         this.element = element;
-        List nodes = this.element.getChildren("node");
-        for (Iterator iterator = nodes.iterator(); iterator.hasNext();) {
-            Element nodeElem = (Element) iterator.next();
+        List<Element> nodes = this.element.getChildren("node");
+        for (Iterator<Element> iterator = nodes.iterator(); iterator.hasNext();) {
+            Element nodeElem = iterator.next();
             new Node(knowledgeBase, nodeElem);
         }
-        List links = this.element.getChildren("link");
-        for (Iterator iterator = links.iterator(); iterator.hasNext();) {
-            Element linkElem = (Element) iterator.next();
+        List<Element> links = this.element.getChildren("link");
+        for (Iterator<Element> iterator = links.iterator(); iterator.hasNext();) {
+            Element linkElem = iterator.next();
             new Link(knowledgeBase, linkElem);
         }
         this.knowledgeBase.reserveGraphId(this.element.getAttributeValue("id"));
@@ -49,12 +50,13 @@ public class ConceptualGraph {
         this.element.addContent(link.getElement());
     }
 
-    public Node[] getNodes() {
-        List nodeChildren = this.element.getChildren("node");
+    @SuppressWarnings("unchecked")
+	public Node[] getNodes() {
+        List<Element> nodeChildren = this.element.getChildren("node");
         Node[] retVal = new Node[nodeChildren.size()];
         int pos = 0;
-        for (Iterator iterator = nodeChildren.iterator(); iterator.hasNext();) {
-            Element nodeElem = (Element) iterator.next();
+        for (Iterator<Element> iterator = nodeChildren.iterator(); iterator.hasNext();) {
+            Element nodeElem = iterator.next();
             Node node = this.knowledgeBase.getNode(nodeElem.getAttributeValue("id"));
             retVal[pos] = node;
             pos++;
@@ -62,12 +64,13 @@ public class ConceptualGraph {
         return retVal;
     }
 
-    public Link[] getLinks() {
-        List linkChildren = this.element.getChildren("link");
+    @SuppressWarnings("unchecked")
+	public Link[] getLinks() {
+        List<Element> linkChildren = this.element.getChildren("link");
         Link[] retVal = new Link[linkChildren.size()];
         int pos = 0;
-        for (Iterator iterator = linkChildren.iterator(); iterator.hasNext();) {
-            Element linkElem = (Element) iterator.next();
+        for (Iterator<Element> iterator = linkChildren.iterator(); iterator.hasNext();) {
+            Element linkElem = iterator.next();
             Link link = this.knowledgeBase.getLink(linkElem.getAttributeValue("id"));
             retVal[pos] = link;
             pos++;
@@ -83,11 +86,12 @@ public class ConceptualGraph {
         return this.element.getAttributeValue("id");
     }
 
-    public void remove(Node node) {
-        List nodeChildren = this.element.getChildren("node");
+    @SuppressWarnings("unchecked")
+	public void remove(Node node) {
+        List<Element> nodeChildren = this.element.getChildren("node");
         List<Element> toRemove = new ArrayList<Element>();
-        for (Iterator iterator = nodeChildren.iterator(); iterator.hasNext();) {
-            Element curElement = (Element) iterator.next();
+        for (Iterator<Element> iterator = nodeChildren.iterator(); iterator.hasNext();) {
+            Element curElement = iterator.next();
             if(curElement.getAttributeValue("id").equals(node.getId())) {
                 toRemove.add(curElement);
             }
@@ -99,11 +103,12 @@ public class ConceptualGraph {
         ///@todo recurse into descriptors
     }
 
-    public void remove(Link link) {
-        List linkChildren = this.element.getChildren("link");
+    @SuppressWarnings("unchecked")
+	public void remove(Link link) {
+        List<Element> linkChildren = this.element.getChildren("link");
         List<Element> toRemove = new ArrayList<Element>();
-        for (Iterator iterator = linkChildren.iterator(); iterator.hasNext();) {
-            Element curElement = (Element) iterator.next();
+        for (Iterator<Element> iterator = linkChildren.iterator(); iterator.hasNext();) {
+            Element curElement = iterator.next();
             if(curElement.getAttributeValue("id").equals(link.getId())) {
                 toRemove.add(curElement);
             }

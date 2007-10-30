@@ -22,5 +22,5 @@ public interface EventBrokerListener<T> {
     /**
      * The callback for receiving events.
      */
-    void processEvent(Event<T> e);
+    void processEvent(Event<? extends T> e);
 }

@@ -17,7 +17,7 @@ public class LoggingEventListener<T> implements EventBrokerListener<T> {
         eventBroker.subscribe(this, eventType, subjectType);
     }
 
-    public void processEvent(Event<T> e) {
+    public void processEvent(Event<? extends T> e) {
         printStream.println("Event: " + e.getClass() + "  Subject: " + e.getSubject().getClass());
     }
 }

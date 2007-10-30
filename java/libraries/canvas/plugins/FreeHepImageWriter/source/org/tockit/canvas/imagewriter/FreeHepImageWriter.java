@@ -33,84 +33,102 @@ import org.tockit.canvas.Canvas;
  */
 public class FreeHepImageWriter implements ImageWriter {
 	static protected class GraphicFormatPDF extends GraphicFormat {
+		@Override
 		public ImageWriter getWriter() {
 			return singleton;
 		}
 
+		@Override
 		public String getName() {
 			return "Portable Document Format";
 		}
 
+		@Override
 		public String[] getExtensions() {
 			return new String[]{"pdf"};
 		}
 	}
 	
 	static protected class GraphicFormatEMF extends GraphicFormat {
+		@Override
 		public ImageWriter getWriter() {
 			return singleton;
 		}
 
+		@Override
 		public String getName() {
 			return "Extended Metafile Format";
 		}
 
+		@Override
 		public String[] getExtensions() {
 			return new String[]{"emf", "wmf"};
 		}
 	}
 	
 	static protected class GraphicFormatPS extends GraphicFormat {
+		@Override
 		public ImageWriter getWriter() {
 			return singleton;
 		}
 
+		@Override
 		public String getName() {
 			return "Postscript";
 		}
 
+		@Override
 		public String[] getExtensions() {
 			return new String[]{"eps", "ps"};
 		}
 	}
 	
 	static protected class GraphicFormatPPM extends GraphicFormat {
+		@Override
 		public ImageWriter getWriter() {
 			return singleton;
 		}
 
+		@Override
 		public String getName() {
 			return "UNIX Portable PixMap";
 		}
 
+		@Override
 		public String[] getExtensions() {
 			return new String[]{"ppm", "PPM"};
 		}
 	}
 
 	static protected class GraphicFormatSWF extends GraphicFormat {
+		@Override
 		public ImageWriter getWriter() {
 			return singleton;
 		}
 
+		@Override
 		public String getName() {
 			return "Macromedia Flash";
 		}
 
+		@Override
 		public String[] getExtensions() {
 			return new String[]{"swf", "SWF"};
 		}
 	}
 	
 	static protected class GraphicFormatSVG extends GraphicFormat {
+		@Override
 		public ImageWriter getWriter() {
 			return singleton;
 		}
 
+		@Override
 		public String getName() {
 			return "Scalable Vector Graphics (compressed)";
 		}
 
+		@Override
 		public String[] getExtensions() {
 			return new String[]{"svgz", "SVGZ"};
 		}

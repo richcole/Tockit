@@ -36,7 +36,8 @@ public class AbstractScale extends ConscriptStructure{
 		this.lineDiagrams.add(lineDiagram);
 	}
 
-    public void printCSC(PrintStream stream) {
+    @Override
+	public void printCSC(PrintStream stream) {
         printTitleRemarkSpecials(stream);
         stream.print("\t\t(" + this.context.getName() + ", "); // two commas for the missing lattice bit
         for (Iterator<LineDiagram> iter = this.lineDiagrams.iterator(); iter.hasNext();) {

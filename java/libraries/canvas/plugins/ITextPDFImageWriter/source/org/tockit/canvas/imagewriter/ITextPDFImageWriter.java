@@ -34,14 +34,16 @@ public class ITextPDFImageWriter implements ImageWriter {
         /**
          * Implements GraphicFormat.getName().
          */
-        public String getName() {
+        @Override
+		public String getName() {
             return "Portable Document Format (PDF)";
         }
 
         /**
          * Implements GraphicFormat.getExtensions().
          */
-        public String[] getExtensions() {
+        @Override
+		public String[] getExtensions() {
             String[] retVal = new String[1];
             retVal[0] = "pdf";
             return retVal;
@@ -50,7 +52,8 @@ public class ITextPDFImageWriter implements ImageWriter {
         /**
          * Implements GraphicFormat.getWriter().
          */
-        public ImageWriter getWriter() {
+        @Override
+		public ImageWriter getWriter() {
             return singleton;
         }
     }

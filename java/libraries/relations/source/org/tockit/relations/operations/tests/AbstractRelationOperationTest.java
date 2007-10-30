@@ -19,7 +19,7 @@ import junit.framework.TestCase;
 
 public abstract class AbstractRelationOperationTest extends TestCase {
 	protected static class RelationTestSetup {
-		public Relation[] input;
+		public Relation<Object>[] input;
 		public int expectedOutputArity;
 		public int expectedOutputSize;
 		public Object[][] expectedTuples;
@@ -30,8 +30,9 @@ public abstract class AbstractRelationOperationTest extends TestCase {
 		super(s);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void testBaseFeatures() {
-		RelationOperation op = getOperation();
+		RelationOperation<Object> op = getOperation();
         assertEquals("Operation doesn't match the arity expected.", getExpectedArity(), op.getArity());
 		assertNotNull("Operation name must not be null", op.getName());
 		assertTrue("Operation name must not be empty", op.getName().length() != 0);
@@ -39,8 +40,8 @@ public abstract class AbstractRelationOperationTest extends TestCase {
 		assertEquals("Length of parameter names array must be the operation's arity", op.getArity(), op.getParameterNames().length);
 		try {
 			// the following numbers are arbitrary postitive numbers
-			Relation test = new RelationImplementation(4);
-			Relation[] input = new Relation[op.getArity() + 3];
+			Relation<Object> test = new RelationImplementation<Object>(4);
+			Relation<Object>[] input = new Relation[op.getArity() + 3];
 			for (int i = 0; i < input.length; i++) {
 				input[i] = test;
 			}
@@ -50,7 +51,7 @@ public abstract class AbstractRelationOperationTest extends TestCase {
 			// ignore
 		}
 		try {
-			Relation[] input = new Relation[0];
+			Relation<Object>[] input = new Relation[0];
 			op.apply(input);
 			fail("Operation failed to throw exception for illegal argument (empty array)");
 		} catch (IllegalArgumentException e) {
@@ -60,13 +61,13 @@ public abstract class AbstractRelationOperationTest extends TestCase {
 	
 	public void testOperations() {
 		RelationTestSetup[] tests = getTests();
-		RelationOperation op = getOperation();
+		RelationOperation<Object> op = getOperation();
 		for (int i = 0; i < tests.length; i++) {
             RelationTestSetup test = tests[i];
-			Relation result = op.apply(test.input);
+			Relation<Object> result = op.apply(test.input);
 			if(logResults()) {
-				for (Iterator<Tuple> iter = result.getTuples().iterator(); iter.hasNext();) {
-	                Tuple tuple = iter.next();
+				for (Iterator<Tuple<Object>> iter = result.getTuples().iterator(); iter.hasNext();) {
+	                Tuple<Object> tuple = iter.next();
 	                System.out.println(tuple);
 	            }			
 			}
@@ -97,7 +98,7 @@ public abstract class AbstractRelationOperationTest extends TestCase {
 		return false;
 	}
 	
-	protected abstract RelationOperation getOperation();
+	protected abstract RelationOperation<Object> getOperation();
 	
 	protected abstract int getExpectedArity();
 	

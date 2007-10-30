@@ -252,7 +252,8 @@ public class StringFormat {
 		this.verticalAlign = verticalAlign;
 	}
 	
-    public String toString() {
+    @Override
+	public String toString() {
         StringBuffer retVal = new StringBuffer("\"");
         if(this.fontFamily != null) {
             retVal.append(this.fontFamily);

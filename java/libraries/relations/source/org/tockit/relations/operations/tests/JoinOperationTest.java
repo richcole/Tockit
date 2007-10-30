@@ -26,15 +26,19 @@ public class JoinOperationTest extends AbstractRelationOperationTest {
 		return new TestSuite(JoinOperationTest.class);
 	}
 
-    protected RelationOperation getOperation() {
-        return new JoinOperation(new int[]{2}, true, new int[]{1}, false);
+    @Override
+	protected RelationOperation<Object> getOperation() {
+        return new JoinOperation<Object>(new int[]{2}, true, new int[]{1}, false);
     }
 
-    protected int getExpectedArity() {
+    @Override
+	protected int getExpectedArity() {
         return 2;
     }
 
-    protected RelationTestSetup[] getTests() {
+    @SuppressWarnings("unchecked")
+	@Override
+	protected RelationTestSetup[] getTests() {
     	RelationImplementationTest testCases = new RelationImplementationTest("test cases");
     	testCases.setUp();
     	

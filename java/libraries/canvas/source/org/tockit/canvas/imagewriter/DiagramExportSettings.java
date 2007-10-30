@@ -187,7 +187,8 @@ public class DiagramExportSettings {
     /**
      * Debugging output.
      */
-    public String toString() {
+    @Override
+	public String toString() {
         String retVal = "DiagramExportSettings[ Size: (" + this.width + ", " + this.height + "), Format: " + this.format;
         if (this.autoMode) {
             retVal += " (AUTO)";

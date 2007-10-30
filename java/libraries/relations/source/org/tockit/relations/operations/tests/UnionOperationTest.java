@@ -27,15 +27,19 @@ public class UnionOperationTest extends AbstractRelationOperationTest {
 		return new TestSuite(UnionOperationTest.class);
 	}
 
-    protected RelationOperation getOperation() {
-        return new UnionOperation();
+    @Override
+	protected RelationOperation<Object> getOperation() {
+        return new UnionOperation<Object>();
     }
 
-    protected int getExpectedArity() {
+    @Override
+	protected int getExpectedArity() {
         return 2;
     }
 
-    protected RelationTestSetup[] getTests() {
+    @SuppressWarnings("unchecked")
+	@Override
+	protected RelationTestSetup[] getTests() {
     	RelationImplementationTest testCases = new RelationImplementationTest("test cases");
     	testCases.setUp();
     	
@@ -48,7 +52,7 @@ public class UnionOperationTest extends AbstractRelationOperationTest {
 		one.unexpectedTuples = new Object[][]{new String[]{"1","6","6"}};
     	
 		RelationTestSetup two = new RelationTestSetup();
-		Relation testRelTwo = new RelationImplementation(3);
+		Relation<Object> testRelTwo = new RelationImplementation<Object>(3);
 		testRelTwo.addTuple(new String[]{"a","b","c"});
 		testRelTwo.addTuple(new String[]{"b","b","c"});
 		testRelTwo.addTuple(new String[]{"a","b","b"});

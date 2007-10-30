@@ -22,18 +22,21 @@ public class NumericalValue implements Value {
         return value;
     }
     
-    public String toString() {
+    @Override
+	public String toString() {
     	return getDisplayString();
     }
     
-    public boolean equals(Object other) {
+    @Override
+	public boolean equals(Object other) {
         // copied from Double.equals()
         return (other instanceof NumericalValue)
                && (Double.doubleToLongBits(((NumericalValue)other).value) ==
                   Double.doubleToLongBits(this.value));
     }
     
-    public int hashCode() {
+    @Override
+	public int hashCode() {
     	// copied from Double.hashCode()
         long bits = Double.doubleToLongBits(value);
         return (int)(bits ^ (bits >>> 32));

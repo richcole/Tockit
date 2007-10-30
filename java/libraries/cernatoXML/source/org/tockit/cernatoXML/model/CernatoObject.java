@@ -18,7 +18,8 @@ public class CernatoObject {
         return name;
     }
 
-    public String toString() {
+    @Override
+	public String toString() {
         return getName();
     }
 }

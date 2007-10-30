@@ -51,7 +51,8 @@ public class Instance {
         return this.element;
     }
 
-    public String toString() {
+    @Override
+	public String toString() {
         return this.getType().getName() + ": " + this.getIdentifier();
     }
 

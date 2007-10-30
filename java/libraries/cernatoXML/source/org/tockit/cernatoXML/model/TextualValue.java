@@ -18,17 +18,20 @@ public class TextualValue implements Value {
         return value;
     }
 
-    public String toString() {
+    @Override
+	public String toString() {
         return getDisplayString();
     }
 
-    public boolean equals(Object other) {
+    @Override
+	public boolean equals(Object other) {
         // copied from Double.equals()
         return (other instanceof TextualValue)
                && ((TextualValue)other).value.equals(this.value);
     }
 
-    public int hashCode() {
+    @Override
+	public int hashCode() {
         return this.value.hashCode();
     }
 

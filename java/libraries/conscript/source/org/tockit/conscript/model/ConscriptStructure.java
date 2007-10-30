@@ -22,7 +22,7 @@ public abstract class ConscriptStructure {
     private String name;
     private FormattedString title = null;
     private String remark = null;
-    private Map<String, Set> specials = new Hashtable<String, Set>();
+    private Map<String, Set<String>> specials = new Hashtable<String, Set<String>>();
     
     private boolean initialized = false;
 
@@ -38,11 +38,11 @@ public abstract class ConscriptStructure {
     	return remark;
     }
 
-    public Map<String, Set> getSpecials() {
+    public Map<String, Set<String>> getSpecials() {
         return Collections.unmodifiableMap(specials);
     }
 
-    public Set getSpecials(String specialGroup) {
+    public Set<String> getSpecials(String specialGroup) {
         return Collections.unmodifiableSet(specials.get(specialGroup));
     }
 
@@ -101,9 +101,9 @@ public abstract class ConscriptStructure {
             stream.println("\t\tSPECIAL");
             for (Iterator<String> iter = this.specials.keySet().iterator(); iter.hasNext();) {
                 String special = iter.next();
-                Set specialSet = this.specials.get(special);
-                for (Iterator innerIter = specialSet.iterator(); innerIter.hasNext();) {
-                    String value = (String) innerIter.next();
+                Set<String> specialSet = this.specials.get(special);
+                for (Iterator<String> innerIter = specialSet.iterator(); innerIter.hasNext();) {
+                    String value = innerIter.next();
                     stream.println("\t\t\t\"" + special + ":" + value + "\"");
                 }
             }

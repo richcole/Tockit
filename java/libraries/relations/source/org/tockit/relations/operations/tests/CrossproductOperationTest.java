@@ -26,15 +26,19 @@ public class CrossproductOperationTest extends AbstractRelationOperationTest {
 		return new TestSuite(CrossproductOperationTest.class);
 	}
 
-    protected RelationOperation getOperation() {
-        return new CrossproductOperation();
+    @Override
+	protected RelationOperation<Object> getOperation() {
+        return new CrossproductOperation<Object>();
     }
 
-    protected int getExpectedArity() {
+    @Override
+	protected int getExpectedArity() {
         return 2;
     }
 
-    protected RelationTestSetup[] getTests() {
+    @SuppressWarnings("unchecked")
+	@Override
+	protected RelationTestSetup[] getTests() {
     	RelationImplementationTest testCases = new RelationImplementationTest("test cases");
     	testCases.setUp();
     	

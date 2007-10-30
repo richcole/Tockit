@@ -15,15 +15,15 @@ import org.tockit.relations.model.Tuple;
 import org.tockit.relations.operations.util.AbstractUnaryRelationOperation;
 
 
-public class DropColumnsOperation extends AbstractUnaryRelationOperation {
-	public static Relation drop(Relation input, int[] columnsToDrop) {
-		DropColumnsOperation op = new DropColumnsOperation(columnsToDrop);
-		return op.apply(input);
+public class DropColumnsOperation<D> extends AbstractUnaryRelationOperation<D> {
+	public static<R> Relation<R> drop(Relation<R> input, int[] columnsToDrop) {
+		DropColumnsOperation<R> op = new DropColumnsOperation<R>(columnsToDrop);
+		return op.doApply(input);
 	}
 
-	public static Relation drop(Relation input, int columnToDrop) {
-		DropColumnsOperation op = new DropColumnsOperation(new int[]{columnToDrop});
-		return op.apply(input);
+	public static<R> Relation<R> drop(Relation<R> input, int columnToDrop) {
+		DropColumnsOperation<R> op = new DropColumnsOperation<R>(new int[]{columnToDrop});
+		return op.doApply(input);
 	}
 
 	private int[] columnsToDrop;
@@ -52,14 +52,16 @@ public class DropColumnsOperation extends AbstractUnaryRelationOperation {
         return name;
     }
 
-    public String[] getParameterNames() {
+    @Override
+	public String[] getParameterNames() {
         return new String[]{"input"};
     }
 
 	/**
 	 * @todo add check for dropping things that aren't there
 	 */
-    public Relation apply(Relation input) {
+    @Override
+	public Relation<D> doApply(Relation<D> input) {
     	String[] dimensionNames = new String[input.getArity() - this.columnsToDrop.length];
     	int columnsDropped = 0;
     	outerLoop: for (int i = 0; i < input.getDimensionNames().length; i++) {
@@ -71,16 +73,17 @@ public class DropColumnsOperation extends AbstractUnaryRelationOperation {
 			}
 			dimensionNames[i - columnsDropped] = input.getDimensionNames()[i];
         }
-    	RelationImplementation result = new RelationImplementation(dimensionNames);
-    	for (Iterator<Tuple> iter = input.getTuples().iterator(); iter.hasNext();) {
-            Tuple tuple = iter.next();
+    	RelationImplementation<D> result = new RelationImplementation<D>(dimensionNames);
+    	for (Iterator<Tuple<D>> iter = input.getTuples().iterator(); iter.hasNext();) {
+            Tuple<D> tuple = iter.next();
             result.addTuple(project(tuple.getData()));
         }
         return result;
     }
     
-    private Object[] project(Object[] input) {
-    	Object[] result = new Object[input.length - this.columnsToDrop.length];
+    @SuppressWarnings("unchecked")
+	private D[] project(D[] input) {
+    	D[] result = (D[]) new Object[input.length - this.columnsToDrop.length];
 		int columnsDropped = 0;
 		outerLoop: for (int i = 0; i < input.length; i++) {
 			for (int j = 0; j < this.columnsToDrop.length; j++) {

@@ -32,7 +32,11 @@ public class CanvasController implements MouseListener, MouseMotionListener {
 
     private Canvas canvas;
 
-    private EventBroker eventBroker;
+    /**
+     * @todo this is ugly: we can't properly type the broker since events can be either about
+     *       the canvas (such as CanvasDrawnEvent) or the items on it
+     */
+    private EventBroker<Object> eventBroker;
 
     /**
      * Flag to prevent canvas item from being moved when just clicked on
@@ -77,7 +81,7 @@ public class CanvasController implements MouseListener, MouseMotionListener {
      */
     private CanvasItem pointedCanvasItem = null;
 
-    public CanvasController(Canvas canvas, EventBroker eventBroker) {
+    public CanvasController(Canvas canvas, EventBroker<Object> eventBroker) {
         this.canvas = canvas;
         this.eventBroker = eventBroker;
         canvas.addMouseListener(this);
@@ -264,7 +268,7 @@ public class CanvasController implements MouseListener, MouseMotionListener {
                 this.selectedCanvasItem, modifiers, canvasPos, screenPos));
     }
     
-	public EventBroker getEventBroker() {
+	public EventBroker<Object> getEventBroker() {
 		return eventBroker;
 	}
 

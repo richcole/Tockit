@@ -60,7 +60,8 @@ public class ConcreteScale extends ConscriptStructure{
 		this.tables = tables;
 	}
 
-    public void printCSC(PrintStream stream) {
+    @Override
+	public void printCSC(PrintStream stream) {
         printTitleRemarkSpecials(stream);
         stream.print("\t\t(" + this.abstractScale.getName() + ", ");
         if(this.queryMap != null) {

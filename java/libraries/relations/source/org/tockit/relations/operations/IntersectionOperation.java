@@ -15,19 +15,20 @@ import org.tockit.relations.model.Tuple;
 import org.tockit.relations.operations.util.AbstractBinaryRelationOperation;
 
 
-public class IntersectionOperation extends AbstractBinaryRelationOperation {
-	public static Relation intersect(Relation left, Relation right) {
-		IntersectionOperation op = new IntersectionOperation();
-		return op.apply(left, right);
+public class IntersectionOperation<D> extends AbstractBinaryRelationOperation<D> {
+	public static<R> Relation<R> intersect(Relation<R> left, Relation<R> right) {
+		IntersectionOperation<R> op = new IntersectionOperation<R>();
+		return op.doApply(left, right);
 	}
 	
-    public Relation apply(Relation leftHandInput, Relation rightHandInput) {
+    @Override
+	public Relation<D> doApply(Relation<D> leftHandInput, Relation<D> rightHandInput) {
     	if(leftHandInput.getArity() != rightHandInput.getArity()) {
     		throw new IllegalArgumentException("Relation arities don't match for intersection");
     	}
-    	RelationImplementation result = new RelationImplementation(leftHandInput.getDimensionNames());
-		for (Iterator<Tuple> iter = leftHandInput.getTuples().iterator(); iter.hasNext();) {
-			Tuple tuple = iter.next();
+    	RelationImplementation<D> result = new RelationImplementation<D>(leftHandInput.getDimensionNames());
+		for (Iterator<Tuple<D>> iter = leftHandInput.getTuples().iterator(); iter.hasNext();) {
+			Tuple<D> tuple = iter.next();
 			if(rightHandInput.isRelated(tuple)) {
                 result.addTuple(tuple);            
 			}

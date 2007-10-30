@@ -26,15 +26,19 @@ public class PickColumnsOperationTest extends AbstractRelationOperationTest {
 		return new TestSuite(PickColumnsOperationTest.class);
 	}
 
-    protected RelationOperation getOperation() {
-        return new PickColumnsOperation(new int[]{1,2,1,2});
+    @Override
+	protected RelationOperation<Object> getOperation() {
+        return new PickColumnsOperation<Object>(new int[]{1,2,1,2});
     }
 
-    protected int getExpectedArity() {
+    @Override
+	protected int getExpectedArity() {
         return 1;
     }
 
-    protected RelationTestSetup[] getTests() {
+    @SuppressWarnings("unchecked")
+	@Override
+	protected RelationTestSetup[] getTests() {
     	RelationImplementationTest testCases = new RelationImplementationTest("test cases");
     	testCases.setUp();
     	

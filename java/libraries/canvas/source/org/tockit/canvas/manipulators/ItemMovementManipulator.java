@@ -34,7 +34,7 @@ public class ItemMovementManipulator implements EventBrokerListener<CanvasItem> 
         this.canvas = canvas;
     }
 
-    public void processEvent(Event<CanvasItem> e) {
+    public void processEvent(Event<? extends CanvasItem> e) {
         if( e instanceof CanvasItemPickupEvent ) {
             dragStart((CanvasItemPickupEvent) e);
         } else if( e instanceof CanvasItemDroppedEvent ) {

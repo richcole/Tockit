@@ -17,16 +17,16 @@ import org.tockit.relations.model.Tuple;
 import org.tockit.relations.operations.util.AbstractUnaryRelationOperation;
 
 
-public class NegationOperation extends AbstractUnaryRelationOperation {
-	public static Relation negate(Relation input, Set[] domains) {
-		NegationOperation op = new NegationOperation(domains);
-		return op.apply(input);
+public class NegationOperation<D> extends AbstractUnaryRelationOperation<D> {
+	public static<R> Relation<R> negate(Relation<R> input, Set<R>[] domains) {
+		NegationOperation<R> op = new NegationOperation<R>(domains);
+		return op.doApply(input);
 	}
 	
-	private Set[] domains;
+	private Set<D>[] domains;
 	private String name;
 	
-    public NegationOperation(Set[] domains) {
+    public NegationOperation(Set<D>[] domains) {
     	this.domains = domains;
 		this.name = "Negation";
     }
@@ -39,17 +39,19 @@ public class NegationOperation extends AbstractUnaryRelationOperation {
         return name;
     }
 
-    public String[] getParameterNames() {
+    @Override
+	public String[] getParameterNames() {
         return new String[]{"input"};
     }
 
-    public Relation apply(Relation input) {
+    @Override
+	public Relation<D> doApply(Relation<D> input) {
     	if(input.getArity() != this.domains.length) {
     		throw new IllegalArgumentException("Relation arity does not match number of domains");
     	}
-    	RelationImplementation result = new RelationImplementation(input.getDimensionNames());
-    	for (Iterator iter = new CrossProductIterator(this.domains); iter.hasNext();) {
-            Tuple tuple = (Tuple) iter.next();
+    	RelationImplementation<D> result = new RelationImplementation<D>(input.getDimensionNames());
+    	for (Iterator<Tuple<D>> iter = new CrossProductIterator<D>(this.domains); iter.hasNext();) {
+            Tuple<D> tuple = iter.next();
             if(!input.isRelated(tuple)) {
 				result.addTuple(tuple);
             }
@@ -57,12 +59,13 @@ public class NegationOperation extends AbstractUnaryRelationOperation {
         return result;
     }
 
-	private static class CrossProductIterator implements Iterator {
-		private Set[] sets;
-        private Iterator[] iterators;
-		private Object[] curObject;
+	private static class CrossProductIterator<T> implements Iterator<Tuple<T>> {
+		private Set<T>[] sets;
+        private Iterator<T>[] iterators;
+		private T[] curObject;
 
-		public CrossProductIterator(Set[] sets) {
+		@SuppressWarnings("unchecked")
+		public CrossProductIterator(Set<T>[] sets) {
 			this.sets = sets;
 			this.iterators = new Iterator[sets.length];
 			for (int i = 0; i < sets.length; i++) {
@@ -72,7 +75,7 @@ public class NegationOperation extends AbstractUnaryRelationOperation {
 		
         public boolean hasNext() {
         	for (int i = 0; i < this.iterators.length; i++) {
-                Iterator it = this.iterators[i];
+                Iterator<T> it = this.iterators[i];
                 if(it.hasNext()) {
                 	return true;
                 }
@@ -80,20 +83,21 @@ public class NegationOperation extends AbstractUnaryRelationOperation {
             return false;
         }
 
-        public Object next() {
+        @SuppressWarnings("unchecked")
+		public Tuple<T> next() {
         	if(this.curObject == null) {
-        		this.curObject = new Object[this.iterators.length];
+        		this.curObject = (T[]) new Object[this.iterators.length];
 				for (int i = 0; i < this.iterators.length; i++) {
-					Iterator it = this.iterators[i];
+					Iterator<T> it = this.iterators[i];
 					this.curObject[i] = it.next();
 				}
-				return new Tuple(this.curObject);
+				return new Tuple<T>(this.curObject);
         	}
 			for (int i = 0; i < this.iterators.length; i++) {
-				Iterator it = this.iterators[i];
+				Iterator<T> it = this.iterators[i];
 				if(it.hasNext()) {
 					this.curObject[i] = it.next();
-					return new Tuple(this.curObject);
+					return new Tuple<T>(this.curObject);
 				} else {
 					// reset this one, try to increase the next
 					this.iterators[i] = this.sets[i].iterator();

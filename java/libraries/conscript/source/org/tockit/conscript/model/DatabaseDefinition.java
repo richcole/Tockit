@@ -42,7 +42,8 @@ public class DatabaseDefinition extends ConscriptStructure {
         this.table = table;
     }
 
-    public void printCSC(PrintStream stream) {
+    @Override
+	public void printCSC(PrintStream stream) {
         printTitleRemarkSpecials(stream);
         stream.print("\t\t(\"" + this.databaseName + "\", ");
         stream.print("\"" + this.table + "\", ");

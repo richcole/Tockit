@@ -29,19 +29,23 @@ public class Relation {
             this.arity = arity;
         }
 
-        public Relation[] getDirectSupertypes() {
+        @Override
+		public Relation[] getDirectSupertypes() {
             return new Relation[0];
         }
 
-        public String getName() {
+        @Override
+		public String getName() {
             return this.name;
         }
 
-        public void setName(String name) {
+        @Override
+		public void setName(String name) {
             this.name = name;
         }
 
-        public Type[] getSignature() {
+        @Override
+		public Type[] getSignature() {
             Type[] retVal = new Type[arity];
             for (int i = 0; i < retVal.length; i++) {
                 retVal[i] = Type.UNIVERSAL;
@@ -49,7 +53,8 @@ public class Relation {
             return retVal;
         }
 
-        public int getArity() {
+        @Override
+		public int getArity() {
             return this.arity;
         }
     }
@@ -102,12 +107,13 @@ public class Relation {
         this.element.setAttribute("name", name);
     }
 
-    public Type[] getSignature() {
-        List signatureChildren = this.element.getChildren("type");
+	@SuppressWarnings("unchecked")
+	public Type[] getSignature() {
+        List<Element> signatureChildren = this.element.getChildren("type");
         Type[] retVal = new Type[signatureChildren.size()];
         int pos = 0;
-        for (Iterator iterator = signatureChildren.iterator(); iterator.hasNext();) {
-            Element typeElem = (Element) iterator.next();
+        for (Iterator<Element> iterator = signatureChildren.iterator(); iterator.hasNext();) {
+            Element typeElem = iterator.next();
             Type type = this.knowledgeBase.getType(typeElem.getAttributeValue("name"));
             retVal[pos] = type;
             pos++;
@@ -115,15 +121,16 @@ public class Relation {
         return retVal;
     }
 
-    public Relation[] getDirectSupertypes() {
-        List superrelationChildren = this.element.getChildren("superrelation");
+    @SuppressWarnings("unchecked")
+	public Relation[] getDirectSupertypes() {
+        List<Element> superrelationChildren = this.element.getChildren("superrelation");
         if(superrelationChildren.size() == 0) {
             return new Relation[]{getUniversal(this.getArity())};
         }
         Relation[] retVal = new Relation[superrelationChildren.size()];
         int pos = 0;
-        for (Iterator iterator = superrelationChildren.iterator(); iterator.hasNext();) {
-            Element superrelationElem = (Element) iterator.next();
+        for (Iterator<Element> iterator = superrelationChildren.iterator(); iterator.hasNext();) {
+            Element superrelationElem = iterator.next();
             Relation type = this.knowledgeBase.getRelation(superrelationElem.getAttributeValue("name"));
             retVal[pos] = type;
             pos++;
@@ -141,8 +148,9 @@ public class Relation {
         return this.element;
     }
 
-    public int getArity() {
-        List signatureChildren = this.element.getChildren("type");
+    @SuppressWarnings("unchecked")
+	public int getArity() {
+        List<Element> signatureChildren = this.element.getChildren("type");
         return signatureChildren.size();
     }
 

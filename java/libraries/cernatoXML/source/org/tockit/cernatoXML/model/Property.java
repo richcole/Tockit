@@ -24,7 +24,8 @@ public class Property {
         return name;
     }
     
-    public String toString() {
+    @Override
+	public String toString() {
     	return getName();
     }
 }

@@ -42,7 +42,8 @@ public class Line {
 		this.to = to;
 	}
 
-    public String toString() {
+    @Override
+	public String toString() {
         return "(" + this.from.getNumber() + ", " + this.to.getNumber() + ")";
     }
 }

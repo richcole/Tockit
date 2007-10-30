@@ -32,7 +32,8 @@ public class StringMap extends ConscriptStructure{
         this.map.put(attributeId, label);
     }
 
-    public void printCSC(PrintStream stream) {
+    @Override
+	public void printCSC(PrintStream stream) {
         printTitleRemarkSpecials(stream);
         for (Iterator<String> iter = this.map.keySet().iterator(); iter.hasNext(); ) {
         	String id = iter.next();

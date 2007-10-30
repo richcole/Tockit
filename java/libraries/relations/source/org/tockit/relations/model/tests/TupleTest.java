@@ -23,11 +23,11 @@ public class TupleTest extends TestCase {
     }
 
     public void testTupleEquality() {
-        Tuple one = new Tuple(new Object[]{});    
-        Tuple two = new Tuple(new Object[]{new Object(), "string", new Integer(5)});
+        Tuple<Object> one = new Tuple<Object>(new Object[]{});    
+        Tuple<Object> two = new Tuple<Object>(new Object[]{new Object(), "string", new Integer(5)});
         Object object = new Object();    
-        Tuple three = new Tuple(new Object[]{object, "string", new Integer(5)});    
-        Tuple four = new Tuple(new Object[]{object, "string", new Integer(5)});
+        Tuple<Object> three = new Tuple<Object>(new Object[]{object, "string", new Integer(5)});    
+        Tuple<Object> four = new Tuple<Object>(new Object[]{object, "string", new Integer(5)});
         
         assertTrue(one.equals(one));    
         assertTrue(!one.equals(two));    

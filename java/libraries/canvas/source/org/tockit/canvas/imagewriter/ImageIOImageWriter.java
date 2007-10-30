@@ -33,21 +33,24 @@ public class ImageIOImageWriter implements ImageWriter {
         /**
          * Implements GraphicFormat.getName().
          */
-        public String getName() {
+        @Override
+		public String getName() {
             return "Portable Network Graphics";
         }
 
         /**
          * Implements GraphicFormat.getExtensions().
          */
-        public String[] getExtensions() {
+        @Override
+		public String[] getExtensions() {
             return new String[]{"png"};
         }
 
         /**
          * Implements GraphicFormat.getWriter().
          */
-        public ImageWriter getWriter() {
+        @Override
+		public ImageWriter getWriter() {
             return singleton;
         }
     }
@@ -59,21 +62,24 @@ public class ImageIOImageWriter implements ImageWriter {
         /**
          * Implements GraphicFormat.getName().
          */
-        public String getName() {
+        @Override
+		public String getName() {
             return "Joint Picture Expert Group";
         }
 
         /**
          * Implements GraphicFormat.getExtensions().
          */
-        public String[] getExtensions() {
+        @Override
+		public String[] getExtensions() {
             return new String[]{"jpg", "jpeg"};
         }
 
         /**
          * Implements GraphicFormat.getWriter().
          */
-        public ImageWriter getWriter() {
+        @Override
+		public ImageWriter getWriter() {
             return singleton;
         }
     }

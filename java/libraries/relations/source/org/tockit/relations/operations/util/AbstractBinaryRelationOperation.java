@@ -11,7 +11,7 @@ import org.tockit.relations.model.Relation;
 import org.tockit.relations.operations.BinaryRelationOperation;
 import org.tockit.relations.operations.UnaryRelationOperation;
 
-public abstract class AbstractBinaryRelationOperation implements BinaryRelationOperation {
+public abstract class AbstractBinaryRelationOperation<D> implements BinaryRelationOperation<D> {
 	/**
 	 * Implements RelationOperation.getArity().
 	 **/
@@ -29,20 +29,23 @@ public abstract class AbstractBinaryRelationOperation implements BinaryRelationO
 	/**
 	 * Implements RelationOperation.apply(Relation[]).
 	 **/
-	public Relation apply(Relation[] input) {
+	final public Relation<D> apply(Relation<D>... input) {
 		if(input.length != 2) {
 			throw new IllegalArgumentException("Parameter length for binary relation operation is not two");
 		}
-		return apply(input[0], input[1]);
+		return doApply(input[0], input[1]);
 	}
 
+	protected abstract Relation<D> doApply(Relation<D> leftHand, Relation<D> rightHand);
+	
 	/**
 	 * Implements BinaryRelationOperation.concatenate(BinaryRelationOperation,BinaryRelationOperation).
 	 **/
-	public BinaryRelationOperation concatenate(UnaryRelationOperation leftOperation, UnaryRelationOperation rightOperation) {
-		return new ConcatenatedBinaryRelationOperation(leftOperation, rightOperation, this);
+	public BinaryRelationOperation<D> concatenate(UnaryRelationOperation<D> leftOperation, UnaryRelationOperation<D> rightOperation) {
+		return new ConcatenatedBinaryRelationOperation<D>(leftOperation, rightOperation, this);
 	}
 	
+	@Override
 	public String toString() {
 		return getName();
 	}

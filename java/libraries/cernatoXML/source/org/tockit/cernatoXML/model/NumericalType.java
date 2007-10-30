@@ -14,7 +14,8 @@ public class NumericalType extends TypeImplementation {
         super(name);
     }
 
-    public void addValueGroup(ValueGroup valueGroup, String id) {
+    @Override
+	public void addValueGroup(ValueGroup valueGroup, String id) {
         if (valueGroup instanceof NumericalValueGroup) {
             super.addValueGroup(valueGroup, id);
             return;

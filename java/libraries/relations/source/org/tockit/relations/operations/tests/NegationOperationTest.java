@@ -29,8 +29,10 @@ public class NegationOperationTest extends AbstractRelationOperationTest {
 		return new TestSuite(NegationOperationTest.class);
 	}
 
-    protected RelationOperation getOperation() {
-    	Set<String> domain = new HashSet<String>();
+    @SuppressWarnings("unchecked")
+	@Override
+	protected RelationOperation<Object> getOperation() {
+    	Set<Object> domain = new HashSet<Object>();
 		domain.add("1");
 		domain.add("2");
 		domain.add("3");
@@ -38,14 +40,17 @@ public class NegationOperationTest extends AbstractRelationOperationTest {
 		domain.add("5");
 		domain.add("6");
 		domain.add("7");
-        return new NegationOperation(new Set[]{domain, domain, domain});
+        return new NegationOperation<Object>(new Set[]{domain, domain, domain});
     }
 
-    protected int getExpectedArity() {
+    @Override
+	protected int getExpectedArity() {
         return 1;
     }
     
-    protected RelationTestSetup[] getTests() {
+    @SuppressWarnings("unchecked")
+	@Override
+	protected RelationTestSetup[] getTests() {
     	RelationImplementationTest testCases = new RelationImplementationTest("test cases");
     	testCases.setUp();
     	

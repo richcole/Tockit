@@ -128,7 +128,7 @@ public class Canvas extends JPanel implements Printable {
     /**
      * Creates a new, empty canvas with a new controller attached to it.
      */
-    public Canvas(EventBroker eventBroker) {
+    public Canvas(EventBroker<Object> eventBroker) {
         this.controller = new CanvasController(this, eventBroker);
         this.background = new CanvasBackground(this);
     }
@@ -144,7 +144,7 @@ public class Canvas extends JPanel implements Printable {
      * Paints the canvas including all CanvasItems on it.
      */
     public void paintCanvas(Graphics2D graphics) {
-        /// @todo isn't that superflous?
+        /// @todo isn't that superfluous?
         this.background.draw(graphics);
         raiseMarkedItems();
         // paint all items on canvas

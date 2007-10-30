@@ -15,37 +15,37 @@ import org.tockit.relations.model.Tuple;
 import org.tockit.relations.operations.util.AbstractUnaryRelationOperation;
 
 
-public class SelectionOperation extends AbstractUnaryRelationOperation {
-	public static Relation selectByValue(Relation input, int column, Object value) {
-		SelectionOperation op = getValueSelect(column, value);
-		return op.apply(input);
+public class SelectionOperation<D> extends AbstractUnaryRelationOperation<D> {
+	public static<R> Relation<R> selectByValue(Relation<R> input, int column, R value) {
+		SelectionOperation<R> op = getValueSelect(column, value);
+		return op.doApply(input);
 	}
 	
-	public static Relation selectByColumnEquality(Relation input, int firstColumn, int secondColumn) {
-		SelectionOperation op = getColumnEqualitySelect(firstColumn, secondColumn);
-		return op.apply(input);
+	public static<R> Relation<R> selectByColumnEquality(Relation<R> input, int firstColumn, int secondColumn) {
+		SelectionOperation<R> op = getColumnEqualitySelect(firstColumn, secondColumn);
+		return op.doApply(input);
 	}
 	
-	public static Relation select(Relation input, TuplePredicate predicate) {
-		SelectionOperation op = new SelectionOperation(predicate);
-		return op.apply(input);
+	public static<R> Relation<R> select(Relation<R> input, TuplePredicate<R> predicate) {
+		SelectionOperation<R> op = new SelectionOperation<R>(predicate);
+		return op.doApply(input);
 	}
 	
-	public static interface TuplePredicate {
-		boolean test(Tuple tuple);
+	public static interface TuplePredicate<R> {
+		boolean test(Tuple<? extends R> tuple);
 	}
 	
-	private TuplePredicate predicate;
+	private TuplePredicate<D> predicate;
 	private String name;
 	
-    public SelectionOperation(TuplePredicate predicate) {
+    public SelectionOperation(TuplePredicate<D> predicate) {
     	this.predicate = predicate;
     	this.name = "Selection via predicate";
     }
     
-    public static SelectionOperation getValueSelect(final int columnToTest, final Object value) {
-    	SelectionOperation result = new SelectionOperation(new TuplePredicate(){
-            public boolean test(Tuple tuple) {
+    public static<R> SelectionOperation<R> getValueSelect(final int columnToTest, final R value) {
+    	SelectionOperation<R> result = new SelectionOperation<R>(new TuplePredicate<R>(){
+            public boolean test(Tuple<? extends R> tuple) {
                 return tuple.getElement(columnToTest).equals(value);
             }
     	});
@@ -53,9 +53,9 @@ public class SelectionOperation extends AbstractUnaryRelationOperation {
         return result;
     }
     
-	public static SelectionOperation getColumnEqualitySelect(final int columnToTest, final int columnToCompareTo) {
-		SelectionOperation result = new SelectionOperation(new TuplePredicate(){
-			public boolean test(Tuple tuple) {
+	public static<R> SelectionOperation<R> getColumnEqualitySelect(final int columnToTest, final int columnToCompareTo) {
+		SelectionOperation<R> result = new SelectionOperation<R>(new TuplePredicate<R>(){
+			public boolean test(Tuple<? extends R> tuple) {
 				return tuple.getElement(columnToTest).equals(tuple.getElement(columnToCompareTo));
 			}
 		});
@@ -71,14 +71,16 @@ public class SelectionOperation extends AbstractUnaryRelationOperation {
         return name;
     }
 
-    public String[] getParameterNames() {
+    @Override
+	public String[] getParameterNames() {
         return new String[]{"input"};
     }
 
-    public Relation apply(Relation input) {
-    	RelationImplementation result = new RelationImplementation(input.getDimensionNames());
-    	for (Iterator<Tuple> iter = input.getTuples().iterator(); iter.hasNext();) {
-            Tuple tuple = iter.next();
+    @Override
+	public Relation<D> doApply(Relation<D> input) {
+    	RelationImplementation<D> result = new RelationImplementation<D>(input.getDimensionNames());
+    	for (Iterator<Tuple<D>> iter = input.getTuples().iterator(); iter.hasNext();) {
+            Tuple<D> tuple = iter.next();
             if(this.predicate.test(tuple)) {
 				result.addTuple(tuple);
             }

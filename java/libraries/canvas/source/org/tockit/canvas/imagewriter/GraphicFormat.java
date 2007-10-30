@@ -38,7 +38,8 @@ public abstract class GraphicFormat {
     /**
      * Returns the name of the format.
      */
-    public String toString() {
+    @Override
+	public String toString() {
         return getName();
     }
 }

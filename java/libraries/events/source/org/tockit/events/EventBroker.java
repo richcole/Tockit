@@ -163,7 +163,7 @@ public class EventBroker<T> implements EventBrokerListener<T> {
      *       to all listeners of the event type. This is consistent if one sees null as
      *       universally typed.
      */
-    public void processEvent(Event<T> event) {
+    public void processEvent(Event<? extends T> event) {
         if (event.getSubject() == null) {
             throw new RuntimeException("Event needs subject to be processed, null not allowed.");
         }
