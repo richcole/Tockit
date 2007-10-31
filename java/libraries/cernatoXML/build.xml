@@ -1,4 +1,6 @@
 <project name="Tockit Model and Parser for Cernato XML Files" default="jar" basedir=".">
+	<property file="../build.properties"/>
+
     <property name="src.dir"   value="${basedir}/source"/>
     <property name="lib3rdParty.dir"   value="${basedir}/../thirdParty"/>
     <property name="libTesting.dir"   value="${basedir}/../thirdParty/unitTesting"/>
@@ -33,7 +35,8 @@
     </target>
 
     <target name="compile" depends="clean,prepare">
-      <javac destdir="${build.dir}"  debug="on" optimize="off"	deprecation="on" source="1.4" target="1.4">
+      <javac destdir="${build.dir}"  debug="on" optimize="off"	deprecation="on" 
+      	 	 source="${source.level}" target="${target.level}">
           <src path="${src.dir}/org"/>
           <classpath refid="project.class.path"/>
       </javac>

@@ -1,5 +1,5 @@
 <project name="Tockit Libraries" default="all" basedir=".">
-    <target name="all" depends="stage3"/>
+    <target name="all" depends="stage3" description="Builds all Tockit libraries"/>
 
 	<!-- Stage 1 is tooling, not CKP related -->
 	<target name="stage1" depends="events,pluginmodel,swing,utils"/>
@@ -11,49 +11,49 @@
 	<target name="stage3" depends="stage2,canvas,cernatoXML,conscript,lookandfeel"/>
 	
 	<!-- all libs in alphabetical order -->
-    <target name="canvas" depends="events, swing">
+    <target name="canvas" depends="events, swing" description="Build the Tockit canvas library">
     	<ant antfile="build.xml" dir="canvas"/>
     	<ant antfile="build.xml" dir="canvas/plugins"/>
     </target>
 
-    <target name="cernatoXML" depends="fca">
+    <target name="cernatoXML" depends="fca" description="Build the Cernato import library">
     	<ant antfile="build.xml" dir="cernatoXML"/>
     </target>
 
-    <target name="cgs">
+    <target name="cgs" description="Build the Conceptual Graph library">
     	<ant antfile="build.xml" dir="cgs"/>
     </target>
 
-    <target name="conscript">
+    <target name="conscript" description="Build the Conscript import library">
     	<ant antfile="build.xml" dir="conscript"/>
     </target>
 
-    <target name="events">
+    <target name="events" description="Build the event broker library">
     	<ant antfile="build.xml" dir="events"/>
     </target>
 
-    <target name="fca">
+    <target name="fca" description="Build the core FCA components">
     	<ant antfile="build.xml" dir="fca"/>
     </target>
 
 	<!-- this one is special since it builds plugins, not a lib -->
-    <target name="lookandfeel">
+    <target name="lookandfeel" description="Build the look and feel plugins">
     	<ant antfile="build.xml" dir="lookandfeel/plugins"/>
     </target>
 
-    <target name="pluginmodel">
+    <target name="pluginmodel" description="Build the Tockit plugin framework">
     	<ant antfile="build.xml" dir="pluginmodel"/>
     </target>
 
-    <target name="relations">
+    <target name="relations" description="Build the relations library">
     	<ant antfile="build.xml" dir="relations"/>
     </target>
 
-    <target name="swing">
+    <target name="swing" description="Build the Tockit Swing extensions">
     	<ant antfile="build.xml" dir="swing"/>
     </target>
 
-    <target name="utils">
+    <target name="utils" description="Build the Tockit utility library">
     	<ant antfile="build.xml" dir="utils"/>
     </target>
 </project>
