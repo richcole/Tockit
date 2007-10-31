@@ -66,8 +66,8 @@ public abstract class AbstractRelationOperationTest extends TestCase {
             RelationTestSetup test = tests[i];
 			Relation<Object> result = op.apply(test.input);
 			if(logResults()) {
-				for (Iterator<Tuple<Object>> iter = result.getTuples().iterator(); iter.hasNext();) {
-	                Tuple<Object> tuple = iter.next();
+				for (Iterator<Tuple<? extends Object>> iter = result.getTuples().iterator(); iter.hasNext();) {
+	                Tuple<? extends Object> tuple = iter.next();
 	                System.out.println(tuple);
 	            }			
 			}

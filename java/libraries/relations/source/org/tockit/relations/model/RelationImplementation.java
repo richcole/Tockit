@@ -20,7 +20,7 @@ import java.util.Set;
  */
 public class RelationImplementation<R> implements Relation<R> {
     private String[] dimensionNames;
-    private Set<Tuple<R>> tuples = new HashSet<Tuple<R>>();
+    private Set<Tuple<? extends R>> tuples = new HashSet<Tuple<? extends R>>();
     
     /**
      * Creates a relation with the given arity but no names.
@@ -42,7 +42,7 @@ public class RelationImplementation<R> implements Relation<R> {
     /**
      * Implements Relation.addTuple(Tuple).
      */    
-    public void addTuple(Tuple<R> tuple) {
+    public void addTuple(Tuple<? extends R> tuple) {
         if(tuple.getLength() != this.dimensionNames.length) {
             throw new IllegalArgumentException("Tuples have to have the same length as the relation's arity");
         }
@@ -80,14 +80,14 @@ public class RelationImplementation<R> implements Relation<R> {
     /**
      * Implements Relation.getTuples().
      */    
-    public Set<Tuple<R>> getTuples() {
+    public Set<Tuple<? extends R>> getTuples() {
         return Collections.unmodifiableSet(tuples);
     }
 
     /**
      * Implements Relation.isRelated(Tuple).
      */    
-    public boolean isRelated(Tuple<R> tuple) {
+    public boolean isRelated(Tuple<? extends R> tuple) {
         if(tuple.getLength() != this.dimensionNames.length) {
             throw new IllegalArgumentException("Tuples have to have the same length as the relation's arity");
         }
@@ -101,7 +101,7 @@ public class RelationImplementation<R> implements Relation<R> {
         return isRelated(new Tuple<R>(data));
     }
 
-    public Set<Tuple<R>> toSet() {
+    public Set<Tuple<? extends R>> toSet() {
         return Collections.unmodifiableSet(this.tuples);
     }
 
@@ -112,23 +112,23 @@ public class RelationImplementation<R> implements Relation<R> {
 	 * @return the relation using this tuple set. The arity is either the tuple length or 0 if there are no tuples.
 	 * @throws IllegalArgumentException if the objects in the input set are not of consistent length
 	 */
-    public static Relation fromSet(Set baseSet) {
-    	Relation retVal = null;
-    	for (Iterator iter = baseSet.iterator(); iter.hasNext();) {
+    public static Relation<Object> fromSet(Set<?> baseSet) {
+    	Relation<Object> retVal = null;
+    	for (Iterator<?> iter = baseSet.iterator(); iter.hasNext();) {
             Object cur = iter.next();
-            Tuple tuple;
+            Tuple<?> tuple;
             if(cur instanceof Tuple) {
-            	tuple = (Tuple) cur;
+            	tuple = (Tuple<?>) cur;
             } else {
             	tuple = Tuple.fromString(cur.toString());
             }
             if(retVal == null) {
-            	retVal = new RelationImplementation(tuple.getLength());
+            	retVal = new RelationImplementation<Object>(tuple.getLength());
             }
             retVal.addTuple(tuple);
         }
 		if(retVal == null) {
-			retVal = new RelationImplementation(0);
+			retVal = new RelationImplementation<Object>(0);
 		}
         return retVal;
     }
@@ -136,8 +136,8 @@ public class RelationImplementation<R> implements Relation<R> {
     @Override
 	public String toString() {
         StringBuffer buffer = new StringBuffer();
-        for (Iterator<Tuple<R>> iter = this.tuples.iterator(); iter.hasNext();) {
-            Tuple<R> tuple = iter.next();
+        for (Iterator<Tuple<? extends R>> iter = this.tuples.iterator(); iter.hasNext();) {
+            Tuple<? extends R> tuple = iter.next();
             buffer.append(tuple);
             buffer.append("\n");
         }

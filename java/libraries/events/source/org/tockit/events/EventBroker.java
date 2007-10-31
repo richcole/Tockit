@@ -91,11 +91,12 @@ public class EventBroker<T> implements EventBrokerListener<T> {
      * extends or implements the given subject type (given as class
      * or interface).
      */
-    public void subscribe(EventBrokerListener<T> listener, Class<? extends Event<?>> eventType, Class<?> subjectType) {
-    	subscribe(listener, new EventFilter[]{new EventTypeFilter(eventType), new SubjectTypeFilter(subjectType)});
+    @SuppressWarnings("unchecked")
+	public void subscribe(EventBrokerListener<T> listener, Class<? extends Event<T>> eventType, Class<? extends T> subjectType) {
+    	subscribe(listener, new EventFilter[]{new EventTypeFilter<Event<T>>(eventType), new SubjectTypeFilter<T,Event<T>>(subjectType)});
     }
     
-    public void subscribe(EventBrokerListener<T> listener, EventFilter[] filters) {
+    public void subscribe(EventBrokerListener<T> listener, EventFilter<Event<T>>[] filters) {
     	if (listener == this) {
     		throw new RuntimeException("Trying to subscribe EventBroker to itself");
     	}
@@ -125,9 +126,10 @@ public class EventBroker<T> implements EventBrokerListener<T> {
 	 * found it will be removed. This does not check for subclasses or
 	 * implemented interfaces, only exact matches will be removed.
 	 */
-	public void removeSubscription(EventBrokerListener<T> listener, Class<? extends Event<?>> eventType, Class<?> subjectType) {
-		removeSubscription(new EventSubscription<T>(listener, new EventFilter[]{new EventTypeFilter(eventType),
-																					   new SubjectTypeFilter(subjectType)}));
+	@SuppressWarnings("unchecked")
+	public void removeSubscription(EventBrokerListener<T> listener, Class<? extends Event<T>> eventType, Class<? extends T> subjectType) {
+		removeSubscription(new EventSubscription<T>(listener, new EventFilter[]{new EventTypeFilter<Event<T>>(eventType),
+																					   new SubjectTypeFilter<T,Event<T>>(subjectType)}));
 	}
 
 	

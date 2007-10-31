@@ -48,7 +48,7 @@ public class IdentityOperationTest extends AbstractRelationOperationTest {
         one.input = new Relation[]{testRelOne};
     	one.expectedOutputArity = testRelOne.getArity();
     	one.expectedOutputSize = testRelOne.getSize();
-    	Tuple<Object> firstInputTuple = testRelOne.getTuples().iterator().next();
+    	Tuple<? extends Object> firstInputTuple = testRelOne.getTuples().iterator().next();
         one.expectedTuples = new Object[][]{firstInputTuple.getData()};
     	
         return new RelationTestSetup[]{one};

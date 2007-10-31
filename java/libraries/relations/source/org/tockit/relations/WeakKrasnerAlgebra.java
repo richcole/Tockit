@@ -12,7 +12,7 @@ import org.tockit.relations.operations.UnionOperation;
 
 
 public class WeakKrasnerAlgebra extends BasicRelationalAlgebra {
-	public static Relation union(Relation left, Relation right) {
+	public static<D> Relation<D> union(Relation<D> left, Relation<D> right) {
 		return UnionOperation.unite(left, right);
 	}
 }

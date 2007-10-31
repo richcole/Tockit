@@ -19,24 +19,25 @@ import org.tockit.relations.operations.PickColumnsOperation;
 
 
 public class BasicRelationalAlgebra {
-	public static Relation getDelta(Set domain) {
-		RelationImplementation result = new RelationImplementation(2);
-		for (Iterator iter = domain.iterator(); iter.hasNext();) {
-            Object cur = iter.next();
-            result.addTuple(new Object[]{cur, cur});
+	@SuppressWarnings("unchecked")
+	public static<D> Relation<D> getDelta(Set<D> domain) {
+		RelationImplementation<D> result = new RelationImplementation<D>(2);
+		for (Iterator<D> iter = domain.iterator(); iter.hasNext();) {
+            D cur = iter.next();
+            result.addTuple((D[]) new Object[]{cur, cur});
         }
         return result;
 	}
 	
-	public static Relation intersect(Relation left, Relation right) {
+	public static<D> Relation<D> intersect(Relation<D> left, Relation<D> right) {
 		return IntersectionOperation.intersect(left, right);
 	}
 	
-	public static Relation crossproduct(Relation left, Relation right) {
+	public static<D> Relation<D> crossproduct(Relation<D> left, Relation<D> right) {
 		return CrossproductOperation.crossproduct(left, right);
 	}
 	
-	public static Relation project(Relation input, int[] columns) {
+	public static<D> Relation<D> project(Relation<D> input, int[] columns) {
 		int lastCol = -1;
 		for (int i = 0; i < columns.length; i++) {
             int col = columns[i];
@@ -51,7 +52,7 @@ public class BasicRelationalAlgebra {
         return PickColumnsOperation.pickColumns(input, columns);
 	}
 	
-	public static Relation permute(Relation input, int firstColumn, int secondColumn) {
+	public static<D> Relation<D> permute(Relation<D> input, int firstColumn, int secondColumn) {
 		return PermutationOperation.exchange(input, firstColumn, secondColumn);
 	}
 }

@@ -9,7 +9,7 @@ package org.tockit.events.tests;
 
 import org.tockit.events.Event;
 
-public class TestEventType2 implements Event {
+public class TestEventType2 implements Event<Object> {
     private Object source;
 
     public TestEventType2(Object source) {

@@ -13,7 +13,7 @@ import java.util.List;
  * will not be skipped. The class is instantiated and then used as any
  * other Iterator implementation.
  */
-public class StringTokenizer implements Iterator {
+public class StringTokenizer implements Iterator<String> {
     private String string;
     private char separator;
     private char quote;
@@ -79,7 +79,7 @@ public class StringTokenizer implements Iterator {
      * 
      * @return the next token
      */
-    public Object next() {
+    public String next() {
         StringBuffer retVal = new StringBuffer();
         boolean inQuotes = false;
         do {
@@ -108,7 +108,7 @@ public class StringTokenizer implements Iterator {
      * @return the next token
      */
     public String nextToken() {
-        return (String) next();
+        return next();
     }
     
     /**

@@ -14,7 +14,7 @@ import org.tockit.relations.operations.NegationOperation;
 
 
 public class KrasnerAlgebra extends WeakKrasnerAlgebra {
-	public static Relation complement(Relation input, Set[] domains) {
+	public static<D> Relation<D> complement(Relation<D> input, Set<D>[] domains) {
 		return NegationOperation.negate(input, domains);
 	}
 }

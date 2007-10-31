@@ -9,14 +9,14 @@ package org.tockit.events.filters;
 
 import org.tockit.events.Event;
 
-public class EventTypeFilter implements EventFilter {
+public class EventTypeFilter<T extends Event<?>> implements EventFilter<T> {
 	private Class<? extends Event<?>> eventType;
 	
 	public EventTypeFilter(Class<? extends Event<?>> eventType) {
 		this.eventType = eventType;
 	}
 
-	public boolean isMatch(Event event) {
+	public boolean isMatch(T event) {
 		return eventType.isAssignableFrom(event.getClass());
 	}
 	
@@ -25,7 +25,7 @@ public class EventTypeFilter implements EventFilter {
 		if(! (other instanceof EventTypeFilter) ) {
 			return false;
 		}
-		EventTypeFilter otherFilter = (EventTypeFilter) other;
+		EventTypeFilter<?> otherFilter = (EventTypeFilter<?>) other;
 		if(!otherFilter.eventType.equals(eventType)) {
 			return false;
 		}

@@ -65,10 +65,10 @@ public class JoinOperation<D> extends AbstractBinaryRelationOperation<D> {
 		}
         String[] dimensionNames = getDimensionNames(leftHandInput, rightHandInput, arity);
     	RelationImplementation<D> result = new RelationImplementation<D>(dimensionNames);
-		for (Iterator<Tuple<D>> iterLeft = leftHandInput.getTuples().iterator(); iterLeft.hasNext();) {
-			Tuple<D> leftTuple = iterLeft.next();
-			for (Iterator<Tuple<D>> iterRight = rightHandInput.getTuples().iterator(); iterRight.hasNext();) {
-				Tuple<D> rightTuple = iterRight.next();
+		for (Iterator<Tuple<? extends D>> iterLeft = leftHandInput.getTuples().iterator(); iterLeft.hasNext();) {
+			Tuple<? extends D> leftTuple = iterLeft.next();
+			for (Iterator<Tuple<? extends D>> iterRight = rightHandInput.getTuples().iterator(); iterRight.hasNext();) {
+				Tuple<? extends D> rightTuple = iterRight.next();
 				if(joinPossible(leftTuple, rightTuple)) {
 					result.addTuple(join(leftTuple, rightTuple, arity));
 				}
@@ -78,7 +78,7 @@ public class JoinOperation<D> extends AbstractBinaryRelationOperation<D> {
     }
 
     @SuppressWarnings("unchecked")
-	private D[] join(Tuple<D> leftTuple, Tuple<D> rightTuple, int arity) {
+	private D[] join(Tuple<? extends D> leftTuple, Tuple<? extends D> rightTuple, int arity) {
     	D[] result = (D[]) new Object[arity];
 		int skippedDimensions = 0;
 		tupleLoop: for (int i = 0; i < leftTuple.getLength(); i++) {
@@ -106,7 +106,7 @@ public class JoinOperation<D> extends AbstractBinaryRelationOperation<D> {
 		return result;
     }
 
-    private boolean joinPossible(Tuple<D> leftTuple, Tuple<D> rightTuple) {
+    private boolean joinPossible(Tuple<? extends D> leftTuple, Tuple<? extends D> rightTuple) {
     	for (int i = 0; i < this.leftHandColumns.length; i++) {
 			int colLeft = this.leftHandColumns[i];
 			int colRight = this.rightHandColumns[i];

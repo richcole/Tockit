@@ -48,7 +48,7 @@ public class DropColumnsOperationTest extends AbstractRelationOperationTest {
         one.input = new Relation[]{testRelOne};
     	one.expectedOutputArity = 3; // we dropped 2 out of 5
     	one.expectedOutputSize = 4; // 2 out of the 5 are the same after projection
-    	Tuple<Object> first = testRelOne.getTuples().iterator().next();
+    	Tuple<? extends Object> first = testRelOne.getTuples().iterator().next();
 		one.expectedTuples = new Object[][]{new Object[]{first.getElement(0), first.getElement(2), first.getElement(4)}};
     	
         return new RelationTestSetup[]{one};

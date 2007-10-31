@@ -29,7 +29,7 @@ public interface Relation<R> {
      * @param tuple a Tuple matching the relation's arity
      * @throws IllegalArgumentException if the arity is not matched
      */
-    void addTuple(Tuple<R> tuple);
+    void addTuple(Tuple<? extends R> tuple);
     
     /**
      * Adds an array of objects as Tuple into the relation.
@@ -72,7 +72,7 @@ public interface Relation<R> {
      * 
      * @return Set all tuples as unmodifiable collection, type Tuple
      */
-    Set<Tuple<R>> getTuples();
+    Set<Tuple<? extends R>> getTuples();
     
     /**
      * Returns true iff the given Tuple is part of the relation.
@@ -81,7 +81,7 @@ public interface Relation<R> {
      * @param tuple a Tuple matching the relation's arity
      * @throws IllegalArgumentException if the arity is not matched
      */
-    boolean isRelated(Tuple<R> tuple);
+    boolean isRelated(Tuple<? extends R> tuple);
     
     /**
      * Returns true iff the given array is part of the relation.
@@ -101,5 +101,5 @@ public interface Relation<R> {
 	 * 
 	 * @return a read-only Set of the tuples of the relation.
 	 */
-    Set<Tuple<R>> toSet();
+    Set<Tuple<? extends R>> toSet();
 }

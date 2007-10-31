@@ -9,6 +9,11 @@ package org.tockit.events.filters;
 
 import org.tockit.events.Event;
 
+/**
+ * Models a filter that filters a certain type of events.
+ * 
+ * @param <T> The event type that this filter can be applied to.
+ */
 public interface EventFilter<T extends Event<?>> {
 	boolean isMatch(T event);
 }

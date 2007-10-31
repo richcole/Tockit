@@ -26,10 +26,10 @@ public class CrossproductOperation<D> extends AbstractBinaryRelationOperation<D>
 		int arity = leftHandInput.getArity() + rightHandInput.getArity();
         String[] dimensionNames = getDimensionNames(leftHandInput, rightHandInput, arity);
     	RelationImplementation<D> result = new RelationImplementation<D>(dimensionNames);
-		for (Iterator<Tuple<D>> iterLeft = leftHandInput.getTuples().iterator(); iterLeft.hasNext();) {
-			Tuple<D> leftTuple = iterLeft.next();
-			for (Iterator<Tuple<D>> iterRight = rightHandInput.getTuples().iterator(); iterRight.hasNext();) {
-				Tuple<D> rightTuple = iterRight.next();
+		for (Iterator<Tuple<? extends D>> iterLeft = leftHandInput.getTuples().iterator(); iterLeft.hasNext();) {
+			Tuple<? extends D> leftTuple = iterLeft.next();
+			for (Iterator<Tuple<? extends D>> iterRight = rightHandInput.getTuples().iterator(); iterRight.hasNext();) {
+				Tuple<? extends D> rightTuple = iterRight.next();
 				result.addTuple(join(leftTuple, rightTuple, arity));
 			}
 		}
@@ -37,7 +37,7 @@ public class CrossproductOperation<D> extends AbstractBinaryRelationOperation<D>
     }
 
     @SuppressWarnings("unchecked")
-	private D[] join(Tuple<D> leftTuple, Tuple<D> rightTuple, int arity) {
+	private D[] join(Tuple<? extends D> leftTuple, Tuple<? extends D> rightTuple, int arity) {
     	D[] result = (D[]) new Object[arity];
 		for (int i = 0; i < leftTuple.getLength(); i++) {
 			result[i] = leftTuple.getElement(i);

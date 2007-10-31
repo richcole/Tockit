@@ -14,7 +14,7 @@ package org.tockit.events;
  * and will get called on processEvent(Event<T>) whenever an event matching the
  * subscription criteria passes the broker.
  * 
- * T is the base type for all subjects we are interested in.
+ * @param <T> The base type of all subjects we are interested in.
  *
  * @see EventBroker.subscribe(EventBrokerListener, Class, Class)
  */

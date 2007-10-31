@@ -71,8 +71,8 @@ public class PickColumnsOperation<D> extends AbstractUnaryRelationOperation<D> {
 			dimensionNames[i] = input.getDimensionNames()[col];
 		}
     	RelationImplementation<D> result = new RelationImplementation<D>(dimensionNames);
-    	for (Iterator<Tuple<D>> iter = input.getTuples().iterator(); iter.hasNext();) {
-            Tuple<D> tuple = iter.next();
+    	for (Iterator<Tuple<? extends D>> iter = input.getTuples().iterator(); iter.hasNext();) {
+            Tuple<? extends D> tuple = iter.next();
             result.addTuple(project(tuple.getData()));
         }
         return result;

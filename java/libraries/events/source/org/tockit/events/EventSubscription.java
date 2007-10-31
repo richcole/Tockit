@@ -21,12 +21,12 @@ class EventSubscription<T> {
      */
     private EventBrokerListener<T> listener;
     
-    private EventFilter[] eventFilters;
+    private EventFilter<Event<T>>[] eventFilters;
 
     /**
      * Creates a new subscription object with the given parameters.
      */
-    public EventSubscription(EventBrokerListener<T> listener, EventFilter[] eventFilters) {
+    public EventSubscription(EventBrokerListener<T> listener, EventFilter<Event<T>>[] eventFilters) {
         this.listener = listener;
         this.eventFilters = eventFilters;
     }
@@ -80,7 +80,7 @@ class EventSubscription<T> {
 	public String toString() {
         StringBuffer retVal = new StringBuffer("Subscription for events: ");
         for (int i = 0; i < this.eventFilters.length; i++) {
-            EventFilter filter = this.eventFilters[i];
+            EventFilter<Event<T>> filter = this.eventFilters[i];
             retVal.append(filter.toString());
             if (i < this.eventFilters.length) {
                 retVal.append("; ");
