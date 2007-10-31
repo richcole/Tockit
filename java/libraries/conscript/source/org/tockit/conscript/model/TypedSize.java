@@ -7,7 +7,11 @@
  */
 package org.tockit.conscript.model;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class TypedSize {
+	private static final Logger LOGGER = Logger.getLogger(TypedSize.class.getName()); 
 
 	private double value;
 	private String type;
@@ -19,6 +23,7 @@ public class TypedSize {
 
 	public TypedSize(String string) {
         //@todo parse string
+		LOGGER.log(Level.WARNING, "Parsing TypeSize is not yet implemented, the string will be ignored (" + string + ")");
     }
 
     public String getType() {
