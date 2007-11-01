@@ -158,9 +158,9 @@ public class RelationImplementation<R> implements Relation<R> {
      *                Not null. Must have consistent length. 
      * @return A relation containing the tuples parsed. Never null. Empty if input is empty.
      */
-    public static Relation<String> fromStringSet(Set<Object> baseSet) {
+    public static Relation<String> fromStringSet(Set<?> baseSet) {
     	Relation<String> retVal = null;
-    	for (Iterator<Object> iter = baseSet.iterator(); iter.hasNext();) {
+    	for (Iterator<?> iter = baseSet.iterator(); iter.hasNext();) {
             String cur = iter.next().toString();
             Tuple<String> tuple = Tuple.fromString(cur.toString());
             if(retVal == null) {
