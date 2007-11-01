@@ -10,7 +10,6 @@ package org.tockit.canvas.manipulators;
 import java.awt.geom.Point2D;
 
 import org.tockit.canvas.Canvas;
-import org.tockit.canvas.CanvasItem;
 import org.tockit.canvas.MovableCanvasItem;
 import org.tockit.canvas.events.CanvasItemDraggedEvent;
 import org.tockit.canvas.events.CanvasItemDroppedEvent;
@@ -22,19 +21,19 @@ import org.tockit.events.EventBrokerListener;
 /**
  * @TODO find a way to get the type of the listener down to <MoveableCanvasItem>
  */
-public class ItemMovementManipulator implements EventBrokerListener<CanvasItem> {
+public class ItemMovementManipulator implements EventBrokerListener<Object> {
     protected Canvas canvas;
 
-    public ItemMovementManipulator(Canvas canvas, EventBroker<CanvasItem> eventBroker) {
+    public ItemMovementManipulator(Canvas canvas, EventBroker<Object> eventBroker) {
         this(canvas, MovableCanvasItem.class, eventBroker);
     }
 
-    public ItemMovementManipulator(Canvas canvas, Class<? extends MovableCanvasItem> itemType, EventBroker<CanvasItem> eventBroker) {
+    public ItemMovementManipulator(Canvas canvas, Class<? extends MovableCanvasItem> itemType, EventBroker<Object> eventBroker) {
         eventBroker.subscribe(this, CanvasItemDraggedEvent.class, itemType);
         this.canvas = canvas;
     }
 
-    public void processEvent(Event<? extends CanvasItem> e) {
+    public void processEvent(Event<? extends Object> e) {
         if( e instanceof CanvasItemPickupEvent ) {
             dragStart((CanvasItemPickupEvent) e);
         } else if( e instanceof CanvasItemDroppedEvent ) {

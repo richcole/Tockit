@@ -43,6 +43,8 @@ import org.tockit.events.filters.SubjectTypeFilter;
  * processed. If you enqueue a new event while another is still being processed
  * (i.e. as reaction on the first event), the new event will be processed after
  * the processing of the first one has finished.
+ * 
+ * @param <T> The most general type of subjects events can have.
  */
 public class EventBroker<T> implements EventBrokerListener<T> {
     private class SubscriptionEvent extends StandardEvent<EventSubscription<T>> {
@@ -64,12 +66,21 @@ public class EventBroker<T> implements EventBrokerListener<T> {
 
     /**
      * The event queue.
-     * 
-     * @TODO the queue currently can hold both Event<T>s and Event<EventSubscription<T>>s, which stops us
-     *       from being typesafe all the way
      */
-    private List<Event<?>> eventQueue = new LinkedList<Event<?>>();
+    private List<Event<? extends T>> eventQueue = new LinkedList<Event<? extends T>>();
 
+    /**
+     * The queue for new subscriptions or subscription removals.
+     * 
+     * Subscriptions can't be changed during event processing (concurrency issues), thus this
+     * queue is used to delay the subscriptions. Subscriptions have priority over normal events,
+     * which means that a subscription can in theory receive events that happened before the
+     * subscription itself. The same applies for removal.
+     * 
+     * @todo see if we can integrate this back into one queue without breaking type safety
+     */
+    private List<Event<EventSubscription<T>>> subscriptionQueue = new LinkedList<Event<EventSubscription<T>>>();
+    
     /**
      * True if we are already processing some events.
      */
@@ -92,15 +103,15 @@ public class EventBroker<T> implements EventBrokerListener<T> {
      * or interface).
      */
     @SuppressWarnings("unchecked")
-	public void subscribe(EventBrokerListener<T> listener, Class<? extends Event<T>> eventType, Class<? extends T> subjectType) {
-    	subscribe(listener, new EventFilter[]{new EventTypeFilter<Event<T>>(eventType), new SubjectTypeFilter<T,Event<T>>(subjectType)});
+	public void subscribe(EventBrokerListener<? super T> listener, Class<? extends Event<? extends T>> eventType, Class<? extends T> subjectType) {
+    	subscribe(listener, new EventFilter[]{new EventTypeFilter<Event<? extends T>>(eventType), new SubjectTypeFilter<T,Event<T>>(subjectType)});
     }
     
-    public void subscribe(EventBrokerListener<T> listener, EventFilter<Event<T>>[] filters) {
+    public void subscribe(EventBrokerListener<? super T> listener, EventFilter<Event<? extends T>>[] filters) {
     	if (listener == this) {
     		throw new RuntimeException("Trying to subscribe EventBroker to itself");
     	}
-    	this.eventQueue.add(new SubscriptionEvent(new EventSubscription<T>(listener, filters)));
+    	this.subscriptionQueue.add(new SubscriptionEvent(new EventSubscription<T>(listener, filters)));
     	processEvents();
     }
 
@@ -113,7 +124,7 @@ public class EventBroker<T> implements EventBrokerListener<T> {
 		for (Iterator<EventSubscription<T>> iterator = subscriptions.iterator(); iterator.hasNext();) {
 			EventSubscription<T> subscription = iterator.next();
 			if (subscription.getListener().equals(listener)) {
-				this.eventQueue.add(new SubscriptionRemovalEvent(subscription));
+				this.subscriptionQueue.add(new SubscriptionRemovalEvent(subscription));
 			}
 		}
 		processEvents();
@@ -146,7 +157,7 @@ public class EventBroker<T> implements EventBrokerListener<T> {
 		for (Iterator<EventSubscription<T>> iterator = subscriptions.iterator(); iterator.hasNext();) {
 			EventSubscription<T> cur = iterator.next();
 			if (cur.equals(subscription)) {
-				this.eventQueue.add(new SubscriptionRemovalEvent(cur));
+				this.subscriptionQueue.add(new SubscriptionRemovalEvent(cur));
 			}
 		}
 		processEvents();
@@ -175,31 +186,28 @@ public class EventBroker<T> implements EventBrokerListener<T> {
 
 
     /**
-     * Processes the current event queue until it is empty.
-     * 
-     * @TODO this suffers from the event queue not being single-typed, thus the
-     *       suppressed warnings. This should be changed, possibly to have to queues.
+     * Processes the current event queues until they are empty.
      */
-    @SuppressWarnings("unchecked")
 	private void processEvents() {
         if (processingEvents) {
             return;
         }
         processingEvents = true;
-        while (!eventQueue.isEmpty()) {
-            Event<?> event = eventQueue.remove(0);
+		while (!subscriptionQueue.isEmpty()) {
+			Event<EventSubscription<T>> event = subscriptionQueue.remove(0);
             if (event instanceof EventBroker.SubscriptionEvent) {
                 this.subscriptions.add(((SubscriptionEvent)event).getSubject());
             } else if (event instanceof EventBroker.SubscriptionRemovalEvent) {
                 this.subscriptions.remove(event.getSubject());
-            } else {
-                processExternalEvent((Event<T>) event);
             }
+        }
+        while (!eventQueue.isEmpty()) {
+        	processExternalEvent(eventQueue.remove(0));
         }
         processingEvents = false;
     }
 
-    private void processExternalEvent(Event<T> event) {
+    private void processExternalEvent(Event<? extends T> event) {
         for (Iterator<EventSubscription<T>> iterator = subscriptions.iterator(); iterator.hasNext();) {
             EventSubscription<T> subscription = iterator.next();
         	if (subscription.matchesEvent(event)) {

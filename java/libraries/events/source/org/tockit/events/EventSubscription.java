@@ -14,19 +14,21 @@ import org.tockit.events.filters.EventFilter;
  *
  * This class is used by the EventBroker class to remember which listener
  * is interested in which types of events.
+ * 
+ * @param <T> The type of the subjects of the events we are interested in.
  */
 class EventSubscription<T> {
     /**
      * The listener interested in events.
      */
-    private EventBrokerListener<T> listener;
+    private EventBrokerListener<? super T> listener;
     
-    private EventFilter<Event<T>>[] eventFilters;
+    private EventFilter<Event<? extends T>>[] eventFilters;
 
     /**
      * Creates a new subscription object with the given parameters.
      */
-    public EventSubscription(EventBrokerListener<T> listener, EventFilter<Event<T>>[] eventFilters) {
+    public EventSubscription(EventBrokerListener<? super T> listener, EventFilter<Event<? extends T>>[] eventFilters) {
         this.listener = listener;
         this.eventFilters = eventFilters;
     }
@@ -34,13 +36,13 @@ class EventSubscription<T> {
     /**
      * Returns the listener that shall receive the events.
      */
-    public EventBrokerListener<T> getListener() {
+    public EventBrokerListener<? super T> getListener() {
         return listener;
     }
     
-    public boolean matchesEvent(Event<T> event) {
+    public boolean matchesEvent(Event<? extends T> event) {
     	for (int i = 0; i < this.eventFilters.length; i++) {
-			EventFilter<Event<T>> filter = this.eventFilters[i];
+			EventFilter<Event<? extends T>> filter = this.eventFilters[i];
 			if(!filter.isMatch(event)) {
 				return false;
 			}
@@ -80,7 +82,7 @@ class EventSubscription<T> {
 	public String toString() {
         StringBuffer retVal = new StringBuffer("Subscription for events: ");
         for (int i = 0; i < this.eventFilters.length; i++) {
-            EventFilter<Event<T>> filter = this.eventFilters[i];
+            EventFilter<Event<? extends T>> filter = this.eventFilters[i];
             retVal.append(filter.toString());
             if (i < this.eventFilters.length) {
                 retVal.append("; ");
