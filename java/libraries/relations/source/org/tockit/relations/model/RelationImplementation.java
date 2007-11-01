@@ -151,10 +151,17 @@ public class RelationImplementation<R> implements Relation<R> {
         return retVal;
     }
     
-    public static Relation<String> fromStringSet(Set<String> baseSet) {
+    /**
+     * Creates a new relation by parsing all objects as tuples.
+     * 
+     * @param baseSet A set of objects whose string representations (toString()) will be parsed as tuples.
+     *                Not null. Must have consistent length. 
+     * @return A relation containing the tuples parsed. Never null. Empty if input is empty.
+     */
+    public static Relation<String> fromStringSet(Set<Object> baseSet) {
     	Relation<String> retVal = null;
-    	for (Iterator<String> iter = baseSet.iterator(); iter.hasNext();) {
-            String cur = iter.next();
+    	for (Iterator<Object> iter = baseSet.iterator(); iter.hasNext();) {
+            String cur = iter.next().toString();
             Tuple<String> tuple = Tuple.fromString(cur.toString());
             if(retVal == null) {
             	retVal = new RelationImplementation<String>(tuple.getLength());
