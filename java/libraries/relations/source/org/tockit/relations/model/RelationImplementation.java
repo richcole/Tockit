@@ -2,8 +2,6 @@
  * Copyright DSTC Pty.Ltd. (http://www.dstc.com), Technische Universitaet Darmstadt
  * (http://www.tu-darmstadt.de) and the University of Queensland (http://www.uq.edu.au).
  * Please read licence.txt in the toplevel source directory for licensing information.
- *
- * $Id$
  */
 package org.tockit.relations.model;
 
@@ -108,10 +106,15 @@ public class RelationImplementation<R> implements Relation<R> {
 	/**
 	 * Creates a relation from a set of tuples or objects representing tuples.
 	 * 
+	 * @todo this should really be two typesafe methods and not one insafe one
+	 * 
 	 * @param baseSet a set containing either Tuple object or objects whose toString() contains tab-delimited tuples
 	 * @return the relation using this tuple set. The arity is either the tuple length or 0 if there are no tuples.
 	 * @throws IllegalArgumentException if the objects in the input set are not of consistent length
+	 * 
+	 * @deprecated Not typesafe. Use fromTupleSet(Set<Tuple<T>) or fromStringSet(Set<String>) instead. Avoid mixed sets.
 	 */
+    @Deprecated
     public static Relation<Object> fromSet(Set<?> baseSet) {
     	Relation<Object> retVal = null;
     	for (Iterator<?> iter = baseSet.iterator(); iter.hasNext();) {
@@ -133,6 +136,37 @@ public class RelationImplementation<R> implements Relation<R> {
         return retVal;
     }
     
+    public static<T> Relation<T> fromTupleSet(Set<Tuple<T>> baseSet) {
+    	Relation<T> retVal = null;
+    	for (Iterator<Tuple<T>> iter = baseSet.iterator(); iter.hasNext();) {
+            Tuple<T> tuple = iter.next();
+            if(retVal == null) {
+            	retVal = new RelationImplementation<T>(tuple.getLength());
+            }
+            retVal.addTuple(tuple);
+        }
+		if(retVal == null) {
+			retVal = new RelationImplementation<T>(0);
+		}
+        return retVal;
+    }
+    
+    public static Relation<String> fromStringSet(Set<String> baseSet) {
+    	Relation<String> retVal = null;
+    	for (Iterator<String> iter = baseSet.iterator(); iter.hasNext();) {
+            String cur = iter.next();
+            Tuple<String> tuple = Tuple.fromString(cur.toString());
+            if(retVal == null) {
+            	retVal = new RelationImplementation<String>(tuple.getLength());
+            }
+            retVal.addTuple(tuple);
+        }
+		if(retVal == null) {
+			retVal = new RelationImplementation<String>(0);
+		}
+        return retVal;
+    }
+
     @Override
 	public String toString() {
         StringBuffer buffer = new StringBuffer();
