@@ -29,8 +29,6 @@ import org.tockit.plugin.Plugin;
 public class PdfDocumentHandler implements DocumentHandler, Plugin {
 	/**
 	 * Pretty much copy and paste code from the PDFbox LucenePDFDocument class.
-	 * 
-	 * @todo check if we want to add the extra bits of metadata into our model.
 	 */
 	public DocumentSummary parseDocument(URL url) throws IOException, DocumentHandlerException {
 		DocumentSummary docSummary =  new DocumentSummary();
@@ -58,21 +56,6 @@ public class PdfDocumentHandler implements DocumentHandler, Plugin {
 				docSummary.authors = new ArrayList();
 				docSummary.authors.add(info.getAuthor());
 			}
-//			if( info.getCreationDate() != null )
-//			{
-//				Date date = info.getCreationDate().getTime();
-//				//for some reason lucene cannot handle dates before the epoch
-//				//and throws a nasty RuntimeException, so we will check and
-//				//verify that this does not happen
-//				if( date.getTime() >= 0 )
-//				{
-//					document.add(Field.Text("CreationDate", DateField.dateToString( date ) ) );
-//				}
-//			}
-//			if( info.getCreator() != null )
-//			{
-//				document.add( Field.Text( "Creator", info.getCreator() ) );
-//			}
 			if( info.getKeywords() != null )
 			{
 				docSummary.keywords = new ArrayList();
@@ -89,27 +72,10 @@ public class PdfDocumentHandler implements DocumentHandler, Plugin {
 					docSummary.modificationDate = date;
 				}
 			}
-//			if( info.getProducer() != null )
-//			{
-//				document.add( Field.Text( "Producer", info.getProducer() ) );
-//			}
-//			if( info.getSubject() != null )
-//			{
-//				document.add( Field.Text( "Subject", info.getSubject() ) );
-//			}
 			if( info.getTitle() != null )
 			{
 				docSummary.title = info.getTitle();
 			}
-//			if( info.getTrapped() != null )
-//			{
-//				document.add( Field.Text( "Trapped", info.getTrapped() ) );
-//			}
-
-//			int summarySize = Math.min( contents.length, 500 );
-//			// Add the summary as an UnIndexed field, so that it is stored and returned
-//			// with hit documents for display.
-//			docSummary.summary = new String( contents, 0, summarySize );
 		}
 		finally
 		{
