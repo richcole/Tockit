@@ -570,7 +570,7 @@ public class PDF extends multivalent.std.adaptor.MediaAdaptorRandom {
 			break;
 
 			case 'c':   // c, cm, cs
-			if (c2c3==' ') {    // (curpt-x, y-curpt) x1 y1 x2 y2 x3 y3 'c' - append a cubic Bézier curve to the current path: current point to x3 y3, with x1 y1 and x2 y2 as control points
+			if (c2c3==' ') {    // (curpt-x, y-curpt) x1 y1 x2 y2 x3 y3 'c' - append a cubic Bezier curve to the current path: current point to x3 y3, with x1 y1 and x2 y2 as control points
 				getDoubles(ops,d,6); ctm.transform(d,0, d,0, 3);
 				/*if (pathlen==1 && peek=='S') simplepath = new CubicCurve2D.Double(d[0],d[1], d[2],d[3], d[4],d[5]);   // rare, so don't optimize
 				else*/ path.curveTo((float)d[0],(float)d[1], (float)d[2],(float)d[3], (float)(curx=d[4]),(float)(cury=d[5]));
@@ -860,7 +860,7 @@ public class PDF extends multivalent.std.adaptor.MediaAdaptorRandom {
 			break;
 
 			case 'S':   // S, SC, SCN
-			if (c2c3==' ') {   // —-- 'S' - stroke the path
+			if (c2c3==' ') {   // ? -- 'S' - stroke the path
 				fstroke = true;
 
 			} else if (c2c3=='C' || c2c3==('C'<<8)+'N') {   // c1, ..., cn 'SC' - set stroking color; SCN "same as SC, but also supports Pattern, Separation, DeviceN, and ICCBased color spaces."
@@ -1217,7 +1217,7 @@ public class PDF extends multivalent.std.adaptor.MediaAdaptorRandom {
 			break;
 
 			case 'v':   // v
-			if (c2c3==' ') {   // x2 y2 x3 y3 'v' - append a cubic Bézier curve to the current path: current point to x3 y3, with current point and x2 y2 as control points
+			if (c2c3==' ') {   // x2 y2 x3 y3 'v' - append a cubic Bezier curve to the current path: current point to x3 y3, with current point and x2 y2 as control points
 				getDoubles(ops,d,4); ctm.transform(d,0, d,0, 2);
 				path.curveTo((float)curx,(float)cury, (float)d[0],(float)d[1], (float)(curx=d[2]),(float)(cury=d[3])); pathlen+=100;
 			}
@@ -1280,7 +1280,7 @@ public class PDF extends multivalent.std.adaptor.MediaAdaptorRandom {
 			break;
 
 			case 'y':   // y
-			if (c2c3==' ') {   // x1 y1 x3 y3 'y' - append a cubic Bézier curve to the current path: current point to the point x3 y3, using x1 y1 and x3 y3 as control points
+			if (c2c3==' ') {   // x1 y1 x3 y3 'y' - append a cubic Bezier curve to the current path: current point to the point x3 y3, using x1 y1 and x3 y3 as control points
 				getDoubles(ops,d,4); ctm.transform(d,0, d,0, 2);
 				path.curveTo((float)d[0],(float)d[1], (float)d[2],(float)d[3], (float)(curx=d[2]),(float)(cury=d[3])); pathlen+=100;
 			}
