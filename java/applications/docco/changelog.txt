@@ -1,7 +1,12 @@
 ==============================
-Changes sicne Docco 0.5:
+Changes since Docco 0.5:
 ==============================
 
+POI-Plugin:
+- updated POI library from version 2.5.1final to 3.1final
+- switched text extraction to new extractor classes offered by POI, which
+  results in better extraction (e.g. more PowerPoint files have their text
+  extracted)
 
 ==============================
 Changes from Docco 0.4 to 0.5:
@@ -11,21 +16,21 @@ Docco:
 - Docco is now internationalized, i.e. it can be easily adjusted to local
   languages and customs. Translations into German and Dutch are part of the 
   distribution.
-- Update to Lucene 2.1.0 (no code changes needed)
+- update to Lucene 2.1.0 (no code changes needed)
 - Bugfix: the OpenOffice handler could miss content before, which should be
   fixed now
-- Support for ODF (OpenDocumentFormat as used e.g. by OpenOffice 2.x) has
+- support for ODF (OpenDocumentFormat as used e.g. by OpenOffice 2.x) has
   been added
-- The default index directory is now in the user's home directory instead
+- the default index directory is now in the user's home directory instead
   of using the working directory
-- A new command line option "indexDirectory" can be used to set a different
+- a new command line option "indexDirectory" can be used to set a different
   directory for the index (for this session)
 - Bugfix: the path to an index is now stored properly in the index proper-
   ties file (needed for index updates)
-- The information if an index is active for search or not is now kept bet-
+- the information if an index is active for search or not is now kept bet-
   ween program sessions
-- Moving nodes in a diagram should be more natural now
-- The code to open a document has been updated to a new version, which
+- moving nodes in a diagram should be more natural now
+- the code to open a document has been updated to a new version, which
   fixes issues on various platforms
 - a new command line option "updateIndexes" can be used to let Docco update
   all indexes without running the GUI

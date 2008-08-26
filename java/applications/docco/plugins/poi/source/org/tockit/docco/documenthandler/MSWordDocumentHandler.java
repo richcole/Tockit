@@ -9,69 +9,15 @@ package org.tockit.docco.documenthandler;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.net.URL;
-import java.util.ArrayList;
 
-import org.apache.poi.hpsf.SummaryInformation;
-import org.apache.poi.poifs.eventfilesystem.POIFSReader;
-
-import org.textmining.text.extraction.WordExtractor;
+import org.apache.poi.POIOLE2TextExtractor;
+import org.apache.poi.hwpf.extractor.WordExtractor;
 import org.tockit.docco.filefilter.DoccoFileFilter;
 import org.tockit.docco.filefilter.ExtensionFileFilterFactory;
-import org.tockit.docco.indexer.DocumentSummary;
 import org.tockit.plugin.Plugin;
 
-public class MSWordDocumentHandler implements DocumentHandler, Plugin {
+public class MSWordDocumentHandler extends POIExtractorDocumentHandler implements DocumentHandler, Plugin {
 	
-	public DocumentSummary parseDocument(URL url) throws IOException, DocumentHandlerException {
-		InputStream inputStream = null;
-		try {		
-            inputStream = url.openStream();
-			
-			POIFSReader poiReader = new POIFSReader();
-			DocSummaryPOIFSReaderListener summaryListener = new DocSummaryPOIFSReaderListener();
-			poiReader.registerListener(summaryListener, "\005SummaryInformation");
-			poiReader.read(inputStream);	
-	
-			/// @todo there is more fields that we may want to use
-			SummaryInformation info = summaryListener.getSummary();
-			
-			DocumentSummary docSummary = new DocumentSummary();
-			docSummary.authors = DocSummaryPOIFSReaderListener.getAuthors(info);
-			/// @todo we could probably read the document in one go, extracting both
-			/// text and metadata
-			docSummary.contentReader = getDocumentContent(url.openStream());
-			docSummary.creationDate = info.getCreateDateTime();
-			docSummary.keywords = new ArrayList();
-			docSummary.keywords.add(info.getKeywords());
-			docSummary.modificationDate = info.getEditTime();
-			docSummary.title = info.getTitle();
-			
-			return docSummary;
-        } catch (IOException e) {
-			if (e.getMessage().startsWith("Unable to read entire header")) {
-				throw new DocumentHandlerException("Couldn't process document", e);
-			} else {
-				throw e;
-			}
-        } finally {
-            if(inputStream != null) {
-                inputStream.close();
-            }
-        }
-	}
-	
-	private Reader getDocumentContent(InputStream inputStream) throws DocumentHandlerException {
-        WordExtractor extractor = new WordExtractor();
-		try {
-            return new StringReader(extractor.extractText(inputStream));
-        } catch (Exception e) {
-            throw new DocumentHandlerException("Failed to extract text from Word document.", e);
-        }
-	}
-
 	public String getDisplayName() {
 		return "Microsoft Word Document";
 	}
@@ -83,4 +29,9 @@ public class MSWordDocumentHandler implements DocumentHandler, Plugin {
 	public void load() {
 		DocumentHandlerRegistry.registerDocumentHandler(this);
 	}
+
+    protected POIOLE2TextExtractor createExtractor(InputStream inputStream)
+            throws IOException {
+        return new WordExtractor(inputStream);
+    }
 }
