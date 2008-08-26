@@ -24,5 +24,5 @@ commons-cli.jar:
   license in LICENSE.apache.txt)
 
 BrowserLauncher2.jar:
-  Tool to start a browser on various platforms, version 1.0 (http://browserlaunch2.sourceforge.net/,
+  Tool to start a browser on various platforms, version 1.3 (http://browserlaunch2.sourceforge.net/,
   licence is LGPL).
