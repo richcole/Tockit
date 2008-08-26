@@ -1,6 +1,8 @@
 ==============================
 Changes since Docco 0.5:
 ==============================
+Docco:
+- updated Lucene to 2.3.2 (no code changes)
 
 POI-Plugin:
 - updated POI library from version 2.5.1final to 3.1final
