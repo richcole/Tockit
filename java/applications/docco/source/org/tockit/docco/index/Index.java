@@ -287,7 +287,7 @@ public class Index {
     }
 
     public void removeLock() throws IOException {
-        IndexReader.unlock(FSDirectory.getDirectory(getIndexLocation(), false));
+        IndexReader.unlock(FSDirectory.getDirectory(getIndexLocation()));
     }
 
     public Analyzer getAnalyzer() {
