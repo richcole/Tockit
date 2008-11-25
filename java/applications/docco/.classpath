@@ -17,15 +17,15 @@
 	<classpathentry kind="lib" path="libs/ToscanaJ.jar"/>
 	<classpathentry kind="lib" path="libs/tockit-fca.jar"/>
 	<classpathentry kind="lib" path="plugins/pdfbox/libs/PDFBox.jar"/>
-	<classpathentry kind="lib" path="libs/lucene-core.jar" sourcepath="libs/src/lucene-core-src.zip"/>
 	<classpathentry kind="lib" path="libs/jdom.jar"/>
-	<classpathentry kind="lib" path="libs/lucene-analyzers.jar" sourcepath="libs/src/lucene-analyzers-src.zip"/>
 	<classpathentry kind="lib" path="libs/BrowserLauncher2.jar" sourcepath="libs/src/BrowserLauncher2-source.zip"/>
 	<classpathentry kind="lib" path="plugins/pdfbox/libs/FontBox.jar"/>
 	<classpathentry kind="lib" path="plugins/poi/libs/commons-logging-1.1.jar"/>
 	<classpathentry kind="lib" path="plugins/poi/libs/log4j-1.2.13.jar"/>
 	<classpathentry kind="lib" path="plugins/poi/libs/poi-3.2-FINAL-20081019.jar"/>
 	<classpathentry kind="lib" path="plugins/poi/libs/poi-scratchpad-3.2-FINAL-20081019.jar"/>
+	<classpathentry kind="lib" path="libs/lucene-analyzers-2.4.0.jar" sourcepath="libs/src/lucene-2.4.0-analyzers-src.zip"/>
+	<classpathentry kind="lib" path="libs/lucene-core-2.4.0.jar" sourcepath="libs/src/lucene-2.4.0-core-src.zip"/>
 	<classpathentry kind="src" path="resources"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
