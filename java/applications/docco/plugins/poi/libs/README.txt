@@ -2,5 +2,8 @@ This folder contains libraries from other projects and parties. For 3rd party li
 as a LICENSE.* file, please read these files. At the moment it contains:
 
   
-jakarta-poi*.jar:
-  Jakarta POI, 3.1final (http://jakarta.apache.org/poi, license in LICENSE-jakarta-poi)
+poi*.jar:
+  Apache POI, 3.2final (http://poi.apache.org/, license in LICENSE-poi)
+
+Other JAR files:
+  POI dependencies as provided with the POI distribution above, same licence as POI.

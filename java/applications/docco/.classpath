@@ -22,8 +22,10 @@
 	<classpathentry kind="lib" path="libs/lucene-analyzers.jar" sourcepath="libs/src/lucene-analyzers-src.zip"/>
 	<classpathentry kind="lib" path="libs/BrowserLauncher2.jar" sourcepath="libs/src/BrowserLauncher2-source.zip"/>
 	<classpathentry kind="lib" path="plugins/pdfbox/libs/FontBox.jar"/>
-	<classpathentry kind="lib" path="plugins/poi/libs/jakarta-poi-scratchpad.jar"/>
-	<classpathentry kind="lib" path="plugins/poi/libs/jakarta-poi.jar"/>
+	<classpathentry kind="lib" path="plugins/poi/libs/commons-logging-1.1.jar"/>
+	<classpathentry kind="lib" path="plugins/poi/libs/log4j-1.2.13.jar"/>
+	<classpathentry kind="lib" path="plugins/poi/libs/poi-3.2-FINAL-20081019.jar"/>
+	<classpathentry kind="lib" path="plugins/poi/libs/poi-scratchpad-3.2-FINAL-20081019.jar"/>
 	<classpathentry kind="src" path="resources"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

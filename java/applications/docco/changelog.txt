@@ -6,11 +6,17 @@ Docco:
 - updated BrowserLauncher to 1.3 (no code changes)
 
 POI-Plugin:
-- updated POI library from version 2.5.1final to 3.1final
+- updated POI library from version 2.5.1final to 3.2final
 - switched text extraction to new extractor classes offered by POI, which
   results in better extraction (e.g. more PowerPoint files have their text
   extracted)
 
+Multivalent-Plugin:
+- the default file mapping does not match PDF files anymore, since the error
+  rate was too high and Multivalent might get PDF files instead of PDFbox.
+  It is still possible to use Multivalent for PDF by adding the file mapping
+  manually.
+  
 ==============================
 Changes from Docco 0.4 to 0.5:
 ==============================
