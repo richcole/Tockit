@@ -181,6 +181,6 @@ public class MultivalentDocumentHandler implements DocumentHandler, Plugin {
 	}
 
 	public DoccoFileFilter getDefaultFilter() {
-		return new ExtensionFileFilterFactory().createNewFilter("htm;html;xhtml;pdf;man;dvi");
+		return new ExtensionFileFilterFactory().createNewFilter("htm;html;xhtml;man;dvi");
 	}
 }
