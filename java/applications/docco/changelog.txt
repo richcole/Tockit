@@ -8,6 +8,8 @@ Docco:
   between sessions again
 - dragging nodes while holding CTRL now moves the ideal (the node and all
   nodes below) instead of using the normal movement algorithm
+- diagram generation now happens in a background thread, which means Docco
+  stays responsive while the diagram is created
 
 POI-Plugin:
 - updated POI library from version 2.5.1final to 3.2final

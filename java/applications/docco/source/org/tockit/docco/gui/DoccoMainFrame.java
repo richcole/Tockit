@@ -9,7 +9,6 @@ package org.tockit.docco.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
@@ -50,6 +49,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -73,6 +73,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import javax.swing.event.TreeSelectionEvent;
@@ -116,6 +117,7 @@ import net.sourceforge.toscanaj.view.diagram.NodeView;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.ParseException;
+import org.jdesktop.swingworker.SwingWorker;
 import org.tockit.canvas.CanvasBackground;
 import org.tockit.canvas.CanvasItem;
 import org.tockit.canvas.events.CanvasItemDraggedEvent;
@@ -200,6 +202,7 @@ public class DoccoMainFrame extends JFrame {
     private JMenuItem printSetupMenuItem;
     private PageFormat pageFormat = new PageFormat();
     private String indexDirectoryLocation = null;
+    private SwingWorker diagramWorker;
     
 	private class SelectionEventHandler implements EventBrokerListener {
 		public void processEvent(Event event) {
@@ -1161,30 +1164,66 @@ public class DoccoMainFrame extends JFrame {
         return queryString;
     }
 
-    private void doQuery(boolean nestDiagram) {
+    private void doQuery(final boolean nestDiagram) {
         addEntryToQueryHistory();
 		if(getQueryString().length() != 0) {
-			this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-			QueryWithResult[] results;
-            try {
-                results = this.queryEngine.executeQueryUsingDecomposer(getQueryString());
-				Diagram2D diagram = DiagramGenerator.createDiagram(results, this.showPhantomNodesCheckBox.isSelected());
-                insertDiagramIntoView(diagram, nestDiagram);
-            } catch (ParseException e) {
-            	ErrorDialog.showError(this, e, GuiMessages.getString("DoccoMainFrame.queryNotUnderstoodDialog.title")); //$NON-NLS-1$
-            	this.diagramView.showDiagram(null);
-            } catch (IOException e) {
-				ErrorDialog.showError(this, e, GuiMessages.getString("DoccoMainFrame.queryFailedForUnspecifiedReasonDialog.title")); //$NON-NLS-1$
-				this.diagramView.showDiagram(null);
-            }
-            this.selectedConcepts = null;
-            fillTreeList();
-			this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            setMenuStates();
+		    if(diagramWorker != null) {
+		        // stop already existing workers (assuming they support cancellation)
+		        diagramWorker.cancel(true);
+		    }
+		    diagramWorker = new SwingWorker(){
+                protected Object doInBackground() throws Exception {
+                    QueryWithResult[] results;
+                    try {
+                        results = queryEngine.executeQueryUsingDecomposer(getQueryString());
+                        return DiagramGenerator.createDiagram(results, showPhantomNodesCheckBox.isSelected());
+                    } catch (ParseException e) {
+                        ErrorDialog.showError(DoccoMainFrame.this, e, GuiMessages.getString("DoccoMainFrame.queryNotUnderstoodDialog.title")); //$NON-NLS-1$
+                        return null;
+                    } catch (IOException e) {
+                        ErrorDialog.showError(DoccoMainFrame.this, e, GuiMessages.getString("DoccoMainFrame.queryFailedForUnspecifiedReasonDialog.title")); //$NON-NLS-1$
+                        return null;
+                    }
+                }
+                
+                protected void done() {
+                    if(isCancelled()) {
+                        return;
+                    }
+                    try {
+                        selectedConcepts = null;
+                        Diagram2D diagram = (Diagram2D) get();
+                        if(diagram == null) {
+                            diagramView.showDiagram(null);
+                        }
+                        else {
+                            updateDiagram(diagram, nestDiagram);
+                        }
+                    } catch (InterruptedException e) {
+                        // query interrupted, we just leave it
+                    } catch (ExecutionException e) {
+                        ErrorDialog.showError(DoccoMainFrame.this, e, GuiMessages.getString("DoccoMainFrame.queryFailedForUnspecifiedReasonDialog.title")); //$NON-NLS-1$
+                    }
+                }
+		    };
+		    statusBarMessage.setText(GuiMessages.getString("DoccoMainFrame.statusBar.creatingDiagramMessage"));
+		    diagramWorker.execute();
         }
 	}
 	
-	private void insertDiagramIntoView(Diagram2D diagram, boolean nestDiagram) {
+	protected void updateDiagram(final Diagram2D diagram, final boolean nestDiagram) {
+	    assert diagram != null: "Inserted diagram has to be set";
+	    SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                insertDiagramIntoView(diagram, nestDiagram);
+                fillTreeList();
+                setMenuStates();
+                statusBarMessage.setText(GuiMessages.getString("DoccoMainFrame.statusBar.readyMessage"));
+            }
+        });
+    }
+
+    private void insertDiagramIntoView(Diagram2D diagram, boolean nestDiagram) {
         Diagram2D oldDiagram = this.diagramView.getDiagram();
         Diagram2D newDiagram = diagram;
         DiagramHistory diagramHistory = new DiagramHistory();

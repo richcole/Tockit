@@ -26,3 +26,7 @@ commons-cli.jar:
 BrowserLauncher2.jar:
   Tool to start a browser on various platforms, version 1.3 (http://browserlaunch2.sourceforge.net/,
   licence is LGPL).
+
+swing-worker-1.2.jar:
+  Tool to start some GUI-initiated work in a background thread, version 1.2
+  (https://swingworker.dev.java.net/ , licence is LGPL)
