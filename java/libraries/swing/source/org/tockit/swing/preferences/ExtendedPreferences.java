@@ -27,6 +27,12 @@ import java.util.prefs.Preferences;
  * 
  * It extends the standard JDK preferences to allow storing more complex information
  * such as windows placements, colors and string lists.
+ * 
+ * Note that while this class extends the Preferences class, it does not use the superclass
+ * directly but instead delegates to the version passed into the constructor since that is
+ * the only way to decorate existing Preferences instances. Extending the Preferences class
+ * is really to be read only as subtyping, not reuse; unfortunately there is no interface for
+ * the Preferences API, only the implementation. 
  */
 public class ExtendedPreferences extends Preferences {
     private Preferences javaPreferences = null;
