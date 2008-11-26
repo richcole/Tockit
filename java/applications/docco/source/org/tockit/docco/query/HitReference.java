@@ -11,8 +11,8 @@ import org.apache.lucene.document.Document;
 import org.tockit.docco.GlobalConstants;
 
 public class HitReference implements Comparable {
-	private Document doc;
-	private float score;
+	private final Document doc;
+	private final float score;
 	
 	
 	public HitReference(Document doc, float score) {
