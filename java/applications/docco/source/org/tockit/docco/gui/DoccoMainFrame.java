@@ -1291,10 +1291,10 @@ public class DoccoMainFrame extends JFrame {
 								this.viewsSplitPane.getDividerLocation());
 								
 		// store menu settings
-		preferences.putInt(CONFIGURATION_SHOW_PHANTOM_NODES_NAME,
-								this.showPhantomNodesCheckBox.isSelected()?1:0);
-		preferences.putInt(CONFIGURATION_SHOW_CONTINGENT_ONLY_NAME,
-								this.showContingentOnlyCheckBox.isSelected()?1:0);
+		preferences.putBoolean(CONFIGURATION_SHOW_PHANTOM_NODES_NAME,
+								this.showPhantomNodesCheckBox.isSelected());
+		preferences.putBoolean(CONFIGURATION_SHOW_CONTINGENT_ONLY_NAME,
+								this.showContingentOnlyCheckBox.isSelected());
 		preferences.putInt(CONFIGURATION_INDEXING_PRIORITY_NAME,
 								this.indexingPriority);
 		
