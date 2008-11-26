@@ -9,15 +9,17 @@
 package org.tockit.docco.query;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.Hits;
+import org.apache.lucene.search.HitCollector;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
@@ -64,14 +66,24 @@ public class QueryEngine {
 		return queryResults;
 	}
 	
-	private QueryWithResult executeQuery (Searcher searcher, Query query, String label) throws IOException {
-		Set result = new HashSet();
-		Hits hits = searcher.search(query);
-		for (int i = 0; i < hits.length(); i++) {
-			Document doc = hits.doc(i);
-			HitReference hitRef = new HitReference(doc, hits.score(i));
-			result.add(hitRef);
-		}
+	private QueryWithResult executeQuery (final Searcher searcher, Query query, String label) throws IOException {
+		final Set result = new HashSet();
+		final List exceptions = new ArrayList();
+		// TODO deal with the exceptions somehow
+		searcher.search(query, new HitCollector(){
+            public void collect(int docId, float score) {
+                try {
+                    Document doc = searcher.doc(docId);
+                    HitReference hitRef = new HitReference(doc, score);
+                    result.add(hitRef);
+                } catch (CorruptIndexException e) {
+                    exceptions.add(e);
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    exceptions.add(e);
+                    e.printStackTrace();
+                }
+            }});
 		return new QueryWithResult(query, result, label);
 	}
 }

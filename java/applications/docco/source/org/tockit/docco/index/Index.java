@@ -104,7 +104,7 @@ public class Index {
 									Indexer.CallbackRecipient callbackRecipient) throws IOException {
         createDirPath(indexDirectory);
 		IndexWriter writer = new IndexWriter(new File(indexDirectory, name),
-                                             analyzer, true, MaxFieldLength.UNLIMITED);
+                                             analyzer, true, MaxFieldLength.LIMITED);
 		writer.close();
 		Index retVal = new Index(name, indexDirectory, baseDirectory, analyzer, documentMappings, callbackRecipient, true);
 		retVal.updateIndex();

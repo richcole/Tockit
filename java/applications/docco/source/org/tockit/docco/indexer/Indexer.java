@@ -22,6 +22,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.DateTools.Resolution;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriter.MaxFieldLength;
 import org.tockit.docco.GlobalConstants;
 import org.tockit.docco.gui.GuiMessages;
 
@@ -101,7 +102,7 @@ public class Indexer implements Runnable {
 			// and optimize in the end
 			IndexWriter writer = new IndexWriter(this.indexLocation,
 										  this.analyzer,
-										  false);
+										  false, MaxFieldLength.LIMITED);
 			writer.optimize();
 			writer.close();
 			
@@ -142,8 +143,8 @@ public class Indexer implements Runnable {
 	private void indexFile(File file) throws IOException {
 		IndexWriter writer = new IndexWriter(indexLocation,
 		                              this.analyzer,
-									  false);
-		showProgress(writer.docCount(), file.getAbsolutePath());
+									  false, MaxFieldLength.LIMITED);
+		showProgress(writer.numDocs(), file.getAbsolutePath());
 		try {
 			writer.addDocument(this.docProcessingFactory.processDocument(file));
 		} catch (UnknownFileTypeException e) {

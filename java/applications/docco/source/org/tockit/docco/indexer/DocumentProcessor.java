@@ -135,11 +135,11 @@ public class DocumentProcessor {
 	}
 
 	private void addKeyword(Document doc, String fieldName, String content) {
-		doc.add(new Field(fieldName, content, Field.Store.YES, Field.Index.UN_TOKENIZED));
+		doc.add(new Field(fieldName, content, Field.Store.YES, Field.Index.NOT_ANALYZED));
 	}
 
 	private void addTextField(Document doc, String fieldName, String content) {
-		doc.add(new Field(fieldName, content, Field.Store.YES, Field.Index.TOKENIZED));
+		doc.add(new Field(fieldName, content, Field.Store.YES, Field.Index.ANALYZED));
 	}
 	
 	private void logDocument(Document doc) {
