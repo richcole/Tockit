@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriter.MaxFieldLength;
 import org.apache.lucene.store.FSDirectory;
 import org.tockit.docco.documenthandler.DocumentHandlerRegistry;
 import org.tockit.docco.gui.GuiMessages;
@@ -33,7 +33,7 @@ import org.tockit.docco.indexer.Indexer.CallbackRecipient;
 
 public class Index {
     /**
-	 * Indicates wether this index is used for querying at the moment.
+	 * Indicates whether this index is used for querying at the moment.
 	 */
 	private boolean active = true;
 	
@@ -104,7 +104,7 @@ public class Index {
 									Indexer.CallbackRecipient callbackRecipient) throws IOException {
         createDirPath(indexDirectory);
 		IndexWriter writer = new IndexWriter(new File(indexDirectory, name),
-                                             analyzer, true);
+                                             analyzer, true, MaxFieldLength.UNLIMITED);
 		writer.close();
 		Index retVal = new Index(name, indexDirectory, baseDirectory, analyzer, documentMappings, callbackRecipient, true);
 		retVal.updateIndex();
@@ -112,7 +112,7 @@ public class Index {
 	}
     
     public boolean isLocked() throws IOException {
-        return IndexReader.isLocked(getIndexLocation().getPath());
+        return IndexWriter.isLocked(getIndexLocation().getPath());
     }
 	
 	public void updateIndex() {
@@ -287,7 +287,7 @@ public class Index {
     }
 
     public void removeLock() throws IOException {
-        IndexReader.unlock(FSDirectory.getDirectory(getIndexLocation()));
+        IndexWriter.unlock(FSDirectory.getDirectory(getIndexLocation()));
     }
 
     public Analyzer getAnalyzer() {
