@@ -2,8 +2,10 @@
 Changes since Docco 0.5:
 ==============================
 Docco:
-- updated Lucene to 2.4.0 (no code changes)
-- updated BrowserLauncher to 1.3 (no code changes)
+- updated Lucene to 2.4.0
+- updated BrowserLauncher to 1.3
+- Bugfix: the state of the two toggle options in the View menu is now kept
+  between sessions again
 
 POI-Plugin:
 - updated POI library from version 2.5.1final to 3.2final
