@@ -17,7 +17,7 @@
 	<classpathentry kind="lib" path="libs/ToscanaJ.jar"/>
 	<classpathentry kind="lib" path="libs/tockit-fca.jar"/>
 	<classpathentry kind="lib" path="plugins/pdfbox/libs/PDFBox.jar"/>
-	<classpathentry kind="lib" path="libs/jdom.jar"/>
+	<classpathentry kind="lib" path="libs/jdom.jar" sourcepath="libs/src/jdom-1.1-src.zip"/>
 	<classpathentry kind="lib" path="libs/BrowserLauncher2.jar" sourcepath="libs/src/BrowserLauncher2-source.zip"/>
 	<classpathentry kind="lib" path="plugins/pdfbox/libs/FontBox.jar"/>
 	<classpathentry kind="lib" path="plugins/poi/libs/commons-logging-1.1.jar"/>
