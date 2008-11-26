@@ -86,6 +86,7 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import net.sourceforge.toscanaj.controller.diagram.AttributeAdditiveNodeMovementEventListener;
+import net.sourceforge.toscanaj.controller.diagram.IdealMovementEventListener;
 import net.sourceforge.toscanaj.controller.diagram.NodeMovementEventListener;
 import net.sourceforge.toscanaj.controller.fca.ConceptInterpretationContext;
 import net.sourceforge.toscanaj.controller.fca.ConceptInterpreter;
@@ -1064,6 +1065,15 @@ public class DoccoMainFrame extends JFrame {
                         new EventTypeFilter(CanvasItemDraggedEvent.class),
                         new CanvasItemEventFilter(InputEvent.SHIFT_DOWN_MASK,
                                                   InputEvent.ALT_DOWN_MASK | InputEvent.CTRL_DOWN_MASK | 
+                                                  InputEvent.ALT_GRAPH_DOWN_MASK |
+                                                  InputEvent.BUTTON2_DOWN_MASK | InputEvent.BUTTON3_DOWN_MASK)
+                });
+        eventBroker.subscribe(new IdealMovementEventListener(), 
+                new EventFilter[] {
+                        new SubjectTypeFilter(NodeView.class),
+                        new EventTypeFilter(CanvasItemDraggedEvent.class),
+                        new CanvasItemEventFilter(InputEvent.CTRL_DOWN_MASK,
+                                                  InputEvent.ALT_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK | 
                                                   InputEvent.ALT_GRAPH_DOWN_MASK |
                                                   InputEvent.BUTTON2_DOWN_MASK | InputEvent.BUTTON3_DOWN_MASK)
                 });
