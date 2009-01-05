@@ -12,6 +12,8 @@ import org.tockit.docco.indexer.DocumentProcessingException;
 
 public class UnknownFileTypeException extends DocumentProcessingException {
 
+	private static final long serialVersionUID = 1L;
+
 	public UnknownFileTypeException(String message) {
 		super(message);
 	}

@@ -39,6 +39,8 @@ import org.tockit.docco.indexer.DocumentHandlerMapping;
 
 public class FileMappingsEditingDialog extends JDialog {
 	
+	private static final long serialVersionUID = 1L;
+
 	private DefaultListModel model;
 	
 	private List documentMappings;
@@ -57,6 +59,8 @@ public class FileMappingsEditingDialog extends JDialog {
 	
 	
 	private class MappingsListCellRenderer extends DefaultListCellRenderer {
+		private static final long serialVersionUID = 1L;
+
 		public Component getListCellRendererComponent(JList list, Object value, 
 												int index, boolean isSelected, 
 												boolean cellHasFocus) {

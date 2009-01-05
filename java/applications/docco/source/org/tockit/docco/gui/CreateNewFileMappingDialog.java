@@ -47,6 +47,8 @@ import org.tockit.docco.indexer.DocumentHandlerMapping;
 // @todo needs relayouting and code cleanup
 public class CreateNewFileMappingDialog extends JDialog {
 	
+	private static final long serialVersionUID = 1L;
+
 	private DefaultComboBoxModel docHandlerImplementationsModel;
 	
 	private DocumentHandlerMapping mapping;
@@ -56,6 +58,8 @@ public class CreateNewFileMappingDialog extends JDialog {
 	private JTextField extensionField;
 
 	private class FileFilterComboBoxCellRenderer extends DefaultListCellRenderer {
+		private static final long serialVersionUID = 1L;
+
 		public Component getListCellRendererComponent(JList list, Object value, 
 												int index, boolean isSelected, 
 												boolean cellHasFocus) {
@@ -75,6 +79,8 @@ public class CreateNewFileMappingDialog extends JDialog {
 	}	
 
 	private class DocHandlerComboBoxCellRenderer extends DefaultListCellRenderer {
+		private static final long serialVersionUID = 1L;
+
 		public Component getListCellRendererComponent(JList list, Object value, 
 												int index, boolean isSelected, 
 												boolean cellHasFocus) {

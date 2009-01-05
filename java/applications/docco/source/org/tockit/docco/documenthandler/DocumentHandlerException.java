@@ -12,6 +12,8 @@ import org.tockit.docco.indexer.DocumentProcessingException;
 
 public class DocumentHandlerException extends DocumentProcessingException {
 
+	private static final long serialVersionUID = 1L;
+
 	public DocumentHandlerException(String message) {
 		super(message);
 

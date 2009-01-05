@@ -150,7 +150,8 @@ import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
  * @TODO the results shown when selected nodes in nested diagrams are sometimes wrong (too many)
  */
 public class DoccoMainFrame extends JFrame {
-    private int indexingPriority;
+	private static final long serialVersionUID = 1L;
+	private int indexingPriority;
     private File lastDirectoryIndexed;
     private static final int LOWEST_PRIORITY = Thread.MIN_PRIORITY;
 	private static final int LOW_PRIORITY = (Thread.MIN_PRIORITY + Thread.NORM_PRIORITY)/2;
@@ -266,6 +267,8 @@ public class DoccoMainFrame extends JFrame {
 					DefaultMutableTreeNode curNode = (DefaultMutableTreeNode) pathToNodeMap.get(curPath.toString());
 					if(curNode == null) {
 						curNode = new DefaultMutableTreeNode(curPath.toString()){
+							private static final long serialVersionUID = 1L;
+
 							public String toString() {
 								DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) getParent();
 								String userObjectString = getUserObject().toString();
@@ -278,6 +281,8 @@ public class DoccoMainFrame extends JFrame {
 					lastNode = curNode;
 				} else {
 					DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(reference){
+						private static final long serialVersionUID = 1L;
+
 						public String toString() {
 							String result = super.toString();
                             return result.substring(result.lastIndexOf(File.separator) + 1);
@@ -991,6 +996,8 @@ public class DoccoMainFrame extends JFrame {
 		queryViewComponent.setBorder(BorderFactory.createMatteBorder(0,0,1,0,SystemColor.controlDkShadow));
 
 		this.diagramView = new DiagramView(){
+			private static final long serialVersionUID = 1L;
+
 			public String getToolTipText(MouseEvent me) {
 				Point2D canvasPos = getCanvasCoordinates(me.getPoint());
 				CanvasItem item = getCanvasItemAt(canvasPos);

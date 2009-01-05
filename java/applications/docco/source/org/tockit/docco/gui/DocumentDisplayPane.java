@@ -33,6 +33,7 @@ import org.tockit.docco.GlobalConstants;
 import org.tockit.docco.query.HitReference;
 
 public class DocumentDisplayPane extends JPanel {
+	private static final long serialVersionUID = 1L;
 	private JTextField sizeField;
     private JTextArea summaryArea;
     private JTextField dateField;

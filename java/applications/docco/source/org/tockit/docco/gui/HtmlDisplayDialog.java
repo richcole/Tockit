@@ -41,6 +41,8 @@ import net.sourceforge.toscanaj.dbviewer.BrowserLauncher;
 public class HtmlDisplayDialog {
 
 		private static class ViewerDialog extends JDialog {
+			private static final long serialVersionUID = 1L;
+
 			class Hyperactive implements HyperlinkListener {
 				public void hyperlinkUpdate(HyperlinkEvent e) {
 					if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
