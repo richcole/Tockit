@@ -82,13 +82,13 @@ public class Properties {
 	 */
 	public static final Property HAS_FIELD_TYPE_EXTENDED = model.createProperty(Namespaces.CASS_PROPERTIES + "hasFieldType_ext");
 
-	/**
-	 * A method or class uses a type for a variable.
-	 * 
-	 * With a method this refers to a local variable, with a class it refers to a field.
-	 * 
-	 * Domain are the methods and classes, range are the types (Java classes, interfaces and primitices)
-	 */
+    /**
+     * A method or class uses a type for a variable.
+     * 
+     * With a method this refers to a local variable, with a class it refers to a field.
+     * 
+     * Domain are the methods and classes, range are the types (Java classes, interfaces and primitives)
+     */
 	public static final Property HAS_VARIABLE_TYPE = model.createProperty(Namespaces.CASS_PROPERTIES + "hasVariableType");
 	
 	/**
@@ -154,13 +154,13 @@ public class Properties {
 	 */
 	public static final Property DEPENDS_TRANSITIVELY = model.createProperty(Namespaces.CASS_PROPERTIES + "depends_tr");
 
-	/**
-	 * The generic type hierachy.
-	 * 
-	 * This is any sub-type relationship, i.e. the union of {@link #EXTENDS} and {@link #IMPLEMENTS}.
-	 * 
-	 * Domain and range are the types (Java classes and interfaces). 
-	 */
+    /**
+     * The generic type hierarchy.
+     * 
+     * This is any sub-type relationship, i.e. the union of {@link #EXTENDS} and {@link #IMPLEMENTS}.
+     * 
+     * Domain and range are the types (Java classes and interfaces). 
+     */
 	public static final Property DERIVED_FROM = model.createProperty(Namespaces.CASS_PROPERTIES + "derivedFrom");
 
 	/**
@@ -182,14 +182,14 @@ public class Properties {
 	 * Domain are the types, range are the interfaces.
 	 */
 	public static final Property IMPLEMENTS_CLOSURE = model.createProperty(Namespaces.CASS_PROPERTIES + "implements_t");
-	
-	/**
-	 * The generic type hierachy.
-	 * 
-	 * This is the transitive and reflexive closure of {@link #DERIVED_FROM} or in other words the union of 
-	 * {@link #EXTENDS_CLOSURE} and {@link #IMPLEMENTS_CLOSURE}.
-	 * 
-	 * Domain and range are the types (Java classes and interfaces). 
-	 */
+
+    /**
+     * The generic type hierarchy.
+     * 
+     * This is the transitive and reflexive closure of {@link #DERIVED_FROM} or in other words the union of 
+     * {@link #EXTENDS_CLOSURE} and {@link #IMPLEMENTS_CLOSURE}.
+     * 
+     * Domain and range are the types (Java classes and interfaces). 
+     */
 	public static final Property DERIVED_FROM_CLOSURE = model.createProperty(Namespaces.CASS_PROPERTIES + "derivedFrom_tr");
 }
