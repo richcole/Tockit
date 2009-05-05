@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="source"/>
+	<classpathentry kind="lib" path="libs/jena.jar" sourcepath="libs/source/jena-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="libs/commons-logging-1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/antlr-2.7.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/arq.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/arq-extra.jar"/>
@@ -16,9 +20,5 @@
 	<classpathentry exported="true" kind="lib" path="libs/wstx-asl-3.0.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/xercesImpl.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/xml-apis.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/commons-logging-1.1.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="lib" path="libs/jena.jar" sourcepath="libs/source/jena-src.zip"/>
 	<classpathentry kind="output" path="build/eclipse"/>
 </classpath>

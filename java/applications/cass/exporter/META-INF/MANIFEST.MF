@@ -9,7 +9,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.eclipse.jdt.core
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Bundle-Vendor: The Tockit Project
 Bundle-ClassPath: .,
  libs/jena.jar,
@@ -310,3 +310,4 @@ Export-Package: EDU.oswego.cs.dl.util.concurrent,
  org.xml.sax.ext,
  org.xml.sax.helpers,
  vocabularies
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
