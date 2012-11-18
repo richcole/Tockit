@@ -13,6 +13,7 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.DriverPropertyInfo;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -27,6 +28,11 @@ public class DatabaseDriverLoader extends LoaderBase {
 	
 	private static List<Error> errors = new ArrayList<Error>();
 
+	/*
+	 * TODO: why do we wrap the Driver instance? It seems to not do anything, but given the context of class
+	 *       loading it might be relevant. But then it should be documented why that is. SVN history doesn't
+	 *       go back far enough to explain it.
+	 */
 	private static class DriverWrapper implements Driver {
 		private final Driver finalDriver;
 		private DriverWrapper(Driver finalDriver) {
@@ -40,10 +46,7 @@ public class DatabaseDriverLoader extends LoaderBase {
 		public boolean acceptsURL(String url) throws SQLException {
 			return finalDriver.acceptsURL(url);
 		}
-		public DriverPropertyInfo[] getPropertyInfo(
-			String url,
-			Properties info)
-			throws SQLException {
+		public DriverPropertyInfo[] getPropertyInfo(String url, Properties info) throws SQLException {
 			return finalDriver.getPropertyInfo(url, info);
 		}
 		public int getMajorVersion() {
@@ -54,6 +57,9 @@ public class DatabaseDriverLoader extends LoaderBase {
 		}
 		public boolean jdbcCompliant() {
 			return finalDriver.jdbcCompliant();
+		}
+		public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+			return finalDriver.getParentLogger();
 		}
 	}
 	
