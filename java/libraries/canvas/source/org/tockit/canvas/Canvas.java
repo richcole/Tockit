@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -56,6 +55,7 @@ import org.tockit.events.EventBroker;
  * @todo make this threadsafe -- we still get ConcurrentModificationExceptions
  */
 
+@SuppressWarnings("UnusedDeclaration")
 public class Canvas extends JPanel implements Printable {
     /**
      * This is the background item which is assumed to be wherever no other item is.
@@ -65,11 +65,11 @@ public class Canvas extends JPanel implements Printable {
     /**
      * A list of all canvas layers to draw on top of the background.
      * 
-     * A layer itself is a list of items to draw. This list has to be in synch
+     * A layer itself is a list of items to draw. This list has to be in sync
      * with the layerNameMapping, but we need both to ensure the proper order of
      * the layers.
      */
-    protected List<List<CanvasItem>> canvasLayers = new ArrayList<List<CanvasItem>>();
+    protected List<List<CanvasItem>> canvasLayers = new ArrayList<>();
 
     /**
      * Stores the names of the layers as a mapping into the layer objects.
@@ -79,7 +79,7 @@ public class Canvas extends JPanel implements Printable {
      * backwards compatibility), otherwise each layer has to have its unique
      * name.
      */
-    protected Hashtable<String, List<CanvasItem>> layerNameMapping = new Hashtable<String, List<CanvasItem>>();
+    protected Hashtable<String, List<CanvasItem>> layerNameMapping = new Hashtable<>();
 
     /**
      * These items are marked to be raised.
@@ -89,7 +89,7 @@ public class Canvas extends JPanel implements Printable {
      * 
      * @todo we need the same for addition
      */
-    protected List<CanvasItem> itemsToRaise = new ArrayList<CanvasItem>();
+    protected List<CanvasItem> itemsToRaise = new ArrayList<>();
 
     /**
      * Stores the transformation matrix we used on the last draw event.
@@ -148,12 +148,8 @@ public class Canvas extends JPanel implements Printable {
         this.background.draw(graphics);
         raiseMarkedItems();
         // paint all items on canvas
-        Iterator<List<CanvasItem>> layerIt = this.canvasLayers.iterator();
-        while (layerIt.hasNext()) {
-            Collection<CanvasItem> layer = layerIt.next();
-            Iterator<CanvasItem> itemIt = layer.iterator();
-            while (itemIt.hasNext()) {
-                CanvasItem cur = itemIt.next();
+        for (List<CanvasItem> layer : this.canvasLayers) {
+            for (CanvasItem cur : layer) {
                 if (cur.getPosition() != null) {
                     cur.draw(graphics);
                 }
@@ -171,13 +167,8 @@ public class Canvas extends JPanel implements Printable {
      * ConcurrentModificationExceptions).
      */
     private void raiseMarkedItems() {
-        for (Iterator<CanvasItem> iterator = itemsToRaise.iterator();
-            iterator.hasNext();
-            ) {
-            CanvasItem canvasItem = iterator.next();
-            Iterator<List<CanvasItem>> layerIt = this.canvasLayers.iterator();
-            while (layerIt.hasNext()) {
-                Collection<CanvasItem> layer = layerIt.next();
+        for (CanvasItem canvasItem : itemsToRaise) {
+            for (List<CanvasItem> layer : this.canvasLayers) {
                 if (layer.contains(canvasItem)) {
                     layer.remove(canvasItem);
                     layer.add(canvasItem);
@@ -219,12 +210,8 @@ public class Canvas extends JPanel implements Printable {
      */
     public Rectangle2D getCanvasSize(Graphics2D graphics) {
         Rectangle2D retVal = null;
-        Iterator<List<CanvasItem>> layerIt = this.canvasLayers.iterator();
-        while (layerIt.hasNext()) {
-            Collection<CanvasItem> layer = layerIt.next();
-            Iterator<CanvasItem> itemIt = layer.iterator();
-            while (itemIt.hasNext()) {
-                CanvasItem cur = itemIt.next();
+        for (List<CanvasItem> layer : this.canvasLayers) {
+            for (CanvasItem cur : layer) {
                 Rectangle2D curBounds = cur.getCanvasBounds(graphics);
                 if (curBounds == null) {
                     continue; // not visible
@@ -249,8 +236,6 @@ public class Canvas extends JPanel implements Printable {
      * as possible.
      *
      * @todo Add other printing options.
-     *
-     * @see Printable.print(Graphics, PageFormat, int).
      */
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) {
         if (pageIndex == 0) {
@@ -279,6 +264,7 @@ public class Canvas extends JPanel implements Printable {
      * Scales the graphic context in which the canvas items will be completely
      * visible in the rectangle.
      */
+    @SuppressWarnings("SuspiciousNameCombination")
     public AffineTransform scaleToFit(
         Graphics2D graphics2D,
         Rectangle2D bounds) {
@@ -350,9 +336,8 @@ public class Canvas extends JPanel implements Printable {
      * Returns all canvas items at the given point except the background.
      */
     public Collection<CanvasItem> getCanvasItemsAt(Point2D point) {
-        Collection<CanvasItem> retVal = new HashSet<CanvasItem>();
-        ListIterator<List<CanvasItem>> layerIt =
-            this.canvasLayers.listIterator(this.canvasLayers.size());
+        Collection<CanvasItem> retVal = new HashSet<>();
+        ListIterator<List<CanvasItem>> layerIt = this.canvasLayers.listIterator(this.canvasLayers.size());
         while (layerIt.hasPrevious()) {
             List<CanvasItem> layer = layerIt.previous();
             ListIterator<CanvasItem> itemIt = layer.listIterator(layer.size());
@@ -379,16 +364,14 @@ public class Canvas extends JPanel implements Printable {
      * Maps the given point from screen coordinates into the canvas coordinates.
      */
     public Point2D getCanvasCoordinates(Point2D screenPos) {
-        Point2D point = null;
         try {
-            point = this.screenTransform.inverseTransform(screenPos, null);
+            return this.screenTransform.inverseTransform(screenPos, null);
         } catch (Exception ex) {
             //this should not happen
             throw new RuntimeException(
                 "Internal error: noninvertible transformation found.",
                 ex);
         }
-        return point;
     }
 
     /**
@@ -410,7 +393,7 @@ public class Canvas extends JPanel implements Printable {
     		throw new NullPointerException("CanvasItem to be added must not be null.");
     	}
         if (this.canvasLayers.isEmpty()) {
-            List<CanvasItem> newLayer = new ArrayList<CanvasItem>();
+            List<CanvasItem> newLayer = new ArrayList<>();
             this.canvasLayers.add(newLayer);
             this.layerNameMapping.put("", newLayer);
         }
@@ -437,9 +420,7 @@ public class Canvas extends JPanel implements Printable {
      * Removes an item from the canvas.
      */
     public void removeCanvasItem(CanvasItem item) {
-        Iterator<List<CanvasItem>> layerIt = this.canvasLayers.iterator();
-        while (layerIt.hasNext()) {
-            List<CanvasItem> layer = layerIt.next();
+        for (List<CanvasItem> layer : this.canvasLayers) {
             layer.remove(item);
         }
         this.itemsToRaise.remove(item);
@@ -452,12 +433,9 @@ public class Canvas extends JPanel implements Printable {
      * returned as a list, from the bottommost item upwards.
      */
     public List<CanvasItem> getCanvasItemsByType(Class<? extends CanvasItem> type) {
-        List<CanvasItem> retVal = new ArrayList<CanvasItem>();
-        Iterator<List<CanvasItem>> layerIt = this.canvasLayers.iterator();
-        while (layerIt.hasNext()) {
-            List<CanvasItem> layer = layerIt.next();
-            for (Iterator<CanvasItem> iterator = layer.iterator(); iterator.hasNext();) {
-                CanvasItem canvasItem = iterator.next();
+        List<CanvasItem> retVal = new ArrayList<>();
+        for (List<CanvasItem> layer : this.canvasLayers) {
+            for (CanvasItem canvasItem : layer) {
                 if (type.isAssignableFrom(canvasItem.getClass())) {
                     retVal.add(canvasItem);
                 }
@@ -473,12 +451,9 @@ public class Canvas extends JPanel implements Printable {
      * from the bottommost item upwards.
      */
     public List<CanvasItem> getCanvasItems() {
-        List<CanvasItem> retVal = new ArrayList<CanvasItem>();
-        Iterator<List<CanvasItem>> layerIt = this.canvasLayers.iterator();
-        while (layerIt.hasNext()) {
-            List<CanvasItem> layer = layerIt.next();
-            for (Iterator<CanvasItem> iterator = layer.iterator(); iterator.hasNext();) {
-                CanvasItem canvasItem = iterator.next();
+        List<CanvasItem> retVal = new ArrayList<>();
+        for (List<CanvasItem> layer : this.canvasLayers) {
+            for (CanvasItem canvasItem : layer) {
                 retVal.add(canvasItem);
             }
         }
@@ -502,7 +477,7 @@ public class Canvas extends JPanel implements Printable {
         if (this.hasLayer(layerName)) {
             throw new IllegalLayerNameException("Layer name does already exist");
         }
-        List<CanvasItem> newLayer = new ArrayList<CanvasItem>();
+        List<CanvasItem> newLayer = new ArrayList<>();
         this.canvasLayers.add(newLayer);
         this.layerNameMapping.put(layerName, newLayer);
     }
@@ -515,7 +490,7 @@ public class Canvas extends JPanel implements Printable {
             throw new NoSuchLayerException(
                 "Could not find layer named \"" + layerName + "\"");
         }
-        Object removeLayer = this.layerNameMapping.remove(layerName);
+        List<CanvasItem> removeLayer = this.layerNameMapping.remove(layerName);
         this.canvasLayers.remove(removeLayer);
     }
 
@@ -531,7 +506,7 @@ public class Canvas extends JPanel implements Printable {
      * 
      * This value is irrelevant if the grid is not enabled.
      * 
-     * @see hasGridEnabled()
+     * @see #hasGridEnabled()
      */
     public double getGridCellWidth() {
         return this.gridCellWidth;
@@ -542,7 +517,7 @@ public class Canvas extends JPanel implements Printable {
      *
      * This value is irrelevant if the grid is not enabled.
      *
-     * @see hasGridEnabled()
+     * @see #hasGridEnabled()
      */
     public double getGridCellHeight() {
         return this.gridCellHeight;
@@ -574,7 +549,7 @@ public class Canvas extends JPanel implements Printable {
     /**
      * Returns true iff the grid function is enabled.
      * 
-     * @see setGrid(double, double)
+     * @see #setGrid(double, double)
      */
     public boolean hasGridEnabled() {
         return this.gridEnabled;
@@ -588,7 +563,7 @@ public class Canvas extends JPanel implements Printable {
      * returned.
      */
     public Point2D getClosestPointOnGrid(Point2D point) {
-        if (this.gridEnabled == false) {
+        if (!this.gridEnabled) {
             return point;
         }
         double x =
